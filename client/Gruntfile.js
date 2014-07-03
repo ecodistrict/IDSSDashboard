@@ -38,6 +38,11 @@ module.exports = function ( grunt ) {
 
         banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
 
+        clean: [ 
+          '<%= build_dir %>', 
+          '<%= compile_dir %>'
+        ],
+
         copy: {
             from_src_assets_to_build: {
                 files: [
@@ -74,6 +79,16 @@ module.exports = function ( grunt ) {
                 files: [
                   {
                     src: [ '<%= vendor_files.javascript %>' ],
+                    dest: '<%= build_dir %>/',
+                    cwd: '.',
+                    expand: true
+                  }
+                ]
+            },
+            from_vendor_css_to_build: {
+                files: [
+                  {
+                    src: [ '<%= vendor_files.stylesheets %>' ],
                     dest: '<%= build_dir %>/',
                     cwd: '.',
                     expand: true
@@ -140,14 +155,68 @@ module.exports = function ( grunt ) {
                 src: [ '<%= app_files.common_tpl %>' ],
                 dest: '<%= build_dir %>/templates-common.js'
             }
+        },
+
+        index: {
+
+            build: {
+                dir: '<%= build_dir %>',
+                src: [
+                    '<%= vendor_files.javascript %>',
+                    '<%= build_dir %>/src/**/*.js',
+                    '<%= html2js.common.dest %>',
+                    '<%= html2js.app.dest %>',
+                    '<%= vendor_files.stylesheets %>',
+                    '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
+                ]
+            }
+
         }
 
     });
+
+
+    function filterForJS ( files ) {
+        return files.filter( function ( file ) {
+            return file.match( /\.js$/ );
+        });
+    }
+
+
+    function filterForCSS ( files ) {
+        return files.filter( function ( file ) {
+            return file.match( /\.css$/ );
+        });
+    }
+
+    grunt.registerMultiTask( 'index', 'Process index.html template', function () {
+        var dirRE = new RegExp( '^('+grunt.config('build_dir')+'|'+grunt.config('compile_dir')+')\/', 'g' );
+        var jsFiles = filterForJS( this.filesSrc ).map( function ( file ) {
+          return file.replace( dirRE, '' );
+        });
+        var cssFiles = filterForCSS( this.filesSrc ).map( function ( file ) {
+          return file.replace( dirRE, '' );
+        });
+
+        grunt.file.copy('src/index.html', this.data.dir + '/index.html', { 
+          process: function ( contents, path ) {
+            return grunt.template.process( contents, {
+              data: {
+                scripts: jsFiles,
+                styles: cssFiles,
+                version: grunt.config( 'pkg.version' )
+              }
+            });
+          }
+        });
+      });
   
+    grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-html2js');
-    grunt.registerTask('default', ['copy', 'concat', 'uglify', 'html2js']);
+
+    grunt.registerTask('default', ['clean', 'copy', 'concat', 'uglify', 'html2js', 'index']);
 
  };
