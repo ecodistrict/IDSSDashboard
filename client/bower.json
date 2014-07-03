@@ -4,6 +4,7 @@
   "devDependencies": {
     "angular": "~1.2.19",
     "bootstrap": "~3.2.0",
-    "angular-ui-router": "~0.2.10"
+    "angular-ui-router": "~0.2.10",
+    "angular-http-auth": "~1.2.1"
   }
 }
