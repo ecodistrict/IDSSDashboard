@@ -20,7 +20,7 @@ module.exports = function ( grunt ) {
             javascript: [
                 '<%= vendor_dir %>/jquery/dist/jquery.js',
                 '<%= vendor_dir %>/angular/angular.js',
-                '<%= vendor_dir %>/angular-bootstrap/ui-bootstrap-tpls.js',
+                '<%= vendor_dir %>/bootstrap/dist/js/bootstrap.js',
                 '<%= vendor_dir %>/angular-ui-router/release/angular-ui-router.js'
             ],
             stylesheets: [
@@ -227,7 +227,7 @@ module.exports = function ( grunt ) {
         'copy:from_vendor_assets_to_build',
         'concat:build_css', 
         'html2js', 
-        'index'
+        'index:build'
     ]);
 
 
