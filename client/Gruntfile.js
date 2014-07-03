@@ -218,5 +218,17 @@ module.exports = function ( grunt ) {
     grunt.loadNpmTasks('grunt-html2js');
 
     grunt.registerTask('default', ['clean', 'copy', 'concat', 'uglify', 'html2js', 'index']);
+    grunt.registerTask('build', [
+        'clean', 
+        'copy:from_src_js_to_build', 
+        'copy:from_src_assets_to_build', 
+        'copy:from_vendor_css_to_build', 
+        'copy:from_vendor_js_to_build', 
+        'copy:from_vendor_assets_to_build',
+        'concat:build_css', 
+        'html2js', 
+        'index'
+    ]);
+
 
  };
