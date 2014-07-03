@@ -20,6 +20,7 @@ module.exports = function ( grunt ) {
             javascript: [
                 '<%= vendor_dir %>/jquery/dist/jquery.js',
                 '<%= vendor_dir %>/angular/angular.js',
+                '<%= vendor_dir %>/angular-http-auth/src/http-auth-interceptor.js',
                 '<%= vendor_dir %>/bootstrap/dist/js/bootstrap.js',
                 '<%= vendor_dir %>/angular-ui-router/release/angular-ui-router.js'
             ],
@@ -157,6 +158,20 @@ module.exports = function ( grunt ) {
             }
         },
 
+        recess: {
+            build: {
+                src: [ '<%= app_files.less %>' ],
+                dest: '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css',
+                options: {
+                  compile: true,
+                  compress: false,
+                  noUnderscores: false,
+                  noIDs: false,
+                  zeroUnits: false
+                }
+            }
+        },
+
         index: {
 
             build: {
@@ -215,18 +230,20 @@ module.exports = function ( grunt ) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-recess');
     grunt.loadNpmTasks('grunt-html2js');
 
-    grunt.registerTask('default', ['clean', 'copy', 'concat', 'uglify', 'html2js', 'index']);
+    grunt.registerTask('default', ['clean', 'html2js', 'copy', 'concat', 'uglify', 'index']);
     grunt.registerTask('build', [
         'clean', 
+        'html2js', 
+        'recess:build', 
         'copy:from_src_js_to_build', 
         'copy:from_src_assets_to_build', 
         'copy:from_vendor_css_to_build', 
         'copy:from_vendor_js_to_build', 
         'copy:from_vendor_assets_to_build',
         'concat:build_css', 
-        'html2js', 
         'index:build'
     ]);
 
