@@ -14,7 +14,10 @@ angular.module( 'idss-dashboard.analyse-problem', [
         templateUrl: 'header/header.tpl.html' 
       }
     },
-    data:{ pageTitle: 'Analyse problem' }
+    data:{ 
+      pageTitle: 'Analyse problem',
+      authorizedRoles: ['facilitator']
+    }
   });
 })
 

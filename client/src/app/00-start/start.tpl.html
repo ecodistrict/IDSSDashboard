@@ -1,1 +1,9 @@
 <h1>Start page</h1>
+
+<div ng-if="currentUser">Welcome, {{ currentUser.name }}</div>
+<div ng-if="isAuthorized(userRoles.admin)">You're admin.</div>
+<div ng-switch on="currentUser.role">
+  <div ng-switch-when="userRoles.admin">You're admin.</div>
+  <div ng-switch-when="userRoles.editor">You're editor.</div>
+  <div ng-switch-default>You're something else.</div>
+</div>

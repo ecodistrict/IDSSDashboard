@@ -15,7 +15,8 @@ angular.module( 'idss-dashboard.start', [
         templateUrl: 'header/header.tpl.html' 
       }
     },
-    data:{ pageTitle: 'Start' }
+    data:{ pageTitle: 'Start' },
+    authorizedRoles: ['*']
   });
 })
 
