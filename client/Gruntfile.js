@@ -122,6 +122,23 @@ module.exports = function ( grunt ) {
                     '<%= compile_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.js': '<%= compile_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.js'
                 }
             }
+        },
+
+        html2js: {
+            app: {
+                options: {
+                    base: 'src/app'
+                },
+                src: [ '<%= app_files.app_tpl %>' ],
+                dest: '<%= build_dir %>/templates-app.js'
+            },
+            common: {
+                options: {
+                    base: 'src/common'
+                },
+                src: [ '<%= app_files.common_tpl %>' ],
+                dest: '<%= build_dir %>/templates-common.js'
+            }
         }
 
     });
@@ -129,6 +146,7 @@ module.exports = function ( grunt ) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.registerTask('default', ['copy', 'concat', 'uglify']);
+    grunt.loadNpmTasks('grunt-html2js');
+    grunt.registerTask('default', ['copy', 'concat', 'uglify', 'html2js']);
 
  };
