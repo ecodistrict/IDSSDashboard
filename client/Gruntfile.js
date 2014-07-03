@@ -20,7 +20,8 @@ module.exports = function ( grunt ) {
             javascript: [
                 '<%= vendor_dir %>/jquery/dist/jquery.js',
                 '<%= vendor_dir %>/angular/angular.js',
-                '<%= vendor_dir %>/angular-bootstrap/ui-bootstrap-tpls.js'
+                '<%= vendor_dir %>/angular-bootstrap/ui-bootstrap-tpls.js',
+                '<%= vendor_dir %>/angular-ui-router/release/angular-ui-router.js'
             ],
             stylesheets: [
                 '<%= vendor_dir %>/bootstrap/dist/css/bootstrap.css'

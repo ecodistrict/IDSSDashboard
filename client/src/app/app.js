@@ -1,6 +1,8 @@
 angular.module( 'idss-dashboard', [
   'templates-app',
-  'templates-common'
+  'templates-common',
+  'ui-router',
+  'idss-dashboard.analyse-problem'
 ])
 
 .controller( 'AppCtrl', [ '$scope', '$location', function AppCtrl ( $scope, $location ) {
