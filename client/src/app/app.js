@@ -5,6 +5,7 @@ angular.module( 'idss-dashboard', [
   'ui.router',
   'idss-dashboard.header',
   'idss-dashboard.login',
+  'idss-dashboard.current-user',
   'idss-dashboard.start',
   'idss-dashboard.analyse-problem'
 ])
@@ -50,6 +51,7 @@ angular.module( 'idss-dashboard', [
     LoginService.getCurrentUser().then(function(user) {
         console.log(user);
         $scope.isAuthenticated = LoginService.isAuthenticated();
+        $scope.currentUser = user;
         console.log(LoginService.isAuthenticated());
     });
 
@@ -60,10 +62,11 @@ angular.module( 'idss-dashboard', [
         $location.path('/login'); 
     });
 
-    // global event - going into auth state
+    // global event - going into auth state after login
     $scope.$on('event:auth-loginConfirmed', function() {
         console.log('login confirmed');
         $scope.isAuthenticated = LoginService.isAuthenticated();
+        $scope.currentUser = user;
         $location.path('/start');
     });
 
