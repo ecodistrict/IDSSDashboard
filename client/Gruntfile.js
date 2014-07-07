@@ -25,7 +25,7 @@ module.exports = function ( grunt ) {
                 '<%= vendor_dir %>/angular-ui-router/release/angular-ui-router.js'
             ],
             stylesheets: [
-                '<%= vendor_dir %>/bootstrap/dist/css/bootstrap.css'
+                //'<%= vendor_dir %>/bootstrap/dist/css/bootstrap.css'
             ],
             assets: [
                 '<%= vendor_dir %>/bootstrap/dist/fonts/glyphicons-halflings-regular.eot',
@@ -158,16 +158,13 @@ module.exports = function ( grunt ) {
             }
         },
 
-        recess: {
+        less: {
             build: {
-                src: [ '<%= app_files.less %>' ],
-                dest: '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css',
                 options: {
-                  compile: true,
-                  compress: false,
-                  noUnderscores: false,
-                  noIDs: false,
-                  zeroUnits: false
+                    paths: ['src/less'],
+                },
+                files: {
+                    '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css': '<%= app_files.less %>'
                 }
             }
         },
@@ -246,7 +243,7 @@ module.exports = function ( grunt ) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-recess');
+    grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-html2js');
 
     grunt.registerTask('default', ['clean', 'html2js', 'copy', 'concat', 'uglify', 'index']);
@@ -254,7 +251,7 @@ module.exports = function ( grunt ) {
         'jshint',
         'clean', 
         'html2js', 
-        'recess:build', 
+        'less:build', 
         'copy:from_src_js_to_build', 
         'copy:from_src_assets_to_build', 
         'copy:from_vendor_css_to_build', 
