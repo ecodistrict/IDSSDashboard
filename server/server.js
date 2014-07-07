@@ -3,6 +3,10 @@
  */
 
 var express = require('express');
+var https = require('https');
+var http = require('http');
+var fs = require('fs');         
+
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 //var hash = require('./pass').hash; // use this later for encryption?
@@ -10,10 +14,21 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var session = require('express-session');
 
+var options = {
+    key:    fs.readFileSync(__dirname + '/cert/server.key').toString(),
+    cert:   fs.readFileSync(__dirname + '/cert/server.crt').toString(),
+    ca:     fs.readFileSync(__dirname + '/cert/ca.crt').toString(),
+    requestCert:        true,
+    rejectUnauthorized: false
+};
+
 // TODO: use mongo session store?
 //var MongoStore = require('connect-mongo')(session);
 
 var app = module.exports = express();
+
+//var httpsServer = https.createServer(options, app);
+var httpServer = http.createServer(app);
 
 // middleware
 
@@ -176,5 +191,6 @@ app.all('/*', function(req, res) {
   res.sendfile('index.html', { root: distFolder });
 });
 
-app.listen(3000);
+//httpsServer.listen(8443);
+httpServer.listen(3000);
 console.log('Express started on port 3000');
