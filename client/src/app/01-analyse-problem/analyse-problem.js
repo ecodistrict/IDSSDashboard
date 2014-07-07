@@ -7,7 +7,7 @@ angular.module( 'idss-dashboard.analyse-problem', [
     views: {
       "main": {
         controller: 'AnalyseProblemCtrl',
-        templateUrl: 'analyse-problem/analyse-problem.tpl.html'
+        templateUrl: '01-analyse-problem/analyse-problem.tpl.html'
       },
       "header": {
         controller: 'HeaderCtrl',

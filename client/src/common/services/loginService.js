@@ -6,7 +6,7 @@ angular.module('idss-dashboard')
         return $http
             .post('/login', credentials)
             .then(function (res) {
-                var user = res.data.user;
+                var user = res.data;
                 authService.loginConfirmed();
                 console.log(user);
                 Session.create(user.id, user.userId, user.role);
@@ -18,7 +18,7 @@ angular.module('idss-dashboard')
         return $http
             .get('/authenticated-user')
             .then(function (res) {
-                var user = res.data.user;
+                var user = res.data;
                 console.log(user);
 
                 if(!isAuthenticated()) {

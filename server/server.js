@@ -13,6 +13,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var bodyParser = require('body-parser');
 var path = require('path');
 var session = require('express-session');
+var disableAuthentication = true;
 
 var options = {
     key:    fs.readFileSync(__dirname + '/cert/server.key').toString(),
@@ -158,15 +159,13 @@ app.use(staticUrl, function(req, res, next) {
 var filterUser = function(user) {
   if ( user ) {
     return {
-      user : {
         name: user.name,
         userId: user.userId,
         id: user.id,
         userRole: user.userRole
-      }
     };
   } else {
-    return { user: null };
+    return null;
   }
 };
 
@@ -175,8 +174,8 @@ app.post('/login', passport.authenticate('local'), function(req, res){
 });
 
 app.get('/authenticated-user', function(req, res) {
-  if (req.isAuthenticated()) {
-    res.json(200, filterUser(req.user));
+  if (req.isAuthenticated() || disableAuthentication) {
+    res.json(200, disableAuthentication ? filterUser(user) : filterUser(req.user));
   } else {
     res.json(401, {msg: 'not authenticated'});
   }

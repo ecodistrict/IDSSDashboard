@@ -1,4 +1,4 @@
-<h1>Start page</h1>
+<!-- <h1>Start page</h1>
 
 <div ng-if="currentUser">Welcome, {{ currentUser.name }}</div>
 <div ng-if="isAuthorized(userRoles.admin)">You're admin.</div>
@@ -6,4 +6,15 @@
   <div ng-switch-when="userRoles.admin">You're admin.</div>
   <div ng-switch-when="userRoles.editor">You're editor.</div>
   <div ng-switch-default>You're something else.</div>
+</div> -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-md-4 col-md-offset-4">
+            <div class="well">
+                <a ui-sref="upload" class="btn btn-lg btn-primary btn-block">Upload .ecodist file</a>
+                <a ui-sref="analyse-problem" class="btn btn-lg btn-success btn-block">Create new project</a>
+            </div>
+        </div>
+    </div>
 </div>
