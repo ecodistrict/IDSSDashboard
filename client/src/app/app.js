@@ -53,18 +53,18 @@ angular.module( 'idss-dashboard', [
     // $scope.userRoles = USER_ROLES;
     // $scope.isAuthorized = AuthService.isAuthorized;
 
-    $scope.$on(AUTH_EVENTS.notAuthenticated, function() {
-        console.log('not authenticated');
+    // $scope.$on(AUTH_EVENTS.notAuthenticated, function() {
+    //     console.log('not authenticated');
         
-    });
-    $scope.$on(AUTH_EVENTS.notAuthorized, function() {
-        console.log('not authorized');
-    });
-
-    //authService.loginConfirmed();
+    // });
+    // $scope.$on(AUTH_EVENTS.notAuthorized, function() {
+    //     console.log('not authorized');
+    // });
 
     $scope.$on('event:auth-loginRequired', function() {
         console.log('login required');
+        console.log('not authenticated - login service redirect');
+        $location.path('/login'); 
     });
     $scope.$on('event:auth-loginConfirmed', function() {
         console.log('login confirmed');
