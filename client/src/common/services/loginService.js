@@ -8,7 +8,6 @@ angular.module('idss-dashboard')
             .then(function (res) {
                 var user = res.data;
                 authService.loginConfirmed();
-                console.log(user);
                 Session.create(user.id, user.userId, user.role);
                 return user;
             });
@@ -19,13 +18,8 @@ angular.module('idss-dashboard')
             .get('/authenticated-user')
             .then(function (res) {
                 var user = res.data;
-                console.log(user);
-
                 if(!isAuthenticated()) {
-                    console.log('create session');
-
                     Session.create(user.id, user.userId, user.role);
-                    console.log(isAuthenticated());
                 }
                 return user;
             });

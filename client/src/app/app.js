@@ -49,10 +49,8 @@ angular.module( 'idss-dashboard', [
 
     // if already logged in
     LoginService.getCurrentUser().then(function(user) {
-        console.log(user);
         $scope.isAuthenticated = LoginService.isAuthenticated();
         $scope.currentUser = user;
-        console.log(LoginService.isAuthenticated());
     });
 
     // global event - going into unauth state

@@ -1,1 +1,25 @@
-<h1>Analyse problem page</h1>
+<div class="container">
+    <div class="row">
+        <h1>Analyse problem</h1>
+    </div>
+    <div class="row">
+        <form role="form">
+		  <div class="form-group">
+		    <label for="process-title">Please give a title to this decision process (ex: your high level ambition):</label>
+		    <input type="text" ng-model="currentProcess.title" class="form-control" id="process-title" placeholder="Process title">
+		  </div>
+		</form>
+    </div>
+    <div class="row">
+		<label>Please define the area of your project: </label>
+		<selection-map type="type" geometry="currentProcess.area"></selection-map>
+    </div>
+    <div class="row">
+        <form role="form">
+		  <div class="form-group">
+		    <label for="process-description">Please add a description text of your project (optional)</label>
+		    <textarea class="form-control" id="process-description" rows="3">This project is aimed at…</textarea>
+		  </div>
+		</form>
+    </div>
+</div>

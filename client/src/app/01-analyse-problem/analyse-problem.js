@@ -21,8 +21,9 @@ angular.module( 'idss-dashboard.analyse-problem', [
   });
 })
 
-.controller( 'AnalyseProblemCtrl', [function AnalyseProblemCtrl( $scope ) {
+.controller( 'AnalyseProblemCtrl', ['$scope', function AnalyseProblemCtrl( $scope ) {
   
+  $scope.type = "Polygon";
 
 }]);
 

@@ -25,7 +25,6 @@ module.exports = function ( grunt ) {
                 '<%= vendor_dir %>/angular-ui-router/release/angular-ui-router.js'
             ],
             stylesheets: [
-                //'<%= vendor_dir %>/bootstrap/dist/css/bootstrap.css'
             ],
             assets: [
                 '<%= vendor_dir %>/bootstrap/dist/fonts/glyphicons-halflings-regular.eot',
@@ -192,6 +191,7 @@ module.exports = function ( grunt ) {
                 curly:true,
                 eqeqeq:true,
                 eqnull:true,
+                ignores: ['src/assets/ol3/*.js'],
                 immed:true,
                 latedef:true,
                 newcap:true,
