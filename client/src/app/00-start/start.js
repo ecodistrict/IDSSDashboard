@@ -20,7 +20,7 @@ angular.module( 'idss-dashboard.start', [
   });
 })
 
-.controller( 'StartCtrl', ['$scope', 'LoginService', function StartCtrl( $scope ) {
+.controller( 'StartCtrl', ['$scope', function StartCtrl( $scope ) {
   
   console.log('start ctrl');
 

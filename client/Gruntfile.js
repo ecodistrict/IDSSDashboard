@@ -186,11 +186,26 @@ module.exports = function ( grunt ) {
                 ]
             }
 
+        },
+        // se docs for jshint config http://www.jshint.com/docs/options/
+        jshint:{
+            files:['gruntFile.js', '<%= app_files.javascript %>'],
+            options:{
+                boss:true,
+                curly:true,
+                eqeqeq:true,
+                eqnull:true,
+                immed:true,
+                latedef:true,
+                newcap:true,
+                noarg:true,
+                sub:true
+            }
         }
 
     });
 
-
+    
     function filterForJS ( files ) {
         return files.filter( function ( file ) {
             return file.match( /\.js$/ );
@@ -214,7 +229,7 @@ module.exports = function ( grunt ) {
         });
 
         grunt.file.copy('src/index.html', this.data.dir + '/index.html', { 
-          process: function ( contents, path ) {
+          process: function ( contents ) {
             return grunt.template.process( contents, {
               data: {
                 scripts: jsFiles,
@@ -226,6 +241,7 @@ module.exports = function ( grunt ) {
         });
       });
   
+    grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-concat');
@@ -235,6 +251,7 @@ module.exports = function ( grunt ) {
 
     grunt.registerTask('default', ['clean', 'html2js', 'copy', 'concat', 'uglify', 'index']);
     grunt.registerTask('build', [
+        'jshint',
         'clean', 
         'html2js', 
         'recess:build', 

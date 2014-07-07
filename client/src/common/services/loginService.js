@@ -51,7 +51,7 @@ angular.module('idss-dashboard')
             return true;
         } else {
             return false;  
-        };
+        }
     };
 
     var isAuthorized = function (authorizedRoles) {
