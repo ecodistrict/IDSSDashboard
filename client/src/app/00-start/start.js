@@ -20,15 +20,9 @@ angular.module( 'idss-dashboard.start', [
   });
 })
 
-.controller( 'StartCtrl', ['$scope', 'LoginService', function StartCtrl( $scope, LoginService ) {
+.controller( 'StartCtrl', ['$scope', 'LoginService', function StartCtrl( $scope ) {
   
   console.log('start ctrl');
-
-  LoginService.getCurrentUser().then(function(user) {
-    console.log(user);
-  });
-
-  $scope.isAuthenticated = LoginService.isAuthenticated();
 
 }]);
 

@@ -1,79 +1,83 @@
 <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
-        <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="#"><i class="fa fa-list-alt"></i> IDSS Dashboard</a>
-    </div>
+        <div ng-show="isAuthenticated" class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><i class="fa fa-list-alt"></i> IDSS Dashboard</a>
+        </div>
 
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <!-- menu default -->
-        <ul class="nav navbar-nav">
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Analyse problem <span class="caret"></span></a>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">Overview</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#">KPI list</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Collect data <span class="caret"></span></a>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">Overview</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#">Context list</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">As is <span class="caret"></span></a>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">View 1</a></li>
-                    <li><a href="#">View 2</a></li>
-                    <li><a href="#">View 3</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">To be <span class="caret"></span></a>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">View 1</a></li>
-                    <li><a href="#">View 2</a></li>
-                    <li><a href="#">View 3</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Develop alternatives <span class="caret"></span></a>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">Overview</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#">Alternative list</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Assess alternatives <span class="caret"></span></a>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">Overview</a></li>
-                    <li><a href="#">Export</a></li>
-                </ul>
-            </li>
-        </ul>
+        <div ng-show="!isAuthenticated" class="navbar-header">
+            <a class="navbar-brand" href="#"><i class="fa fa-list-alt"></i> IDSS Dashboard</a>
+        </div>
 
-        <!-- <ul ng-show="!isAuthenticated" class="nav navbar-nav navbar-right">
-            <li><a style="cursor: pointer" ng-click="login()">Log in</a></li>
-        </ul> -->
-      
-        <ul class="nav navbar-nav navbar-right">
-            <li><a style="cursor: pointer" ng-click="logout()">Log out</a></li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu 2 <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a sref="users"> User</a></li>
-                </ul>
-            </li>
-        </ul>
+        <div class="collapse navbar-collapse" id="bs-navbar-collapse">
+            <!-- menu default -->
+            <ul ng-show="isAuthenticated" class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Analyse problem <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Overview</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">KPI list</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Collect data <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Overview</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">Context list</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">As is <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">View 1</a></li>
+                        <li><a href="#">View 2</a></li>
+                        <li><a href="#">View 3</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">To be <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">View 1</a></li>
+                        <li><a href="#">View 2</a></li>
+                        <li><a href="#">View 3</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Develop alternatives <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Overview</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">Alternative list</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Assess alternatives <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Overview</a></li>
+                        <li><a href="#">Export</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <ul ng-show="!isAuthenticated" class="nav navbar-nav navbar-right">
+                <li><a style="cursor: pointer" ng-click="login()">Log in</a></li>
+            </ul>
+          
+            <ul ng-show="isAuthenticated" class="nav navbar-nav navbar-right">
+                <li><a style="cursor: pointer" ng-click="logout()">Log out</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu 2 <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a sref="users"> User</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
 </nav>

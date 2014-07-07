@@ -1,15 +1,16 @@
 angular.module('idss-dashboard')
 
-.factory('LoginService', function ($http, Session, $location, authService) {
+.factory('LoginService', ['$http', 'Session', '$location', 'authService', '$rootScope', function ($http, Session, $location, authService, $rootScope) {
 
     var login = function (credentials) {
         return $http
             .post('/login', credentials)
             .then(function (res) {
-                var user = res.data;
-                console.log(user);
+                var user = res.data.user;
                 authService.loginConfirmed();
+                console.log(user);
                 Session.create(user.id, user.userId, user.role);
+                return user;
             });
     };
 
@@ -17,8 +18,15 @@ angular.module('idss-dashboard')
         return $http
             .get('/authenticated-user')
             .then(function (res) {
-                var user = res.data;
+                var user = res.data.user;
                 console.log(user);
+
+                if(!isAuthenticated()) {
+                    console.log('create session');
+
+                    Session.create(user.id, user.userId, user.role);
+                    console.log(isAuthenticated());
+                }
                 return user;
             });
     };
@@ -28,6 +36,7 @@ angular.module('idss-dashboard')
             .get('/logout')
             .then(function (res) {
                 Session.destroy();
+                $rootScope.$broadcast('event:auth-loginRequired');
                 return true;
             });
     };
@@ -60,7 +69,7 @@ angular.module('idss-dashboard')
         isAuthorized: isAuthorized,
         getCurrentUser: getCurrentUser
     };
-})
+}])
 
 .service('Session', function () {
   this.create = function (sessionId, userId, userRole) {

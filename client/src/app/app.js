@@ -44,30 +44,27 @@ angular.module( 'idss-dashboard', [
     // });
 })
 
-.controller( 'AppCtrl', [ '$scope', '$location', 'USER_ROLES', 'AUTH_EVENTS', 'authService', function AppCtrl ( $scope, $location, USER_ROLES, AUTH_EVENTS, authService ) {
+.controller( 'AppCtrl', [ '$scope', '$location', 'USER_ROLES', 'authService', 'LoginService', function AppCtrl ( $scope, $location, USER_ROLES, authService, LoginService ) {
 
-    console.log('app ctrl');
-    console.log(USER_ROLES);
+    // if already logged in
+    LoginService.getCurrentUser().then(function(user) {
+        console.log(user);
+        $scope.isAuthenticated = LoginService.isAuthenticated();
+        console.log(LoginService.isAuthenticated());
+    });
 
-    // $scope.currentUser = null;
-    // $scope.userRoles = USER_ROLES;
-    // $scope.isAuthorized = AuthService.isAuthorized;
-
-    // $scope.$on(AUTH_EVENTS.notAuthenticated, function() {
-    //     console.log('not authenticated');
-        
-    // });
-    // $scope.$on(AUTH_EVENTS.notAuthorized, function() {
-    //     console.log('not authorized');
-    // });
-
+    // global event - going into unauth state
     $scope.$on('event:auth-loginRequired', function() {
         console.log('login required');
-        console.log('not authenticated - login service redirect');
+        $scope.isAuthenticated = LoginService.isAuthenticated();
         $location.path('/login'); 
     });
+
+    // global event - going into auth state
     $scope.$on('event:auth-loginConfirmed', function() {
         console.log('login confirmed');
+        $scope.isAuthenticated = LoginService.isAuthenticated();
+        $location.path('/start');
     });
 
     $scope.$on('$stateChangeSuccess', function(event, toState){

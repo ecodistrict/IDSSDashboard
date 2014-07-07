@@ -48,7 +48,7 @@ var tempUserDbId = 'id from database';
 var user = {
   name: 'testuser',
   userId: 'id',
-  _id: tempUserDbId,
+  id: tempUserDbId,
   userRole: 'facilitator'
 };
 
@@ -77,13 +77,13 @@ passport.use(new LocalStrategy(
 ));
 
 passport.serializeUser(function(user, done) {
-  done(null, user._id);
+  done(null, user.id);
 });
 
-passport.deserializeUser(function(_id, done) {
+passport.deserializeUser(function(id, done) {
   // find the user from database to put on req
   // TODO: use User mapping
-  if(_id === tempUserDbId) {
+  if(id === tempUserDbId) {
     done(null, user);
   } else {
     done(null. null);
@@ -146,7 +146,7 @@ var filterUser = function(user) {
       user : {
         name: user.name,
         userId: user.userId,
-        _id: user._id,
+        id: user.id,
         userRole: user.userRole
       }
     };
