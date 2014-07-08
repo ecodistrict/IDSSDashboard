@@ -29,28 +29,34 @@ angular.module( 'idss-dashboard', [
     $urlRouterProvider.otherwise( '/start' );
 })
 
-.run(function ($rootScope, AUTH_EVENTS) {
-    // $rootScope.$on('$stateChangeStart', function (event, next) {
-    //     var authorizedRoles = next.data.authorizedRoles;
-    //     if (!AuthService.isAuthorized(authorizedRoles)) {
-    //         event.preventDefault();
-    //         if (AuthService.isAuthenticated()) {
-    //             // user is not allowed
-    //             $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
-    //         } else {
-    //             // user is not logged in
-    //             $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
-    //         }
-    //     }
-    // });
-})
-
-.controller( 'AppCtrl', [ '$scope', '$location', 'USER_ROLES', 'authService', 'LoginService', function AppCtrl ( $scope, $location, USER_ROLES, authService, LoginService ) {
+.controller( 'AppCtrl', [ '$scope', '$rootScope', '$location', 'USER_ROLES', 'authService', 'LoginService', 'ProcessService', function AppCtrl ( $scope, $rootScope, $location, USER_ROLES, authService, LoginService, ProcessService ) {
 
     // if already logged in
     LoginService.getCurrentUser().then(function(user) {
         $scope.isAuthenticated = LoginService.isAuthenticated();
         $scope.currentUser = user;
+
+        $rootScope.$on('$stateChangeStart', function (event, next) {
+          var authorizedRoles = next.data.authorizedRoles;
+          if (!LoginService.isAuthorized(authorizedRoles)) {
+              event.preventDefault();
+              if (LoginService.isAuthenticated()) {
+                  // user is not allowed
+                  $rootScope.$broadcast('event:auth-loginRequired');
+              } else {
+                  // user is not logged in
+                  console.log('TODO: handle role');
+              }
+          } else {
+            var currentProcess = ProcessService.getCurrentProcess();
+            if(currentProcess.isModified) {
+              ProcessService.saveCurrentProcess().then(function() {
+                console.log('current process was saved');
+              });
+            }
+          }
+      });
+
     });
 
     // global event - going into unauth state

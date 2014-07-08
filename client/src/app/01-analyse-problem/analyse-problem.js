@@ -1,4 +1,5 @@
 angular.module( 'idss-dashboard.analyse-problem', [
+  'idss-dashboard.analyse-problem.manage-kpis'
 ])
 
 .config(function config( $stateProvider ) {
@@ -21,9 +22,14 @@ angular.module( 'idss-dashboard.analyse-problem', [
   });
 })
 
-.controller( 'AnalyseProblemCtrl', ['$scope', function AnalyseProblemCtrl( $scope ) {
-  
-  $scope.type = "Polygon";
+.controller( 'AnalyseProblemCtrl', ['$scope', 'ProcessService', function AnalyseProblemCtrl( $scope, ProcessService ) {
 
+  $scope.currentProcess = ProcessService.getCurrentProcess();
+
+  $scope.$watch('currentProcess.district.geometry', function(oldSettings, newSettings) {
+    if(oldSettings !== newSettings) {
+      ProcessService.setIsModified(true);
+    }
+  });
 }]);
 

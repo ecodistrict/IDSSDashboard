@@ -12,13 +12,20 @@
     </div>
     <div class="row">
 		<label>Please define the area of your project: </label>
-		<selection-map type="type" geometry="currentProcess.area"></selection-map>
+		<district-map class="selection-map" district="currentProcess.district"></district-map>
     </div>
     <div class="row">
         <form role="form">
 		  <div class="form-group">
 		    <label for="process-description">Please add a description text of your project (optional)</label>
 		    <textarea class="form-control" id="process-description" rows="3">This project is aimed at…</textarea>
+		  </div>
+		</form>
+    </div>
+    <div class="row">
+        <form role="form">
+		  <div class="form-group">
+		    <button class="pull-right btn" ui-sref="manage-kpis">Next</button>
 		  </div>
 		</form>
     </div>
