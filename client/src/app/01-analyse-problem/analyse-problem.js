@@ -31,5 +31,8 @@ angular.module( 'idss-dashboard.analyse-problem', [
       ProcessService.setIsModified(true);
     }
   });
+
+  $scope.result = "";
+
 }]);
 
