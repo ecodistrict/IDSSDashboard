@@ -80,7 +80,21 @@
             </ul>
         </div>
     </div>
+    <div ng-show="isAuthenticated" class="container-fluid sub-menu navbar-inverse">
+        <ul class="nav navbar-nav">
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown">{{ currentProcess.title }} <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a>Process option 1</a></li>
+                    <li><a>Process option 2</a></li>
+                    <li><a>Process option 3</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
 </nav>
+
+    
 <!-- <h1>Start page</h1>
 
 <div ng-if="currentUser">Welcome, {{ currentUser.name }}</div>

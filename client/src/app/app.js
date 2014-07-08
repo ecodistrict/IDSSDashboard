@@ -31,12 +31,13 @@ angular.module( 'idss-dashboard', [
 
 .controller( 'AppCtrl', [ '$scope', '$rootScope', '$location', 'USER_ROLES', 'authService', 'LoginService', 'ProcessService', function AppCtrl ( $scope, $rootScope, $location, USER_ROLES, authService, LoginService, ProcessService ) {
 
-    // if already logged in
-    LoginService.getCurrentUser().then(function(user) {
-        $scope.isAuthenticated = LoginService.isAuthenticated();
-        $scope.currentUser = user;
+    var init = function(user) {
+      $scope.isAuthenticated = LoginService.isAuthenticated();
+      $scope.currentUser = user;
 
-        $rootScope.$on('$stateChangeStart', function (event, next) {
+      $scope.currentProcess = ProcessService.getCurrentProcess();
+
+      $rootScope.$on('$stateChangeStart', function (event, next) {
           var authorizedRoles = next.data.authorizedRoles;
           if (!LoginService.isAuthorized(authorizedRoles)) {
               event.preventDefault();
@@ -56,7 +57,10 @@ angular.module( 'idss-dashboard', [
             }
           }
       });
-
+    };
+    // if already logged in
+    LoginService.getCurrentUser().then(function(user) {
+      init(user);
     });
 
     // global event - going into unauth state
@@ -69,8 +73,7 @@ angular.module( 'idss-dashboard', [
     // global event - going into auth state after login
     $scope.$on('event:auth-loginConfirmed', function() {
         console.log('login confirmed');
-        $scope.isAuthenticated = LoginService.isAuthenticated();
-        $scope.currentUser = user;
+        init(user);
         $location.path('/start');
     });
 
