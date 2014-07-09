@@ -5,6 +5,8 @@
     "angular": "~1.2.19",
     "bootstrap": "~3.2.0",
     "angular-ui-router": "~0.2.10",
-    "angular-http-auth": "~1.2.1"
+    "angular-http-auth": "~1.2.1",
+    "angular-bootstrap": "~0.11.0",
+    "underscore": "~1.6.0"
   }
 }
