@@ -187,6 +187,24 @@ app.get('/logout', function(req, res){
   res.send(204);
 });
 
+var kpiList = [{
+  name: 'KPI 1',
+  id: 'kpi1',
+  description: 'This is a description of KPI 1'
+},{
+  name: 'KPI 2',
+  id: 'kpi2',
+  description: 'This is a description of KPI 2'
+},{
+  name: 'KPI 3',
+  id: 'kpi3',
+  description: 'This is a description of KPI 3'
+}];
+
+app.get('/kpi', function(req, res){
+  res.json(200, kpiList);
+});
+
 app.all('/*', function(req, res) {
   res.sendfile('index.html', { root: distFolder });
 });

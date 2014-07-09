@@ -21,9 +21,34 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [
   });
 })
 
-.controller( 'ManageKpisCtrl', ['$scope', function ManageKpisCtrl( $scope ) {
+.controller( 'ManageKpisCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', function ManageKpisCtrl( $scope, KpiService, ProcessService, $modal ) {
 
-  console.log('manage kpis');
+  $scope.currentProcess = ProcessService.getCurrentProcess();
+  $scope.kpiList = [];
+
+  KpiService.loadKpis().then(function(kpiList) {
+    $scope.kpiList = kpiList;
+  });
+
+  $scope.openKpi = function(kpi) {
+
+    var kpiModal = $modal.open({
+      templateUrl: '01-analyse-problem/setup-kpi.tpl.html',
+      controller: 'SetupKpiCtrl',
+      resolve: {
+        kpi: function() {
+          return kpi;
+        }
+      }
+    });
+
+    kpiModal.result.then(function (useKPI) {
+      ProcessService.addKpi(angular.copy(useKPI));
+    }, function () {
+      console.log('Modal dismissed at: ' + new Date());
+    });
+
+  };
 
 }]);
 

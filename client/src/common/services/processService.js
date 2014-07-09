@@ -9,7 +9,8 @@ angular.module('idss-dashboard')
             geometry: []
         },
         title: "test",
-        isModified: false
+        isModified: false,
+        kpiList: []
     };
 
     var saveCurrentProcess = function (credentials) {
@@ -35,10 +36,20 @@ angular.module('idss-dashboard')
         currentProcess.isModified = isModified;
     };
 
+    var addKpi = function(kpi) {
+        var found = _.find(currentProcess.kpiList, function(item) {
+            return kpi.id === item.id;
+        });
+        if(!found) {
+            currentProcess.kpiList.push(kpi);
+        }
+    };
+
     return {
         saveCurrentProcess: saveCurrentProcess,
         getCurrentProcess: getCurrentProcess,
         getIsModified: getIsModified,
-        setIsModified: setIsModified
+        setIsModified: setIsModified,
+        addKpi: addKpi
     };
 }]);

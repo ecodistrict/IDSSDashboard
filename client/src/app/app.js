@@ -3,6 +3,7 @@ angular.module( 'idss-dashboard', [
   'templates-common',
   'http-auth-interceptor',
   'ui.router',
+  'ui.bootstrap',
   'idss-dashboard.header',
   'idss-dashboard.login',
   'idss-dashboard.current-user',
