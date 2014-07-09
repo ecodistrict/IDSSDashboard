@@ -154,6 +154,7 @@ var distFolder = path.resolve(__dirname, '../client/build');
 
 //app.use(staticUrl, express.compress()); // not working in Express 4
 app.use(staticUrl, express.static(distFolder));
+app.use(staticUrl, express.static('.'));
 app.use(staticUrl, function(req, res, next) {
   res.send(404);
 });
@@ -186,6 +187,15 @@ app.get('/authenticated-user', function(req, res) {
 app.get('/logout', function(req, res){
   req.logout();
   res.send(204);
+});
+
+// global in memory store of current process - remove as soon as possible
+var currentProcess;
+
+app.post('/process', function(req, res){
+  currentProcess = req.body;
+  currentProcess.lastSaved = new Date();
+  res.send(200, req.body);
 });
 
 var kpiRepo = [
@@ -247,6 +257,28 @@ app.get('/module/:moduleId', function(req, res){
   } else {
     res.json(404);
   }
+});
+
+var currentProcess = {
+  title: 'not saved yet'
+};
+
+app.get('/export/ecodist', function(req, res) {
+
+  var currentProcessTitle = currentProcess.title || 'not named';
+
+  // TODO: handle other types of strange strings
+  currentProcessTitle = currentProcessTitle.split(' ').join('-'); 
+
+  var outputFilename = './tmp/' + currentProcessTitle + '.ecodist';
+
+  fs.writeFile(outputFilename, JSON.stringify(currentProcess, null, 4), function(err) {
+      if(err) {
+        res.json(500, err);
+      } else {
+        res.json(200, {title: currentProcessTitle});
+      }
+  });
 });
 
 app.get('/module', function(req, res){

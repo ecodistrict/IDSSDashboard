@@ -1,0 +1,9 @@
+<div class="container">
+    <div class="row">
+        <h1>Export <i>{{currentProcess.title}}</i></h1>
+        <p>Some options here..</p>
+        <button class="btn btn-primary" ng-click="downloadCurrentProcess()">Download this process as .ecodist file</button>
+        <br>
+        <a ng-show="exportTitle" href="{{exportResult}}">Download link: {{exportTitle}}</a>
+    </div>
+</div>

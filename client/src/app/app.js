@@ -6,6 +6,7 @@ angular.module( 'idss-dashboard', [
   'ui.bootstrap',
   'idss-dashboard.header',
   'idss-dashboard.login',
+  'idss-dashboard.export',
   'idss-dashboard.current-user',
   'idss-dashboard.start',
   'idss-dashboard.analyse-problem'
