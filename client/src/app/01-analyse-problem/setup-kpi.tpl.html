@@ -3,7 +3,9 @@
 	<h3>{{ kpi.name }}</h3>
 </div>
 <div class="modal-body">
-			
+	<div ng-repeat="module in relevantModules">
+		{{module.name}}
+	</div>		
 </div>	
 <div class="modal-footer">
 	<a class="btn btn-sm btn-danger" ng-click="cancel()" translate>Don't use this KPI</a>

@@ -5,7 +5,8 @@
 var express = require('express');
 var https = require('https');
 var http = require('http');
-var fs = require('fs');         
+var fs = require('fs');   
+var _ = require('underscore');      
 
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
@@ -187,22 +188,69 @@ app.get('/logout', function(req, res){
   res.send(204);
 });
 
-var kpiList = [{
-  name: 'KPI 1',
-  id: 'kpi1',
-  description: 'This is a description of KPI 1'
-},{
-  name: 'KPI 2',
-  id: 'kpi2',
-  description: 'This is a description of KPI 2'
-},{
-  name: 'KPI 3',
-  id: 'kpi3',
-  description: 'This is a description of KPI 3'
-}];
+var kpiRepo = [
+  {
+    name: 'KPI 1',
+    id: 'kpi1',
+    description: 'This is a description of KPI 1'
+  },{
+    name: 'KPI 2',
+    id: 'kpi2',
+    description: 'This is a description of KPI 2'
+  },{
+    name: 'KPI 3',
+    id: 'kpi3',
+    description: 'This is a description of KPI 3'
+  }
+];
 
 app.get('/kpi', function(req, res){
-  res.json(200, kpiList);
+  res.json(200, kpiRepo);
+});
+
+var moduleRepo = [
+  {
+    name: 'Module 1',
+    id: 'module1',
+    description: 'This is a description of Module 1',
+    useKpis: ['kpi1']
+  },{
+    name: 'Module 2',
+    id: 'module2',
+    description: 'This is a description of Module 2',
+    useKpis: ['kpi2']
+  },{
+    name: 'Module 3',
+    id: 'module3',
+    description: 'This is a description of Module 3',
+    useKpis: ['kpi3']
+  }
+];
+
+app.get('/module/kpi/:kpiId', function(req, res){
+  var kpiId = req.param('kpiId');
+  var foundList = _.filter(moduleRepo, function(module) {
+    return _.find(module.useKpis, function(kpi) {
+      return kpi === kpiId;
+    });
+  }); 
+  res.json(200, foundList);
+});
+
+app.get('/module/:moduleId', function(req, res){
+  var moduleId = req.param('moduleId');
+  var found = _.find(moduleRepo, function(module) {
+    return module.id === moduleId;
+  }); 
+  if(found) {
+    res.json(200, found);
+  } else {
+    res.json(404);
+  }
+});
+
+app.get('/module', function(req, res){
+  res.json(200, moduleRepo);
 });
 
 app.all('/*', function(req, res) {
