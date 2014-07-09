@@ -32,6 +32,14 @@ angular.module( 'idss-dashboard.analyse-problem', [
     }
   });
 
+  $scope.layerOptions = [
+    {name: "Road", label: "Road"},
+    {name: "Aerial", label: "Aerial"},
+    {name: "AerialWithLabels", label: "Aerial with labels"}
+  ];
+
+  $scope.layer = $scope.layerOptions[0].label;
+
   $scope.result = "";
 
 }]);

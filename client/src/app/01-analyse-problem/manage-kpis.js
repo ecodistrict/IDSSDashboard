@@ -24,6 +24,7 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [
 .controller( 'ManageKpisCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', function ManageKpisCtrl( $scope, KpiService, ProcessService, $modal ) {
 
   $scope.currentProcess = ProcessService.getCurrentProcess();
+  console.log($scope.currentProcess);
   $scope.kpiList = [];
 
   KpiService.loadKpis().then(function(kpiList) {

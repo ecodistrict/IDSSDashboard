@@ -1,8 +1,29 @@
 angular.module('idss-dashboard').directive('districtMap', [function () {
 
-    var raster = new ol.layer.Tile({
+    var layers = [
+      new ol.layer.Tile({
+        style: 'Road',
+        visible: false,
+        source: new ol.source.MapQuest({layer: 'osm'})
+      }),
+      new ol.layer.Tile({
+        style: 'Aerial',
+        visible: false,
         source: new ol.source.MapQuest({layer: 'sat'})
-    });
+      }),
+      new ol.layer.Group({
+        style: 'AerialWithLabels',
+        visible: false,
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.MapQuest({layer: 'sat'})
+          }),
+          new ol.layer.Tile({
+            source: new ol.source.MapQuest({layer: 'hyb'})
+          })
+        ]
+      })
+    ];
 
     var featureOverlay = new ol.FeatureOverlay({
         style: new ol.style.Style({
@@ -37,7 +58,8 @@ angular.module('idss-dashboard').directive('districtMap', [function () {
     return {
         restrict: 'E',
         scope: {
-          district: "="
+            district: "=",
+            layer: "="
         },
         link: function(scope, element, attrs) {
 
@@ -48,7 +70,7 @@ angular.module('idss-dashboard').directive('districtMap', [function () {
 
             var map = new ol.Map({
                 interactions: ol.interaction.defaults({mouseWheelZoom: false}),
-                layers: [raster],
+                layers: layers,
                 controls: [zoomControl],
                 target: element[0],
                 ol3Logo: false,
@@ -65,6 +87,12 @@ angular.module('idss-dashboard').directive('districtMap', [function () {
             var zoomslider = new ol.control.ZoomSlider();
 
             map.addControl(zoomslider);
+
+            var changeLayer = function(layer) {
+                for (var i = 0; i < layers.length; i++) {
+                    layers[i].set('visible', (layers[i].get('style') === layer));
+                }
+            };
 
             var extractDistrictPropertiesFromFeature = function(feature) {
                 var geometry = feature.getGeometry();
@@ -116,14 +144,21 @@ angular.module('idss-dashboard').directive('districtMap', [function () {
             //console.log(view.getZoom());
 
             // TODO: remove or use this wether need to change geometry type
-            // scope.$watch('type', function(oldType, newType) {
+            // scope.$watch('type', function(newType, oldType) {
             //     if(oldType !== newType) {
             //         map.removeInteraction(drawInteraction);
             //         addInteraction();
             //     }
             // });
 
+            scope.$watch('layer', function(newLayer, oldLayer) {
+                if(oldLayer !== newLayer) {
+                    changeLayer(newLayer || 'Road');
+                }
+            });
+
             addInteraction();
+            changeLayer('Road');
 
         }
     };
