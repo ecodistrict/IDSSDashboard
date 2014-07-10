@@ -24,7 +24,7 @@ var disableAuthentication = true;
 //     rejectUnauthorized: false,
 //     passphrase: 'Enter a passphrase from env vars'
 // };
-
+  
 // TODO: use mongo session store?
 //var MongoStore = require('connect-mongo')(session);
 
@@ -150,10 +150,16 @@ passport.deserializeUser(function(id, done) {
 // }
 
 var staticUrl = '/static';
-var distFolder = path.resolve(__dirname, '.');
 
-//app.use(staticUrl, express.compress()); // not working in Express 4
-app.use(staticUrl, express.static(distFolder));
+if(process.env.NODE_ENV === 'production') {
+  var distFolder = path.resolve(__dirname, './client/dist');
+  app.use(staticUrl, express.static(distFolder));
+} else {
+  var distFolder = path.resolve(__dirname, './client/build');
+  app.use(staticUrl, express.static(distFolder));
+};
+
+//app.use(staticUrl, express.compress()); // not working in Express 4, use middleware
 //app.use(staticUrl, express.static('.'));
 app.use(staticUrl, function(req, res, next) {
   res.send(404);
