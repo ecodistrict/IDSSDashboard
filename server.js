@@ -16,14 +16,14 @@ var path = require('path');
 var session = require('express-session');
 var disableAuthentication = true;
 
-var options = {
-    key:    fs.readFileSync(__dirname + '/cert/server.key').toString(),
-    cert:   fs.readFileSync(__dirname + '/cert/server.crt').toString(),
-    ca:     fs.readFileSync(__dirname + '/cert/ca.crt').toString(),
-    requestCert:        true,
-    rejectUnauthorized: false,
-    passphrase: 'Enter a passphrase from env vars'
-};
+// var options = {
+//     key:    fs.readFileSync(__dirname + '/cert/server.key').toString(),
+//     cert:   fs.readFileSync(__dirname + '/cert/server.crt').toString(),
+//     ca:     fs.readFileSync(__dirname + '/cert/ca.crt').toString(),
+//     requestCert:        true,
+//     rejectUnauthorized: false,
+//     passphrase: 'Enter a passphrase from env vars'
+// };
 
 // TODO: use mongo session store?
 //var MongoStore = require('connect-mongo')(session);
