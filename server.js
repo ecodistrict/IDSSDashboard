@@ -290,5 +290,5 @@ app.all('/*', function(req, res) {
 });
 
 //httpsServer.listen(8443);
-httpServer.listen(3000);
+httpServer.listen(process.env.PORT || 3000);
 console.log('Express started on port 3000');
