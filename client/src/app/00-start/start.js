@@ -2,7 +2,7 @@ angular.module( 'idss-dashboard.start', [
   'ui.router'
 ])
 
-.config(function config( $stateProvider ) {
+.config(['$stateProvider', function config( $stateProvider ) {
   $stateProvider.state( 'start', {
     url: '/start',
     views: {
@@ -18,7 +18,7 @@ angular.module( 'idss-dashboard.start', [
     data:{ pageTitle: 'Start' },
     authorizedRoles: ['*']
   });
-})
+}])
 
 .controller( 'StartCtrl', ['$scope', function StartCtrl( $scope ) {
   

@@ -1,7 +1,7 @@
 angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [
 ])
 
-.config(function config( $stateProvider ) {
+.config(['$stateProvider', function config( $stateProvider ) {
   $stateProvider.state( 'manage-kpis', {
     url: '/analyse-problem/manage-kpis',
     views: {
@@ -19,7 +19,7 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [
       authorizedRoles: ['facilitator']
     }
   });
-})
+}])
 
 .controller( 'ManageKpisCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', function ManageKpisCtrl( $scope, KpiService, ProcessService, $modal ) {
 

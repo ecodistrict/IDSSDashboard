@@ -7,7 +7,7 @@ angular.module( 'idss-dashboard', [
   'idss-dashboard.header',
   'idss-dashboard.login',
   'idss-dashboard.export',
-  'idss-dashboard.current-user',
+  'idss-dashboard.user',
   'idss-dashboard.start',
   'idss-dashboard.analyse-problem'
 ])
@@ -27,9 +27,9 @@ angular.module( 'idss-dashboard', [
     stakeholder: 'stakeholder'
 })
 
-.config( function myAppConfig ( $stateProvider, $urlRouterProvider ) {
+.config(['$stateProvider', '$urlRouterProvider', function myAppConfig ( $stateProvider, $urlRouterProvider ) {
     $urlRouterProvider.otherwise( '/start' );
-})
+}])
 
 .controller( 'AppCtrl', [ '$scope', '$rootScope', '$location', 'USER_ROLES', 'authService', 'LoginService', 'ProcessService', function AppCtrl ( $scope, $rootScope, $location, USER_ROLES, authService, LoginService, ProcessService ) {
 

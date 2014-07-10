@@ -1,7 +1,7 @@
 angular.module( 'idss-dashboard.export', [
 ])
 
-.config(function config( $stateProvider ) {
+.config(['$stateProvider', function config( $stateProvider ) {
   $stateProvider.state( 'export', {
     url: '/export',
     views: {
@@ -19,7 +19,7 @@ angular.module( 'idss-dashboard.export', [
       authorizedRoles: ['facilitator']
     }
   });
-})
+}])
 
 .controller( 'ExportCtrl', ['$scope', 'ProcessService', 'ExportService', function ExportCtrl( $scope, ProcessService, ExportService ) {
 

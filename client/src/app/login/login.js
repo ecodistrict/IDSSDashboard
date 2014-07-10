@@ -1,7 +1,7 @@
 angular.module( 'idss-dashboard.login', [
 ])
 
-.config(function config( $stateProvider ) {
+.config(['$stateProvider', function config( $stateProvider ) {
     $stateProvider.state( 'login', {
         url: '/login',
         views: {
@@ -19,7 +19,7 @@ angular.module( 'idss-dashboard.login', [
           authorizedRoles: ['*']
         }
     });
-})
+}])
 
 .controller('LoginCtrl', ['$scope', '$rootScope', 'LoginService', 'authService', function LoginCtrl($scope, $rootScope, LoginService, authService) {
     $scope.credentials = {

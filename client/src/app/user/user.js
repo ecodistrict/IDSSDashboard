@@ -1,12 +1,12 @@
-angular.module( 'idss-dashboard.current-user', [
+angular.module( 'idss-dashboard.user', [
 ])
 
-.config(function config( $stateProvider ) {
-  $stateProvider.state( 'current-user', {
-    url: '/current-user',
+.config(['$stateProvider', function config( $stateProvider ) {
+  $stateProvider.state( 'user', {
+    url: '/user',
     views: {
       "main": {
-        controller: 'CurrentUserCtrl',
+        controller: 'UserCtrl',
         templateUrl: 'user/user.tpl.html'
       },
       "header": {
@@ -19,9 +19,9 @@ angular.module( 'idss-dashboard.current-user', [
       authorizedRoles: ['facilitator']
     }
   });
-})
+}])
 
-.controller( 'CurrentUserCtrl', [function CurrentUserCtrl( $scope ) {
+.controller( 'UserCtrl', [function UserCtrl( $scope ) {
   
 
 }]);
