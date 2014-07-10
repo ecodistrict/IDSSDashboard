@@ -110,18 +110,21 @@ angular.module('idss-dashboard').directive('districtMap', [function () {
                     console.log('drawend');
                     currentFeature = e.feature;
                     console.log(e);
-                    extractDistrictPropertiesFromFeature(currentFeature);
                     // TODO: find a better way to look for change on feature
                     currentFeature.on('change', function(e) {
                         //console.log(e.target.getGeometry().getArea());
                         //console.log(e.target.getGeometry().getCoordinates());
                         extractDistrictPropertiesFromFeature(e.target);
                     });
+                    extractDistrictPropertiesFromFeature(currentFeature);
+
                 });
                 drawInteraction.on('drawstart', function(e) {
                     console.log('drawstart');
+                    console.log(e);
                     if(currentFeature) {
                         featureOverlay.removeFeature(currentFeature);
+                        currentFeature = undefined;
                     }
                 });
                 

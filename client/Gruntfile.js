@@ -27,7 +27,7 @@ module.exports = function ( grunt ) {
                 '<%= vendor_dir %>/angular-ui-router/release/angular-ui-router.js'
             ],
             stylesheets: [
-            ],
+            ],  
             assets: [
                 '<%= vendor_dir %>/bootstrap/dist/fonts/glyphicons-halflings-regular.eot',
                 '<%= vendor_dir %>/bootstrap/dist/fonts/glyphicons-halflings-regular.svg',
