@@ -3,6 +3,14 @@
   "name": "idss-dashboard-server",
   "version": "0.0.1",
   "homepage": "http://ecodistr-ict.eu/",
+  "description": "IDSS Dashboard is a system part of FP7 EU project Ecodistr-ict, its purpose is to provide an application for aiding in decision support using the IDSS Framework",
+  "bugs": {
+    "url": "https://github.com/ecodistrict/IDSSDashboard/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ecodistrict/IDSSDashboard.git"
+  },
   "private": true,
   "scripts": {
     "start": "node server"
