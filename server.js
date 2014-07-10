@@ -6,24 +6,24 @@ var express = require('express');
 var https = require('https');
 var http = require('http');
 var fs = require('fs');   
-var _ = require('underscore');      
+//var _ = require('underscore');      
 
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-//var hash = require('./pass').hash; // use this later for encryption?
-var bodyParser = require('body-parser');
-var path = require('path');
-var session = require('express-session');
-var disableAuthentication = true;
+// var passport = require('passport');
+// var LocalStrategy = require('passport-local').Strategy;
+// //var hash = require('./pass').hash; // use this later for encryption?
+// var bodyParser = require('body-parser');
+// var path = require('path');
+// var session = require('express-session');
+// var disableAuthentication = true;
 
-var options = {
-    key:    fs.readFileSync(__dirname + '/cert/server.key').toString(),
-    cert:   fs.readFileSync(__dirname + '/cert/server.crt').toString(),
-    ca:     fs.readFileSync(__dirname + '/cert/ca.crt').toString(),
-    requestCert:        true,
-    rejectUnauthorized: false,
-    passphrase: 'Enter a passphrase from env vars'
-};
+// var options = {
+//     key:    fs.readFileSync(__dirname + '/cert/server.key').toString(),
+//     cert:   fs.readFileSync(__dirname + '/cert/server.crt').toString(),
+//     ca:     fs.readFileSync(__dirname + '/cert/ca.crt').toString(),
+//     requestCert:        true,
+//     rejectUnauthorized: false,
+//     passphrase: 'Enter a passphrase from env vars'
+// };
 
 // TODO: use mongo session store?
 //var MongoStore = require('connect-mongo')(session);
@@ -35,8 +35,8 @@ var httpServer = http.createServer(app);
 
 // middleware
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
 
 // TODO: use mongo session store?
 // app.use(session({
@@ -55,58 +55,58 @@ app.use(bodyParser.json());
 //     })
 // }));
 
-app.use(session({secret: 'secret'}));
+//app.use(session({secret: 'secret'}));
 
 // ********************** START passport initialize (modularize some of this) *************************
 
-app.use(passport.initialize());                             
-app.use(passport.session());
+// app.use(passport.initialize());                             
+// app.use(passport.session());
 
-var tempUserDbId = 'id from database';
-var user = {
-  name: 'testuser',
-  userId: 'id',
-  id: tempUserDbId,
-  userRole: 'facilitator'
-};
+// var tempUserDbId = 'id from database';
+// var user = {
+//   name: 'testuser',
+//   userId: 'id',
+//   id: tempUserDbId,
+//   userRole: 'facilitator'
+// };
 
-passport.use(new LocalStrategy(
-  function(username, password, done) {
+// passport.use(new LocalStrategy(
+//   function(username, password, done) {
 
-    if(username === 'ecodistrict' && password === 'ecodistrict') {
-      return done(null, user);
-    } else {
-      return done(null, false, { message: 'Incorrect username or password' });
-    }
+//     if(username === 'ecodistrict' && password === 'ecodistrict') {
+//       return done(null, user);
+//     } else {
+//       return done(null, false, { message: 'Incorrect username or password' });
+//     }
 
-    // TODO: use local db
+//     // TODO: use local db
 
-    // User.findOne({ username: username }, function (err, user) {
-    //   if (err) { return done(err); }
-    //   if (!user) {
-    //     return done(null, false, { message: 'Incorrect username.' });
-    //   }
-    //   if (!user.validPassword(password)) {
-    //     return done(null, false, { message: 'Incorrect password.' });
-    //   }
-    //   return done(null, user);
-    // });
-  }
-));
+//     // User.findOne({ username: username }, function (err, user) {
+//     //   if (err) { return done(err); }
+//     //   if (!user) {
+//     //     return done(null, false, { message: 'Incorrect username.' });
+//     //   }
+//     //   if (!user.validPassword(password)) {
+//     //     return done(null, false, { message: 'Incorrect password.' });
+//     //   }
+//     //   return done(null, user);
+//     // });
+//   }
+// ));
 
-passport.serializeUser(function(user, done) {
-  done(null, user.id);
-});
+// passport.serializeUser(function(user, done) {
+//   done(null, user.id);
+// });
 
-passport.deserializeUser(function(id, done) {
-  // find the user from database to put on req
-  // TODO: use User mapping
-  if(id === tempUserDbId) {
-    done(null, user);
-  } else {
-    done(null. null);
-  }
-});
+// passport.deserializeUser(function(id, done) {
+//   // find the user from database to put on req
+//   // TODO: use User mapping
+//   if(id === tempUserDbId) {
+//     done(null, user);
+//   } else {
+//     done(null. null);
+//   }
+// });
 
 // TODO: Use shared login with dashboard database, initially mongodb
 // this strategy example is from angular-app using MongoLab
@@ -154,136 +154,136 @@ var distFolder = path.resolve(__dirname, '.');
 
 //app.use(staticUrl, express.compress()); // not working in Express 4
 app.use(staticUrl, express.static(distFolder));
-app.use(staticUrl, express.static('.'));
+//app.use(staticUrl, express.static('.'));
 app.use(staticUrl, function(req, res, next) {
   res.send(404);
 });
 
-var filterUser = function(user) {
-  if ( user ) {
-    return {
-        name: user.name,
-        userId: user.userId,
-        id: user.id,
-        userRole: user.userRole
-    };
-  } else {
-    return null;
-  }
-};
+// var filterUser = function(user) {
+//   if ( user ) {
+//     return {
+//         name: user.name,
+//         userId: user.userId,
+//         id: user.id,
+//         userRole: user.userRole
+//     };
+//   } else {
+//     return null;
+//   }
+// };
 
-app.post('/login', passport.authenticate('local'), function(req, res){
-      res.send(200, filterUser(req.user));
-});
+// app.post('/login', passport.authenticate('local'), function(req, res){
+//       res.send(200, filterUser(req.user));
+// });
 
-app.get('/authenticated-user', function(req, res) {
-  if (req.isAuthenticated() || disableAuthentication) {
-    res.json(200, disableAuthentication ? filterUser(user) : filterUser(req.user));
-  } else {
-    res.json(401, {msg: 'not authenticated'});
-  }
-});
+// app.get('/authenticated-user', function(req, res) {
+//   if (req.isAuthenticated() || disableAuthentication) {
+//     res.json(200, disableAuthentication ? filterUser(user) : filterUser(req.user));
+//   } else {
+//     res.json(401, {msg: 'not authenticated'});
+//   }
+// });
 
-app.get('/logout', function(req, res){
-  req.logout();
-  res.send(204);
-});
+// app.get('/logout', function(req, res){
+//   req.logout();
+//   res.send(204);
+// });
 
-// global in memory store of current process - remove as soon as possible
-var currentProcess;
+// // global in memory store of current process - remove as soon as possible
+// var currentProcess;
 
-app.post('/process', function(req, res){
-  currentProcess = req.body;
-  currentProcess.lastSaved = new Date();
-  res.send(200, req.body);
-});
+// app.post('/process', function(req, res){
+//   currentProcess = req.body;
+//   currentProcess.lastSaved = new Date();
+//   res.send(200, req.body);
+// });
 
-var kpiRepo = [
-  {
-    name: 'KPI 1',
-    id: 'kpi1',
-    description: 'This is a description of KPI 1'
-  },{
-    name: 'KPI 2',
-    id: 'kpi2',
-    description: 'This is a description of KPI 2'
-  },{
-    name: 'KPI 3',
-    id: 'kpi3',
-    description: 'This is a description of KPI 3'
-  }
-];
+// var kpiRepo = [
+//   {
+//     name: 'KPI 1',
+//     id: 'kpi1',
+//     description: 'This is a description of KPI 1'
+//   },{
+//     name: 'KPI 2',
+//     id: 'kpi2',
+//     description: 'This is a description of KPI 2'
+//   },{
+//     name: 'KPI 3',
+//     id: 'kpi3',
+//     description: 'This is a description of KPI 3'
+//   }
+// ];
 
-app.get('/kpi', function(req, res){
-  res.json(200, kpiRepo);
-});
+// app.get('/kpi', function(req, res){
+//   res.json(200, kpiRepo);
+// });
 
-var moduleRepo = [
-  {
-    name: 'Module 1',
-    id: 'module1',
-    description: 'This is a description of Module 1',
-    useKpis: ['kpi1']
-  },{
-    name: 'Module 2',
-    id: 'module2',
-    description: 'This is a description of Module 2',
-    useKpis: ['kpi2']
-  },{
-    name: 'Module 3',
-    id: 'module3',
-    description: 'This is a description of Module 3',
-    useKpis: ['kpi3']
-  }
-];
+// var moduleRepo = [
+//   {
+//     name: 'Module 1',
+//     id: 'module1',
+//     description: 'This is a description of Module 1',
+//     useKpis: ['kpi1']
+//   },{
+//     name: 'Module 2',
+//     id: 'module2',
+//     description: 'This is a description of Module 2',
+//     useKpis: ['kpi2']
+//   },{
+//     name: 'Module 3',
+//     id: 'module3',
+//     description: 'This is a description of Module 3',
+//     useKpis: ['kpi3']
+//   }
+// ];
 
-app.get('/module/kpi/:kpiId', function(req, res){
-  var kpiId = req.param('kpiId');
-  var foundList = _.filter(moduleRepo, function(module) {
-    return _.find(module.useKpis, function(kpi) {
-      return kpi === kpiId;
-    });
-  }); 
-  res.json(200, foundList);
-});
+// app.get('/module/kpi/:kpiId', function(req, res){
+//   var kpiId = req.param('kpiId');
+//   var foundList = _.filter(moduleRepo, function(module) {
+//     return _.find(module.useKpis, function(kpi) {
+//       return kpi === kpiId;
+//     });
+//   }); 
+//   res.json(200, foundList);
+// });
 
-app.get('/module/:moduleId', function(req, res){
-  var moduleId = req.param('moduleId');
-  var found = _.find(moduleRepo, function(module) {
-    return module.id === moduleId;
-  }); 
-  if(found) {
-    res.json(200, found);
-  } else {
-    res.json(404);
-  }
-});
+// app.get('/module/:moduleId', function(req, res){
+//   var moduleId = req.param('moduleId');
+//   var found = _.find(moduleRepo, function(module) {
+//     return module.id === moduleId;
+//   }); 
+//   if(found) {
+//     res.json(200, found);
+//   } else {
+//     res.json(404);
+//   }
+// });
 
-var currentProcess = {
-  title: 'not saved yet'
-};
+// var currentProcess = {
+//   title: 'not saved yet'
+// };
 
-app.get('/export/ecodist', function(req, res) {
+// app.get('/export/ecodist', function(req, res) {
 
-  var currentProcessTitle = currentProcess.title || 'not named';
+//   var currentProcessTitle = currentProcess.title || 'not named';
 
-  // TODO: handle other types of strange strings
-  currentProcessTitle = currentProcessTitle.split(' ').join('-'); 
+//   // TODO: handle other types of strange strings
+//   currentProcessTitle = currentProcessTitle.split(' ').join('-'); 
 
-  var outputFilename = './tmp/' + currentProcessTitle + '.ecodist';
+//   var outputFilename = './tmp/' + currentProcessTitle + '.ecodist';
 
-  fs.writeFile(outputFilename, JSON.stringify(currentProcess, null, 4), function(err) {
-      if(err) {
-        res.json(500, err);
-      } else {
-        res.json(200, {title: currentProcessTitle});
-      }
-  });
-});
+//   fs.writeFile(outputFilename, JSON.stringify(currentProcess, null, 4), function(err) {
+//       if(err) {
+//         res.json(500, err);
+//       } else {
+//         res.json(200, {title: currentProcessTitle});
+//       }
+//   });
+// });
 
-app.get('/module', function(req, res){
-  res.json(200, moduleRepo);
-});
+// app.get('/module', function(req, res){
+//   res.json(200, moduleRepo);
+// });
 
 app.all('/*', function(req, res) {
   res.sendfile('index.html', { root: distFolder });
@@ -291,4 +291,4 @@ app.all('/*', function(req, res) {
 
 //httpsServer.listen(8443);
 httpServer.listen(process.env.PORT || 3000);
-console.log('Express started on port 3000');
+//console.log('Express started on port 3000');
