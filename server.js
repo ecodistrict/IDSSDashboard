@@ -150,7 +150,7 @@ passport.deserializeUser(function(id, done) {
 // }
 
 var staticUrl = '/static';
-var distFolder = path.resolve(__dirname, './client/build');
+var distFolder = path.resolve(__dirname, '.');
 
 //app.use(staticUrl, express.compress()); // not working in Express 4
 app.use(staticUrl, express.static(distFolder));
