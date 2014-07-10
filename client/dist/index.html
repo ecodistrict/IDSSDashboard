@@ -1,16 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="idss-dashboard" ng-controller="AppCtrl">
   <head>
     <title></title>
     <meta charset="utf-8">
 
+    <link rel="stylesheet" type="text/css" href="static/assets/ol3/ol.css">
+
+    <!-- compiled CSS -->
+    <link rel="stylesheet" type="text/css" href="static/assets/idss-dashboard-0.0.1.css" />
+
+    <!-- compiled JavaScript -->
+    <script type="text/javascript" src="static/assets/idss-dashboard-0.0.1.js"></script>
+
   </head>
   <body>
 
-    <div ui-view="header" id="header">header</div>
+    <div ui-view="header" id="header"></div>
 
 
-    <div ui-view="main" id="main">main</div>
+    <div ui-view="main" id="main"></div>
     
     
   </body>
