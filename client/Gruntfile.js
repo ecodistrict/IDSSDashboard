@@ -125,7 +125,9 @@ module.exports = function ( grunt ) {
             },
             src: [ 
               '<%= vendor_files.javascript %>', 
-              '<%= build_dir %>/src/**/*.js'
+              '<%= build_dir %>/src/**/*.js',
+              '<%= build_dir %>/templates-app.js',
+              '<%= build_dir %>/templates-common.js'
             ],
             dest: '<%= compile_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.js'
           }
