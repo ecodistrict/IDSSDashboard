@@ -3,7 +3,7 @@ module.exports = function ( grunt ) {
     grunt.initConfig({
 
         build_dir: 'build',
-        compile_dir: 'bin',
+        compile_dir: 'dist',
         src_dir: 'src',
         vendor_dir: 'vendor',
 
@@ -167,6 +167,16 @@ module.exports = function ( grunt ) {
                 files: {
                     '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css': '<%= app_files.less %>'
                 }
+            }, 
+            compile: {
+                options: {
+                    paths: ['src/less'],
+                    cleancss: true,
+                    compress: true
+                },
+                files: {
+                    '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css': '<%= app_files.less %>'
+                }
             }
         },
 
@@ -179,6 +189,15 @@ module.exports = function ( grunt ) {
                     '<%= build_dir %>/src/**/*.js',
                     '<%= html2js.common.dest %>',
                     '<%= html2js.app.dest %>',
+                    '<%= vendor_files.stylesheets %>',
+                    '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
+                ]
+            }, 
+
+            compile: {
+                dir: '<%= compile_dir %>',
+                src: [
+                    '<%= concat.compile_js.dest %>',
                     '<%= vendor_files.stylesheets %>',
                     '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
                 ]
@@ -261,6 +280,13 @@ module.exports = function ( grunt ) {
         'copy:from_vendor_assets_to_build',
         'concat:build_css', 
         'index:build'
+    ]);
+    grunt.registerTask( 'compile', [
+        'less:compile', 
+        'copy:from_build_assets_to_compile', 
+        'concat:compile_js', 
+        'uglify', 
+        'index:compile'
     ]);
 
 
