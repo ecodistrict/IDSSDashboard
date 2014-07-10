@@ -12,7 +12,7 @@ var fs = require('fs');
 // var LocalStrategy = require('passport-local').Strategy;
 // //var hash = require('./pass').hash; // use this later for encryption?
 // var bodyParser = require('body-parser');
-// var path = require('path');
+var path = require('path');
 // var session = require('express-session');
 // var disableAuthentication = true;
 
