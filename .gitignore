@@ -28,5 +28,4 @@ build
 bin
 vendor
 
-.gitignore
 .elasticbeanstalk/
