@@ -3,14 +3,12 @@
 	<h3>{{ kpi.name }}</h3>
 </div>
 <div class="modal-body">
-	<h3>Relevant modules</h3>
-	<div ng-show="relevantModules.length === 0">There are no modules registered for this KPI</div>
-	<div ng-repeat="module in relevantModules">
-		{{module.name}}
-	</div>		
-	<a ui-sref="modules">Browse module database</a>
+	<h3>Select module</h3>
+	<select ng-model="kpi.selectedModule" ng-options="module.name for module in relevantModules">
+		<option value="">-- select module --</option>
+	</select>
+	
 </div>	
 <div class="modal-footer">
-	<a class="btn btn-sm btn-danger" ng-click="cancel()" translate>Don't use this KPI</a>
-	<a class="btn btn-primary btn-sm" ng-click="useKPI()">Use this KPI</a>
+	<a class="btn btn-primary btn-sm" ng-click="ok()">Ok</a>
 </div>	

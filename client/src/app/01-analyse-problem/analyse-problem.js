@@ -1,5 +1,7 @@
 angular.module( 'idss-dashboard.analyse-problem', [
-  'idss-dashboard.analyse-problem.manage-kpis'
+  'idss-dashboard.analyse-problem.manage-kpis',
+  'idss-dashboard.analyse-problem.use-kpi',
+  'idss-dashboard.analyse-problem.configure-kpi'
 ])
 
 .config(['$stateProvider', function config( $stateProvider ) {

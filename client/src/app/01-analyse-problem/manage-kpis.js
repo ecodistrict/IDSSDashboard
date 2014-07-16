@@ -43,8 +43,8 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [
       }
     });
 
-    kpiModal.result.then(function (useKPI) {
-      ProcessService.addKpi(angular.copy(useKPI));
+    kpiModal.result.then(function (useKpi) {
+      ProcessService.addKpi(angular.copy(useKpi));
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
     });
@@ -63,8 +63,8 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [
       }
     });
 
-    kpiModal.result.then(function (useKPI) {
-      ProcessService.addKpi(angular.copy(useKPI));
+    kpiModal.result.then(function (configuredKpi) {
+      console.log(configuredKpi);
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
     });

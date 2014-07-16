@@ -1,4 +1,4 @@
-angular.module( 'idss-dashboard')
+angular.module( 'idss-dashboard.analyse-problem.configure-kpi', [])
 
 .controller( 'ConfigureKpiCtrl', ['$scope', '$modalInstance', 'kpi', 'ModuleService' , function ConfigureKpiCtrl( $scope, $modalInstance, kpi, ModuleService ) {
 
@@ -16,7 +16,7 @@ angular.module( 'idss-dashboard')
         $modalInstance.dismiss('cancel');
     };
 
-  	$scope.useKPI = function() {
+  	$scope.ok = function() {
       	$modalInstance.close(kpi);
   	};
 

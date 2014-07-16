@@ -1,4 +1,4 @@
-angular.module( 'idss-dashboard')
+angular.module( 'idss-dashboard.analyse-problem.use-kpi', [])
 
 .controller( 'UseKpiCtrl', ['$scope', '$modalInstance', 'kpi', 'ModuleService' , function UseKpiCtrl( $scope, $modalInstance, kpi, ModuleService ) {
 
