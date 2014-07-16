@@ -10,7 +10,8 @@ angular.module( 'idss-dashboard', [
   'idss-dashboard.user',
   'idss-dashboard.start',
   'idss-dashboard.modules',
-  'idss-dashboard.analyse-problem'
+  'idss-dashboard.analyse-problem',
+  'idss-dashboard.collect-data'
 ])
 
 .constant('AUTH_EVENTS', {

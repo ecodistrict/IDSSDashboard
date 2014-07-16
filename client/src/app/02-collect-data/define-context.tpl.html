@@ -1,0 +1,23 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6">
+        	<h2>Context database</h2>
+            <div ng-repeat="context in contextList" class="context-item" ng-click="useContext(context)">
+            	{{context.name}}
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <h2>Context variables for {{currentProcess.selectedContext.name}}</h2>
+            <div ng-repeat="context in currentProcess.contextList" class="context-item" ng-click="configureKpi(context)">
+            	{{context.name}} <span ng-hide="contextIsConfigured(kpi)" class="glyphicon glyphicon-exclamation-sign"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <form role="form">
+          <div class="form-group">
+            <button class="pull-right btn btn-primary" ui-sref="collect-data">Next</button>
+          </div>
+        </form>
+    </div>
+</div>

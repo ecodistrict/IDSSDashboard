@@ -1,0 +1,17 @@
+<div class="container">
+    <div class="row">
+        
+        <h2>KPI set for this decision process (<a ui-sref="manage-kpis">manage kpis</a>)</h2>
+        <div ng-repeat="kpi in currentProcess.kpiList" class="kpi-item" ng-click="configureKpi(kpi)">
+            {{kpi.name}} <span ng-hide="kpiIndataIsOk(kpi)" class="glyphicon glyphicon-exclamation-sign"></span>
+        </div>
+        
+    </div>
+    <div class="row">
+        <form role="form">
+          <div class="form-group">
+            <button class="pull-right btn btn-primary" ui-sref="manage-kpis">Next</button>
+          </div>
+        </form>
+    </div>
+</div>
