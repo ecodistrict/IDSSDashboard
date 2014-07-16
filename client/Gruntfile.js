@@ -118,6 +118,14 @@ module.exports = function ( grunt ) {
             ],
             dest: '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
           },
+
+          compile_css: {
+            src: [
+              '<%= vendor_files.stylesheets %>',
+              '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
+            ],
+            dest: '<%= compile_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
+          },
         
           compile_js: {
             options: {
@@ -163,16 +171,12 @@ module.exports = function ( grunt ) {
 
         less: {
             build: {
-                options: {
-                    paths: ['src/less'],
-                },
                 files: {
                     '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css': '<%= app_files.less %>'
                 }
             }, 
             compile: {
                 options: {
-                    paths: ['src/less'],
                     cleancss: true,
                     compress: true
                 },
@@ -269,7 +273,7 @@ module.exports = function ( grunt ) {
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-html2js');
 
-    grunt.registerTask('default', ['clean', 'html2js', 'copy', 'concat', 'uglify', 'index']);
+    grunt.registerTask('default', ['build', 'compile']);
     grunt.registerTask('build', [
         'jshint',
         'clean', 
@@ -287,6 +291,7 @@ module.exports = function ( grunt ) {
         'less:compile', 
         'copy:from_build_assets_to_compile', 
         'concat:compile_js', 
+        'concat:compile_css',
         'uglify', 
         'index:compile'
     ]);
