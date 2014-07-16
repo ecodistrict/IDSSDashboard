@@ -9,8 +9,15 @@
         <div class="col-xs-6">
             <h2>KPI set for this decision process</h2>
             <div ng-repeat="kpi in currentProcess.kpiList" class="kpi-item">
-            	{{kpi.name}}
+            	{{kpi.name}} <span ng-hide="kpiIsConfigured(kpi)" class="glyphicon glyphicon-exclamation-sign"></span>
             </div>
         </div>
+    </div>
+    <div ng-show="currentProcess.kpiList.length > 0" class="row">
+        <form role="form">
+          <div class="form-group">
+            <button class="pull-right btn btn-primary" ui-sref="manage-kpis">Next</button>
+          </div>
+        </form>
     </div>
 </div>

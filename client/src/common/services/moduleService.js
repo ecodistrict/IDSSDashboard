@@ -10,7 +10,16 @@ angular.module('idss-dashboard')
             });
     };
 
+    var getAllModules = function() {
+        return $http
+            .get('/module')
+            .then(function (res) {
+                return res.data;
+            });
+    };
+
     return {
-        getModulesFromKpiId: getModulesFromKpiId
+        getModulesFromKpiId: getModulesFromKpiId,
+        getAllModules: getAllModules
     };
 }]);

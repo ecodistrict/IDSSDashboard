@@ -51,5 +51,9 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [
 
   };
 
+  $scope.kpiIsManaged = function(kpi) {
+    return false;
+  };
+
 }]);
 

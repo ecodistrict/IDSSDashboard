@@ -9,6 +9,7 @@ angular.module( 'idss-dashboard', [
   'idss-dashboard.export',
   'idss-dashboard.user',
   'idss-dashboard.start',
+  'idss-dashboard.modules',
   'idss-dashboard.analyse-problem'
 ])
 

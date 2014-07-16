@@ -226,9 +226,9 @@ app.get('/kpi', function(req, res){
 
 var moduleRepo = [
   {
-    name: 'Module 1',
+    name: 'Energy calculation',
     id: 'module1',
-    description: 'This is a description of Module 1',
+    description: 'This is a test module using geometry returned from a geometry module',
     useKpis: ['kpi1']
   },{
     name: 'Module 2',
@@ -263,6 +263,12 @@ app.get('/module/:moduleId', function(req, res){
   } else {
     res.json(404);
   }
+});
+
+app.get('/module', function(req, res){
+
+  res.json(200, moduleRepo);
+  
 });
 
 var currentProcess = {
