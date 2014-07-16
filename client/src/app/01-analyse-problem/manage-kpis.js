@@ -31,11 +31,31 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [
     $scope.kpiList = kpiList;
   });
 
-  $scope.openKpi = function(kpi) {
+  $scope.useKpi = function(kpi) {
 
     var kpiModal = $modal.open({
-      templateUrl: '01-analyse-problem/setup-kpi.tpl.html',
-      controller: 'SetupKpiCtrl',
+      templateUrl: '01-analyse-problem/use-kpi.tpl.html',
+      controller: 'UseKpiCtrl',
+      resolve: {
+        kpi: function() {
+          return kpi;
+        }
+      }
+    });
+
+    kpiModal.result.then(function (useKPI) {
+      ProcessService.addKpi(angular.copy(useKPI));
+    }, function () {
+      console.log('Modal dismissed at: ' + new Date());
+    });
+
+  };
+
+  $scope.configureKpi = function(kpi) {
+
+    var kpiModal = $modal.open({
+      templateUrl: '01-analyse-problem/configure-kpi.tpl.html',
+      controller: 'ConfigureKpiCtrl',
       resolve: {
         kpi: function() {
           return kpi;

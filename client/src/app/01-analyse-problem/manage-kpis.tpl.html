@@ -2,13 +2,13 @@
     <div class="row">
         <div class="col-xs-6">
         	<h2>KPI database</h2>
-            <div ng-repeat="kpi in kpiList" class="kpi-item" ng-click="openKpi(kpi)">
+            <div ng-repeat="kpi in kpiList" class="kpi-item" ng-click="useKpi(kpi)">
             	{{kpi.name}}
             </div>
         </div>
         <div class="col-xs-6">
             <h2>KPI set for this decision process</h2>
-            <div ng-repeat="kpi in currentProcess.kpiList" class="kpi-item">
+            <div ng-repeat="kpi in currentProcess.kpiList" class="kpi-item" ng-click="configureKpi(kpi)">
             	{{kpi.name}} <span ng-hide="kpiIsConfigured(kpi)" class="glyphicon glyphicon-exclamation-sign"></span>
             </div>
         </div>
