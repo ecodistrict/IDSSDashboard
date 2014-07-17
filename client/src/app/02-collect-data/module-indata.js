@@ -8,7 +8,7 @@ angular.module( 'idss-dashboard.collect-data.module-indata', [])
         $modalInstance.dismiss('cancel');
     };
 
-  	$scope.useKPI = function() {
+  	$scope.ok = function() {
       	$modalInstance.close(kpi);
   	};
 

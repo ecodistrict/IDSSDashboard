@@ -4,7 +4,9 @@
 </div>
 <div class="modal-body">
 	<h3>Module indata</h3>
-	<module-indata module="kpi.selectedModule"></module-indata>
+	<div ng-repeat="input in kpi.selectedModule.inputs">
+		<module-indata input="input" />
+	</div>
 </div>	
 <div class="modal-footer">
 	<a class="btn btn-sm btn-danger" ng-click="cancel()">Cancel</a>
