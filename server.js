@@ -224,29 +224,17 @@ app.get('/kpi', function(req, res){
   res.json(200, kpiRepo);
 });
 
+var energyModule = JSON.parse(fs.readFileSync(__dirname + '/data/moduleSample1.json').toString());
+
 var moduleRepo = [
-  {
-    name: 'Energy calculation',
-    id: 'module1',
-    description: 'This is a test module using geometry returned from a geometry module',
-    useKpis: ['kpi1']
-  },{
-    name: 'Module 2',
-    id: 'module2',
-    description: 'This is a description of Module 2',
-    useKpis: ['kpi2']
-  },{
-    name: 'Module 3',
-    id: 'module3',
-    description: 'This is a description of Module 3',
-    useKpis: ['kpi3']
-  }
+  energyModule
 ];
 
 app.get('/module/kpi/:kpiId', function(req, res){
   var kpiId = req.param('kpiId');
   var foundList = _.filter(moduleRepo, function(module) {
-    return _.find(module.useKpis, function(kpi) {
+    console.log(module);
+    return _.find(module.meta.useKpis, function(kpi) {
       return kpi === kpiId;
     });
   }); 
