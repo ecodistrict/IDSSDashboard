@@ -24,7 +24,8 @@ module.exports = function ( grunt ) {
                 '<%= vendor_dir %>/angular-http-auth/src/http-auth-interceptor.js',
                 '<%= vendor_dir %>/bootstrap/dist/js/bootstrap.js',
                 '<%= vendor_dir %>/angular-bootstrap/ui-bootstrap-tpls.js',
-                '<%= vendor_dir %>/angular-ui-router/release/angular-ui-router.js'
+                '<%= vendor_dir %>/angular-ui-router/release/angular-ui-router.js',
+                '<%= vendor_dir %>/angular-file-upload/angular-file-upload.js'
             ],
             stylesheets: [
             ],  

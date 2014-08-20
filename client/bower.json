@@ -8,6 +8,7 @@
     "angular-http-auth": "~1.2.1",
     "angular-bootstrap": "~0.11.0",
     "underscore": "~1.6.0",
-    "angular-tree-control": "~0.2.2"
+    "angular-tree-control": "~0.2.2",
+    "angular-file-upload": "~0.5.7"
   }
 }
