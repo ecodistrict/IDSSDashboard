@@ -2,6 +2,7 @@
     <div class="row">
         
         <h2>KPI set for this decision process (<a ui-sref="manage-kpis">manage kpis</a>)</h2>
+        <div ng-show="!currentProcess.kpiList.length">No kpis are registered</div>
         <div ng-repeat="kpi in currentProcess.kpiList" class="kpi-item" ng-click="configureKpi(kpi)">
             {{kpi.name}} <span ng-hide="kpiIndataIsOk(kpi)" class="glyphicon glyphicon-exclamation-sign"></span>
         </div>

@@ -56,16 +56,19 @@ angular.module('idss-dashboard').directive('districtMap', [function () {
     });
 
     return {
-        restrict: 'E',
+        restrict: 'EA',
         scope: {
             district: "=",
             layer: "="
         },
         link: function(scope, element, attrs) {
 
+            scope.district = scope.district || {};
+            scope.district.properties = scope.district.properties || {};
+
             var viewSettings = {
-                center: scope.district.center || undefined,
-                zoom: scope.district.zoom || 6
+                center: scope.district.properties.center || [1000000, 6600000],
+                zoom: scope.district.properties.zoom || 6
             };  
 
             var map = new ol.Map({
@@ -95,10 +98,11 @@ angular.module('idss-dashboard').directive('districtMap', [function () {
             };
 
             var extractDistrictPropertiesFromFeature = function(feature) {
-                var geometry = feature.getGeometry();
-                scope.district.area = geometry.getArea();
-                scope.district.geometry = geometry.getCoordinates();
-                scope.$apply();
+                console.log(feature);
+                // var geometry = feature.getGeometry();
+                // scope.district.area = geometry.getArea();
+                // scope.district.geometry = geometry.getCoordinates();
+                // scope.$apply();
             };
 
             var addInteraction = function() {
@@ -131,9 +135,18 @@ angular.module('idss-dashboard').directive('districtMap', [function () {
                 map.addInteraction(drawInteraction);
             };
 
+            var addDistrictFeature = function(newDistrict) {
+                // if(currentFeature) {
+                //     featureOverlay.removeFeature(currentFeature);
+                //     currentFeature = undefined;
+                // }
+                var feature = new ol.Feature(new ol.geom.Polygon(newDistrict.geometry.coordinates));
+                featureOverlay.addFeature(feature);
+            };
+
             // TODO: find better way to catch changes on map
             view.on('change:center', function(e) {
-                scope.district.center = e.target.getCenter();
+                scope.district.properties.center = e.target.getCenter();
             });
             // TODO: how to get zoom event?
             // zoomControl.on('change', function(e) {
@@ -155,8 +168,14 @@ angular.module('idss-dashboard').directive('districtMap', [function () {
             // });
 
             scope.$watch('layer', function(newLayer, oldLayer) {
-                if(oldLayer !== newLayer) {
+                if(newLayer !== oldLayer) {
                     changeLayer(newLayer || 'Road');
+                }
+            });
+
+            scope.$watch('district', function(newDistrict, oldDistrict) {
+                if(newDistrict !== oldDistrict) {
+                    addDistrictFeature(newDistrict);
                 }
             });
 

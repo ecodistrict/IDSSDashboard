@@ -9,4 +9,5 @@ angular.module( 'idss-dashboard.header', [
 
   };
 
+
 }]);

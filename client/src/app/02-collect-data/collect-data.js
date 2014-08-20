@@ -1,6 +1,6 @@
 angular.module( 'idss-dashboard.collect-data', [
   'idss-dashboard.collect-data.define-context',
-  'idss-dashboard.collect-data.module-indata'
+  'idss-dashboard.collect-data.module-input'
 ])
 
 .config(['$stateProvider', function config( $stateProvider ) {

@@ -1,7 +1,7 @@
 angular.module('idss-dashboard').directive('moduleIndata', ['$compile', function ($compile) {
 
 	return {
-        restrict: 'E',
+        restrict: 'EA',
         scope: {
             input: "="
         },
@@ -9,11 +9,17 @@ angular.module('idss-dashboard').directive('moduleIndata', ['$compile', function
 
             console.log(scope.input);
 
-        	var templates = {
-        		"aggregation": "<input-aggregation input=\"inputs\" />"
-        	};
+            scope.layerOptions = [
+                {name: "Road", label: "Road"},
+                {name: "Aerial", label: "Aerial"},
+                {name: "AerialWithLabels", label: "Aerial with labels"}
+              ];
 
-        	element.html('').append( $compile( templates[scope.input.type] )( scope ) );
+            scope.layer = scope.layerOptions[0].label;
+
+            var x = angular.element('<div aggregation-map data=\"data\" layer=\"layer\"></div>');
+            element.append(x);
+            $compile(x)(scope);
 
         }
     };

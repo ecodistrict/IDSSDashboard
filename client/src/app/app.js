@@ -4,6 +4,7 @@ angular.module( 'idss-dashboard', [
   'http-auth-interceptor',
   'ui.router',
   'ui.bootstrap',
+  'angularFileUpload',
   'idss-dashboard.header',
   'idss-dashboard.login',
   'idss-dashboard.export',

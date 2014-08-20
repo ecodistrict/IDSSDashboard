@@ -28,7 +28,7 @@ angular.module( 'idss-dashboard.analyse-problem', [
 
   $scope.currentProcess = ProcessService.getCurrentProcess();
 
-  $scope.$watch('currentProcess.district.geometry', function(oldSettings, newSettings) {
+  $scope.$watch('currentProcess.district.geometry.coordinates', function(oldSettings, newSettings) {
     if(oldSettings !== newSettings) {
       ProcessService.setIsModified(true);
     }

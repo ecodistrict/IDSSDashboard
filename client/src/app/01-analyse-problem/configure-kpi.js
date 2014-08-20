@@ -11,14 +11,18 @@ angular.module( 'idss-dashboard.analyse-problem.configure-kpi', [])
   			$scope.relevantModules.push(module);
   		});
   	});
-              
+
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
+        $scope.kpi.selectedModule = angular.copy($scope.kpi.selectedModule);
     };
 
   	$scope.ok = function() {
       	$modalInstance.close(kpi);
+        $scope.kpi.selectedModule = angular.copy($scope.kpi.selectedModule);
   	};
+
+
 
 }]);
 

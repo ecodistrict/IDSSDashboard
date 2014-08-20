@@ -28,7 +28,7 @@ angular.module( 'idss-dashboard.export', [
   $scope.downloadCurrentProcess = function() {
     ExportService.downloadProcessAsEcodistFile($scope.currentProcess).then(function(file) {
       $scope.exportTitle = file.title + '.ecodist';
-      $scope.exportResult = 'static/tmp/' + file.title + '.ecodist';
+      $scope.exportResult = 'export/' + file.title + '.ecodist';
     });
   };
 

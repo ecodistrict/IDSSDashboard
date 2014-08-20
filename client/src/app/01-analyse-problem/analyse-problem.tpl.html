@@ -12,7 +12,7 @@
     </div>
     <div class="row">
         <label>Please define the area of your project: </label>
-        <district-map class="selection-map" district="currentProcess.district" layer="layer"></district-map>
+        <div district-map class="selection-map" district="currentProcess.district" layer="layer"></div>
         <select ng-model="layer" ng-options="l.name as l.label for l in layerOptions">
         </select>
     </div>

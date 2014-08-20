@@ -13,6 +13,29 @@ angular.module('idss-dashboard')
         kpiList: []
     };
 
+    // this function is used to set all properties of the process
+    // used mostly when fetching a saved process from the server
+    // user should always be warned because local data is replaced!
+    var updateProcess = function(newProcessData) {
+        currentProcess.district = newProcessData.district; // remove reference ATT!
+        currentProcess.title = newProcessData.title;
+        currentProcess.kpiList = newProcessData.kpiList;
+    };
+
+    var loadTestProcess = function() {
+        var processFileName = "process_EnergyModuleBuildingFootprintsAdded.json";
+        $http
+            .get('/static/' + processFileName)
+            .then(function (res) {
+                updateProcess(res.data);
+                setIsModified(true); // simulate a change in the process when loading from file
+                return currentProcess;
+            });
+
+    };
+
+    //loadTestProcess();
+
     var saveCurrentProcess = function (credentials) {
         return $http
             .post('/process', currentProcess)
