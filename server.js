@@ -6,7 +6,9 @@ var express = require('express');
 var https = require('https');
 var http = require('http');
 var fs = require('fs');   
-var _ = require('underscore');      
+var _ = require('underscore');  
+var Busboy = require('busboy');  
+var StringDecoder = require('string_decoder').StringDecoder;  
 
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
@@ -15,6 +17,23 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var session = require('express-session');
 var disableAuthentication = true;
+
+// ************* TEST VARIABLES 
+
+var tempUserDbId = 'id from database';
+var user = {
+  name: 'testuser',
+  userId: 'id',
+  id: tempUserDbId,
+  userRole: 'facilitator'
+};
+// global in memory store of current process - remove as soon as possible
+var currentProcess = {
+  title: 'not saved yet'
+};
+
+// *************
+
 
 // var options = {
 //     key:    fs.readFileSync(__dirname + '/cert/server.key').toString(),
@@ -36,7 +55,9 @@ var httpServer = http.createServer(app);
 // middleware
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+  limit: '20mb'
+}));
 
 // TODO: use mongo session store?
 // app.use(session({
@@ -61,14 +82,6 @@ app.use(session({secret: 'secret'}));
 
 app.use(passport.initialize());                             
 app.use(passport.session());
-
-var tempUserDbId = 'id from database';
-var user = {
-  name: 'testuser',
-  userId: 'id',
-  id: tempUserDbId,
-  userRole: 'facilitator'
-};
 
 passport.use(new LocalStrategy(
   function(username, password, done) {
@@ -159,6 +172,9 @@ if(process.env.NODE_ENV === 'production') {
   app.use(staticUrl, express.static(distFolder));
 };
 
+app.use(staticUrl, express.static('./data'));
+app.use('/export', express.static('./export'));
+
 //app.use(staticUrl, express.compress()); // not working in Express 4, use middleware
 //app.use(staticUrl, express.static('.'));
 app.use(staticUrl, function(req, res, next) {
@@ -195,9 +211,6 @@ app.get('/logout', function(req, res){
   res.send(204);
 });
 
-// global in memory store of current process - remove as soon as possible
-var currentProcess;
-
 app.post('/process', function(req, res){
   currentProcess = req.body;
   currentProcess.lastSaved = new Date();
@@ -224,7 +237,7 @@ app.get('/kpi', function(req, res){
   res.json(200, kpiRepo);
 });
 
-var energyModule = JSON.parse(fs.readFileSync(__dirname + '/data/moduleSample1.json').toString());
+var energyModule = JSON.parse(fs.readFileSync(__dirname + '/data/module_Energy.json').toString());
 
 var moduleRepo = [
   energyModule
@@ -233,7 +246,6 @@ var moduleRepo = [
 app.get('/module/kpi/:kpiId', function(req, res){
   var kpiId = req.param('kpiId');
   var foundList = _.filter(moduleRepo, function(module) {
-    console.log(module);
     return _.find(module.meta.useKpis, function(kpi) {
       return kpi === kpiId;
     });
@@ -259,10 +271,6 @@ app.get('/module', function(req, res){
   
 });
 
-var currentProcess = {
-  title: 'not saved yet'
-};
-
 app.get('/export/ecodist', function(req, res) {
 
   var currentProcessTitle = currentProcess.title || 'not named';
@@ -270,7 +278,7 @@ app.get('/export/ecodist', function(req, res) {
   // TODO: handle other types of strange strings
   currentProcessTitle = currentProcessTitle.split(' ').join('-'); 
 
-  var outputFilename = './tmp/' + currentProcessTitle + '.ecodist';
+  var outputFilename = './export/' + currentProcessTitle + '.ecodist';
 
   fs.writeFile(outputFilename, JSON.stringify(currentProcess, null, 4), function(err) {
       if(err) {
@@ -283,6 +291,82 @@ app.get('/export/ecodist', function(req, res) {
 
 app.get('/module', function(req, res){
   res.json(200, moduleRepo);
+});
+
+app.post('/module/import/:kpiId/:moduleId', function(req, res) {
+
+  // TODO: get kpi and module by user id
+
+  var kpiId = req.param('kpiId');
+  var moduleId = req.param('moduleId');
+
+  var module = _.find(currentProcess.kpiList, function(kpi) {
+    if(kpi.id === kpiId) {
+      return kpi.selectedModule; // TODO: kpi should have more than one possible module
+    } else {
+      return false;
+    }
+  });
+
+  var inputId;
+  var inputType;
+
+  var busboy = new Busboy({ headers: req.headers });
+
+  var addInputDataToModule = function(inputs, inputId, data) {
+    var found = false;
+    _.each(inputs, function(input) {
+      if(input.id === inputId) {
+        input.data = data;
+        found = true;
+      }
+      if(input.inputs && !found) {
+        addInputDataToModule(input.inputs, inputId, data);
+      }
+    });
+  };
+
+  // this result is used in 'end' event - for small files this may not be processed yet...!?
+  busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated) {
+    console.log('Field [' + fieldname + ']: value: ' + val);
+    if(fieldname === 'inputId') {
+      inputId = val;
+    } else if (fieldname === 'inputType') {
+      inputType = val;
+    }
+  });
+
+  busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+    // TODO: check file name and validate
+    console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
+    var decoder = new StringDecoder('utf8');
+    var parsedData = '';
+
+    file.on('data', function(data) {
+      var textChunk = decoder.write(data);
+      console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
+      parsedData += textChunk;
+    });
+
+    file.on('end', function() {
+      console.log('File [' + fieldname + '] Finished');
+      if(inputId) {
+        // TODO: create this method on module object
+        parsedData = JSON.parse(parsedData);
+        addInputDataToModule(module, inputId, parsedData);
+        res.json(200, {data: parsedData});
+
+      } else {
+
+        res.json(500, {error: "File upload was aborted due to an import problem with the data type"});
+
+      }
+      
+    });
+  });
+  
+  req.pipe(busboy);
+
 });
 
 app.all('/*', function(req, res) {
