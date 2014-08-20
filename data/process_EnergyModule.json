@@ -1,0 +1,83 @@
+{
+    "district": {
+        "type":"Feature",
+        "geometry":
+        {
+            "type":"Polygon",
+            "coordinates":[[[504023.744039792,6775882.28766316],[501606.423020273,6781247.21173171],[501080.918450813,6781715.38852996],[500421.649081853,6781562.51447339],[500278.329653818,6780998.79138979],[500297.43891089,6780205.75722133],[504023.744039792,6775882.28766316]]]
+        },
+        "properties":
+        {
+            "center": [1000000, 6600000],
+            "area": null
+        }
+    },
+    "title": "Calculate energy in district buildings",
+    "isModified": false,
+    "kpiList": [
+        {
+            "description": "This is a description of KPI 1",
+            "id": "kpi1",
+            "name": "KPI 1",
+            "selectedModule": {
+                "id": "module1",
+                "inputs": [{
+                    "id": "buildings",
+                    "type": "aggregation",
+                    "label": "Building input",
+                    "inputs": [
+                        {
+                            "id": "building-footprints",
+                            "label": "Buildings",
+                            "level": 1,
+                            "type": "MultiPolygon",
+                            "sources": [
+                                {
+                                    "file": {
+                                        "name": "Your file name",
+                                        "size": 1e6
+                                    },
+                                    "progress": 100,
+                                    "isUploaded": true,
+                                    "isSuccess": true
+                                }
+                            ],
+                            "inputs": [
+                                {
+                                    "type": "Number",
+                                    "label": "Height",
+                                    "property": "Height_m"
+                                },
+                                {
+                                    "type": "Number",
+                                    "label": "Area",
+                                    "property": "Area_sqm"
+                                }
+
+                            ]
+                        },
+                        {
+                            "id": "storey-footprints",
+                            "label": "Storeys",
+                            "level": 2,
+                            "type": "MultiPolygon",
+                            "inputs": [
+                                {
+                                    "type": "Text",
+                                    "label": "Storey name",
+                                    "property": "name"
+                                }
+                            ]
+                        }
+                    ]
+                }],
+                "meta": {
+                    "description": "Description about the module",
+                    "useKpis": ["kpi1"]
+                },
+                "name": "Energy module"
+            }
+    
+        }
+    ]
+}

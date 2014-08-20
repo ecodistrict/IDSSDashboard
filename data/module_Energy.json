@@ -1,0 +1,43 @@
+{
+	"name": "Energy module",
+	"id": "module1",
+	"meta": {
+		"description": "Description about the module",
+		"useKpis": ["kpi1"]
+	},
+	"inputs": [{
+		"type": "aggregation",
+		"inputs": [
+			{
+				"label": "Buildings",
+				"level": 1,
+				"type": "MultiPolygon",
+				"inputs": [
+					{
+						"type": "Number",
+						"label": "Height",
+						"property": "Height_m"
+					},
+					{
+						"type": "Number",
+						"label": "Area",
+						"property": "Area_sqm"
+					}
+
+				]
+			},
+			{
+				"label": "Storeys",
+				"level": 2,
+				"type": "MultiPolygon",
+				"inputs": [
+					{
+						"type": "Text",
+						"label": "Storey name",
+						"property": "name"
+					}
+				]
+			}
+		]
+	}]
+}
