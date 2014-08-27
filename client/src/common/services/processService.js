@@ -8,7 +8,7 @@ angular.module('idss-dashboard')
             area: null,
             geometry: []
         },
-        title: "test",
+        title: null,
         isModified: false,
         kpiList: []
     };
