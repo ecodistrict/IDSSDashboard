@@ -56,7 +56,7 @@ angular.module('idss-dashboard').directive('districtMap', [function () {
     });
 
     return {
-        restrict: 'EA',
+        restrict: 'E',
         scope: {
             district: "=",
             layer: "="
@@ -98,11 +98,10 @@ angular.module('idss-dashboard').directive('districtMap', [function () {
             };
 
             var extractDistrictPropertiesFromFeature = function(feature) {
-                console.log(feature);
-                // var geometry = feature.getGeometry();
-                // scope.district.area = geometry.getArea();
-                // scope.district.geometry = geometry.getCoordinates();
-                // scope.$apply();
+                var geometry = feature.getGeometry();
+                scope.district.area = geometry.getArea();
+                scope.district.geometry = geometry.getCoordinates();
+                scope.$apply();
             };
 
             var addInteraction = function() {
@@ -116,8 +115,6 @@ angular.module('idss-dashboard').directive('districtMap', [function () {
                     console.log(e);
                     // TODO: find a better way to look for change on feature
                     currentFeature.on('change', function(e) {
-                        //console.log(e.target.getGeometry().getArea());
-                        //console.log(e.target.getGeometry().getCoordinates());
                         extractDistrictPropertiesFromFeature(e.target);
                     });
                     extractDistrictPropertiesFromFeature(currentFeature);
@@ -147,7 +144,9 @@ angular.module('idss-dashboard').directive('districtMap', [function () {
             // TODO: find better way to catch changes on map
             view.on('change:center', function(e) {
                 scope.district.properties.center = e.target.getCenter();
+                scope.district.properties.zoom = view.getZoom();
             });
+
             // TODO: how to get zoom event?
             // zoomControl.on('change', function(e) {
             //     console.log(e);
