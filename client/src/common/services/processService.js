@@ -4,7 +4,10 @@ angular.module('idss-dashboard')
 
     var currentProcess = {
         district: {
-            center: [1000000, 6600000],
+            properties: {
+                center: null,
+                zoom: null
+            },
             area: null,
             geometry: []
         },
@@ -65,6 +68,7 @@ angular.module('idss-dashboard')
         });
         if(!found) {
             currentProcess.kpiList.push(kpi);
+            setIsModified(true);
         }
     };
 
