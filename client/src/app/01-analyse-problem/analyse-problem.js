@@ -28,11 +28,13 @@ angular.module( 'idss-dashboard.analyse-problem', [
 
   $scope.currentProcess = ProcessService.getCurrentProcess();
 
-  $scope.$watch('currentProcess.district.geometry.coordinates', function(oldSettings, newSettings) {
+  // watch for every change in process, just to set a flag if its changed so it will save itself on page change
+  $scope.$watch('currentProcess', function(oldSettings, newSettings) {
     if(oldSettings !== newSettings) {
+      console.log(oldSettings, newSettings);
       ProcessService.setIsModified(true);
     }
-  });
+  }, true);
 
   $scope.layerOptions = [
     {name: "Road", label: "Road"},
