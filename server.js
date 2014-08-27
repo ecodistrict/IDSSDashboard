@@ -32,6 +32,30 @@ var currentProcess = {
   title: 'not saved yet'
 };
 
+var kpiRepo = [
+  {
+    name: 'KPI 1',
+    id: 'kpi1',
+    description: 'This is a description of KPI 1'
+  },{
+    name: 'KPI 2',
+    id: 'kpi2',
+    description: 'This is a description of KPI 2'
+  },{
+    name: 'KPI 3',
+    id: 'kpi3',
+    description: 'This is a description of KPI 3'
+  }
+];
+
+var energyModule = JSON.parse(fs.readFileSync(__dirname + '/data/modules/module_Energy.json').toString());
+var noiseModule = JSON.parse(fs.readFileSync(__dirname + '/data/modules/module_Noise.json').toString());
+
+var moduleRepo = [
+  energyModule,
+  noiseModule
+];
+
 // *************
 
 
@@ -217,31 +241,9 @@ app.post('/process', function(req, res){
   res.send(200, req.body);
 });
 
-var kpiRepo = [
-  {
-    name: 'KPI 1',
-    id: 'kpi1',
-    description: 'This is a description of KPI 1'
-  },{
-    name: 'KPI 2',
-    id: 'kpi2',
-    description: 'This is a description of KPI 2'
-  },{
-    name: 'KPI 3',
-    id: 'kpi3',
-    description: 'This is a description of KPI 3'
-  }
-];
-
 app.get('/kpi', function(req, res){
   res.json(200, kpiRepo);
 });
-
-var energyModule = JSON.parse(fs.readFileSync(__dirname + '/data/module_Energy.json').toString());
-
-var moduleRepo = [
-  energyModule
-];
 
 app.get('/module/kpi/:kpiId', function(req, res){
   var kpiId = req.param('kpiId');
