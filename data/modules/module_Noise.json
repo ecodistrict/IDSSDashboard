@@ -1,0 +1,23 @@
+{
+	"name": "Noise module",
+	"id": "module2",
+	"meta": {
+		"description": "Description about the module",
+		"useKpis": ["kpi2"]
+	},
+	"inputs": [{
+		"type": "input-group",
+		"inputs": [
+			{
+				"label": "Text",
+				"type": "text",
+				"id": "text1"
+			},
+			{
+				"label": "Check this",
+				"type": "checkbox",
+				"id": "check1"
+			}
+		]
+	}]
+}
