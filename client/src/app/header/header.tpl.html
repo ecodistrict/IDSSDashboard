@@ -17,7 +17,7 @@
             <!-- menu default -->
             <ul ng-show="isAuthenticated" class="nav navbar-nav">
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown">Analyse problem <span class="caret"></span></a>
+                    <a class="dropdown-toggle">Analyse problem <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a ui-sref="analyse-problem">Overview</a></li>
                         <li class="divider"></li>
@@ -28,7 +28,7 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown">Collect data <span class="caret"></span></a>
+                    <a class="dropdown-toggle">Collect data <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a ui-sref="define-context">Define context</a></li>
                         <li class="divider"></li>
@@ -39,7 +39,7 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown">As is <span class="caret"></span></a>
+                    <a class="dropdown-toggle">As is <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a>View 1</a></li>
                         <li><a>View 2</a></li>
@@ -47,7 +47,7 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown">To be <span class="caret"></span></a>
+                    <a class="dropdown-toggle">To be <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a>View 1</a></li>
                         <li><a>View 2</a></li>
@@ -55,7 +55,7 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown">Develop alternatives <span class="caret"></span></a>
+                    <a class="dropdown-toggle">Develop alternatives <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a>Overview</a></li>
                         <li class="divider"></li>
@@ -63,7 +63,7 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown">Assess alternatives <span class="caret"></span></a>
+                    <a class="dropdown-toggle">Assess alternatives <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a>Overview</a></li>
                         <li><a>Export</a></li>
@@ -77,7 +77,7 @@
           
             <ul ng-show="isAuthenticated" class="nav navbar-nav navbar-right">
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span> <b class="caret"></b></a>
+                    <a class="dropdown-toggle"><span class="glyphicon glyphicon-cog"></span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a ui-sref="current-user"><span class="glyphicon glyphicon-user"></span> {{ currentUser.name }}</a></li>
                         <li><a ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
@@ -89,7 +89,7 @@
     <div ng-show="isAuthenticated && currentProcess.title" class="container-fluid sub-menu navbar-inverse">
         <ul class="nav navbar-nav">
             <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown">{{ currentProcess.title }} <span class="caret"></span></a>
+                <a class="dropdown-toggle">{{ currentProcess.title }} <span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
                     <li><a ui-sref="export">Export to file</a></li>
                 </ul>
