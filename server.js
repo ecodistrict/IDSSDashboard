@@ -36,15 +36,18 @@ var kpiRepo = [
   {
     name: 'KPI 1',
     id: 'kpi1',
-    description: 'This is a description of KPI 1'
+    description: 'This is a description of KPI 1',
+    requiredContexts: ['context2']
   },{
     name: 'KPI 2',
     id: 'kpi2',
-    description: 'This is a description of KPI 2'
+    description: 'This is a description of KPI 2',
+    requiredContexts: ['context2']
   },{
     name: 'KPI 3',
     id: 'kpi3',
-    description: 'This is a description of KPI 3'
+    description: 'This is a description of KPI 3',
+    requiredContexts: ['context2']
   }
 ];
 
@@ -55,6 +58,28 @@ var moduleRepo = [
   energyModule,
   noiseModule
 ];
+
+var contextRepo = [
+{
+  name: 'Context 1',
+  id: 'context1',
+  inputs: [
+    {
+      label: 'Text input',
+      type: 'text'
+    }
+  ]
+},
+{
+  name: 'Context 2',
+  id: 'context2',
+  inputs: [
+    {
+      label: 'Text input',
+      type: 'text'
+    }
+  ]
+}];
 
 // *************
 
@@ -369,6 +394,16 @@ app.post('/module/import/:kpiId/:moduleId', function(req, res) {
   
   req.pipe(busboy);
 
+});
+
+app.get('/context', function(req, res){
+  res.json(200, contextRepo);
+});
+
+app.get('/context/list', function(req, res){
+  var contextIds = req.query.ids;
+  console.log(JSON.parse(contextIds));
+  res.json(200, contextRepo);
 });
 
 app.all('/*', function(req, res) {

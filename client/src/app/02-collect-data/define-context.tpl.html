@@ -2,15 +2,15 @@
     <div class="row">
         <div class="col-xs-6">
         	<h2>Context database</h2>
-            <div ng-repeat="context in contextList" class="context-item" ng-click="useContext(context)">
-            	{{context.name}}
+            <div ng-repeat="(id, context) in contextList" class="context-item" ng-click="useContext(context)">
+            	Name: {{context.name}}
+                Required by: 
+                <div ng-repeat="label in context.requiredBy">{{label}}</div>
             </div>
         </div>
         <div class="col-xs-6">
-            <h2>Context variables for {{currentProcess.selectedContext.name}}</h2>
-            <div ng-repeat="context in currentProcess.contextList" class="context-item" ng-click="configureKpi(context)">
-            	{{context.name}} <span ng-hide="contextIsConfigured(kpi)" class="glyphicon glyphicon-exclamation-sign"></span>
-            </div>
+            <h2>Context variables for {{selectedContext.name}}</h2>
+            <p class="explanation-message">[input data for selected context is displayed here]</p>
         </div>
     </div>
     <div class="row">

@@ -21,59 +21,15 @@ angular.module( 'idss-dashboard.collect-data.define-context', [
   });
 }])
 
-.controller( 'DefineContextCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', function DefineContextCtrl( $scope, KpiService, ProcessService, $modal ) {
+.controller( 'DefineContextCtrl', ['$scope', 'KpiService', 'ProcessService', 'ContextService', '$modal', function DefineContextCtrl( $scope, KpiService, ProcessService, ContextService, $modal ) {
 
   $scope.currentProcess = ProcessService.getCurrentProcess();
   console.log($scope.currentProcess);
-  $scope.kpiList = [];
 
-  KpiService.loadKpis().then(function(kpiList) {
-    $scope.kpiList = kpiList;
+  ContextService.getContextFromCurrentProcess($scope.currentProcess).then(function(contextList) {
+    console.log(contextList);
+    $scope.contextList = contextList;
   });
-
-  $scope.useKpi = function(kpi) {
-
-    var kpiModal = $modal.open({
-      templateUrl: '01-analyse-problem/use-kpi.tpl.html',
-      controller: 'UseKpiCtrl',
-      resolve: {
-        kpi: function() {
-          return kpi;
-        }
-      }
-    });
-
-    kpiModal.result.then(function (useKpi) {
-      ProcessService.addKpi(angular.copy(useKpi));
-    }, function () {
-      console.log('Modal dismissed at: ' + new Date());
-    });
-
-  };
-
-  $scope.configureKpi = function(kpi) {
-
-    var kpiModal = $modal.open({
-      templateUrl: '01-analyse-problem/configure-kpi.tpl.html',
-      controller: 'ConfigureKpiCtrl',
-      resolve: {
-        kpi: function() {
-          return kpi;
-        }
-      }
-    });
-
-    kpiModal.result.then(function (configuredKpi) {
-      console.log(configuredKpi);
-    }, function () {
-      console.log('Modal dismissed at: ' + new Date());
-    });
-
-  };
-
-  $scope.kpiIsManaged = function(kpi) {
-    return false;
-  };
 
 }]);
 

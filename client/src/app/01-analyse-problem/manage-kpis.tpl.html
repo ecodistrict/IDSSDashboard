@@ -17,6 +17,9 @@
         <form role="form">
           <div class="form-group">
             <button class="pull-right btn btn-primary" ui-sref="define-context">Next</button>
+            <button ng-show="currentProcess.kpiList.length > 1" class="btn btn-primary pull-right">
+                <span class="glyphicon glyphicon-floppy-disk"></span> Save this KPI set
+            </button>
           </div>
         </form>
     </div>
