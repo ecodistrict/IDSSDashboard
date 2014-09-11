@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="row">
+        
+        <h2>Modules in KPI selection (<a ui-sref="manage-kpis">manage kpis</a>)</h2>
+        <div ng-show="!currentProcess.kpiList.length">No kpis are registered</div>
+        <div ng-repeat="module in moduleList" class="panel panel-primary module-item" ui-sref="{{module.sref}}">
+          <div class="panel-heading">
+            <h3 class="panel-title">{{module.module}} <span ng-hide="moduleIndataIsOk(module)" class="glyphicon glyphicon-exclamation-sign"></span></h3>
+          </div>
+          <div class="panel-body">
+            <div ng-show="variable.requiredBy.length">
+                Required by: {{module.kpi}}
+            </div>
+          </div>
+        </div>
+        
+    </div>
+    <div class="row">
+        <form role="form">
+          <div class="form-group">
+            <button class="pull-right btn btn-primary" ui-sref="manage-kpis">Next</button>
+          </div>
+        </form>
+    </div>
+</div>
