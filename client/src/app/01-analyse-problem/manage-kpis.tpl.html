@@ -1,25 +1,35 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-6">
-        	<h2>KPI database</h2>
-            <div ng-repeat="kpi in kpiList" class="kpi-item" ng-click="useKpi(kpi)">
-            	{{kpi.name}}
+            <h2>KPI database</h2>
+            <div ng-repeat="kpi in kpiList" class="panel panel-default kpi-item" ng-click="useKpi(kpi)">
+              <div class="panel-heading">
+                <h3 class="panel-title">{{kpi.name}}</h3>
+              </div>
+              <div class="panel-body">
+                {{kpi.description}}
+              </div>
             </div>
         </div>
         <div class="col-xs-6">
             <h2>KPI set for this decision process</h2>
-            <div ng-repeat="kpi in currentProcess.kpiList" class="kpi-item" ng-click="configureKpi(kpi)">
-            	{{kpi.name}} <span ng-hide="kpiIsConfigured(kpi)" class="glyphicon glyphicon-exclamation-sign"></span>
+            <div ng-repeat="kpi in currentProcess.kpiList" class="panel panel-success kpi-item" ng-click="configureKpi(kpi)">
+              <div class="panel-heading">
+                <h3 class="panel-title">{{kpi.name}} <span ng-hide="kpiIsConfigured(kpi)" class="glyphicon glyphicon-exclamation-sign"></span></h3>
+              </div>
+              <div class="panel-body">
+                {{kpi.description}}
+              </div>
             </div>
+            <button class="btn btn-primary btn-xs pull-right" ng-show="currentProcess.kpiList.length">
+                <span class="glyphicon glyphicon-floppy-disk"></span> Save this KPI set
+            </button>
         </div>
     </div>
     <div ng-show="currentProcess.kpiList.length > 0" class="row">
         <form role="form">
           <div class="form-group">
             <button class="pull-right btn btn-primary" ui-sref="define-context">Next</button>
-            <button ng-show="currentProcess.kpiList.length > 1" class="btn btn-primary pull-right">
-                <span class="glyphicon glyphicon-floppy-disk"></span> Save this KPI set
-            </button>
           </div>
         </form>
     </div>

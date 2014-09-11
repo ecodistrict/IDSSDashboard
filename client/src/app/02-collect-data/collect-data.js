@@ -26,8 +26,13 @@ angular.module( 'idss-dashboard.collect-data', [
 .controller( 'CollectDataCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', function CollectDataCtrl( $scope, KpiService, ProcessService, $modal ) {
 
   $scope.currentProcess = ProcessService.getCurrentProcess();
+  $scope.moduleList = [];
   console.log($scope.currentProcess);
-  $scope.kpiList = $scope.currentProcess.kpiList;
+  _.each($scope.currentProcess.kpiList, function(kpi) {
+    if(kpi.selectedModule) {
+      $scope.moduleList.push({kpi: kpi.name, module: kpi.selectedModule.name});
+    }
+  });
 
   $scope.configureKpi = function(kpi) {
 
@@ -49,7 +54,7 @@ angular.module( 'idss-dashboard.collect-data', [
 
   };
 
-  $scope.kpiIndataIsOk = function(kpi) {
+  $scope.moduleIndataIsOk = function(module) {
     return false;
   };
 

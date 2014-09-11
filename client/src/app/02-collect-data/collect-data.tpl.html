@@ -1,10 +1,10 @@
 <div class="container">
     <div class="row">
         
-        <h2>KPI set for this decision process (<a ui-sref="manage-kpis">manage kpis</a>)</h2>
+        <h2>Modules in KPI selection (<a ui-sref="manage-kpis">manage kpis</a>)</h2>
         <div ng-show="!currentProcess.kpiList.length">No kpis are registered</div>
-        <div ng-repeat="kpi in currentProcess.kpiList" class="kpi-item" ng-click="configureKpi(kpi)">
-            {{kpi.name}} <span ng-hide="kpiIndataIsOk(kpi)" class="glyphicon glyphicon-exclamation-sign"></span>
+        <div ng-repeat="module in moduleList" class="kpi-item" ui-sref="module.sref">
+            {{module.module}} in {{module.kpi}}<span ng-hide="moduleIndataIsOk(module)" class="glyphicon glyphicon-exclamation-sign"></span>
         </div>
         
     </div>
