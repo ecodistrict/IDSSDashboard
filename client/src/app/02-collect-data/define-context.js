@@ -24,12 +24,15 @@ angular.module( 'idss-dashboard.collect-data.define-context', [
 .controller( 'DefineContextCtrl', ['$scope', 'KpiService', 'ProcessService', 'ContextService', '$modal', function DefineContextCtrl( $scope, KpiService, ProcessService, ContextService, $modal ) {
 
   $scope.currentProcess = ProcessService.getCurrentProcess();
-  console.log($scope.currentProcess);
 
-  ContextService.getContextFromCurrentProcess($scope.currentProcess).then(function(contextList) {
-    console.log(contextList);
-    $scope.contextList = contextList;
+  ContextService.getContextVariables($scope.currentProcess).then(function(contexts) {
+    console.log(contexts);
+    $scope.selectableContextVariables = contexts;
   });
+
+  $scope.useVariable = function(variable) {
+    console.log('add this variable to currentProcess.context.variables');
+  };
 
 }]);
 

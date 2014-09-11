@@ -1,8 +1,22 @@
 <div class="container">
     <div class="row">
-        <div class="col-xs-12">
-        	<h2>Context database</h2>
-            <div ng-repeat="(id, context) in contextList" class="panel panel-info context-item" ng-click="useContext(context)">
+        <div class="col-xs-6">
+        	<h2>Context variable database</h2>
+            <div ng-repeat="variable in selectableContextVariables" class="panel panel-info context-item" ng-click="useVariable(variable)">
+              <div class="panel-heading">
+                <h3 class="panel-title">{{variable.name}}</h3>
+              </div>
+              <div class="panel-body">
+                <div ng-show="variable.requiredBy.length">
+                    Required by: 
+                    <div ng-repeat="label in variable.requiredBy">{{label}}</div>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <h2>Current context</h2>
+            <div ng-repeat="variable in currentProcess.context.variables" class="panel panel-info context-item" ng-click="useContext(context)">
               <div class="panel-heading">
                 <h3 class="panel-title">{{context.name}}</h3>
               </div>

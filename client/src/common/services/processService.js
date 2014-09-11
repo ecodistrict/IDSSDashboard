@@ -13,7 +13,11 @@ angular.module('idss-dashboard')
         },
         title: null,
         isModified: false,
-        requiredContexts: ['context1'],
+        requiredContextVariables: ['context1'],
+        context: {
+            name: '',
+            variables: []
+        },
         kpiList: []
     };
 
