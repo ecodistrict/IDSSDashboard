@@ -1,5 +1,12 @@
 <div class="container">
     <div class="row">
+        <form role="form">
+          <div class="form-group">
+            <button class="btn btn-primary" ui-sref="collect-data"><span class="glyphicon glyphicon-chevron-left"></span> Module list</button>
+          </div>
+        </form>
+    </div>
+    <div class="row">
         <h1 ng-show="module">Input data for module <i>"{{module.name}}"</i></h1>
         <h1 ng-show="!module">No module was found</i></h1>
     </div>
@@ -50,5 +57,13 @@
                 </table>
             </div>
         </div>
+    </div>
+    <div class="row">
+        <form role="form">
+          <div class="form-group">
+            <button class="btn btn-primary pull-right" ui-sref="collect-data"> Next module <span class="glyphicon glyphicon-chevron-right"></span></button>
+            <button class="btn btn-primary pull-left" ui-sref="collect-data"> Previous module <span class="glyphicon glyphicon-chevron-left"></span></button>
+          </div>
+        </form>
     </div>
 </div>
