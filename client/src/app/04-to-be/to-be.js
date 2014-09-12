@@ -1,6 +1,6 @@
 angular.module( 'idss-dashboard.to-be', [
-  'idss-dashboard.to-be.map',
-  'idss-dashboard.to-be.details'
+  // 'idss-dashboard.to-be.map',
+  // 'idss-dashboard.to-be.details'
 ])
 
 .config(['$stateProvider', function config( $stateProvider ) {

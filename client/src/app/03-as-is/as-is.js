@@ -1,10 +1,10 @@
 angular.module( 'idss-dashboard.as-is', [
-  'idss-dashboard.as-is.map',
-  'idss-dashboard.as-is.details'
+  // 'idss-dashboard.as-is.map',
+  // 'idss-dashboard.as-is.details'
 ])
 
 .config(['$stateProvider', function config( $stateProvider ) {
-  $stateProvider.state( 'as-is-overview', {
+  $stateProvider.state( 'as-is', {
     url: '/as-is',
     views: {
       "main": {
@@ -23,9 +23,31 @@ angular.module( 'idss-dashboard.as-is', [
   });
 }])
 
-.controller( 'AsIsController', ['$scope', 'ProcessService', function AsIsController( $scope, ProcessService ) {
+.controller( 'AsIsController', ['$scope', 'ProcessService', '$timeout', function AsIsController( $scope, ProcessService, $timeout ) {
 
   $scope.currentProcess = ProcessService.getCurrentProcess();
+
+  _.each($scope.currentProcess.kpiList, function(kpi) {
+    kpi.selectedModule.isProcessing = true;
+    kpi.selectedModule.status = 'default';
+    $timeout(function() {
+      kpi.selectedModule.isProcessing = false;
+      kpi.selectedModule.status = 'success';
+      $scope.processing = modulesAreProcessing();
+    }, Math.floor(Math.random() * (3000 - 1000)) + 1000);
+  });
+
+  var modulesAreProcessing = function() {
+    var processing = false;
+    _.each($scope.currentProcess.kpiList, function(kpi) {
+      if(kpi.selectedModule.isProcessing) {
+        processing = true;
+      }
+    });
+    return processing;
+  };
+
+  $scope.processing = modulesAreProcessing();
 
   // All calculations needs an indicator to show calculation progress
 
