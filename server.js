@@ -25,13 +25,32 @@ var user = {
   name: 'testuser',
   userId: 'id',
   id: tempUserDbId,
-  userRole: 'facilitator'
+  userRole: 'facilitator',
+  currentProcessId: 1
 };
 // global in memory store of current process - remove as soon as possible
+// this is the process variable that progress is saved on when user tests the gui
 var currentProcess = {
   title: 'not saved yet'
 };
 
+// Temporary process repo
+var processRepo = {
+  processes: [
+    JSON.parse(fs.readFileSync(__dirname + '/data/processes/process1.ecodist').toString())
+  ],
+  findById: function(id, cb) {
+    var found = null;
+    _.each(this.processes, function(process) {
+      if(process.id === id) {
+        found = process;
+      }
+    });
+    cb(null, found);
+  }
+}
+
+// Temporary Kpi repo
 var kpiRepo = [
   {
     name: 'KPI 1',
@@ -236,7 +255,8 @@ var filterUser = function(user) {
         name: user.name,
         userId: user.userId,
         id: user.id,
-        userRole: user.userRole
+        userRole: user.userRole,
+        currentProcessId: user.currentProcessId
     };
   } else {
     return null;
@@ -258,6 +278,28 @@ app.get('/authenticated-user', function(req, res) {
 app.get('/logout', function(req, res){
   req.logout();
   res.send(204);
+});
+
+app.get('/process', function(req, res){
+  if(req.isAuthenticated() || disableAuthentication) {
+    // TODO: user req.user!!!
+    if(user.currentProcessId){
+      processRepo.findById(user.currentProcessId, function(err, currentProcess) {
+        if(err) {
+          res.status(500).json({message: "Internal Server Error"});
+        } else if(!currentProcess) {
+          res.status(404).json({message: "Process not found"});
+        } else {
+          res.status(200).json(currentProcess);
+        }
+      });
+
+    } else {
+      res.status(200).json({message: "No current process"});
+    }
+  } else {
+    res.status(401).json({message: "Not authenticated"});
+  }
 });
 
 app.post('/process', function(req, res){
