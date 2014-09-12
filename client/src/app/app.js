@@ -12,7 +12,9 @@ angular.module( 'idss-dashboard', [
   'idss-dashboard.start',
   'idss-dashboard.modules',
   'idss-dashboard.analyse-problem',
-  'idss-dashboard.collect-data'
+  'idss-dashboard.collect-data',
+  'idss-dashboard.as-is',
+  'idss-dashboard.to-be'
 ])
 
 .constant('AUTH_EVENTS', {
@@ -39,8 +41,14 @@ angular.module( 'idss-dashboard', [
     var init = function(user) {
       $scope.isAuthenticated = LoginService.isAuthenticated();
       $scope.currentUser = user;
-
       $scope.currentProcess = ProcessService.getCurrentProcess();
+
+      // load current process
+      ProcessService.loadCurrentProcess().then(function(currentProcess) {
+        if(currentProcess) {
+          $scope.currentProcess = currentProcess;
+        } 
+      });
 
       $rootScope.$on('$stateChangeStart', function (event, next) {
           var authorizedRoles = next.data.authorizedRoles;
