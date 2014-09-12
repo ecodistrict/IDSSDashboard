@@ -1,0 +1,96 @@
+{
+    "id": 1,
+    "district": {
+        "properties": {
+            "center": [
+                504657.3384287987,
+                6778454.486257823
+            ],
+            "zoom": 13
+        },
+        "area": 1758810.9892578125,
+        "geometry": [
+            [
+                [
+                    498255.7373099152,
+                    6780789.637413618
+                ],
+                [
+                    500395.9741019001,
+                    6781611.335467683
+                ],
+                [
+                    500147.55375997326,
+                    6779872.393074196
+                ],
+                [
+                    498255.7373099152,
+                    6780789.637413618
+                ]
+            ]
+        ]
+    },
+    "title": "My test process",
+    "isModified": true,
+    "requiredContextVariables": [
+        "context1"
+    ],
+    "contextList": [],
+    "kpiList": [
+        {
+            "name": "KPI 1",
+            "id": "kpi1",
+            "description": "This is a description of KPI 1",
+            "requiredContexts": [
+                "context2"
+            ],
+            "selectedModule": {
+                "name": "Energy module",
+                "id": "module1",
+                "meta": {
+                    "description": "Description about the module",
+                    "useKpis": [
+                        "kpi1"
+                    ]
+                },
+                "inputs": [
+                    {
+                        "type": "aggregation",
+                        "inputs": [
+                            {
+                                "label": "Buildings",
+                                "level": 1,
+                                "type": "MultiPolygon",
+                                "inputs": [
+                                    {
+                                        "type": "Number",
+                                        "label": "Height",
+                                        "property": "Height_m"
+                                    },
+                                    {
+                                        "type": "Number",
+                                        "label": "Area",
+                                        "property": "Area_sqm"
+                                    }
+                                ]
+                            },
+                            {
+                                "label": "Storeys",
+                                "level": 2,
+                                "type": "MultiPolygon",
+                                "inputs": [
+                                    {
+                                        "type": "Text",
+                                        "label": "Storey name",
+                                        "property": "name"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "lastSaved": "2014-09-12T11:44:47.614Z"
+}
