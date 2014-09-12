@@ -14,10 +14,7 @@ angular.module('idss-dashboard')
         title: null,
         isModified: false,
         requiredContextVariables: ['context1'],
-        context: {
-            name: '',
-            variables: []
-        },
+        contextList: [],
         kpiList: []
     };
 
@@ -37,6 +34,19 @@ angular.module('idss-dashboard')
             .then(function (res) {
                 updateProcess(res.data);
                 setIsModified(true); // simulate a change in the process when loading from file
+                return currentProcess;
+            });
+
+    };
+
+    var loadCurrentProcess = function() {
+        return $http
+            .get('/process')
+            .then(function (res) {
+                var process = res.data;
+                if(process) {
+                    updateProcess(res.data);
+                }
                 return currentProcess;
             });
 
@@ -80,6 +90,7 @@ angular.module('idss-dashboard')
     return {
         saveCurrentProcess: saveCurrentProcess,
         getCurrentProcess: getCurrentProcess,
+        loadCurrentProcess: loadCurrentProcess,
         getIsModified: getIsModified,
         setIsModified: setIsModified,
         addKpi: addKpi
