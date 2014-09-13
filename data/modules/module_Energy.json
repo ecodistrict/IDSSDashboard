@@ -1,10 +1,8 @@
 {
 	"name": "Energy module",
 	"id": "module1",
-	"meta": {
-		"description": "Description about the module",
-		"useKpis": ["kpi1"]
-	},
+	"description": "Description about the module",
+	"useKpis": ["kpi1"],
 	"inputs": [{
 		"type": "aggregation",
 		"inputs": [
