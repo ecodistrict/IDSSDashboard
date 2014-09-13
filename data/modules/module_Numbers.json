@@ -1,0 +1,40 @@
+{
+	"name": "Numbers testing",
+	"id": "numbersmodule",
+	"description": "This module tests some different number inputs and returns a pie chart",
+	"useKpis": ["kpi2"],
+	"inputs": [{
+		"type": "input-group",
+		"inputs": [
+			{
+				"label": "Integer between 50 and 100",
+				"type": "number",
+				"id": "int1",
+				"unit": "m",
+				"min": 50,
+				"max": 100
+			},
+			{
+				"label": "Positive float number with two digits",
+				"type": "number",
+				"min": 0,
+				"unit": "m",
+				"digits": 2,
+				"id": "check1"
+			}
+		]
+	}],
+	"outputs": [{
+		"type": "piechart",
+		"data": [
+			{
+				"label": "Integer between 50 and 100",
+				"value": 60
+			},
+			{
+				"letter": "Positive float number with two digits",
+				"value": 40.55
+			}
+		]
+	}]
+}
