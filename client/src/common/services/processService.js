@@ -78,11 +78,20 @@ angular.module('idss-dashboard')
     };
 
     var addKpi = function(kpi) {
+        // only add if not already exists
         var found = _.find(currentProcess.kpiList, function(item) {
             return kpi.id === item.id;
         });
         if(!found) {
             currentProcess.kpiList.push(kpi);
+            setIsModified(true);
+        }
+    };
+
+    var removeKpi = function(kpi) {
+        var index = _.indexOf(currentProcess.kpiList, kpi);
+        if(index) {
+            currentProcess.kpiList.splice(index, 1);
             setIsModified(true);
         }
     };
@@ -93,6 +102,7 @@ angular.module('idss-dashboard')
         loadCurrentProcess: loadCurrentProcess,
         getIsModified: getIsModified,
         setIsModified: setIsModified,
-        addKpi: addKpi
+        addKpi: addKpi,
+        removeKpi: removeKpi
     };
 }]);
