@@ -23,6 +23,7 @@ var disableAuthentication = true;
 var Process = {
   title: '',
   isModified: false,
+  description: '',
   requiredContextVariables: [],
   district: {
     properties: {},
@@ -352,7 +353,7 @@ app.post('/process/upload', function(req, res){
       parsedData = JSON.parse(parsedData);
 
       // TODO: check if this is a valid process
-      
+
       res.json(200, parsedData);
       
     });
