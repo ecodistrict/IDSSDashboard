@@ -25,6 +25,9 @@ angular.module('idss-dashboard')
         currentProcess.district = newProcessData.district; // remove reference ATT!
         currentProcess.title = newProcessData.title;
         currentProcess.kpiList = newProcessData.kpiList;
+        currentProcess.contextList = newProcessData.contextList;
+        currentProcess.description = newProcessData.description;
+        currentProcess.requiredContextVariables = newProcessData.requiredContextVariables;
     };
 
     var loadTestProcess = function() {
@@ -54,7 +57,7 @@ angular.module('idss-dashboard')
 
     //loadTestProcess();
 
-    var saveCurrentProcess = function (credentials) {
+    var saveCurrentProcess = function () {
         return $http
             .post('/process', currentProcess)
             .then(function (res) {
@@ -115,6 +118,7 @@ angular.module('idss-dashboard')
         createNewProcess: createNewProcess,
         getIsModified: getIsModified,
         setIsModified: setIsModified,
+        updateProcess: updateProcess,
         addKpi: addKpi,
         removeKpi: removeKpi
     };
