@@ -330,6 +330,38 @@ app.post('/process', function(req, res){
   res.status(200).json(req.body);
 });
 
+app.post('/process/upload', function(req, res){
+
+  var busboy = new Busboy({ headers: req.headers });
+
+  busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+    // TODO: check file name and validate
+    console.log('File [' + fieldname + ']: filename: ' + filename + ', encoding: ' + encoding + ', mimetype: ' + mimetype);
+    var decoder = new StringDecoder('utf8');
+    var parsedData = '';
+
+    file.on('data', function(data) {
+      var textChunk = decoder.write(data);
+      console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
+      parsedData += textChunk;
+    });
+
+    file.on('end', function() {
+      console.log('File [' + fieldname + '] Finished');
+      
+      parsedData = JSON.parse(parsedData);
+
+      // TODO: check if this is a valid process
+      
+      res.json(200, parsedData);
+      
+    });
+  });
+  
+  req.pipe(busboy);
+
+});
+
 app.put('/process', function(req, res) {
   currentProcess = {};
   _.extend(currentProcess, Process);
