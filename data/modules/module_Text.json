@@ -2,7 +2,7 @@
 	"name": "Text module",
 	"id": "textmodule",
 	"description": "This module takes a text string and returns a bar chart of letter index",
-	"useKpis": ["kpi2"],
+	"useKpis": ["kpi1"],
 	"inputs": [{
 		"type": "input-group",
 		"inputs": [

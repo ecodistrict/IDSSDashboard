@@ -55,17 +55,17 @@ var kpiRepo = [
   {
     name: 'KPI 1',
     id: 'kpi1',
-    description: 'This is a description of KPI 1',
+    description: 'Text module uses this KPI (The KPI normally dont know this..)',
     requiredContexts: ['context2']
   },{
     name: 'KPI 2',
     id: 'kpi2',
-    description: 'This is a description of KPI 2',
+    description: 'Number module uses this KPI (The KPI normally dont know this..)',
     requiredContexts: ['context2']
   },{
     name: 'KPI 3',
     id: 'kpi3',
-    description: 'This is a description of KPI 3',
+    description: 'File upload module uses this KPI (The KPI normally dont know this..)',
     requiredContexts: ['context2']
   }
 ];

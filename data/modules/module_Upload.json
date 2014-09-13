@@ -2,7 +2,7 @@
 	"name": "Upload module",
 	"id": "uploadmodule",
 	"description": "This module takes a GeoJSON file as input",
-	"useKpis": ["kpi2"],
+	"useKpis": ["kpi3"],
 	"inputs": [{
 		"type": "file",
 		"label": "Upload GeoJSON file",
