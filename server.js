@@ -48,7 +48,7 @@ var processRepo = {
     });
     cb(null, found);
   }
-}
+};
 
 // Temporary Kpi repo
 var kpiRepo = [
@@ -72,10 +72,18 @@ var kpiRepo = [
 
 var energyModule = JSON.parse(fs.readFileSync(__dirname + '/data/modules/module_Energy.json').toString());
 var noiseModule = JSON.parse(fs.readFileSync(__dirname + '/data/modules/module_Noise.json').toString());
+var textModule = JSON.parse(fs.readFileSync(__dirname + '/data/modules/module_Text.json').toString());
+var numbersModule = JSON.parse(fs.readFileSync(__dirname + '/data/modules/module_Numbers.json').toString());
+var uploadModule = JSON.parse(fs.readFileSync(__dirname + '/data/modules/module_Upload.json').toString());
+
+
 
 var moduleRepo = [
   energyModule,
-  noiseModule
+  noiseModule,
+  textModule,
+  numbersModule,
+  uploadModule
 ];
 
 var contextRepo = [
@@ -315,7 +323,7 @@ app.get('/kpi', function(req, res){
 app.get('/module/kpi/:kpiId', function(req, res){
   var kpiId = req.param('kpiId');
   var foundList = _.filter(moduleRepo, function(module) {
-    return _.find(module.meta.useKpis, function(kpi) {
+    return _.find(module.useKpis, function(kpi) {
       return kpi === kpiId;
     });
   }); 
