@@ -1,5 +1,5 @@
 angular.module( 'idss-dashboard.start', [
-  'ui.router'
+  'idss-dashboard.start.upload'
 ])
 
 .config(['$stateProvider', function config( $stateProvider ) {
@@ -15,14 +15,22 @@ angular.module( 'idss-dashboard.start', [
         templateUrl: 'header/header.tpl.html' 
       }
     },
-    data:{ pageTitle: 'Start' },
-    authorizedRoles: ['*']
+    data:{ 
+      pageTitle: 'Start',
+      authorizedRoles: ['*']
+    }
   });
 }])
 
-.controller( 'StartCtrl', ['$scope', function StartCtrl( $scope ) {
+.controller( 'StartCtrl', ['$scope', 'ProcessService', '$state', function StartCtrl( $scope, ProcessService, $state ) {
   
   console.log('start ctrl');
+
+  $scope.startNewProcess = function() {
+    ProcessService.createNewProcess().then(function() {
+      $state.transitionTo('analyse-problem');
+    });
+  };
 
 }]);
 
