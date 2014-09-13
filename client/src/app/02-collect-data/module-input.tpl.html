@@ -11,7 +11,11 @@
         <h1 ng-show="!module">No module was found</i></h1>
     </div>
     <div class="row">
-        <div ng-repeat="input in module.inputs">
+        <module-input inputs="module.inputs"></module-input>
+        <!-- <div ng-repeat="input in module.inputs">
+
+            <div ng-if="input.type == 'text'">
+            </div>
             <div ng-if="input.type == 'aggregation'">
                 <h3>{{input.label}}</h3>
                 <div id="inputAggregationMenu">Properties menu</div>
@@ -56,13 +60,13 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div> -->
     </div>
     <div class="row">
         <form role="form">
           <div class="form-group">
             <button class="btn btn-primary pull-right" ui-sref="collect-data"> Next module <span class="glyphicon glyphicon-chevron-right"></span></button>
-            <button class="btn btn-primary pull-left" ui-sref="collect-data"> Previous module <span class="glyphicon glyphicon-chevron-left"></span></button>
+            <button class="btn btn-primary pull-left" ui-sref="collect-data"><span class="glyphicon glyphicon-chevron-left"></span> Previous module</button>
           </div>
         </form>
     </div>
