@@ -65,6 +65,18 @@ angular.module('idss-dashboard')
             });
     };
 
+    var createNewProcess = function() {
+        return $http
+            .put('/process')
+            .then(function (res) {
+                var process = res.data;
+                if(process) {
+                    updateProcess(res.data);
+                }
+                return currentProcess;
+            });
+    };
+
     var getCurrentProcess = function() {
         return currentProcess;
     };
@@ -100,6 +112,7 @@ angular.module('idss-dashboard')
         saveCurrentProcess: saveCurrentProcess,
         getCurrentProcess: getCurrentProcess,
         loadCurrentProcess: loadCurrentProcess,
+        createNewProcess: createNewProcess,
         getIsModified: getIsModified,
         setIsModified: setIsModified,
         addKpi: addKpi,

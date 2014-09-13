@@ -20,13 +20,26 @@ var disableAuthentication = true;
 
 // ************* TEST VARIABLES 
 
+var Process = {
+  title: '',
+  isModified: false,
+  requiredContextVariables: [],
+  district: {
+    properties: {},
+    area: null,
+    geometry: []
+  },
+  kpiList: [],
+  contextList: []
+};
+
 var tempUserDbId = 'id from database';
 var user = {
   name: 'testuser',
   userId: 'id',
   id: tempUserDbId,
   userRole: 'facilitator',
-  currentProcessId: 1
+  currentProcessId: 2
 };
 // global in memory store of current process - remove as soon as possible
 // this is the process variable that progress is saved on when user tests the gui
@@ -37,7 +50,8 @@ var currentProcess = {
 // Temporary process repo
 var processRepo = {
   processes: [
-    JSON.parse(fs.readFileSync(__dirname + '/data/processes/process1.ecodist').toString())
+    JSON.parse(fs.readFileSync(__dirname + '/data/processes/process1.ecodist').toString()),
+    JSON.parse(fs.readFileSync(__dirname + '/data/processes/Test-modules.ecodist').toString())
   ],
   findById: function(id, cb) {
     var found = null;
@@ -313,7 +327,13 @@ app.get('/process', function(req, res){
 app.post('/process', function(req, res){
   currentProcess = req.body;
   currentProcess.lastSaved = new Date();
-  res.send(200, req.body);
+  res.status(200).json(req.body);
+});
+
+app.put('/process', function(req, res) {
+  currentProcess = {};
+  _.extend(currentProcess, Process);
+  res.status(200).json(currentProcess);
 });
 
 app.get('/kpi', function(req, res){
