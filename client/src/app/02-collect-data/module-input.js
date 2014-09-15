@@ -1,5 +1,4 @@
-angular.module( 'idss-dashboard.collect-data.module-input', [
-])
+angular.module( 'idss-dashboard.collect-data.module-input', [])
 
 .config(['$stateProvider', function config( $stateProvider ) {
   $stateProvider.state( 'module-input', {

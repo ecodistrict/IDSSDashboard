@@ -22,8 +22,8 @@
                         <li><a ui-sref="analyse-problem">Overview</a></li>
                         <li class="divider"></li>
                         <li><a ui-sref="manage-kpis">Select KPIs</a></li>
-                        <li ng-repeat="kpi in currentProcess.kpiList">
-                            <a ui-sref="kpi/{{kpi.id}}"><i>- {{kpi.name}}</i></a>
+                        <li class="submenu-item" ng-repeat="kpi in currentProcess.kpiList">
+                            <a ui-sref="kpi-input({kpiId: kpi.id})">- {{kpi.name}}</a>
                         </li>
                     </ul>
                 </li>
@@ -34,7 +34,7 @@
                         <li class="divider"></li>
                         <li><a ui-sref="collect-data">Module input</a></li>
                         <li ng-repeat="kpi in currentProcess.kpiList">
-                            <a ng-if="kpi.selectedModule" ui-sref="module-input({kpiId: kpi.id,moduleId: kpi.selectedModule.id})"><i>- {{kpi.selectedModule.name}}</i></a>
+                            <a ng-if="kpi.selectedModule" ui-sref="module-input({kpiId: kpi.id,moduleId: kpi.selectedModule.id})">- {{kpi.selectedModule.name}}</a>
                         </li>
                     </ul>
                 </li>
