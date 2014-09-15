@@ -1,0 +1,24 @@
+<div class="container">
+    <div class="row">
+        <form role="form">
+          <div class="form-group">
+            <button class="btn btn-primary" ui-sref="manage-kpis"><span class="glyphicon glyphicon-chevron-left"></span> Kpi list</button>
+          </div>
+        </form>
+    </div>
+    <div class="row">
+        <h1 ng-show="kpi">Input data for kpi <i>"{{kpi.name}}"</i></h1>
+        <h1 ng-show="!kpi">No kpi was found</i></h1>
+    </div>
+    <div class="row">
+        <kpi-input inputs="kpi.inputs"></kpi-input>
+    </div>
+    <div class="row">
+        <form role="form">
+          <div class="form-group">
+            <button class="btn btn-primary pull-right" ui-sref="manage-kpis"> Next kpi <span class="glyphicon glyphicon-chevron-right"></span></button>
+            <button class="btn btn-primary pull-left" ui-sref="manage-kpis"><span class="glyphicon glyphicon-chevron-left"></span> Previous kpi</button>
+          </div>
+        </form>
+    </div>
+</div>
