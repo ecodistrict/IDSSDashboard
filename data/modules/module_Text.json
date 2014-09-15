@@ -5,6 +5,7 @@
 	"useKpis": ["kpi1"],
 	"inputs": [{
 		"type": "input-group",
+		"label": "Input group",
 		"inputs": [
 			{
 				"label": "Text to analyse",

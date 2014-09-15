@@ -5,6 +5,7 @@
 	"useKpis": ["kpi2"],
 	"inputs": [{
 		"type": "input-group",
+		"label": "Input Group",
 		"inputs": [
 			{
 				"label": "Integer between 50 and 100",

@@ -91,8 +91,6 @@ var textModule = JSON.parse(fs.readFileSync(__dirname + '/data/modules/module_Te
 var numbersModule = JSON.parse(fs.readFileSync(__dirname + '/data/modules/module_Numbers.json').toString());
 var uploadModule = JSON.parse(fs.readFileSync(__dirname + '/data/modules/module_Upload.json').toString());
 
-
-
 var moduleRepo = [
   energyModule,
   noiseModule,
