@@ -29,6 +29,7 @@
                 "inputs": [
                     {
                         "type": "input-group",
+                        "label": "Input group",
                         "inputs": [
                             {
                                 "label": "Text to analyse",
@@ -84,6 +85,7 @@
                 "inputs": [
                     {
                         "type": "input-group",
+                        "label": "Input group",
                         "inputs": [
                             {
                                 "label": "Integer between 50 and 100",
