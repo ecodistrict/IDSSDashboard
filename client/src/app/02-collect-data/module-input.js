@@ -27,6 +27,11 @@ angular.module( 'idss-dashboard.collect-data.module-input', [])
     return;
   }
 
+  // TODO: this is module input from modules stored (copied) to users process. 
+  // If the module input format will change from the module spec 
+  // - THE MODULE INDATA SPEC IN PROCESS NEED TO BE UPDATED
+  // Create a test somehow to check if the module original spec has been updated
+
   var currentProcess = ProcessService.getCurrentProcess();
 
   var kpi = _.find(currentProcess.kpiList, function(kpi) {
@@ -47,6 +52,7 @@ angular.module( 'idss-dashboard.collect-data.module-input', [])
   console.log(module);
 
   $scope.module = module;
+  //$scope.moduleInputData = module.inputs;
 
   // after data is uploaded - add data to module
   var addInputDataToModule = function(inputs, inputId, data) {
