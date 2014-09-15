@@ -1,8 +1,11 @@
-<!-- <form class="form-inline" role="form"> -->
-  <div class="form-group">
+<form class="form-horizontal" role="form">
+<div class="form-group">
+  <label for="input.id" class="col-sm-4 control-label">{{input.label}}</label>
+  <div class="col-sm-8">
     <div class="input-group">
-      <input ng-model="input.value" class="form-control" type="number">
+      <input ng-model="input.value" id="input.id" class="form-control text-right" type="number">
       <div class="input-group-addon">{{input.unit}}</div>
     </div>
   </div>
-<!-- </form> -->
+</div>
+</form>
