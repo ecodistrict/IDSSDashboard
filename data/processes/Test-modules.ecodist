@@ -46,22 +46,70 @@
                 ],
                 "outputs": [
                     {
-                        "type": "barchart",
-                        "labels": {
-                            "y": "Point"
+                        "id": "output1",
+                        "type": "nvd3",
+                        "options": {
+                            "chart": {
+                                "type": "discreteBarChart",
+                                "height": 300,
+                                "width": 600,
+                                "margin" : {
+                                    "top": 20,
+                                    "right": 20,
+                                    "bottom": 60,
+                                    "left": 55
+                                },
+                                "x": "label",
+                                "y": "value",
+                                "showValues": true,
+                                "valueFormat": ",.4f",
+                                "transitionDuration": 500,
+                                "xAxis": {
+                                    "axisLabel": "X Axis"
+                                },
+                                "yAxis": {
+                                    "axisLabel": "Y Axis",
+                                    "axisLabelDistance": 30
+                                }
+                            }
                         },
                         "data": [
                             {
-                                "letter": "A",
-                                "value": 1
-                            },
-                            {
-                                "letter": "B",
-                                "value": 2
-                            },
-                            {
-                                "letter": "C",
-                                "value": 3
+                                "key": "Cumulative Return",
+                                "values": [
+                                    {
+                                        "label" : "A" ,
+                                        "value" : -29.765957771107
+                                    } ,
+                                    {
+                                        "label" : "B" ,
+                                        "value" : 0
+                                    } ,
+                                    {
+                                        "label" : "C" ,
+                                        "value" : 32.807804682612
+                                    } ,
+                                    {
+                                        "label" : "D" ,
+                                        "value" : 196.45946739256
+                                    } ,
+                                    {
+                                        "label" : "E" ,
+                                        "value" : 0.19434030906893
+                                    } ,
+                                    {
+                                        "label" : "F" ,
+                                        "value" : -98.079782601442
+                                    } ,
+                                    {
+                                        "label" : "G" ,
+                                        "value" : -13.925743130903
+                                    } ,
+                                    {
+                                        "label" : "H" ,
+                                        "value" : -5.1387322875705
+                                    }
+                                ]
                             }
                         ]
                     }
@@ -108,15 +156,56 @@
                 ],
                 "outputs": [
                     {
-                        "type": "piechart",
+                        "id": "output2",
+                        "type": "nvd3",
+                        "options": {
+                            "chart": {
+                                "type": "pieChart",
+                                "height": 300,
+                                "width": 600,
+                                "x": "key",
+                                "y": "y",
+                                "showLabels": true,
+                                "transitionDuration": 500,
+                                "labelThreshold": 0.01,
+                                "legend": {
+                                    "margin": {
+                                        "top": 5,
+                                        "right": 35,
+                                        "bottom": 5,
+                                        "left": 0
+                                    }
+                                }
+                            }
+                        },
                         "data": [
                             {
-                                "label": "Integer between 50 and 100",
-                                "value": 60
+                                "key": "One",
+                                "y": 5
                             },
                             {
-                                "letter": "Positive float number with two digits",
-                                "value": 40.55
+                                "key": "Two",
+                                "y": 2
+                            },
+                            {
+                                "key": "Three",
+                                "y": 9
+                            },
+                            {
+                                "key": "Four",
+                                "y": 7
+                            },
+                            {
+                                "key": "Five",
+                                "y": 4
+                            },
+                            {
+                                "key": "Six",
+                                "y": 3
+                            },
+                            {
+                                "key": "Seven",
+                                "y": 0.5
                             }
                         ]
                     }
@@ -139,7 +228,7 @@
                 ],
                 "inputs": [
                     {
-                        "type": "file",
+                        "type": "geojson",
                         "label": "Upload GeoJSON file",
                         "id": "file1"
                     }
