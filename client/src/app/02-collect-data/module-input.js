@@ -58,12 +58,13 @@ angular.module( 'idss-dashboard.collect-data.module-input', [])
       if(input.inputs) {
         setTemplateUrl(input.inputs);
       }
-    }); 
+    });
   };
 
   setTemplateUrl(module.inputs);
 
   $scope.module = module;
+  $scope.kpiId = kpi.id;
 
 }]);
 
