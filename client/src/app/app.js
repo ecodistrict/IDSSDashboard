@@ -5,6 +5,7 @@ angular.module( 'idss-dashboard', [
   'ui.router',
   'ui.bootstrap',
   'angularFileUpload',
+  'nvd3',
   'idss-dashboard.header',
   'idss-dashboard.login',
   'idss-dashboard.export',

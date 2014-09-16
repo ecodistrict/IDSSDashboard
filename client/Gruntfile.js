@@ -25,9 +25,13 @@ module.exports = function ( grunt ) {
                 '<%= vendor_dir %>/bootstrap/dist/js/bootstrap.js',
                 '<%= vendor_dir %>/angular-bootstrap/ui-bootstrap-tpls.js',
                 '<%= vendor_dir %>/angular-ui-router/release/angular-ui-router.js',
-                '<%= vendor_dir %>/angular-file-upload/angular-file-upload.js'
+                '<%= vendor_dir %>/angular-file-upload/angular-file-upload.js',
+                '<%= vendor_dir %>/d3/d3.js',
+                '<%= vendor_dir %>/nvd3/nv.d3.js',
+                '<%= vendor_dir %>/angular-nvd3/dist/angular-nvd3.js'
             ],
             stylesheets: [
+                '<%= vendor_dir %>/nvd3/nv.d3.css'
             ],  
             assets: [
                 '<%= vendor_dir %>/bootstrap/dist/fonts/glyphicons-halflings-regular.eot',
