@@ -42,11 +42,6 @@ var user = {
   userRole: 'facilitator',
   currentProcessId: 2
 };
-// global in memory store of current process - remove as soon as possible
-// this is the process variable that progress is saved on when user tests the gui
-var currentProcess = {
-  title: 'not saved yet'
-};
 
 // Temporary process repo
 var processRepo = {
@@ -64,6 +59,12 @@ var processRepo = {
     cb(null, found);
   }
 };
+
+// global in memory store of current process - remove as soon as possible
+// this is the process variable that progress is saved on when user tests the gui
+var currentProcess = _.find(processRepo.processes, function(p) {
+  return p.id === user.currentProcessId;
+});
 
 // Temporary Kpi repo
 var kpiRepo = [
@@ -421,47 +422,43 @@ app.get('/module', function(req, res){
   res.json(200, moduleRepo);
 });
 
-app.post('/module/import/:kpiId/:moduleId', function(req, res) {
+app.post('/module/import/:kpiId/:moduleId/:inputId', function(req, res) {
 
   // TODO: get kpi and module by user id
 
   var kpiId = req.param('kpiId');
   var moduleId = req.param('moduleId');
+  var inputId = req.param('inputId');
 
   var module = _.find(currentProcess.kpiList, function(kpi) {
     if(kpi.id === kpiId) {
-      return kpi.selectedModule; // TODO: kpi should have more than one possible module
+      return kpi.selectedModule; // TODO: kpi should have more than one possible module?
     } else {
       return false;
     }
   });
 
-  var inputId;
-  var inputType;
+  console.log(currentProcess);
+  console.log(module);
 
   var busboy = new Busboy({ headers: req.headers });
 
-  var addInputDataToModule = function(inputs, inputId, data) {
+  var addInputDataToModule = function(inputs, data) {
     var found = false;
-    _.each(inputs, function(input) {
+    _.each(module.inputs, function(input) {
       if(input.id === inputId) {
-        input.data = data;
+        input.value = data;
         found = true;
       }
       if(input.inputs && !found) {
-        addInputDataToModule(input.inputs, inputId, data);
+        addInputDataToModule(input.inputs, data);
       }
     });
   };
 
-  // this result is used in 'end' event - for small files this may not be processed yet...!?
   busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated) {
     console.log('Field [' + fieldname + ']: value: ' + val);
-    if(fieldname === 'inputId') {
-      inputId = val;
-    } else if (fieldname === 'inputType') {
-      inputType = val;
-    }
+    //
   });
 
   busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
@@ -481,7 +478,7 @@ app.post('/module/import/:kpiId/:moduleId', function(req, res) {
       if(inputId) {
         // TODO: create this method on module object
         parsedData = JSON.parse(parsedData);
-        addInputDataToModule(module, inputId, parsedData);
+        addInputDataToModule(module.inputs, parsedData);
         res.json(200, {data: parsedData});
 
       } else {
