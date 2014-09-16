@@ -20,7 +20,7 @@
             <h3 class="panel-title">{{kpi.name}}</h3>
           </div>
           <div class="panel-body">
-            Here are the results!
+            <div ng-repeat="output in kpi.selectedModule.outputs" ng-include="output.template"></div>
           </div>
         </div>
         

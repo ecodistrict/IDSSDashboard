@@ -23,16 +23,58 @@ angular.module( 'idss-dashboard.as-is', [
   });
 }])
 
-.controller( 'AsIsController', ['$scope', 'ProcessService', '$timeout', function AsIsController( $scope, ProcessService, $timeout ) {
+.controller( 'AsIsController', ['$scope', 'ProcessService', '$timeout', '$sce', function AsIsController( $scope, ProcessService, $timeout, $sce ) {
 
   $scope.currentProcess = ProcessService.getCurrentProcess();
 
+  // since nvd3 options need functions and module config JSON does not allow functions
+  // this function converts some settings to function for D3 
+  var prepareNvd3Options = function(options) {
+    var chart = options.chart;
+    if(!chart) {
+      return;
+    }
+    if(chart.x) {
+      chart.xOption = chart.x;
+      chart.x = function(d) {
+        return d[chart.xOption];
+      };
+    }
+    if(chart.y) {
+      chart.yOption = chart.y;
+      chart.y = function(d) {
+        return d[chart.yOption];
+      };
+    }
+    if(chart.valueFormat) {
+      chart.valueFormatOption = chart.valueFormat;
+      chart.valueFormat = function(d) {
+        return d[chart.valueFormatOption];
+      };
+    }
+  };
+
+  // set template urls to all outputs to generate corresponding directive
+  var setTemplateUrl = function(outputs) {
+    _.each(outputs, function(output) {
+      output.template = 'directives/module-outputs/' + output.type + '.tpl.html';
+      if(output.type === 'nvd3') {
+        prepareNvd3Options(output.options);
+      }
+      if(output.outputs) {
+        setTemplateUrl(output.outputs);
+      }
+    });
+  };
+
   _.each($scope.currentProcess.kpiList, function(kpi) {
-    kpi.selectedModule.isProcessing = true;
-    kpi.selectedModule.status = 'default';
+    var module = kpi.selectedModule;
+    module.isProcessing = true;
+    module.status = 'default';
+    setTemplateUrl(module.outputs);
     $timeout(function() {
-      kpi.selectedModule.isProcessing = false;
-      kpi.selectedModule.status = 'success';
+      module.isProcessing = false;
+      module.status = 'success';
       $scope.processing = modulesAreProcessing();
     }, Math.floor(Math.random() * (3000 - 1000)) + 1000);
   });
