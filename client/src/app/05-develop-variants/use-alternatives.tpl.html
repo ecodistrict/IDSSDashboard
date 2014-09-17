@@ -1,0 +1,13 @@
+<div class="modal-header">
+	<button type="button" class="close" ng-click="cancel()" data-dismiss="modalInstance" aria-hidden="true">&times;</button>
+	<h3>{{ module.name }}</h3>
+</div>
+<div class="modal-body">
+	<div ng-repeat="alternative in module.alternatives" class="panel panel-warning" ng-click="setSelectedAlternative(alternative)">
+		<div ng-model="module.selectedAlternative" class="panel-heading">{{alternative.name}}</div>
+	</div>
+</div>	
+<div class="modal-footer">
+	<a class="btn btn-sm btn-danger" ng-click="cancel()">Don't save this alternative</a>
+	<a ng-show="module.selectedAlternative" class="btn btn-primary btn-sm" ng-click="saveAlternative()">Save this alternative</a>
+</div>	

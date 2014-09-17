@@ -1,0 +1,38 @@
+<div class="container">
+  <div class="row" ng-show="processing">
+        
+        <h2>Processing is beeing done, please wait</h2>
+        <div ng-repeat="variant in currentProcess.variants" class="panel panel-warning module-item">
+          <div class="panel-heading">
+            <h3 class="panel-title">{{variant.alternative.name}} + {{variant.context.name}} <span ng-show="variant.isProcessing" class="glyphicon glyphicon-refresh spin"></span></h3>
+          </div>
+          <div class="panel-body">
+            {{variant.status}}
+          </div>
+        </div>
+        
+    </div>
+    <div class="row" ng-show="!processing">
+        
+        <h2>Variants</h2>
+        <div ng-show="!currentProcess.variants.length">No variants are created</div>
+        <div ng-repeat="variant in currentProcess.variants" class="panel panel-warning module-item">
+          <div class="panel-heading">
+            <h3 class="panel-title">{{variant.alternative.name}} + {{variant.context.name}}</h3>
+          </div>
+          <div class="panel-body">
+                <div ng-repeat="output in variant.alternative.outputs" ng-include="output.template">
+                </div>
+          </div>
+        </div>
+        
+    </div>
+    <div class="row">
+        <form role="form">
+          <div class="form-group">
+            <button class="pull-right btn btn-primary" ui-sref="assess-variants">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
+            <button class="pull-right btn btn-warning" ui-sref="develop-variants">Create new variant</button>
+          </div>
+        </form>
+    </div>
+</div>

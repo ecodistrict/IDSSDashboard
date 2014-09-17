@@ -1,0 +1,16 @@
+<div class="modal-header">
+	<button type="button" class="close" ng-click="cancel()" data-dismiss="modalInstance" aria-hidden="true">&times;</button>
+	<h3>{{ kpi.name }}</h3>
+</div>
+<div class="modal-body">
+	<h3>Input and configuration</h3>
+	<p class="explanation-message">[ Input and configuration of this KPI ]</p>
+	<kpi-input inputs="kpi.inputs"></kpi-input>
+	<h3>Using module</h3>
+	<p>{{kpi.selectedModule.name}}</p>
+	
+</div>	
+<div class="modal-footer">
+	<a class="btn btn-sm btn-warning" ng-click="cancel()">Cancel</a>
+	<a class="btn btn-primary btn-sm" ng-click="ok()">Ok</a>
+</div>	
