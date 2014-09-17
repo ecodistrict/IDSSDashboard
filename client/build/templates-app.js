@@ -75,10 +75,7 @@ angular.module("01-analyse-problem/analyse-problem.tpl.html", []).run(["$templat
     "        </form>\n" +
     "    </div>\n" +
     "    <div class=\"row\">\n" +
-    "        <label>Please define the area of your project: </label>\n" +
-    "        <district-map class=\"selection-map\" district=\"currentProcess.district\" layer=\"layer\"></district-map>\n" +
-    "        <select ng-model=\"layer\" ng-options=\"l.name as l.label for l in layerOptions\">\n" +
-    "        </select>\n" +
+    "        \n" +
     "        <!-- <p ng-show=\"currentProcess.district.area\">Area: {{(currentProcess.district.area / 10) | number : 0}} m<sup>2</sup></p>\n" +
     "        <span ng-show=\"currentProcess.district.geometry\" ng-repeat=\"geo in currentProcess.district.geometry[0]\">\n" +
     "            {{geo}}\n" +
@@ -107,7 +104,11 @@ angular.module("01-analyse-problem/analyse-problem.tpl.html", []).run(["$templat
     "          </div>\n" +
     "        </form>\n" +
     "    </div>\n" +
-    "</div>");
+    "</div>\n" +
+    "<label>Please define the area of your project: </label>\n" +
+    "        <district-map width=\"600px\" height=\"300px\" style=\"width:600px;height:300px\" class=\"selection-map\" district=\"currentProcess.district\" layer=\"layer\"></district-map>\n" +
+    "        <select ng-model=\"layer\" ng-options=\"l.name as l.label for l in layerOptions\">\n" +
+    "        </select>");
 }]);
 
 angular.module("01-analyse-problem/configure-kpi.tpl.html", []).run(["$templateCache", function($templateCache) {
