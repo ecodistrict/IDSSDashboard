@@ -259,7 +259,7 @@ passport.deserializeUser(function(id, done) {
 var staticUrl = '/static';
 
 if(process.env.NODE_ENV === 'production') {
-  var distFolder = path.resolve(__dirname, './client/dist');
+  var distFolder = path.resolve(__dirname, './client/build');
   app.use(staticUrl, express.static(distFolder));
 } else {
   var distFolder = path.resolve(__dirname, './client/build');
