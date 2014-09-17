@@ -1,4 +1,4 @@
-angular.module('idss-dashboard').directive('fileSource', ['$fileUploader', 'ProcessService', function($fileUploader, ProcessService) {
+angular.module('idss-dashboard').directive('fileSource', ['$fileUploader', 'ProcessService', '$modal', function($fileUploader, ProcessService, $modal) {
 
     return {
         restrict: 'E',
@@ -61,8 +61,12 @@ angular.module('idss-dashboard').directive('fileSource', ['$fileUploader', 'Proc
                     progress: item.progress
                 };
                 ProcessService.setIsModified(true);
+                
+                scope.uploadedData = response.data;
+
                 // trigger directive for feedback on uploaded data
-                scope.type = input.type; 
+                // TODO: not working - map cannot render on added dom element?
+                //scope.type = input.type; 
             });
 
             uploader.bind('cancel', function (event, xhr, item) {

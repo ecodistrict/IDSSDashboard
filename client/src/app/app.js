@@ -15,7 +15,9 @@ angular.module( 'idss-dashboard', [
   'idss-dashboard.analyse-problem',
   'idss-dashboard.collect-data',
   'idss-dashboard.as-is',
-  'idss-dashboard.to-be'
+  'idss-dashboard.to-be',
+  'idss-dashboard.develop-variants',
+  'idss-dashboard.assess-variants'
 ])
 
 .constant('AUTH_EVENTS', {

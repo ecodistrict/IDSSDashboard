@@ -44,6 +44,172 @@
                         ]
                     }
                 ],
+                "alternatives": [
+                    {
+                        "name": "Reverse",
+                        "type": "input-group",
+                        "label": "Input group",
+                        "inputs": [
+                            {
+                                "label": "Reverse",
+                                "type": "checkbox",
+                                "id": "check1"
+                            }
+                        ],
+                        "outputs": [
+                            {
+                                "id": "output1",
+                                "type": "nvd3",
+                                "options": {
+                                    "chart": {
+                                        "type": "discreteBarChart",
+                                        "height": 300,
+                                        "width": 500,
+                                        "margin" : {
+                                            "top": 20,
+                                            "right": 20,
+                                            "bottom": 60,
+                                            "left": 55
+                                        },
+                                        "x": "label",
+                                        "y": "value",
+                                        "showValues": true,
+                                        "valueFormat": ",.4f",
+                                        "transitionDuration": 500,
+                                        "xAxis": {
+                                            "axisLabel": "X Axis"
+                                        },
+                                        "yAxis": {
+                                            "axisLabel": "Y Axis",
+                                            "axisLabelDistance": 30
+                                        }
+                                    }
+                                },
+                                "data": [
+                                    {
+                                        "key": "Cumulative Return",
+                                        "values": [
+                                            {
+                                                "label" : "A" ,
+                                                "value" : 29.765957771107
+                                            } ,
+                                            {
+                                                "label" : "B" ,
+                                                "value" : 3
+                                            } ,
+                                            {
+                                                "label" : "C" ,
+                                                "value" : 3.7804682612
+                                            } ,
+                                            {
+                                                "label" : "D" ,
+                                                "value" : 19.45946739256
+                                            } ,
+                                            {
+                                                "label" : "E" ,
+                                                "value" : 122.19434030906893
+                                            } ,
+                                            {
+                                                "label" : "F" ,
+                                                "value" : 8.079782601442
+                                            } ,
+                                            {
+                                                "label" : "G" ,
+                                                "value" : -13.925743130903
+                                            } ,
+                                            {
+                                                "label" : "H" ,
+                                                "value" : -5.1387322875705
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Small caps",
+                        "type": "input-group",
+                        "label": "Input group",
+                        "inputs": [
+                            {
+                                "label": "Small caps",
+                                "type": "checkbox",
+                                "id": "check2"
+                            }
+                        ],
+                        "outputs": [
+                            {
+                                "id": "output1",
+                                "type": "nvd3",
+                                "options": {
+                                    "chart": {
+                                        "type": "discreteBarChart",
+                                        "height": 300,
+                                        "width": 500,
+                                        "margin" : {
+                                            "top": 20,
+                                            "right": 20,
+                                            "bottom": 60,
+                                            "left": 55
+                                        },
+                                        "x": "label",
+                                        "y": "value",
+                                        "showValues": true,
+                                        "valueFormat": ",.4f",
+                                        "transitionDuration": 500,
+                                        "xAxis": {
+                                            "axisLabel": "X Axis"
+                                        },
+                                        "yAxis": {
+                                            "axisLabel": "Y Axis",
+                                            "axisLabelDistance": 30
+                                        }
+                                    }
+                                },
+                                "data": [
+                                    {
+                                        "key": "Cumulative Return",
+                                        "values": [
+                                            {
+                                                "label" : "A" ,
+                                                "value" : 9.765957771107
+                                            } ,
+                                            {
+                                                "label" : "B" ,
+                                                "value" : 34
+                                            } ,
+                                            {
+                                                "label" : "C" ,
+                                                "value" : 22.807804682612
+                                            } ,
+                                            {
+                                                "label" : "D" ,
+                                                "value" : 126.45946739256
+                                            } ,
+                                            {
+                                                "label" : "E" ,
+                                                "value" : 5.19434030906893
+                                            } ,
+                                            {
+                                                "label" : "F" ,
+                                                "value" : 8.079782601442
+                                            } ,
+                                            {
+                                                "label" : "G" ,
+                                                "value" : 13.925743130903
+                                            } ,
+                                            {
+                                                "label" : "H" ,
+                                                "value" : 5.1387322875705
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
                 "outputs": [
                     {
                         "id": "output1",
@@ -52,7 +218,7 @@
                             "chart": {
                                 "type": "discreteBarChart",
                                 "height": 300,
-                                "width": 600,
+                                "width": 500,
                                 "margin" : {
                                     "top": 20,
                                     "right": 20,
@@ -162,7 +328,278 @@
                             "chart": {
                                 "type": "pieChart",
                                 "height": 300,
-                                "width": 600,
+                                "width": 500,
+                                "x": "key",
+                                "y": "y",
+                                "showLabels": true,
+                                "transitionDuration": 500,
+                                "labelThreshold": 0.01,
+                                "legend": {
+                                    "margin": {
+                                        "top": 5,
+                                        "right": 35,
+                                        "bottom": 5,
+                                        "left": 0
+                                    }
+                                }
+                            }
+                        },
+                        "data": [
+                            {
+                                "key": "One",
+                                "y": 5
+                            },
+                            {
+                                "key": "Two",
+                                "y": 2
+                            },
+                            {
+                                "key": "Three",
+                                "y": 9
+                            },
+                            {
+                                "key": "Four",
+                                "y": 7
+                            },
+                            {
+                                "key": "Five",
+                                "y": 4
+                            },
+                            {
+                                "key": "Six",
+                                "y": 3
+                            },
+                            {
+                                "key": "Seven",
+                                "y": 0.5
+                            }
+                        ]
+                    }
+                ],
+                "alternatives": [
+                    {
+                        "name": "Option 1",
+                        "type": "input-group",
+                        "label": "Input group",
+                        "inputs": [
+                            {
+                                "label": "Integer between 50 and 100",
+                                "type": "number",
+                                "id": "alt1",
+                                "unit": "m",
+                                "min": 50,
+                                "max": 100
+                            }
+                        ],
+                        "outputs": [
+                            {
+                                "id": "output2",
+                                "type": "nvd3",
+                                "options": {
+                                    "chart": {
+                                        "type": "pieChart",
+                                        "height": 300,
+                                        "width": 500,
+                                        "x": "key",
+                                        "y": "y",
+                                        "showLabels": true,
+                                        "transitionDuration": 500,
+                                        "labelThreshold": 0.01,
+                                        "legend": {
+                                            "margin": {
+                                                "top": 5,
+                                                "right": 35,
+                                                "bottom": 5,
+                                                "left": 0
+                                            }
+                                        }
+                                    }
+                                },
+                                "data": [
+                                    {
+                                        "key": "One",
+                                        "y": 7
+                                    },
+                                    {
+                                        "key": "Two",
+                                        "y": 3
+                                    },
+                                    {
+                                        "key": "Three",
+                                        "y": 3
+                                    },
+                                    {
+                                        "key": "Four",
+                                        "y": 5
+                                    },
+                                    {
+                                        "key": "Five",
+                                        "y": 6
+                                    },
+                                    {
+                                        "key": "Six",
+                                        "y": 1
+                                    },
+                                    {
+                                        "key": "Seven",
+                                        "y": 7
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Option 2",
+                        "type": "input-group",
+                        "label": "Input group",
+                        "inputs": [
+                            {
+                                "label": "Integer between 50 and 100",
+                                "type": "number",
+                                "id": "alt2",
+                                "unit": "m",
+                                "min": 50,
+                                "max": 100
+                            }
+                        ],
+                        "outputs": [
+                            {
+                                "id": "output2",
+                                "type": "nvd3",
+                                "options": {
+                                    "chart": {
+                                        "type": "pieChart",
+                                        "height": 300,
+                                        "width": 500,
+                                        "x": "key",
+                                        "y": "y",
+                                        "showLabels": true,
+                                        "transitionDuration": 500,
+                                        "labelThreshold": 0.01,
+                                        "legend": {
+                                            "margin": {
+                                                "top": 5,
+                                                "right": 35,
+                                                "bottom": 5,
+                                                "left": 0
+                                            }
+                                        }
+                                    }
+                                },
+                                "data": [
+                                    {
+                                        "key": "One",
+                                        "y": 7
+                                    },
+                                    {
+                                        "key": "Two",
+                                        "y": 7
+                                    },
+                                    {
+                                        "key": "Three",
+                                        "y": 6
+                                    },
+                                    {
+                                        "key": "Four",
+                                        "y": 1
+                                    },
+                                    {
+                                        "key": "Five",
+                                        "y": 1
+                                    },
+                                    {
+                                        "key": "Six",
+                                        "y": 3
+                                    },
+                                    {
+                                        "key": "Seven",
+                                        "y": 6
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Option 3",
+                        "type": "input-group",
+                        "label": "Input group",
+                        "inputs": [
+                            {
+                                "label": "Integer between 50 and 100",
+                                "type": "number",
+                                "id": "alt3",
+                                "unit": "m",
+                                "min": 50,
+                                "max": 100
+                            }
+                        ],
+                        "outputs": [
+                            {
+                                "id": "output2",
+                                "type": "nvd3",
+                                "options": {
+                                    "chart": {
+                                        "type": "pieChart",
+                                        "height": 300,
+                                        "width": 500,
+                                        "x": "key",
+                                        "y": "y",
+                                        "showLabels": true,
+                                        "transitionDuration": 500,
+                                        "labelThreshold": 0.01,
+                                        "legend": {
+                                            "margin": {
+                                                "top": 5,
+                                                "right": 35,
+                                                "bottom": 5,
+                                                "left": 0
+                                            }
+                                        }
+                                    }
+                                },
+                                "data": [
+                                    {
+                                        "key": "One",
+                                        "y": 1
+                                    },
+                                    {
+                                        "key": "Two",
+                                        "y": 2
+                                    },
+                                    {
+                                        "key": "Three",
+                                        "y": 3
+                                    },
+                                    {
+                                        "key": "Four",
+                                        "y": 5
+                                    },
+                                    {
+                                        "key": "Five",
+                                        "y": 5
+                                    },
+                                    {
+                                        "key": "Six",
+                                        "y": 1
+                                    },
+                                    {
+                                        "key": "Seven",
+                                        "y": 0.5
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "outputs": [
+                    {
+                        "id": "output2",
+                        "type": "nvd3",
+                        "options": {
+                            "chart": {
+                                "type": "pieChart",
+                                "height": 300,
+                                "width": 500,
                                 "x": "key",
                                 "y": "y",
                                 "showLabels": true,
@@ -228,6 +665,14 @@
                 ],
                 "inputs": [
                     {
+                        "type": "geojson",
+                        "label": "Upload GeoJSON file",
+                        "id": "file1"
+                    }
+                ],
+                "alternatives": [
+                    {
+                        "name": "Use another file",
                         "type": "geojson",
                         "label": "Upload GeoJSON file",
                         "id": "file1"

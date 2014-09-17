@@ -81,6 +81,10 @@ angular.module('idss-dashboard')
     };
 
     var getCurrentProcess = function() {
+        // TODO: fix the state
+        if(!currentProcess.state) {
+            currentProcess.state = 'As is';
+        }
         return currentProcess;
     };
 
@@ -111,6 +115,22 @@ angular.module('idss-dashboard')
         }
     };
 
+    var addVariant = function(alternative, context) {
+        currentProcess.variants = currentProcess.variants || [];
+        currentProcess.variants.push({
+            alternative: alternative,
+            context: context
+        });
+    };
+
+    var removeVariant = function(variant) {
+        var index = _.indexOf(currentProcess.variants, variant);
+        if(index) {
+            currentProcess.variants.splice(index, 1);
+            setIsModified(true);
+        }
+    };
+
     return {
         saveCurrentProcess: saveCurrentProcess,
         getCurrentProcess: getCurrentProcess,
@@ -120,6 +140,8 @@ angular.module('idss-dashboard')
         setIsModified: setIsModified,
         updateProcess: updateProcess,
         addKpi: addKpi,
-        removeKpi: removeKpi
+        removeKpi: removeKpi,
+        addVariant: addVariant,
+        removeVariant: removeVariant
     };
 }]);

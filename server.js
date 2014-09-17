@@ -40,7 +40,7 @@ var user = {
   userId: 'id',
   id: tempUserDbId,
   userRole: 'facilitator',
-  currentProcessId: 2
+  currentProcessId: null
 };
 
 // Temporary process repo
@@ -65,6 +65,10 @@ var processRepo = {
 var currentProcess = _.find(processRepo.processes, function(p) {
   return p.id === user.currentProcessId;
 });
+if(!currentProcess) {
+  currentProcess = {};
+  _.extend(currentProcess, Process);
+}
 
 // Temporary Kpi repo
 var kpiRepo = [
@@ -93,8 +97,8 @@ var numbersModule = JSON.parse(fs.readFileSync(__dirname + '/data/modules/module
 var uploadModule = JSON.parse(fs.readFileSync(__dirname + '/data/modules/module_Upload.json').toString());
 
 var moduleRepo = [
-  energyModule,
-  noiseModule,
+  // energyModule,
+  // noiseModule,
   textModule,
   numbersModule,
   uploadModule
@@ -299,6 +303,8 @@ app.get('/authenticated-user', function(req, res) {
 
 app.get('/logout', function(req, res){
   req.logout();
+  currentProcess = {};
+  _.extend(currentProcess, Process);
   res.send(204);
 });
 
@@ -317,7 +323,7 @@ app.get('/process', function(req, res){
       });
 
     } else {
-      res.status(200).json({message: "No current process"});
+      res.status(200).json(currentProcess);
     }
   } else {
     res.status(401).json({message: "Not authenticated"});
@@ -353,7 +359,9 @@ app.post('/process/upload', function(req, res){
 
       // TODO: check if this is a valid process
 
-      res.json(200, parsedData);
+      currentProcess = parsedData.process;
+
+      res.json(200, parsedData.process);
       
     });
   });
@@ -409,7 +417,7 @@ app.get('/export/ecodist', function(req, res) {
 
   var outputFilename = './export/' + currentProcessTitle + '.ecodist';
 
-  fs.writeFile(outputFilename, JSON.stringify(currentProcess, null, 4), function(err) {
+  fs.writeFile(outputFilename, JSON.stringify({process: currentProcess}, null, 4), function(err) {
       if(err) {
         res.json(500, err);
       } else {

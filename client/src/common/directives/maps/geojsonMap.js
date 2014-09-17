@@ -68,8 +68,6 @@ angular.module('idss-dashboard').directive('geojsonMap', [ 'ProcessService', '$t
         },
         link: function(scope, element, attrs) {
 
-            console.log('geojson-map');
-
             scope.layerOptions = [
                 {name: "Road", label: "Road"},
                 {name: "Aerial", label: "Aerial"},
@@ -80,13 +78,6 @@ angular.module('idss-dashboard').directive('geojsonMap', [ 'ProcessService', '$t
                 center: district.center || [1000000, 6600000],
                 zoom: district.zoom || 6
             };  
-
-            console.log($(element[0]).width());
-            console.log($(element[0]).height());
-
-
-            console.log(scope);
-            console.log(district);
 
             var map = new ol.Map({
                 interactions: ol.interaction.defaults({mouseWheelZoom: false}),

@@ -1,42 +1,257 @@
 {
-	"name": "Text module",
-	"id": "textmodule",
-	"description": "This module takes a text string and returns a bar chart of letter index",
-	"useKpis": ["kpi1"],
-	"inputs": [{
-		"type": "input-group",
-		"label": "Input group",
-		"inputs": [
-			{
-				"label": "Text to analyse",
-				"type": "text",
-				"id": "text1"
-			},
-			{
-				"label": "Reverse",
-				"type": "checkbox",
-				"id": "check1"
-			}
-		]
-	}],
-	"outputs": [{
-		"type": "barchart",
-		"labels": {
-			"y": "Point"
-		},
-		"data": [
-			{
-				"letter": "A",
-				"value": 1
-			},
-			{
-				"letter": "B",
-				"value": 2
-			},
-			{
-				"letter": "C",
-				"value": 3
-			}
-		]
-	}]
+    "name": "Text module",
+    "id": "textmodule",
+    "description": "This module takes a text string and returns a bar chart of letter index",
+    "useKpis": [
+        "kpi1"
+    ],
+    "inputs": [
+        {
+            "type": "input-group",
+            "label": "Input group",
+            "inputs": [
+                {
+                    "label": "Text to analyse",
+                    "type": "text",
+                    "id": "text1"
+                }
+            ]
+        }
+    ],
+    "alternatives": [
+        {
+            "name": "Reverse",
+            "type": "input-group",
+            "label": "Input group",
+            "inputs": [
+                {
+                    "label": "Reverse",
+                    "type": "checkbox",
+                    "id": "check1"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": "output1",
+                    "type": "nvd3",
+                    "options": {
+                        "chart": {
+                            "type": "discreteBarChart",
+                            "height": 300,
+                            "width": 500,
+                            "margin" : {
+                                "top": 20,
+                                "right": 20,
+                                "bottom": 60,
+                                "left": 55
+                            },
+                            "x": "label",
+                            "y": "value",
+                            "showValues": true,
+                            "valueFormat": ",.4f",
+                            "transitionDuration": 500,
+                            "xAxis": {
+                                "axisLabel": "X Axis"
+                            },
+                            "yAxis": {
+                                "axisLabel": "Y Axis",
+                                "axisLabelDistance": 30
+                            }
+                        }
+                    },
+                    "data": [
+                        {
+                            "key": "Cumulative Return",
+                            "values": [
+                                {
+                                    "label" : "A" ,
+                                    "value" : 29.765957771107
+                                } ,
+                                {
+                                    "label" : "B" ,
+                                    "value" : 3
+                                } ,
+                                {
+                                    "label" : "C" ,
+                                    "value" : 3.7804682612
+                                } ,
+                                {
+                                    "label" : "D" ,
+                                    "value" : 19.45946739256
+                                } ,
+                                {
+                                    "label" : "E" ,
+                                    "value" : 122.19434030906893
+                                } ,
+                                {
+                                    "label" : "F" ,
+                                    "value" : 8.079782601442
+                                } ,
+                                {
+                                    "label" : "G" ,
+                                    "value" : -13.925743130903
+                                } ,
+                                {
+                                    "label" : "H" ,
+                                    "value" : -5.1387322875705
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Small caps",
+            "type": "input-group",
+            "label": "Input group",
+            "inputs": [
+                {
+                    "label": "Small caps",
+                    "type": "checkbox",
+                    "id": "check2"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": "output1",
+                    "type": "nvd3",
+                    "options": {
+                        "chart": {
+                            "type": "discreteBarChart",
+                            "height": 300,
+                            "width": 500,
+                            "margin" : {
+                                "top": 20,
+                                "right": 20,
+                                "bottom": 60,
+                                "left": 55
+                            },
+                            "x": "label",
+                            "y": "value",
+                            "showValues": true,
+                            "valueFormat": ",.4f",
+                            "transitionDuration": 500,
+                            "xAxis": {
+                                "axisLabel": "X Axis"
+                            },
+                            "yAxis": {
+                                "axisLabel": "Y Axis",
+                                "axisLabelDistance": 30
+                            }
+                        }
+                    },
+                    "data": [
+                        {
+                            "key": "Cumulative Return",
+                            "values": [
+                                {
+                                    "label" : "A" ,
+                                    "value" : 9.765957771107
+                                } ,
+                                {
+                                    "label" : "B" ,
+                                    "value" : 34
+                                } ,
+                                {
+                                    "label" : "C" ,
+                                    "value" : 22.807804682612
+                                } ,
+                                {
+                                    "label" : "D" ,
+                                    "value" : 126.45946739256
+                                } ,
+                                {
+                                    "label" : "E" ,
+                                    "value" : 5.19434030906893
+                                } ,
+                                {
+                                    "label" : "F" ,
+                                    "value" : 8.079782601442
+                                } ,
+                                {
+                                    "label" : "G" ,
+                                    "value" : 13.925743130903
+                                } ,
+                                {
+                                    "label" : "H" ,
+                                    "value" : 5.1387322875705
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "outputs": [
+        {
+            "id": "output1",
+            "type": "nvd3",
+            "options": {
+                "chart": {
+                    "type": "discreteBarChart",
+                    "height": 300,
+                    "width": 500,
+                    "margin" : {
+                        "top": 20,
+                        "right": 20,
+                        "bottom": 60,
+                        "left": 55
+                    },
+                    "x": "label",
+                    "y": "value",
+                    "showValues": true,
+                    "valueFormat": ",.4f",
+                    "transitionDuration": 500,
+                    "xAxis": {
+                        "axisLabel": "X Axis"
+                    },
+                    "yAxis": {
+                        "axisLabel": "Y Axis",
+                        "axisLabelDistance": 30
+                    }
+                }
+            },
+            "data": [
+                {
+                    "key": "Cumulative Return",
+                    "values": [
+                        {
+                            "label" : "A" ,
+                            "value" : -29.765957771107
+                        } ,
+                        {
+                            "label" : "B" ,
+                            "value" : 0
+                        } ,
+                        {
+                            "label" : "C" ,
+                            "value" : 32.807804682612
+                        } ,
+                        {
+                            "label" : "D" ,
+                            "value" : 196.45946739256
+                        } ,
+                        {
+                            "label" : "E" ,
+                            "value" : 0.19434030906893
+                        } ,
+                        {
+                            "label" : "F" ,
+                            "value" : -98.079782601442
+                        } ,
+                        {
+                            "label" : "G" ,
+                            "value" : -13.925743130903
+                        } ,
+                        {
+                            "label" : "H" ,
+                            "value" : -5.1387322875705
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }
