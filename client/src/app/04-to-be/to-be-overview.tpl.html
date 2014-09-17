@@ -1,0 +1,55 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xs-6">
+            
+          <div class="row">
+              
+              <h2>As is situation</h2>
+              <div ng-repeat="kpi in currentProcess.kpiList" class="panel {{'panel-' + kpi.selectedModule.status}} module-item">
+                <div class="panel-heading">
+                  <h3 class="panel-title">{{kpi.name}}</h3>
+                </div>
+                <div class="panel-body">
+                  <div ng-repeat="output in kpi.selectedModule.outputs" ng-include="output.template"></div>
+                </div>
+              </div>
+              
+          </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="row" ng-show="processing">
+        
+              <h2>Processing is beeing done, please wait</h2>
+              <div ng-repeat="kpi in currentProcess.kpiListToBe" class="panel {{'panel-' + kpi.selectedModule.status}} module-item">
+                <div class="panel-heading">
+                  <h3 class="panel-title">{{kpi.selectedModule.name}} <span ng-show="kpi.selectedModule.isProcessing" class="glyphicon glyphicon-refresh spin"></span></h3>
+                </div>
+                <div class="panel-body">
+                  {{kpi.selectedModule.status}}
+                </div>
+              </div>
+              
+          </div>
+          <div class="row" ng-show="!processing">
+              
+              <h2>To be situation</h2>
+              <div ng-repeat="kpi in currentProcess.kpiListToBe" class="panel {{'panel-' + kpi.selectedModule.status}} module-item">
+                <div class="panel-heading">
+                  <h3 class="panel-title">{{kpi.name}}</h3>
+                </div>
+                <div class="panel-body">
+                  <div ng-repeat="output in kpi.selectedModule.outputs" ng-include="output.template"></div>
+                </div>
+              </div>
+              
+          </div>
+        </div>
+    </div>
+    <div class="row" ng-show="!processing">
+        <form role="form">
+          <div class="form-group">
+            <button class="pull-right btn btn-primary" ui-sref="develop-variants">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
+          </div>
+        </form>
+    </div>
+</div>
