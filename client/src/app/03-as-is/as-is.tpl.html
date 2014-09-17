@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="row" ng-show="processing">
+    <div class="row" ng-if="processing">
         
         <h2>Processing is beeing done, please wait</h2>
         <div ng-repeat="kpi in currentProcess.kpiList" class="panel {{'panel-' + kpi.selectedModule.status}} module-item">
@@ -12,7 +12,7 @@
         </div>
         
     </div>
-    <div class="row" ng-show="!processing">
+    <div class="row" ng-if="!processing">
         
         <h2>As is situation</h2>
         <div ng-repeat="kpi in currentProcess.kpiList" class="panel {{'panel-' + kpi.selectedModule.status}} module-item">
@@ -24,5 +24,12 @@
           </div>
         </div>
         
+    </div>
+    <div class="row">
+        <form role="form">
+          <div class="form-group">
+            <button class="pull-right btn btn-primary" ui-sref="to-be">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
+          </div>
+        </form>
     </div>
 </div>

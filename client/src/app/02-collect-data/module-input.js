@@ -1,4 +1,6 @@
-angular.module( 'idss-dashboard.collect-data.module-input', [])
+angular.module( 'idss-dashboard.collect-data.module-input', [
+  'idss-dashboard.collect-data.module-input.file-result'
+])
 
 .config(['$stateProvider', function config( $stateProvider ) {
   $stateProvider.state( 'module-input', {

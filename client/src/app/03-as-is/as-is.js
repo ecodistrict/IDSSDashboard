@@ -26,6 +26,7 @@ angular.module( 'idss-dashboard.as-is', [
 .controller( 'AsIsController', ['$scope', 'ProcessService', '$timeout', '$sce', function AsIsController( $scope, ProcessService, $timeout, $sce ) {
 
   $scope.currentProcess = ProcessService.getCurrentProcess();
+  $scope.currentProcess.state = 'As is'; 
 
   // since nvd3 options need functions and module config JSON does not allow functions
   // this function converts some settings to function for D3 
@@ -34,21 +35,30 @@ angular.module( 'idss-dashboard.as-is', [
     if(!chart) {
       return;
     }
-    if(chart.x) {
+    if(chart.x && !_.isFunction(chart.x)) {
       chart.xOption = chart.x;
       chart.x = function(d) {
+        if(!d) {
+          return;
+        }
         return d[chart.xOption];
       };
     }
-    if(chart.y) {
+    if(chart.y && !_.isFunction(chart.y)) {
       chart.yOption = chart.y;
       chart.y = function(d) {
+        if(!d) {
+          return;
+        }
         return d[chart.yOption];
       };
     }
-    if(chart.valueFormat) {
+    if(chart.valueFormat && !_.isFunction(chart.valueFormat)) {
       chart.valueFormatOption = chart.valueFormat;
       chart.valueFormat = function(d) {
+        if(!d) {
+          return;
+        }
         return d[chart.valueFormatOption];
       };
     }
