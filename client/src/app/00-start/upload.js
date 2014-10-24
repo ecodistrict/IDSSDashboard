@@ -15,7 +15,7 @@ angular.module( 'idss-dashboard.start.upload', [])
     },
     data:{ 
       pageTitle: 'Upload process file',
-      authorizedRoles: ['facilitator']
+      authorizedRoles: ['Facilitator']
     }
   });
 }])
