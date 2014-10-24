@@ -21,7 +21,8 @@ var imb = require('./lib/imb.js');
 // *********** DB MODELS ******** //
 require('./lib/models/user');
 require('./lib/models/process');
-var User = mongoose.model('User');
+require('./lib/models/kpi');
+var User = mongoose.model('User'); // needed for passport below
 
 // *********** DB CONNECT ********* //
 var distFolder;
@@ -112,8 +113,10 @@ app.use(staticUrl, function(req, res, next) {
 // ***** REST API **** //
 var userRepository = require('./lib/user');
 var processRepository = require('./lib/process');
+var kpiRepository = require('./lib/kpi');
 require('./lib/routes/user').addRoutes(app, userRepository, passport);
 require('./lib/routes/process').addRoutes(app, processRepository);
+require('./lib/routes/kpi').addRoutes(app, kpiRepository);
 
 // ************* TEST VARIABLES 
 
@@ -548,8 +551,6 @@ io.sockets.on('connection', function(socket) {
     if(data.method === 'getModels') {
       console.log(data);
       socket.emit('module', data);
-      // TODO: module should be saved on httpServer
-      moduleRepo.push(data);
     } else if(data.method === 'selectModel') {
       console.log(data);
       socket.emit('moduleSelected', data);
