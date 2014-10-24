@@ -6,10 +6,10 @@ angular.module( 'idss-dashboard.analyse-problem.use-kpi', [])
 
     $scope.relevantModules = [];
 
-    ModuleService.getModulesFromKpiId(kpi.id).then(function(modules) {
-        _.each(modules, function(module) {
-            $scope.relevantModules.push(module);
-        });
+    var modules = ModuleService.getModulesFromKpiId(kpi.id);
+
+    _.each(modules, function(module) {
+        $scope.relevantModules.push(module);
     });
               
     $scope.cancel = function () {

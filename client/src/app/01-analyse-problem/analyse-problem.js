@@ -2,6 +2,7 @@ angular.module( 'idss-dashboard.analyse-problem', [
   'idss-dashboard.analyse-problem.manage-kpis',
   'idss-dashboard.analyse-problem.use-kpi',
   'idss-dashboard.analyse-problem.configure-kpi',
+  'idss-dashboard.analyse-problem.add-kpi',
   'idss-dashboard.analyse-problem.kpi-input'
 ])
 

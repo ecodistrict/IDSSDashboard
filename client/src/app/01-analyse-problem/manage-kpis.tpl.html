@@ -10,6 +10,9 @@
                 {{kpi.description}}
               </div>
             </div>
+            <button class="btn btn-primary btn-xs pull-right" ng-click="addKpi()">
+                <span class="glyphicon glyphicon-floppy-disk"></span> Add KPI
+            </button>
         </div>
         <div class="col-xs-6">
             <h2>KPI set for this decision process</h2>
@@ -29,6 +32,7 @@
     <div ng-show="currentProcess.kpiList.length > 0" class="row">
         <form role="form">
           <div class="form-group">
+            <button class="btn btn-primary pull-left" ui-sref="analyse-problem"><span class="glyphicon glyphicon-chevron-left"></span> Previous</button>
             <button class="pull-right btn btn-primary" ui-sref="define-context">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
           </div>
         </form>

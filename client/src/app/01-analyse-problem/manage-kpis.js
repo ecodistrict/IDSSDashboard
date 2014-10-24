@@ -16,12 +16,12 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [
     },
     data:{ 
       pageTitle: 'Manage KPIs',
-      authorizedRoles: ['facilitator']
+      authorizedRoles: ['Facilitator']
     }
   });
 }])
 
-.controller( 'ManageKpisCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', function ManageKpisCtrl( $scope, KpiService, ProcessService, $modal ) {
+.controller( 'ManageKpisCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', 'socket', 'ModuleService', function ManageKpisCtrl( $scope, KpiService, ProcessService, $modal, socket, ModuleService) {
 
   $scope.currentProcess = ProcessService.getCurrentProcess();
   console.log($scope.currentProcess);
@@ -51,6 +51,22 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [
 
   };
 
+  $scope.addKpi = function() {
+
+    var kpiModal = $modal.open({
+      templateUrl: '01-analyse-problem/add-kpi.tpl.html',
+      controller: 'AddKpiCtrl'
+    });
+
+    kpiModal.result.then(function (kpiToAdd) {
+      console.log(kpiToAdd);
+      KpiService.createKpi(kpiToAdd);
+    }, function () {
+      console.log('Modal dismissed at: ' + new Date());
+    });
+
+  };
+
   $scope.configureKpi = function(kpi) {
 
     var kpiModal = $modal.open({
@@ -65,6 +81,9 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [
 
     kpiModal.result.then(function (configuredKpi) {
       console.log(configuredKpi);
+      // call for inputs of kpi
+      socket.emit('selectModel', configuredKpi);
+
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
     });

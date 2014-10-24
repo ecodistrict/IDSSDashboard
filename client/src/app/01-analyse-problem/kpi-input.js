@@ -15,7 +15,7 @@ angular.module( 'idss-dashboard.analyse-problem.kpi-input', [])
     },
     data:{ 
       pageTitle: 'Kpi input',
-      authorizedRoles: ['facilitator']
+      authorizedRoles: ['Facilitator']
     }
   });
 }])
