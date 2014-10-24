@@ -8,10 +8,10 @@
                     Your password is: <b>{{registrant.password}}</b>.<br>
                     <a ui-sref="login">Go to login</a>
                 </span>
-                <span ng-show="registrant.exists">
+                <!-- <span ng-show="registrant.exists">
                     Your account already exists! <br>
                     <a ui-sref="forgotpassword({email: registrant.email})">Request new password</a>
-                </span>
+                </span> -->
                 <form class="form-register" ng-submit="register(credentials)">
                     <select class="form-control" ng-model="registrant.role">
                       <option>Facilitator</option>
