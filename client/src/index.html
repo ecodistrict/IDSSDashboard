@@ -11,11 +11,31 @@
 
     <!-- compiled JavaScript --><% scripts.forEach( function ( file ) { %>
     <script type="text/javascript" src="static/<%= file %>"></script><% }); %>
+    
+    <script src="/socket.io/socket.io.js" type="text/javascript"></script>
 
   </head>
   <body>
 
     <div ui-view="header" id="header"></div>
+    <!-- Subscribe to success flash messages. -->
+    <span flash-alert="success" active-class="in alert" class="fade flash-message pull-right" duration="2000">
+        <span class="alert-message">{{flash.message}}</span>
+    </span>
+
+    <!-- Subscribe to error flash messages. -->
+    <span flash-alert="error" active-class="in alert" class="fade flash-message pull-right" duration="2000">
+        <span class="alert-message">{{flash.message}}</span>
+    </span>
+    <!-- Subscribe to warn flash messages. -->
+    <span flash-alert="warn" active-class="in alert" class="fade flash-message pull-right" duration="2000">
+        <span class="alert-message">{{flash.message}}</span>
+    </span>
+
+    <!-- Subscribe to info flash messages. -->
+    <span flash-alert="info" active-class="in alert" class="fade flash-message pull-right" duration="2000">
+        <span class="alert-message">{{flash.message}}</span>
+    </span>  
 
 
     <div ui-view="main" id="main"></div>
