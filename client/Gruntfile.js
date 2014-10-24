@@ -28,7 +28,8 @@ module.exports = function ( grunt ) {
                 '<%= vendor_dir %>/angular-file-upload/angular-file-upload.js',
                 '<%= vendor_dir %>/d3/d3.js',
                 '<%= vendor_dir %>/nvd3/nv.d3.js',
-                '<%= vendor_dir %>/angular-nvd3/dist/angular-nvd3.js'
+                '<%= vendor_dir %>/angular-nvd3/dist/angular-nvd3.js',
+                '<%= vendor_dir %>/angular-flash/dist/angular-flash.js'
             ],
             stylesheets: [
                 '<%= vendor_dir %>/nvd3/nv.d3.css'
