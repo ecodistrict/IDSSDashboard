@@ -2,24 +2,31 @@ angular.module('idss-dashboard')
 
 .factory('ModuleService', ['$http', function ($http) {
 
+    var modules = [];
+
     var getModulesFromKpiId = function (kpiId) {
-        return $http
-            .get('/module/kpi/' + kpiId)
-            .then(function (res) {
-                return res.data;
+        
+        var foundList = _.filter(modules, function(module) {
+            return _.find(module.useKpis, function(kpi) {
+              return kpi === kpiId;
             });
+        }); 
+
+        return foundList;
     };
 
     var getAllModules = function() {
-        return $http
-            .get('/module')
-            .then(function (res) {
-                return res.data;
-            });
+        
+        return modules;
+    };
+
+    var addModule = function(module) {
+        modules.push(module);
     };
 
     return {
         getModulesFromKpiId: getModulesFromKpiId,
-        getAllModules: getAllModules
+        getAllModules: getAllModules,
+        addModule: addModule
     };
 }]);
