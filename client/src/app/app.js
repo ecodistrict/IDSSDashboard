@@ -40,7 +40,7 @@ angular.module( 'idss-dashboard', [
 })
 
 .config(['$urlRouterProvider', 'flashProvider', function myAppConfig ( $urlRouterProvider, flashProvider) {
-    $urlRouterProvider.otherwise( '/login' );
+    $urlRouterProvider.otherwise( '/start' );
     flashProvider.errorClassnames.push('alert-danger');
 }])
 
