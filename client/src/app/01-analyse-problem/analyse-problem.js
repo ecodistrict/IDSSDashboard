@@ -20,7 +20,7 @@ angular.module( 'idss-dashboard.analyse-problem', [
     },
     data:{ 
       pageTitle: 'Analyse problem',
-      authorizedRoles: ['facilitator']
+      authorizedRoles: ['Facilitator']
     }
   });
 }])
@@ -29,13 +29,11 @@ angular.module( 'idss-dashboard.analyse-problem', [
 
   $scope.currentProcess = ProcessService.getCurrentProcess();
 
-  // watch for every change in process, just to set a flag if its changed so it will save itself on page change
-  $scope.$watch('currentProcess', function(oldSettings, newSettings) {
-    if(oldSettings !== newSettings) {
-      console.log(oldSettings, newSettings);
-      ProcessService.setIsModified(true);
-    }
-  }, true);
+  $scope.updateProcess = function(){
+    ProcessService.saveCurrentProcess().then(function(process) {
+      console.log(process);
+    });
+  };
 
   $scope.layerOptions = [
     {name: "Road", label: "Road"},

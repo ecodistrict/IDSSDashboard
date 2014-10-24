@@ -6,12 +6,14 @@
         <form role="form">
           <div class="form-group">
             <label for="process-title">Please give a title to this decision process (ex: your high level ambition):</label>
-            <input type="text" ng-model="currentProcess.title" class="form-control" id="process-title" placeholder="Process title">
+            <input type="text" ng-model="currentProcess.title" ng-model-options="{ updateOn: 'blur' }"
+           ng-keyup="cancel($event)" ng-change="updateProcess()" class="form-control" id="process-title" placeholder="Process title">
           </div>
         </form>
     </div>
     <div class="row">
         <label>Please define the area of your project: </label>
+        <div id="district-map"></div>
         <district-map class="selection-map" district="currentProcess.district" layer="layer"></district-map>
         <select ng-model="layer" ng-options="l.name as l.label for l in layerOptions">
         </select>
@@ -24,7 +26,8 @@
         <form role="form">
           <div class="form-group">
             <label for="process-description">Please add a description text of your project (optional):</label>
-            <textarea class="form-control" id="process-description" rows="3">This project is aimed at…</textarea>
+            <textarea class="form-control" ng-model="currentProcess.description" ng-model-options="{ updateOn: 'blur' }"
+           ng-keyup="cancel($event)" ng-change="updateProcess()" id="process-description" rows="3">This project is aimed at…</textarea>
           </div>
         </form>
     </div>
