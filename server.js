@@ -1,9 +1,6 @@
 var express = require('express');
 var http = require('http');
-var fs = require('fs');   
 var _ = require('underscore');  
-var Busboy = require('busboy');  
-var StringDecoder = require('string_decoder').StringDecoder;  
 
 var mongoose = require('mongoose');
 var passport = require('passport');
@@ -54,7 +51,9 @@ app.use(bodyParser.json({
 
 app.use(session({ 
     cookie: {maxAge: 60000 * 60 * 24 * 30},
-    secret: "session secret" ,
+    secret: "session secret",
+    saveUninitialized: true,
+    resave: true,
     store: new MongoStore({
             url: dbConnect,
             auto_reconnect:true
@@ -114,9 +113,11 @@ app.use(staticUrl, function(req, res, next) {
 var userRepository = require('./lib/user');
 var processRepository = require('./lib/process');
 var kpiRepository = require('./lib/kpi');
+var exportFile = require('./lib/export');
 require('./lib/routes/user').addRoutes(app, userRepository, passport);
 require('./lib/routes/process').addRoutes(app, processRepository);
 require('./lib/routes/kpi').addRoutes(app, kpiRepository);
+require('./lib/routes/export').addRoutes(app, exportFile);
 
 // ************* TEST VARIABLES 
 
@@ -343,24 +344,6 @@ require('./lib/routes/kpi').addRoutes(app, kpiRepository);
 
 //   res.json(200, moduleRepo);
   
-// });
-
-// app.get('/export/ecodist', function(req, res) {
-
-//   var currentProcessTitle = currentProcess.title || 'not named';
-
-//   // TODO: handle other types of strange strings
-//   currentProcessTitle = currentProcessTitle.split(' ').join('-'); 
-
-//   var outputFilename = './export/' + currentProcessTitle + '.ecodist';
-
-//   fs.writeFile(outputFilename, JSON.stringify({process: currentProcess}, null, 4), function(err) {
-//       if(err) {
-//         res.json(500, err);
-//       } else {
-//         res.json(200, {title: currentProcessTitle});
-//       }
-//   });
 // });
 
 // app.get('/module', function(req, res){
