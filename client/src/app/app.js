@@ -6,8 +6,11 @@ angular.module( 'idss-dashboard', [
   'ui.bootstrap',
   'angularFileUpload',
   'nvd3',
+  'angular-flash.service', 
+  'angular-flash.flash-alert-directive',
   'idss-dashboard.header',
   'idss-dashboard.login',
+  'idss-dashboard.register',
   'idss-dashboard.export',
   'idss-dashboard.user',
   'idss-dashboard.start',
@@ -17,7 +20,8 @@ angular.module( 'idss-dashboard', [
   'idss-dashboard.as-is',
   'idss-dashboard.to-be',
   'idss-dashboard.develop-variants',
-  'idss-dashboard.assess-variants'
+  'idss-dashboard.assess-variants',
+  'idss-dashboard.view3d'
 ])
 
 .constant('AUTH_EVENTS', {
@@ -31,19 +35,21 @@ angular.module( 'idss-dashboard', [
 
 .constant('USER_ROLES', {
     all: '*',
-    facilitator: 'facilitator',
-    stakeholder: 'stakeholder'
+    facilitator: 'Facilitator',
+    stakeholder: 'Stakeholder'
 })
 
-.config(['$stateProvider', '$urlRouterProvider', function myAppConfig ( $stateProvider, $urlRouterProvider ) {
-    $urlRouterProvider.otherwise( '/start' );
+.config(['$urlRouterProvider', 'flashProvider', function myAppConfig ( $urlRouterProvider, flashProvider) {
+    $urlRouterProvider.otherwise( '/login' );
+    flashProvider.errorClassnames.push('alert-danger');
 }])
 
-.controller( 'AppCtrl', [ '$scope', '$rootScope', '$location', 'USER_ROLES', 'authService', 'LoginService', 'ProcessService', function AppCtrl ( $scope, $rootScope, $location, USER_ROLES, authService, LoginService, ProcessService ) {
+.controller( 'AppCtrl', [ '$scope', '$rootScope', '$location', 'USER_ROLES', 'authService', 'LoginService', 'ProcessService', 'socket', 'ModuleService', '$state', function AppCtrl ( $scope, $rootScope, $location, USER_ROLES, authService, LoginService, ProcessService, socket, ModuleService, $state) {
 
     var init = function(user) {
       $scope.isAuthenticated = LoginService.isAuthenticated();
       $scope.currentUser = user;
+      // while waiting for current process to load use the default empty process from process service
       $scope.currentProcess = ProcessService.getCurrentProcess();
 
       // load current process
@@ -53,44 +59,59 @@ angular.module( 'idss-dashboard', [
         } 
       });
 
+      socket.send('getModules');
+    
+      socket.on('module', function(moduleData) {
+        console.log(moduleData);
+        ModuleService.addModule(moduleData);
+      });
+
+      socket.on('moduleSelected', function(module) {
+        console.log(module);
+        ProcessService.addInputsToModule(module);
+      });
+    
+      socket.on('modelResult', function(module) {
+        console.log(module);
+        ProcessService.addOutputsToModule(module);
+      });
+
+      // register event to check auth on page change
       $rootScope.$on('$stateChangeStart', function (event, next) {
           var authorizedRoles = next.data.authorizedRoles;
           if (!LoginService.isAuthorized(authorizedRoles)) {
               event.preventDefault();
               if (LoginService.isAuthenticated()) {
-                  // user is not allowed
+                  // user is authenticated but not authorized - we could inform that
+                  // for now, send user to login
                   $rootScope.$broadcast('event:auth-loginRequired');
               } else {
-                  // user is not logged in
-                  console.log('TODO: handle role');
+                  $rootScope.$broadcast('event:auth-loginRequired');
               }
-          } else {
-            var currentProcess = ProcessService.getCurrentProcess();
-            if(currentProcess.isModified) {
-              ProcessService.saveCurrentProcess().then(function() {
-                console.log('current process was saved');
-              });
-            }
-          }
+          } 
       });
     };
     // if already logged in
     LoginService.getCurrentUser().then(function(user) {
+      console.log('already logged in');
       init(user);
+      //$state.transitionTo('start');
     });
 
     // global event - going into unauth state
     $scope.$on('event:auth-loginRequired', function() {
         console.log('login required');
         $scope.isAuthenticated = LoginService.isAuthenticated();
-        $location.path('/login'); 
+        $state.transitionTo('login');
     });
 
     // global event - going into auth state after login
     $scope.$on('event:auth-loginConfirmed', function() {
         console.log('login confirmed');
-        init(user);
-        $location.path('/start');
+        LoginService.getCurrentUser().then(function(user) {
+          init(user);
+          $state.transitionTo('start');
+        });
     });
 
     $scope.$on('$stateChangeSuccess', function(event, toState){
@@ -98,6 +119,38 @@ angular.module( 'idss-dashboard', [
         if ( angular.isDefined( toState.data.pageTitle ) ) {
             $scope.pageTitle = 'Ecodistr-ict Dashboard | ' + toState.data.pageTitle;
         }
-    });
+    });    
 
+}]).factory('socket', ['$rootScope', function ($rootScope) {
+  var socket = io.connect();
+  return {
+    on: function (eventName, callback) {
+      socket.on(eventName, function () {  
+        var args = arguments;
+        $rootScope.$apply(function () {
+          callback.apply(socket, args);
+        });
+      });
+    },
+    emit: function (eventName, data, callback) {
+      socket.emit(eventName, data, function () {
+        var args = arguments;
+        $rootScope.$apply(function () {
+          if (callback) {
+            callback.apply(socket, args);
+          }
+        });
+      });
+    },
+    send: function (eventName, callback) {
+      socket.send(eventName, function () {
+        var args = arguments;
+        $rootScope.$apply(function () {
+          if (callback) {
+            callback.apply(socket, args);
+          }
+        });
+      });
+    }
+  };
 }]);
