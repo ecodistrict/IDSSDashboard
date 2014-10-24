@@ -23,6 +23,12 @@
     "passport": "^0.2.0",
     "passport-local": "^1.0.0",
     "underscore": "^1.6.0",
-    "busboy": "^0.2.8"
+    "busboy": "^0.2.8",
+    "request": "^2.45.0",
+    "mongoose": "^3.8.17",
+    "bcrypt": "^0.8.0",
+    "connect-mongo": "^0.4.1",
+    "validator": "^3.22.0",
+    "shortid": "^2.0.1"
   }
 }
