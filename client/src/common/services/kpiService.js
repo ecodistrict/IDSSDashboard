@@ -4,13 +4,23 @@ angular.module('idss-dashboard')
 
     var loadKpis = function () {
         return $http
-            .get('/kpi')
+            .get('/kpis')
             .then(function (res) {
                 return res.data;
             });
     };
+
+    var createKpi = function(kpiToCreate) {
+        return $http
+            .post('kpis', kpiToCreate)
+            .then(function (res) {
+                var kpi = res.data;
+                return kpi;
+            });
+    };
    
     return {
-        loadKpis: loadKpis
+        loadKpis: loadKpis,
+        createKpi: createKpi
     };
 }]);
