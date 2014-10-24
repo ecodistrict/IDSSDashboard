@@ -16,16 +16,22 @@ angular.module( 'idss-dashboard.modules', [
     },
     data:{ 
       pageTitle: 'Modules',
-      authorizedRoles: ['facilitator']
+      authorizedRoles: ['Facilitator']
     }
   });
 }])
 
 .controller( 'ModulesCtrl', ['$scope', 'ModuleService', function ModulesCtrl( $scope, ModuleService ) {
 
-  ModuleService.getAllModules().then(function(modules) {
-    $scope.modules = modules;
-  });
+  $scope.moduleService = ModuleService;
+
+  $scope.$watch('moduleService.getAllModules()', function(newList, oldList) {
+    if(newList !== oldList) {
+      $scope.modules = newList;
+    }
+  }); 
+
+  $scope.modules = ModuleService.getAllModules();
 
 }]);
 
