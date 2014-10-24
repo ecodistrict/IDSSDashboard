@@ -100,7 +100,7 @@ angular.module('idss-dashboard')
     var addKpi = function(kpi) {
         // only add if not already exists
         var found = _.find(currentProcess.kpiList, function(item) {
-            return kpi.id === item.id;
+            return kpi.alias === item.alias;
         });
         if(!found) {
             currentProcess.kpiList.push(kpi);
