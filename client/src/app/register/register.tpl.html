@@ -1,0 +1,29 @@
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-md-4 col-md-offset-4">
+            <h1 class="text-center register-title">Register</h1>
+            <div class="register-wall">
+                <span ng-show="registrant.password">
+                    Your account was successfully created! <br>
+                    Your password is: <b>{{registrant.password}}</b>.<br>
+                    <a ui-sref="login">Go to login</a>
+                </span>
+                <span ng-show="registrant.exists">
+                    Your account already exists! <br>
+                    <a ui-sref="forgotpassword({email: registrant.email})">Request new password</a>
+                </span>
+                <form class="form-register" ng-submit="register(credentials)">
+                    <select class="form-control" ng-model="registrant.role">
+                      <option>Facilitator</option>
+                      <option>Example role 1</option>
+                      <option>Example role 2</option>
+                    </select>
+                    <input type="text" class="form-control" ng-model="registrant.firstName" placeholder="First name" required autofocus>
+                    <input type="text" class="form-control" ng-model="registrant.lastName" placeholder="Last name" required>
+                    <input type="text" class="form-control" ng-model="registrant.email" placeholder="Email" required>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
