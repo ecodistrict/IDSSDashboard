@@ -1,25 +1,25 @@
 angular.module('idss-dashboard')
 
-.factory('LoginService', ['$http', 'Session', '$location', 'authService', '$rootScope', function ($http, Session, $location, authService, $rootScope) {
+.factory('LoginService', ['$http', 'Session', '$location', 'authService', '$rootScope', 'NotificationService', function ($http, Session, $location, authService, $rootScope, NotificationService) {
 
     var login = function (credentials) {
         return $http
-            .post('/login', credentials)
+            .post('users/login', credentials)
             .then(function (res) {
                 var user = res.data;
                 authService.loginConfirmed();
-                Session.create(user.id, user.userId, user.userRole);
+                Session.create(user.sessionId, user._id, user.role);
                 return user;
             });
     };
 
     var getCurrentUser = function() {
         return $http
-            .get('/authenticated-user')
+            .get('users/authenticated')
             .then(function (res) {
                 var user = res.data;
                 if(!isAuthenticated()) {
-                    Session.create(user.id, user.userId, user.userRole);
+                    Session.create(user.sessionId, user._id, user.role);
                 }
                 return user;
             });
@@ -27,7 +27,7 @@ angular.module('idss-dashboard')
 
     var logout = function() {
         return $http
-            .get('/logout')
+            .get('users/logout')
             .then(function (res) {
                 Session.destroy();
                 $rootScope.$broadcast('event:auth-loginRequired');
@@ -56,12 +56,40 @@ angular.module('idss-dashboard')
         return (isAuthenticated() && isAuthorized);
     };
 
+    var createLogin = function(registrant) {
+        return $http({
+                method: 'POST',
+                url:'users',
+                data: registrant
+            }).error(function(err) {
+                NotificationService.createErrorFlash(err.message);
+            }).then(function(res) {
+                var user = res.data;
+                NotificationService.createSuccessFlash(user.fname + ' ' + user.lname + ' (' + user.email + ') was added as a user');
+                return user;
+            });
+    };
+
+    var forgotPassword = function(credentials) {
+        return $http
+            .get('users/password/' + credentials.email).error(function(err) {
+                NotificationService.createErrorFlash(err.message);
+            })
+            .then(function (res) {
+                var user = res.data;
+                NotificationService.createSuccessFlash('New password was generated');
+                return user;
+            });
+    };
+
     return {
         login: login,
         logout: logout,
         isAuthenticated: isAuthenticated,
         isAuthorized: isAuthorized,
-        getCurrentUser: getCurrentUser
+        getCurrentUser: getCurrentUser,
+        createLogin: createLogin,
+        forgotPassword: forgotPassword
     };
 }])
 
