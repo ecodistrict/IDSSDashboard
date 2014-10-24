@@ -16,7 +16,7 @@ angular.module( 'idss-dashboard.export', [
     },
     data:{ 
       pageTitle: 'Export',
-      authorizedRoles: ['facilitator']
+      authorizedRoles: ['Facilitator']
     }
   });
 }])

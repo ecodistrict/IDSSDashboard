@@ -20,9 +20,9 @@ angular.module( 'idss-dashboard.start.upload', [])
   });
 }])
 
-.controller( 'UploadCtrl', ['$scope', '$fileUploader', 'ProcessService', function UploadCtrl( $scope, $fileUploader, ProcessService ) {
+.controller( 'UploadCtrl', ['$scope', '$fileUploader', 'ProcessService', '$state', function UploadCtrl( $scope, $fileUploader, ProcessService, $state ) {
   
-  var uploadUrl = 'process/upload';
+  var uploadUrl = 'processes/upload';
 
   var uploader = $scope.uploader = $fileUploader.create({
     scope: $scope, 
@@ -33,7 +33,7 @@ angular.module( 'idss-dashboard.start.upload', [])
       // TODO: add item formdata to input.sources array
       console.info('Success', xhr, item, response);
       ProcessService.updateProcess(response);
-      $scope.$apply();
+      $state.transitionTo('analyse-problem');
   });
 
   uploader.bind('cancel', function (event, xhr, item) {
