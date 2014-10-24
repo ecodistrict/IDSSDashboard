@@ -1,0 +1,41 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()" data-dismiss="modalInstance" aria-hidden="true">&times;</button>
+    <h3>{{ kpi.name }}</h3>
+</div>
+<div class="modal-body">
+    <h3>KPI Configuration</h3>
+    <form role="form">
+        <div class="form-group">
+            <label for="kpi-name">Name</label>
+            <input type="text" ng-model="kpi.name" class="form-control" id="kpi-name" placeholder="Name">
+        </div>
+        <div class="form-group">
+            <label for="kpi-description">Description</label>
+            <textarea type="text" ng-model="kpi.description" rows="3" class="form-control" id="kpi-description" placeholder="Name"></textarea>
+        </div>
+        <div class="btn-group">
+          <button type="button" ng-class="{active: qualitative==false}" class="btn btn-default" ng-click="qualitative=false">Quantitative</button>
+          <button type="button" ng-class="{active: qualitative==true}" class="btn btn-default" ng-click="qualitative=true">Qualitative</button>
+        </div>
+        <div class="form-group" ng-show="!qualitative">
+            <label for="kpi-unit">Unit</label>
+            <input type="text" ng-model="kpi.unit" class="form-control" id="kpi-unit" placeholder="Unit">
+        </div>
+        <div class="form-group" ng-show="!qualitative">
+            <label for="kpi-min-value">Min value</label>
+            <input type="text" ng-model="kpi.min" class="form-control" id="kpi-min-value" placeholder="Min value">
+        </div>
+        <div class="form-group" ng-show="!qualitative">
+            <label for="kpi-max-value">Max value</label>
+            <input type="text" ng-model="kpi.max" class="form-control" id="kpi-max-value" placeholder="Max value">
+        </div>
+        <div class="btn-group">
+          <button type="button" ng-class="{active: kpi.official==false}" class="btn btn-default" ng-click="kpi.official=false">Private</button>
+          <button type="button" ng-class="{active: kpi.official==true}" class="btn btn-default" ng-click="kpi.official=true">Public</button>
+        </div>
+    </form>
+</div>  
+<div class="modal-footer">
+    <a class="btn btn-sm btn-warning" ng-click="cancel()"><i class="glyphicon glyphicon-ban-circle"></i> Cancel</a>
+    <a class="btn btn-primary btn-sm" ng-click="ok()"><i class="glyphicon glyphicon-floppy-disk"></i> Save</a>
+</div>  
