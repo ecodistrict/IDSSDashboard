@@ -1,6 +1,6 @@
 angular.module('idss-dashboard')
 
-.factory('ProcessService', ['$http', function ($http) {
+.factory('ProcessService', ['$http', 'NotificationService', function ($http, NotificationService) {
 
     var currentProcess = {
         district: {
@@ -22,6 +22,7 @@ angular.module('idss-dashboard')
     // used mostly when fetching a saved process from the server
     // user should always be warned because local data is replaced!
     var updateProcess = function(newProcessData) {
+        currentProcess._id = newProcessData._id;
         currentProcess.district = newProcessData.district; // remove reference ATT!
         currentProcess.title = newProcessData.title;
         currentProcess.kpiList = newProcessData.kpiList;
@@ -44,7 +45,7 @@ angular.module('idss-dashboard')
 
     var loadCurrentProcess = function() {
         return $http
-            .get('/process')
+            .get('processes/active')
             .then(function (res) {
                 var process = res.data;
                 if(process) {
@@ -59,10 +60,14 @@ angular.module('idss-dashboard')
 
     var saveCurrentProcess = function () {
         return $http
-            .post('/process', currentProcess)
+            .put('processes', currentProcess)
+            .error(function(status, err) {
+                NotificationService.createErrorStatus('Error when saving process');
+            })
             .then(function (res) {
                 var savedProcess = res.data;
-                currentProcess.lastSaved = savedProcess.lastSaved;
+                NotificationService.createSuccessStatus('Last saved ' + savedProcess.dateModified);
+                currentProcess.dateModified = savedProcess.dateModified; // current reference needs to be reused
                 setIsModified(false);
                 return currentProcess;
             });
@@ -70,7 +75,7 @@ angular.module('idss-dashboard')
 
     var createNewProcess = function() {
         return $http
-            .put('/process')
+            .post('processes')
             .then(function (res) {
                 var process = res.data;
                 if(process) {
@@ -81,10 +86,6 @@ angular.module('idss-dashboard')
     };
 
     var getCurrentProcess = function() {
-        // TODO: fix the state
-        if(!currentProcess.state) {
-            currentProcess.state = 'As is';
-        }
         return currentProcess;
     };
 
@@ -131,6 +132,24 @@ angular.module('idss-dashboard')
         }
     };
 
+    var addInputsToModule = function(module) {
+        _.each(currentProcess.kpiList, function(kpi) {
+            if(kpi.selectedModule.id === module.id) {
+                kpi.selectedModule.inputs = module.inputs;
+            }
+        }); 
+    };
+
+    var addOutputsToModule = function(module) {
+        console.log(module);
+        _.each(currentProcess.kpiList, function(kpi) {
+            if(kpi.selectedModule.id === module.id) {
+                kpi.selectedModule.outputs = module.outputs;
+                kpi.selectedModule.isProcessing = false;
+            }
+        }); 
+    };
+
     return {
         saveCurrentProcess: saveCurrentProcess,
         getCurrentProcess: getCurrentProcess,
@@ -142,6 +161,8 @@ angular.module('idss-dashboard')
         addKpi: addKpi,
         removeKpi: removeKpi,
         addVariant: addVariant,
-        removeVariant: removeVariant
+        removeVariant: removeVariant,
+        addInputsToModule: addInputsToModule,
+        addOutputsToModule: addOutputsToModule
     };
 }]);
