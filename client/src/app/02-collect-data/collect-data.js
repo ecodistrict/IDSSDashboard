@@ -18,7 +18,7 @@ angular.module( 'idss-dashboard.collect-data', [
     },
     data:{ 
       pageTitle: 'Collect Data',
-      authorizedRoles: ['facilitator']
+      authorizedRoles: ['Facilitator']
     }
   });
 }])

@@ -3,7 +3,7 @@ angular.module( 'idss-dashboard.collect-data.define-context', [
 
 .config(['$stateProvider', function config( $stateProvider ) {
   $stateProvider.state( 'define-context', {
-    url: '/define-context',
+    url: '/collect-data/define-context',
     views: {
       "main": {
         controller: 'DefineContextCtrl',
@@ -16,7 +16,7 @@ angular.module( 'idss-dashboard.collect-data.define-context', [
     },
     data:{ 
       pageTitle: 'Define context',
-      authorizedRoles: ['facilitator']
+      authorizedRoles: ['Facilitator']
     }
   });
 }])
@@ -25,10 +25,10 @@ angular.module( 'idss-dashboard.collect-data.define-context', [
 
   $scope.currentProcess = ProcessService.getCurrentProcess();
 
-  ContextService.getContextVariables($scope.currentProcess).then(function(contexts) {
-    console.log(contexts);
-    $scope.selectableContextVariables = contexts;
-  });
+  // ContextService.getContextVariables($scope.currentProcess).then(function(contexts) {
+  //   console.log(contexts);
+  //   $scope.selectableContextVariables = contexts;
+  // });
 
   $scope.useVariable = function(variable) {
     console.log('add this variable to currentProcess.context.variables');
