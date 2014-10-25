@@ -4,7 +4,7 @@ angular.module( 'idss-dashboard.collect-data.module-input', [
 
 .config(['$stateProvider', function config( $stateProvider ) {
   $stateProvider.state( 'module-input', {
-    url: '/collect-data/module-input/:kpiId/:moduleId',
+    url: '/collect-data/module-input/:kpiAlias/:moduleId',
     views: {
       "main": {
         controller: 'ModuleInputCtrl',
@@ -24,7 +24,7 @@ angular.module( 'idss-dashboard.collect-data.module-input', [
 
 .controller( 'ModuleInputCtrl', ['$scope', 'ProcessService', '$stateParams', '$fileUploader', function ModuleInputCtrl( $scope, ProcessService, $stateParams, $fileUploader ) {
 
-  if(!$stateParams.kpiId || !$stateParams.moduleId) {
+  if(!$stateParams.kpiAlias || !$stateParams.moduleId) {
     console.log('missing params');
     return;
   }
@@ -40,7 +40,7 @@ angular.module( 'idss-dashboard.collect-data.module-input', [
     if(!kpi.selectedModule) {
       return false;
     } else {
-      return kpi.id === $stateParams.kpiId && kpi.selectedModule.id === $stateParams.moduleId;
+      return kpi.alias === $stateParams.kpiAlias && kpi.selectedModule.id === $stateParams.moduleId;
     }
   });
 
@@ -66,7 +66,7 @@ angular.module( 'idss-dashboard.collect-data.module-input', [
   setTemplateUrl(module.inputs);
 
   $scope.module = module;
-  $scope.kpiId = kpi.id;
+  $scope.kpiAlias = kpi.alias;
 
 }]);
 
