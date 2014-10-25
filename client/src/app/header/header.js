@@ -1,13 +1,22 @@
-angular.module( 'idss-dashboard.header', [
-])
+angular.module( 'idss-dashboard.header', [])
 
-.controller( 'HeaderCtrl', ['$scope', '$location', 'LoginService', function HeaderCtrl( $scope, $location, LoginService ) {
+.controller( 'HeaderCtrl', ['$scope', '$location', 'LoginService', '$state', '$rootScope', function HeaderCtrl( $scope, $location, LoginService, $state, $rootScope ) {
 
-  $scope.logout = function() {
+    $scope.logout = function() {
 
-  	LoginService.logout();
+        LoginService.logout();
 
-  };
+    };
+
+    $scope.$on('$stateChangeSuccess', function(event, toState){
+
+        var urlParts = toState.url.split('/');
+
+        $scope.highLightInMenu = urlParts[0] === "" ? urlParts[1] : urlParts[0];
+
+    });
+
+    console.log($scope.currentProcess);
 
 
 }]);

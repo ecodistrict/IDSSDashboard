@@ -16,14 +16,14 @@
         <div class="collapse navbar-collapse" id="bs-navbar-collapse">
             <!-- menu default -->
             <ul ng-show="isAuthenticated" class="nav navbar-nav">
-                <li class="dropdown">
+                <li class="dropdown" ng-class="{'active': highLightInMenu == 'analyse-problem'}">
                     <a class="dropdown-toggle">Analyse problem <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a ui-sref="analyse-problem">Overview</a></li>
                         <li class="divider"></li>
                         <li><a ui-sref="manage-kpis">Select KPIs</a></li>
                         <li class="submenu-item" ng-repeat="kpi in currentProcess.kpiList">
-                            <a ui-sref="kpi-input({kpiId: kpi.id})">- {{kpi.name}}</a>
+                            <a ui-sref="kpi-input({kpiId: kpi.alias})">- {{kpi.name}}</a>
                         </li>
                     </ul>
                 </li>
@@ -34,7 +34,7 @@
                         <li class="divider"></li>
                         <li><a ui-sref="collect-data">Module input</a></li>
                         <li ng-repeat="kpi in currentProcess.kpiList">
-                            <a ng-if="kpi.selectedModule" ui-sref="module-input({kpiId: kpi.id,moduleId: kpi.selectedModule.id})">- {{kpi.selectedModule.name}}</a>
+                            <a ng-if="kpi.selectedModule" ui-sref="module-input({kpiId: kpi.alias,moduleId: kpi.selectedModule.id})">- {{kpi.selectedModule.name}}</a>
                         </li>
                     </ul>
                 </li>
@@ -87,6 +87,16 @@
         </div>
     </div>
     <div ng-show="isAuthenticated && currentProcess.title" class="container-fluid sub-menu navbar-inverse">
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+                <a class="dropdown-toggle">Last saved: {{ currentProcess.dateModified | date:'HH:mm:ss' }} <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                    <li ng-repeat="log in currentProcess.logs.slice().reverse()">
+                        <a data-toggle="tooltip" data-placement="left" data-html="true" title="<p><b>{{log.label}}</b></p><p>Date: {{log.date | date: 'MMM dd yyyy HH:mm:ss'}}</p>" tooltip>{{log.date | date:'MMM dd HH:mm:ss'}} {{log.label}}</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
         <ul class="nav navbar-nav">
             <li class="dropdown">
                 <a class="dropdown-toggle">{{ currentProcess.title }} <span class="caret"></span></a>
@@ -96,6 +106,7 @@
                 </ul>
             </li>
         </ul>
+        
     </div>
 </nav>
 
