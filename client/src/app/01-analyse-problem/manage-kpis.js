@@ -60,9 +60,22 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [
 
     kpiModal.result.then(function (kpiToAdd) {
       console.log(kpiToAdd);
-      KpiService.createKpi(kpiToAdd);
+      KpiService.createKpi(kpiToAdd).then(function(kpi) {
+        $scope.kpiList.push(kpi);
+      });
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
+    });
+
+  };
+
+  $scope.deleteKpi = function(kpi) {
+
+    KpiService.deleteKpi(kpi).then(function() {
+      var index = _.indexOf($scope.kpiList, kpi);
+      if(index !== -1) {
+        $scope.kpiList.splice(index, 1);
+      }
     });
 
   };
