@@ -12,6 +12,7 @@ angular.module( 'idss-dashboard.analyse-problem.add-kpi', [])
       var k = $scope.kpi;
       if(k.unit && k.min && k.max) {
         k.inputs.push({
+          id: 'kpi-range',
           label: 'Select a value between ' + k.min + ' ' + k.unit + ' and ' + k.max + ' ' + k.unit,
           type: "number",
           min: k.min,

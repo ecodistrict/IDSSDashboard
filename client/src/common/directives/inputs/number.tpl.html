@@ -1,0 +1,13 @@
+<form class="form-horizontal" name="innerForm" role="form">
+    <span class="error" ng-show="innerForm.div.div.input.$error.required">Required!</span>
+    <span class="error" ng-show="innerForm.div.div.input.$error.number">Not valid number!</span>
+    <div class="form-group">
+      <label for="{{input.id}}" class="col-sm-8 control-label">{{input.label}}</label>
+      <div class="col-sm-4">
+        <div class="input-group">
+            <input ng-model="input.value" min="{{input.min}}" max="{{input.max}}" required id="{{input.id}}" class="form-control text-right" type="number">
+            <div class="input-group-addon">{{input.unit}}</div>
+        </div>
+      </div>
+    </div>
+</form>
