@@ -3,13 +3,13 @@
         
         <h2>Modules in KPI selection (<a ui-sref="manage-kpis">manage kpis</a>)</h2>
         <div ng-show="!currentProcess.kpiList.length">No kpis are registered</div>
-        <div ng-repeat="module in moduleList" class="panel panel-primary module-item" ui-sref="module-input({kpiId: module.kpi.id, moduleId: module.module.id})">
+        <div ng-repeat="moduleObject in moduleList" class="panel panel-primary module-item" ui-sref="module-input({kpiId: moduleObject.kpi.alias, moduleId: moduleObject.module.id})">
           <div class="panel-heading">
-            <h3 class="panel-title">{{module.module.name}} <span ng-hide="moduleIndataIsOk(module)" class="glyphicon glyphicon-exclamation-sign"></span></h3>
+            <h3 class="panel-title">{{moduleObject.module.name}} <span ng-hide="moduleInputIsOk(moduleObject.module)" class="glyphicon glyphicon-exclamation-sign"></span></h3>
           </div>
           <div class="panel-body">
             <div>
-                From KPI: {{module.kpi.name}}
+                From KPI: {{moduleObject.kpi.name}}
             </div>
           </div>
         </div>

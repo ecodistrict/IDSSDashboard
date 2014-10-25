@@ -37,7 +37,7 @@ angular.module( 'idss-dashboard.collect-data', [
     }
   });
 
-  $scope.moduleIndataIsOk = function(module) {
+  $scope.moduleInputIsOk = function(module) {
     return false;
   };
 
