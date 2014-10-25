@@ -4,7 +4,7 @@ angular.module( 'idss-dashboard.collect-data.module-input', [
 
 .config(['$stateProvider', function config( $stateProvider ) {
   $stateProvider.state( 'module-input', {
-    url: '/module-input/:kpiId/:moduleId',
+    url: '/collect-data/module-input/:kpiId/:moduleId',
     views: {
       "main": {
         controller: 'ModuleInputCtrl',
@@ -17,7 +17,7 @@ angular.module( 'idss-dashboard.collect-data.module-input', [
     },
     data:{ 
       pageTitle: 'Module input',
-      authorizedRoles: ['facilitator']
+      authorizedRoles: ['Facilitator']
     }
   });
 }])
