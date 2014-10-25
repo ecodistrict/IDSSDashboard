@@ -5,7 +5,7 @@ angular.module( 'idss-dashboard.as-is', [
 
 .config(['$stateProvider', function config( $stateProvider ) {
   $stateProvider.state( 'as-is', {
-    url: '/as-is',
+    url: '/as-is/:startOnPageLoad',
     views: {
       "main": {
         controller: 'AsIsController',
@@ -18,15 +18,16 @@ angular.module( 'idss-dashboard.as-is', [
     },
     data:{ 
       pageTitle: 'As is',
-      authorizedRoles: ['facilitator']
+      authorizedRoles: ['Facilitator']
     }
   });
 }])
 
-.controller( 'AsIsController', ['$scope', 'ProcessService', '$timeout', '$sce', function AsIsController( $scope, ProcessService, $timeout, $sce ) {
+.controller( 'AsIsController', ['$scope', 'ProcessService', '$timeout', '$sce', 'socket', '$state', function AsIsController( $scope, ProcessService, $timeout, $sce, socket, $state ) {
+
+  console.log($state.params.startOnPageLoad);
 
   $scope.currentProcess = ProcessService.getCurrentProcess();
-  $scope.currentProcess.state = 'As is'; 
 
   // since nvd3 options need functions and module config JSON does not allow functions
   // this function converts some settings to function for D3 
@@ -66,6 +67,7 @@ angular.module( 'idss-dashboard.as-is', [
 
   // set template urls to all outputs to generate corresponding directive
   var setTemplateUrl = function(outputs) {
+    if(!outputs) {return;}
     _.each(outputs, function(output) {
       output.template = 'directives/module-outputs/' + output.type + '.tpl.html';
       if(output.type === 'nvd3') {
@@ -77,19 +79,26 @@ angular.module( 'idss-dashboard.as-is', [
     });
   };
 
-  _.each($scope.currentProcess.kpiList, function(kpi) {
+  $scope.runModules = function() {
+
+    _.each($scope.currentProcess.kpiList, function(kpi) {
     var module = kpi.selectedModule;
     module.isProcessing = true;
     module.status = 'default';
-    setTemplateUrl(module.outputs);
-    $timeout(function() {
-      module.isProcessing = false;
-      module.status = 'success';
-      $scope.processing = modulesAreProcessing();
-    }, Math.floor(Math.random() * (3000 - 1000)) + 1000);
+    socket.emit('startModel', module);
+    // socket.on('startModel', function(module) {
+    //   //module.outputs = outputs;
+    //   console.log(module);
+    //   //setTemplateUrl(module.outputs);
+    // });
   });
 
+  };
+
+  
+
   var modulesAreProcessing = function() {
+
     var processing = false;
     _.each($scope.currentProcess.kpiList, function(kpi) {
       if(kpi.selectedModule.isProcessing) {
@@ -100,6 +109,16 @@ angular.module( 'idss-dashboard.as-is', [
   };
 
   $scope.processing = modulesAreProcessing();
+
+  $timeout(function() {
+    _.each($scope.currentProcess.kpiList, function(kpi) {
+      var module = kpi.selectedModule;
+      $scope.processing = modulesAreProcessing();
+      setTemplateUrl(module.outputs);
+      console.log(module);
+    });
+      
+  }, 1000);
 
   // All calculations needs an indicator to show calculation progress
 
