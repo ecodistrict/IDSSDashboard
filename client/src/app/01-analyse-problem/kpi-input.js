@@ -2,7 +2,7 @@ angular.module( 'idss-dashboard.analyse-problem.kpi-input', [])
 
 .config(['$stateProvider', function config( $stateProvider ) {
   $stateProvider.state( 'kpi-input', {
-    url: '/kpi-input/:kpiId',
+    url: '/kpi-input/:kpiAlias',
     views: {
       "main": {
         controller: 'KpiInputCtrl',
@@ -22,7 +22,7 @@ angular.module( 'idss-dashboard.analyse-problem.kpi-input', [])
 
 .controller( 'KpiInputCtrl', ['$scope', 'ProcessService', '$stateParams', '$fileUploader', function KpiInputCtrl( $scope, ProcessService, $stateParams, $fileUploader ) {
 
-  if(!$stateParams.kpiId) {
+  if(!$stateParams.kpiAlias) {
     console.log('missing params');
     return;
   }
@@ -30,7 +30,7 @@ angular.module( 'idss-dashboard.analyse-problem.kpi-input', [])
   var currentProcess = ProcessService.getCurrentProcess();
 
   var kpi = _.find(currentProcess.kpiList, function(kpi) {
-    return kpi.id === $stateParams.kpiId;
+    return kpi.alias === $stateParams.kpiAlias;
   });
 
   if(!kpi) {
@@ -85,7 +85,7 @@ angular.module( 'idss-dashboard.analyse-problem.kpi-input', [])
     });
   };
 
-  var uploadUrl = 'kpi/import/' + $stateParams.kpiId;
+  var uploadUrl = 'kpi/import/' + $stateParams.kpiAlias;
   console.log(uploadUrl);
 
   var uploader = $scope.uploader = $fileUploader.create({
