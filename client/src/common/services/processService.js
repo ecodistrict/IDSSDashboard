@@ -118,7 +118,7 @@ angular.module('idss-dashboard')
         });
         if(!found) {
             // add properties for instantiated kpi on process
-            kpi.selectedModule = {alias: null};
+            kpi.selectedModule = {id: null};
             currentProcess.kpiList.push(kpi);
             return saveCurrentProcess();
         }
