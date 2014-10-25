@@ -93,6 +93,13 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [
     });
 
     kpiModal.result.then(function (configuredKpi) {
+      kpi.inputs = configuredKpi.inputs;
+      kpi.selectedModule = configuredKpi.selectedModule;
+      console.log(configuredKpi);
+      if(!ModuleService.extendModuleData(kpi.selectedModule)) {
+        // TODO: this does not work, if user deselects a module is does not disappear
+        kpi.selectedModule = {id: null}; // module was disabled
+      }
       ProcessService.addLog({label: 'Configured KPI ' + kpi.name});
       ProcessService.saveCurrentProcess();
     }, function () {

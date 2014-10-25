@@ -6,7 +6,7 @@
 	<h3>Input and configuration</h3>
 	<kpi-input inputs="kpi.inputs"></kpi-input>
 	<h3>Select module</h3>
-	<select ng-model="kpi.selectedModule.alias" ng-options="module.alias as module.name for module in relevantModules">
+	<select ng-model="kpi.selectedModule.id" ng-options="module.id as module.name for module in relevantModules">
 		<option value="">-- select module --</option>
 	</select>
 	
