@@ -177,6 +177,11 @@ angular.module('idss-dashboard')
         console.log(currentProcess);
     };
 
+    // the AS IS is also a variant type
+    var getAsIsVariant = function() {
+        // TODO
+    };
+
     return {
         saveCurrentProcess: saveCurrentProcess,
         getCurrentProcess: getCurrentProcess,
@@ -190,6 +195,7 @@ angular.module('idss-dashboard')
         addVariant: addVariant,
         removeVariant: removeVariant,
         addInputsToModule: addInputsToModule,
-        addOutputsToModule: addOutputsToModule
+        addOutputsToModule: addOutputsToModule,
+        getAsIsVariant: getAsIsVariant
     };
 }]);
