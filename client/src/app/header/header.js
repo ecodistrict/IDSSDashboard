@@ -16,7 +16,4 @@ angular.module( 'idss-dashboard.header', [])
 
     });
 
-    console.log($scope.currentProcess);
-
-
 }]);
