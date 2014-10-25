@@ -117,14 +117,19 @@ angular.module('idss-dashboard')
             return kpi.alias === item.alias;
         });
         if(!found) {
+            // add properties for instantiated kpi on process
+            kpi.selectedModule = {alias: null};
             currentProcess.kpiList.push(kpi);
             return saveCurrentProcess();
         }
     };
 
     var removeKpi = function(kpi) {
-        var index = _.indexOf(currentProcess.kpiList, kpi);
-        if(index !== -1) {
+        var found = _.find(currentProcess.kpiList, function(k) {
+            return k.alias === kpi.alias;
+        });
+        if(found) {
+            var index = _.indexOf(currentProcess.kpiList, found);
             currentProcess.kpiList.splice(index, 1);
             return saveCurrentProcess();
         }

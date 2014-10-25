@@ -22,7 +22,7 @@ angular.module( 'idss-dashboard.analyse-problem.configure-kpi', [])
   	};
 
     $scope.removeKpiFromProcess = function(kpi) {
-      ProcessService.removeKpi(kpi);
+      ProcessService.removeKpi($scope.kpi);
       $modalInstance.dismiss('cancel');
     };
 
