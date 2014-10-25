@@ -1,6 +1,6 @@
 angular.module('idss-dashboard')
 
-.factory('ProcessService', ['$http', 'NotificationService', function ($http, NotificationService) {
+.factory('ProcessService', ['$http', 'NotificationService', '$filter', function ($http, NotificationService, $filter) {
 
     var currentProcess = {
         district: {
@@ -12,10 +12,9 @@ angular.module('idss-dashboard')
             geometry: []
         },
         title: null,
-        isModified: false,
-        requiredContextVariables: ['context1'],
         contextList: [],
-        kpiList: []
+        kpiList: [],
+        logs: []
     };
 
     // this function is used to set all properties of the process
@@ -23,29 +22,27 @@ angular.module('idss-dashboard')
     // user should always be warned because local data is replaced!
     var updateProcess = function(newProcessData) {
         currentProcess._id = newProcessData._id;
+        currentProcess.dateModified = newProcessData.dateModified;
         currentProcess.district = newProcessData.district; // remove reference ATT!
         currentProcess.title = newProcessData.title;
         currentProcess.kpiList = newProcessData.kpiList;
         currentProcess.contextList = newProcessData.contextList;
         currentProcess.description = newProcessData.description;
-        currentProcess.requiredContextVariables = newProcessData.requiredContextVariables;
-    };
-
-    var loadTestProcess = function() {
-        var processFileName = "process_EnergyModuleBuildingFootprintsAdded.json";
-        $http
-            .get('/static/' + processFileName)
-            .then(function (res) {
-                updateProcess(res.data);
-                setIsModified(true); // simulate a change in the process when loading from file
-                return currentProcess;
-            });
-
+        currentProcess.logs = newProcessData.logs;
     };
 
     var loadCurrentProcess = function() {
         return $http
             .get('processes/active')
+            .error(function(status, err) {
+                var label = 'Error when loading active process';
+                NotificationService.createErrorStatus(label);
+                addLog({
+                    label: label,
+                    err: err,
+                    status: status
+                });
+            })
             .then(function (res) {
                 var process = res.data;
                 if(process) {
@@ -62,13 +59,22 @@ angular.module('idss-dashboard')
         return $http
             .put('processes', currentProcess)
             .error(function(status, err) {
-                NotificationService.createErrorStatus('Error when saving process');
+                var label = 'Error when saving process';
+                NotificationService.createErrorStatus(label);
+                addLog({
+                    label: label,
+                    err: err,
+                    status: status
+                });
             })
             .then(function (res) {
                 var savedProcess = res.data;
-                NotificationService.createSuccessStatus('Last saved ' + savedProcess.dateModified);
+                var label = 'Process was saved';
+                NotificationService.createSuccessStatus(label);
+                addLog({
+                    label: label
+                });
                 currentProcess.dateModified = savedProcess.dateModified; // current reference needs to be reused
-                setIsModified(false);
                 return currentProcess;
             });
     };
@@ -76,11 +82,23 @@ angular.module('idss-dashboard')
     var createNewProcess = function() {
         return $http
             .post('processes')
+            .error(function(status, err) {
+                var label = 'Error when creating process';
+                NotificationService.createErrorStatus(label);
+                addLog({
+                    label: label,
+                    err: err,
+                    status: status
+                });
+            })
             .then(function (res) {
                 var process = res.data;
-                if(process) {
-                    updateProcess(res.data);
-                }
+                var label = 'Process was created';
+                NotificationService.createSuccessStatus(label);
+                addLog({
+                    label: label
+                });
+                updateProcess(process);
                 return currentProcess;
             });
     };
@@ -93,10 +111,6 @@ angular.module('idss-dashboard')
         return currentProcess.isModified;
     };
 
-    var setIsModified = function(isModified) {
-        currentProcess.isModified = isModified;
-    };
-
     var addKpi = function(kpi) {
         // only add if not already exists
         var found = _.find(currentProcess.kpiList, function(item) {
@@ -104,15 +118,15 @@ angular.module('idss-dashboard')
         });
         if(!found) {
             currentProcess.kpiList.push(kpi);
-            setIsModified(true);
+            return saveCurrentProcess();
         }
     };
 
     var removeKpi = function(kpi) {
         var index = _.indexOf(currentProcess.kpiList, kpi);
-        if(index) {
+        if(index !== -1) {
             currentProcess.kpiList.splice(index, 1);
-            setIsModified(true);
+            return saveCurrentProcess();
         }
     };
 
@@ -128,7 +142,6 @@ angular.module('idss-dashboard')
         var index = _.indexOf(currentProcess.variants, variant);
         if(index) {
             currentProcess.variants.splice(index, 1);
-            setIsModified(true);
         }
     };
 
@@ -150,15 +163,24 @@ angular.module('idss-dashboard')
         }); 
     };
 
+    var addLog = function(log) {
+        log.date = Date.now();
+        if(currentProcess.logs.length === 10) {
+            currentProcess.shift(currentProcess.logs);
+        }
+        currentProcess.logs.push(log);
+        console.log(currentProcess);
+    };
+
     return {
         saveCurrentProcess: saveCurrentProcess,
         getCurrentProcess: getCurrentProcess,
         loadCurrentProcess: loadCurrentProcess,
         createNewProcess: createNewProcess,
         getIsModified: getIsModified,
-        setIsModified: setIsModified,
         updateProcess: updateProcess,
         addKpi: addKpi,
+        addLog: addLog,
         removeKpi: removeKpi,
         addVariant: addVariant,
         removeVariant: removeVariant,
