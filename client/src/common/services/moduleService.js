@@ -24,9 +24,22 @@ angular.module('idss-dashboard')
         modules.push(module);
     };
 
+    var extendModuleData = function(module) {
+        var found = _.find(modules, function(m) {
+            return m._id === module._id;
+        });
+        if(found) {
+            _.extend(module, found);
+            return module;
+        } else {
+            return null;
+        }
+    };
+
     return {
         getModulesFromKpiId: getModulesFromKpiId,
         getAllModules: getAllModules,
-        addModule: addModule
+        addModule: addModule,
+        extendModuleData: extendModuleData
     };
 }]);
