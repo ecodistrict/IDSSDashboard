@@ -30,7 +30,8 @@ angular.module( 'idss-dashboard.analyse-problem', [
 
   $scope.currentProcess = ProcessService.getCurrentProcess();
 
-  $scope.updateProcess = function(){
+  $scope.updateProcess = function(logMessage){
+    ProcessService.addLog({label: logMessage});
     ProcessService.saveCurrentProcess().then(function(process) {
       console.log(process);
     });
