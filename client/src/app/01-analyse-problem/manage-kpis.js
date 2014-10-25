@@ -93,10 +93,8 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [
     });
 
     kpiModal.result.then(function (configuredKpi) {
-      console.log(configuredKpi);
-      // call for inputs of kpi
-      socket.emit('selectModel', configuredKpi);
-
+      ProcessService.addLog({label: 'Configured KPI ' + kpi.name});
+      ProcessService.saveCurrentProcess();
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
     });
