@@ -19,6 +19,7 @@ var imb = require('./lib/imb.js');
 require('./lib/models/user');
 require('./lib/models/process');
 require('./lib/models/kpi');
+require('./lib/models/variant');
 var User = mongoose.model('User'); // needed for passport below
 
 // *********** DB CONNECT ********* //
@@ -113,10 +114,12 @@ app.use(staticUrl, function(req, res, next) {
 var userRepository = require('./lib/user');
 var processRepository = require('./lib/process');
 var kpiRepository = require('./lib/kpi');
+var variantRepository = require('./lib/variant');
 var exportFile = require('./lib/export');
 require('./lib/routes/user').addRoutes(app, userRepository, passport);
 require('./lib/routes/process').addRoutes(app, processRepository);
 require('./lib/routes/kpi').addRoutes(app, kpiRepository);
+require('./lib/routes/variant').addRoutes(app, variantRepository);
 require('./lib/routes/export').addRoutes(app, exportFile);
 
 // ************* TEST VARIABLES 
