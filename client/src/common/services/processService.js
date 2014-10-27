@@ -2,6 +2,7 @@ angular.module('idss-dashboard')
 
 .factory('ProcessService', ['$http', 'NotificationService', '$filter', function ($http, NotificationService, $filter) {
 
+    // this is used while process is loading to avoid errors in GUI
     var currentProcess = {
         district: {
             properties: {
@@ -53,8 +54,6 @@ angular.module('idss-dashboard')
 
     };
 
-    //loadTestProcess();
-
     var saveCurrentProcess = function () {
         return $http
             .put('processes', currentProcess)
@@ -103,36 +102,35 @@ angular.module('idss-dashboard')
             });
     };
 
+    var deleteCurrentProcess = function() {
+        return $http
+            .delete('processes/' + currentProcess._id)
+            .error(function(status, data) {
+                var label = 'Error when deleting process';
+                NotificationService.createErrorFlash(label);
+                addLog({
+                    err: err, 
+                    label:label,
+                    status: status
+                });
+            })
+            .then(function (res) {
+                var process = res.data;
+                var label = 'Process ' + process.title + ' was successfully deleted';
+                NotificationService.createSuccessFlash(label);
+                addLog({
+                    label:label
+                });
+                return process; // TODO: reset process!
+            });
+    };
+
     var getCurrentProcess = function() {
         return currentProcess;
     };
 
     var getIsModified = function() {
         return currentProcess.isModified;
-    };
-
-    var addKpi = function(kpi) {
-        // only add if not already exists
-        var found = _.find(currentProcess.kpiList, function(item) {
-            return kpi.alias === item.alias;
-        });
-        if(!found) {
-            // add properties for instantiated kpi on process
-            kpi.selectedModule = {id: null};
-            currentProcess.kpiList.push(kpi);
-            return saveCurrentProcess();
-        }
-    };
-
-    var removeKpi = function(kpi) {
-        var found = _.find(currentProcess.kpiList, function(k) {
-            return k.alias === kpi.alias;
-        });
-        if(found) {
-            var index = _.indexOf(currentProcess.kpiList, found);
-            currentProcess.kpiList.splice(index, 1);
-            return saveCurrentProcess();
-        }
     };
 
     var addVariant = function(alternative, context) {
@@ -174,7 +172,13 @@ angular.module('idss-dashboard')
             currentProcess.shift(currentProcess.logs);
         }
         currentProcess.logs.push(log);
-        console.log(currentProcess);
+        // if the current process last saved date needs to update
+        // TODO: move the logging out of process??
+        if(log.updateLastSaved) {
+            // this is not optimal, sending the process to server just to update last saved date
+            // (this is probably because something outside the process was saved but for the user it is the "process" that was saved)
+            saveCurrentProcess();
+        }
     };
 
     // the AS IS is also a variant type
@@ -189,13 +193,12 @@ angular.module('idss-dashboard')
         createNewProcess: createNewProcess,
         getIsModified: getIsModified,
         updateProcess: updateProcess,
-        addKpi: addKpi,
         addLog: addLog,
-        removeKpi: removeKpi,
         addVariant: addVariant,
         removeVariant: removeVariant,
         addInputsToModule: addInputsToModule,
         addOutputsToModule: addOutputsToModule,
-        getAsIsVariant: getAsIsVariant
+        getAsIsVariant: getAsIsVariant,
+        deleteCurrentProcess: deleteCurrentProcess
     };
 }]);
