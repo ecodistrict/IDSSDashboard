@@ -4,7 +4,8 @@
 </div>
 <div class="modal-body">
 	<h3>Info</h3>
-	<p class="explanation-message">[ Info on this KPI ]</p>
+	<p ng-if="kpi.description">{{ kpi.description}}</p>
+	<p ng-if="!kpi.description">There is no description for this KPI</p>
 	<h3>Relevant modules</h3>
 	<div ng-show="relevantModules.length === 0">There are no modules registered for this KPI</div>
 	<div ng-repeat="module in relevantModules">
@@ -13,6 +14,6 @@
 	<a ui-sref="modules">Browse module database</a>
 </div>	
 <div class="modal-footer">
-	<a class="btn btn-sm btn-danger" ng-click="cancel()">Don't use this KPI</a>
+	<a class="btn btn-sm btn-warning" ng-click="cancel()">Cancel</a>
 	<a class="btn btn-primary btn-sm" ng-click="useKPI()">Use this KPI</a>
 </div>	

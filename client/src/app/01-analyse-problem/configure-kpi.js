@@ -1,6 +1,6 @@
 angular.module( 'idss-dashboard.analyse-problem.configure-kpi', [])
 
-.controller( 'ConfigureKpiCtrl', ['$scope', '$modalInstance', 'kpi', 'ModuleService', 'ProcessService', 'socket', function ConfigureKpiCtrl( $scope, $modalInstance, kpi, ModuleService, ProcessService, socket ) {
+.controller( 'ConfigureKpiCtrl', ['$scope', '$modalInstance', 'kpi', 'ModuleService', 'VariantService', function ConfigureKpiCtrl( $scope, $modalInstance, kpi, ModuleService, VariantService ) {
 
     // work on a reference
   	$scope.kpi = angular.copy(kpi);
@@ -22,9 +22,8 @@ angular.module( 'idss-dashboard.analyse-problem.configure-kpi', [])
   	};
 
     $scope.removeKpiFromProcess = function(kpi) {
-      ProcessService.removeKpi($scope.kpi);
+      VariantService.removeKpi($scope.kpi);
       $modalInstance.dismiss('cancel');
     };
-
 
 }]);

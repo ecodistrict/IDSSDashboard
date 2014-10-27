@@ -21,14 +21,14 @@
             <label for="kpi-unit">Unit</label>
             <input type="text" ng-model="kpi.unit" class="form-control" id="kpi-unit" placeholder="Unit">
         </div>
-        <div class="form-group" ng-show="!qualitative">
+        <!-- <div class="form-group" ng-show="!qualitative">
             <label for="kpi-min-value">Min value</label>
             <input type="text" ng-model="kpi.min" class="form-control" id="kpi-min-value" placeholder="Min value">
         </div>
         <div class="form-group" ng-show="!qualitative">
             <label for="kpi-max-value">Max value</label>
             <input type="text" ng-model="kpi.max" class="form-control" id="kpi-max-value" placeholder="Max value">
-        </div>
+        </div> -->
         <div class="btn-group">
           <button type="button" ng-class="{active: kpi.official==false}" class="btn btn-default" ng-click="kpi.official=false">Private</button>
           <button type="button" ng-class="{active: kpi.official==true}" class="btn btn-default" ng-click="kpi.official=true">Public</button>

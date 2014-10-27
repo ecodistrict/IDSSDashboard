@@ -10,17 +10,40 @@ angular.module( 'idss-dashboard.analyse-problem.add-kpi', [])
 
     var generateInputs = function() {
       var k = $scope.kpi;
-      if(k.unit && k.min && k.max) {
-        k.inputs.push({
-          id: 'kpi-range',
-          label: 'Select a value between ' + k.min + ' ' + k.unit + ' and ' + k.max + ' ' + k.unit,
-          type: "number",
-          min: k.min,
-          max: k.max,
+      // if(k.unit && k.min && k.max) {
+      //   k.inputs.push({
+      //     id: 'kpi-range',
+      //     label: 'Select a value between ' + k.min + ' ' + k.unit + ' and ' + k.max + ' ' + k.unit,
+      //     type: "number",
+      //     min: k.min,
+      //     max: k.max,
+      //     unit: k.unit
+      //   });
+      // }
+      k.inputs.push({
+        id: 'kpi-scores',
+        type: 'input-group',
+        label: 'Limits - define the scores',
+        info: 'Info about scores',
+        inputs: [{
+          id: 'kpi-score-excellent',
+          label: 'Excellent',
+          type: 'number',
           unit: k.unit
-        });
-      }
-      // continue adding more controls from kpi settings - quantitative fields and so on
+        },{
+          id: 'kpi-score-bad',
+          label: 'Bad',
+          type: 'number',
+          unit: k.unit
+        },{
+          id: 'priority',
+          type: 'slider',
+          label: 'Priority - select how important this KPI is for you',
+          info: 'Select how important this KPI is for you',
+          min: 1,
+          max: 5
+        }]
+      });
     };
 
     $scope.cancel = function () {
