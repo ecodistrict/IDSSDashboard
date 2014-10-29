@@ -4,7 +4,7 @@ angular.module( 'idss-dashboard.collect-data.module-input', [
 
 .config(['$stateProvider', function config( $stateProvider ) {
   $stateProvider.state( 'module-input', {
-    url: '/collect-data/module-input/:kpiAlias/:moduleId',
+    url: '/collect-data/module-input/:kpiAlias',
     views: {
       "main": {
         controller: 'ModuleInputCtrl',
@@ -18,13 +18,23 @@ angular.module( 'idss-dashboard.collect-data.module-input', [
     data:{ 
       pageTitle: 'Module input',
       authorizedRoles: ['Facilitator']
-    }
+    },
+    resolve:{
+      variants: ['VariantService', function(VariantService) {
+        var v = VariantService.getVariants();
+        if(v) {
+          return v;
+        } else {
+          return VariantService.loadVariants();
+        }
+      }]
+    }, 
   });
 }])
 
-.controller( 'ModuleInputCtrl', ['$scope', 'ProcessService', '$stateParams', '$fileUploader', function ModuleInputCtrl( $scope, ProcessService, $stateParams, $fileUploader ) {
+.controller( 'ModuleInputCtrl', ['$scope', 'ProcessService', '$stateParams', '$fileUploader', 'variants', function ModuleInputCtrl( $scope, ProcessService, $stateParams, $fileUploader, variants ) {
 
-  if(!$stateParams.kpiAlias || !$stateParams.moduleId) {
+  if(!$stateParams.kpiAlias) {
     console.log('missing params');
     return;
   }
@@ -34,14 +44,10 @@ angular.module( 'idss-dashboard.collect-data.module-input', [
   // - THE MODULE INDATA SPEC IN PROCESS NEED TO BE UPDATED
   // Create a test somehow to check if the module original spec has been updated
 
-  var currentProcess = ProcessService.getCurrentProcess();
+  $scope.asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
 
-  var kpi = _.find(currentProcess.kpiList, function(kpi) {
-    if(!kpi.selectedModule) {
-      return false;
-    } else {
-      return kpi.alias === $stateParams.kpiAlias && kpi.selectedModule.id === $stateParams.moduleId;
-    }
+  var kpi = _.find($scope.asIsVariant.kpiList, function(k) {
+    return k.alias === $stateParams.kpiAlias;
   });
 
   if(!kpi) {
@@ -49,24 +55,27 @@ angular.module( 'idss-dashboard.collect-data.module-input', [
     return;
   }
 
-  var module = kpi.selectedModule;
+  // var module = kpi.selectedModule;
 
-  console.log(module);
+  // console.log(module);
 
-  // set template urls to all inputs to generate corresponding directive
-  var setTemplateUrl = function(inputs) {
-    _.each(inputs, function(input) {
-      input.template = 'directives/module-inputs/' + input.type + '.tpl.html';
-      if(input.inputs) {
-        setTemplateUrl(input.inputs);
-      }
-    });
-  };
+  // // set template urls to all inputs to generate corresponding directive
+  // var setTemplateUrl = function(inputs) {
+  //   _.each(inputs, function(input) {
+  //     input.template = 'directives/module-inputs/' + input.type + '.tpl.html';
+  //     if(input.inputs) {
+  //       setTemplateUrl(input.inputs);
+  //     }
+  //   });
+  // };
 
-  setTemplateUrl(module.inputs);
+  // setTemplateUrl(module.inputs);
 
-  $scope.module = module;
-  $scope.kpiAlias = kpi.alias;
+  $scope.module = kpi.selectedModule;
+
+  // TODO: find the input of module!
+
+  console.log($scope.module);
 
 }]);
 

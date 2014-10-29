@@ -27,8 +27,6 @@ angular.module( 'idss-dashboard.to-be', [
 
   $scope.currentProcess = ProcessService.getCurrentProcess();
 
-  $scope.currentProcess.state = 'To be';
-
   $scope.configureKpi = function(kpi) {
 
     var kpiModal = $modal.open({

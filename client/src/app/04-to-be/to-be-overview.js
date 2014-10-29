@@ -23,7 +23,6 @@ angular.module( 'idss-dashboard.to-be.to-be-overview', [])
 .controller( 'ToBeOverviewController', ['$scope', 'ProcessService', '$timeout', '$sce', function ToBeOverviewController( $scope, ProcessService, $timeout, $sce ) {
 
   $scope.currentProcess = ProcessService.getCurrentProcess();
-  $scope.currentProcess.state = 'To be'; 
 
   // since nvd3 options need functions and module config JSON does not allow functions
   // this function converts some settings to function for D3 

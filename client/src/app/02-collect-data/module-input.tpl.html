@@ -11,7 +11,7 @@
         <h1 ng-show="!module">No module was found</i></h1>
     </div>
     <div class="row">
-        <div ng-repeat="input in module.inputs" ng-include="input.template"></div>
+        <kpi-input inputs="module.inputs"></kpi-input>
     </div>
     <div class="row">
         <form role="form">

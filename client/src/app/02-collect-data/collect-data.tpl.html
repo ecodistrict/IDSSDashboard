@@ -1,15 +1,15 @@
 <div class="container">
     <div class="row">
         
-        <h2>Modules in KPI selection (<a ui-sref="manage-kpis">manage kpis</a>)</h2>
-        <div ng-show="!currentProcess.kpiList.length">No kpis are registered</div>
-        <div ng-repeat="moduleObject in moduleList" class="panel panel-primary module-item" ui-sref="module-input({kpiAlias: moduleObject.kpi.alias, moduleId: moduleObject.module.id})">
+        <h2>Collect Data</h2>
+        <div ng-show="!asIsVariant.kpiList.length">No kpis are registered</div>
+        <div ng-repeat="kpi in asIsVariant.kpiList" class="panel panel-primary module-item" ui-sref="module-input({kpiAlias: kpi.alias})">
           <div class="panel-heading">
-            <h3 class="panel-title">{{moduleObject.module.name}} <span ng-hide="moduleInputIsOk(moduleObject.module)" class="glyphicon glyphicon-exclamation-sign"></span></h3>
+            <h3 class="panel-title">{{kpi.name}} <span ng-hide="moduleInputIsOk(kpi.selectedModule)" class="glyphicon glyphicon-exclamation-sign"></span></h3>
           </div>
           <div class="panel-body">
             <div>
-                From KPI: {{moduleObject.kpi.name}}
+               
             </div>
           </div>
         </div>

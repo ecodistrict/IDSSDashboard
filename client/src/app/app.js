@@ -59,21 +59,19 @@ angular.module( 'idss-dashboard', [
         } 
       });
 
-      socket.send('getModules');
+      socket.emit('getModels', {kpiList: []});
     
-      socket.on('module', function(moduleData) {
+      socket.on('getModels', function(moduleData) {
         console.log(moduleData);
         ModuleService.addModule(moduleData);
       });
 
-      socket.on('moduleSelected', function(module) {
-        console.log(module);
-        ProcessService.addInputsToModule(module);
+      socket.on('selectModel', function(module) {
+        console.log('module input spec was added to dashboard server: ' + module);
       });
     
       socket.on('modelResult', function(module) {
         console.log(module);
-        ProcessService.addOutputsToModule(module);
       });
 
       // register event to check auth on page change

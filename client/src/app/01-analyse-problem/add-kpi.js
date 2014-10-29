@@ -35,11 +35,17 @@ angular.module( 'idss-dashboard.analyse-problem.add-kpi', [])
           label: 'Bad',
           type: 'number',
           unit: k.unit
-        },{
-          id: 'priority',
-          type: 'slider',
-          label: 'Priority - select how important this KPI is for you',
-          info: 'Select how important this KPI is for you',
+        }]
+      }, {
+        id: 'priority-label',
+        type: 'input-group',
+        label: 'Select how important this KPI is for you',
+        info: 'Select a value between 1 - 5 where 1 is very important and 5 is not very important',
+        inputs: [{
+          //type: 'slider',
+          type: 'number',
+          label: 'Priority 1 - 5',
+          value: 3,
           min: 1,
           max: 5
         }]

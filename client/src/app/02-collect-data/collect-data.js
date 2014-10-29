@@ -16,6 +16,16 @@ angular.module( 'idss-dashboard.collect-data', [
         templateUrl: 'header/header.tpl.html' 
       }
     },
+    resolve:{
+      variants: ['VariantService', function(VariantService) {
+        var v = VariantService.getVariants();
+        if(v) {
+          return v;
+        } else {
+          return VariantService.loadVariants();
+        }
+      }]
+    }, 
     data:{ 
       pageTitle: 'Collect Data',
       authorizedRoles: ['Facilitator']
@@ -23,19 +33,20 @@ angular.module( 'idss-dashboard.collect-data', [
   });
 }])
 
-.controller( 'CollectDataCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', function CollectDataCtrl( $scope, KpiService, ProcessService, $modal ) {
+.controller( 'CollectDataCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', 'variants', function CollectDataCtrl( $scope, KpiService, ProcessService, $modal, variants ) {
 
-  $scope.currentProcess = ProcessService.getCurrentProcess();
-  $scope.moduleList = [];
-  console.log($scope.currentProcess);
-  _.each($scope.currentProcess.kpiList, function(kpi) {
-    if(kpi.selectedModule) {
-      $scope.moduleList.push({
-        kpi: kpi, 
-        module: kpi.selectedModule
-      });
-    }
-  });
+  $scope.asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
+
+  // $scope.moduleList = [];
+  // console.log($scope.currentProcess);
+  // _.each($scope.currentProcess.kpiList, function(kpi) {
+  //   if(kpi.selectedModule) {
+  //     $scope.moduleList.push({
+  //       kpi: kpi, 
+  //       module: kpi.selectedModule
+  //     });
+  //   }
+  // });
 
   $scope.moduleInputIsOk = function(module) {
     return false;

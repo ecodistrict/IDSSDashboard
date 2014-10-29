@@ -82,20 +82,18 @@ angular.module( 'idss-dashboard.as-is', [
   $scope.runModules = function() {
 
     _.each($scope.currentProcess.kpiList, function(kpi) {
-    var module = kpi.selectedModule;
-    module.isProcessing = true;
-    module.status = 'default';
-    socket.emit('startModel', module);
-    // socket.on('startModel', function(module) {
-    //   //module.outputs = outputs;
-    //   console.log(module);
-    //   //setTemplateUrl(module.outputs);
-    // });
-  });
+      var module = kpi.selectedModule;
+      module.isProcessing = true;
+      module.status = 'default';
+      socket.emit('startModel', module);
+      // socket.on('startModel', function(module) {
+      //   //module.outputs = outputs;
+      //   console.log(module);
+      //   //setTemplateUrl(module.outputs);
+      // });
+    });
 
   };
-
-  
 
   var modulesAreProcessing = function() {
 
