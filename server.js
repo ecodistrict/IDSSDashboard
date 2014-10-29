@@ -442,117 +442,125 @@ app.all('/*', function(req, res) {
 var imbConnection = new imb.TIMBConnection();
 imbConnection.connect('imb.lohman-solutions.com', 4000, 1234, 'dashboard', 'ecodistrict');
 
-var messageSub = imbConnection.subscribe('dashboard', true);
+var imbFrameworkSocket = imbConnection.subscribe('dashboard', true);
 
-io.sockets.on('connection', function(socket) {
+var sendModelRequest = function(requestObj) {
+  var request = JSON.stringify(requestObj).toString();
+  var message = imbConnection.publish('models', true);
+  var messageByteLength = Buffer.byteLength(request);
+  var eventPayload = new Buffer(4+messageByteLength);
+  var offset = 0;
+  eventPayload.writeInt32LE(messageByteLength, offset);
+  offset += 4;
+  eventPayload.write(request, offset);
+  message.normalEvent(imb.ekNormalEvent, eventPayload);
+};
 
-  console.log(socket.id);
+io.sockets.on('connection', function(dashboardWebClientSocket) {
 
-  socket.on('message', function(data){
+  console.log(dashboardWebClientSocket.id);
 
-    console.log(data);
+  // get requests from client
+  // dashboardWebClientSocket.on('message', function(method){
 
-    if(data === 'get3dData') {
+  //   switch(method) {
+  //     case 'getModels':
+  //       var requestObj = {
+  //         "type": "request",
+  //         "method": method,
+  //         "parameters": {
+  //           "kpiList": [{
+  //             "kpi": "01a333d2-b29c-42ee-9ae7-1a0195dc493c"
+  //           }]
+  //           }
+  //         }
 
-      socket.emit('3dData', test3dData);
+  //       break;
+  //   }
 
-    } else if (data === 'getModules') {
+  //   console.log(data);
 
-      var request = JSON.stringify({
-        "type": "request",
-        "method": "getModels",
-        "parameters": {
-         "kpiList": [{
-           "kpi": "01a333d2-b29c-42ee-9ae7-1a0195dc493c"
-         }]
-       }
-      });
+  //   if(data === 'get3dData') {
 
-      var message = imbConnection.publish('models', true);
-      var messageByteLength = Buffer.byteLength(request);
-      var eventPayload = new Buffer(4+messageByteLength);
-      var offset = 0;
-      eventPayload.writeInt32LE(messageByteLength, offset);
-      offset += 4;
-      eventPayload.write(request, offset);
-      message.normalEvent(imb.ekNormalEvent, eventPayload);
+  //     dashboardWebClientSocket.emit('3dData', test3dData);
 
-      //message.onHandleEvent(function{});
-      //imb.signalChangeObject(imbConn.socket, messageId, aAction, aObjectID, aAttribute);
+  //   } else if (data === 'getModules') {
 
-    }
+      
+  //     //message.onHandleEvent(function{});
+  //     //imb.signalChangeObject(imbConn.dashboardWebClientSocket, messageId, aAction, aObjectID, aAttribute);
 
-  });
+  //   }
 
-  socket.on('selectModel', function(module) {
-    console.log('selectModule');
-    console.log(module);
-    var request = JSON.stringify({ 
-    "type": "request",
-     "method": "selectModel",
-     "id": "68622",
-     "kpi": "01a333d2-b29c-42ee-9ae7-1a0195dc493c"
-    });
+  // });
 
-    var message = imbConnection.publish('models', true);
-      var messageByteLength = Buffer.byteLength(request);
-      var eventPayload = new Buffer(4+messageByteLength);
-      var offset = 0;
-      eventPayload.writeInt32LE(messageByteLength, offset);
-      offset += 4;
-      eventPayload.write(request, offset);
-      message.normalEvent(imb.ekNormalEvent, eventPayload);
-  });
-
-  socket.on('startModel', function(module) {
-    console.log(module);
-    var request = JSON.stringify({
+  dashboardWebClientSocket.on('getModels', function(kpiList) {
+    console.log('From dashboard client: ', kpiList);
+    var method = 'getModels';
+    var requestObj = {
       "type": "request",
-      "method": "startModel",
+      "method": method,
+      "parameters": {
+        "kpiList": kpiList
+      }
+    }
+    sendModelRequest(requestObj);
+  });
+
+  dashboardWebClientSocket.on('selectModel', function(kpi) {
+    var method = 'selectModel';
+    console.log('From client: ' + method + ', data: ' + kpi.selectedModule.id);
+    if(kpi.selectedModule && kpi.selectedModule.id) {
+      var requestObj = { 
+        "type": "request",
+        "method": "selectModel",
+        "id": kpi.selectedModule.id,
+        "kpi": kpi.alias
+      };
+      sendModelRequest(requestObj);
+    } else {
+      console.log('no model selected for kpi: ' + kpi.alias);
+    }
+  });
+
+  dashboardWebClientSocket.on('startModel', function(module) {
+    var method = 'startModel';
+    console.log('From client: ' + method + ' data: ' + module);
+    var requestObj = {
+      "type": "request",
+      "method": method,
       "id": module.id,
       "parameters": {
         "inputs": module.inputs,
         "variantId": 123456 // TODO: create an id on every as-is and variant
        }
-    });
-
-      var message = imbConnection.publish('models', true);
-      var messageByteLength = Buffer.byteLength(request);
-      var eventPayload = new Buffer(4+messageByteLength);
-      var offset = 0;
-      eventPayload.writeInt32LE(messageByteLength, offset);
-      offset += 4;
-      eventPayload.write(request, offset);
-      message.normalEvent(imb.ekNormalEvent, eventPayload);
+    };
+    sendModelRequest(requestObj);
   });
 
-  messageSub.onNormalEvent = function(eventDefinition, eventPayload) {
+  imbFrameworkSocket.onNormalEvent = function(eventDefinition, eventPayload) {
     var offset = 0;
     var length = eventPayload.readInt32LE(offset);
     offset += 4;
-    var name = eventPayload.toString('utf8', offset, offset + length);
-    
-    console.log(name);
-    var data = JSON.parse(name);
-    if(data.method === 'getModels') {
-      console.log(data);
-      socket.emit('module', data);
-    } else if(data.method === 'selectModel') {
-      console.log(data);
-      socket.emit('moduleSelected', data);
-      // TODO: module should be saved on httpServer
-      //moduleRepo.push(data);
-    } else if(data.method === 'startModel') {
-      console.log(data);
-      socket.emit('startModel', data);
-    } else if(data.method === 'modelResult') {
-      console.log(data);
-      socket.emit('modelResult', data);
+    var message = eventPayload.toString('utf8', offset, offset + length);
+    message = JSON.parse(message);
+    console.log('From framework: ' + message.method);
+    if(message.method === 'getModels') {
+      dashboardWebClientSocket.emit(message.method, message);
+    } else if(message.method === 'selectModel') {
+      variantRepository.addModel(message, function(model) {
+        dashboardWebClientSocket.emit(message.method, model);
+      });
+    } else if(message.method === 'startModel') {
+      dashboardWebClientSocket.emit(message.method, message);
+    } else if(message.method === 'modelResult') {
+      variantRepository.addModelResult(message, function(model) {
+        dashboardWebClientSocket.emit(message.method, model);
+      });
     }
   };
 
-  messageSub.onChangeObject = function(action, objectId, evName, attr) {
-    
+  imbFrameworkSocket.onChangeObject = function(action, objectId, evName, attr) {
     console.log(action, objectId, evName, attr);
   };
 
