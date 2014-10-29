@@ -31,7 +31,7 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [
   });
 }])
 
-.controller( 'ManageKpisCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', 'socket', 'ModuleService', 'VariantService', 'variants', function ManageKpisCtrl( $scope, KpiService, ProcessService, $modal, socket, ModuleService, VariantService, variants) {
+.controller( 'ManageKpisCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', 'ModuleService', 'VariantService', 'variants', function ManageKpisCtrl( $scope, KpiService, ProcessService, $modal, ModuleService, VariantService, variants) {
 
   $scope.asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
   //$scope.currentProcess = ProcessService.getCurrentProcess();
