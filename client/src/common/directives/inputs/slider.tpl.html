@@ -1,0 +1,8 @@
+<form role="form">
+    <div class="form-group">
+		<label>{{input.label}} <i ng-show="input.info" class="glyphicon glyphicon-question-sign" data-container="body" data-toggle="popover" data-placement="top" data-content="{{input.info}}" popover></i></label>
+		<br>
+		<slider data-slider-id='slider{{input.id}}' data-slider-min="{{input.min}}" data-slider-max="{{input.max}}" data-slider-step="1" data-slider-value="{{input.value}}"></slider>
+    </div>
+</form>
+
