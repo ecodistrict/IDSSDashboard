@@ -44,7 +44,7 @@ angular.module( 'idss-dashboard', [
     flashProvider.errorClassnames.push('alert-danger');
 }])
 
-.controller( 'AppCtrl', [ '$scope', '$rootScope', '$location', 'USER_ROLES', 'authService', 'LoginService', 'ProcessService', 'socket', 'ModuleService', '$state', function AppCtrl ( $scope, $rootScope, $location, USER_ROLES, authService, LoginService, ProcessService, socket, ModuleService, $state) {
+.controller( 'AppCtrl', [ '$scope', '$rootScope', '$location', 'USER_ROLES', 'authService', 'LoginService', 'ProcessService', 'socket', 'ModuleService', '$state', 'VariantService', function AppCtrl ( $scope, $rootScope, $location, USER_ROLES, authService, LoginService, ProcessService, socket, ModuleService, $state, VariantService) {
 
     var init = function(user) {
       $scope.isAuthenticated = LoginService.isAuthenticated();
@@ -68,6 +68,11 @@ angular.module( 'idss-dashboard', [
 
       socket.on('selectModel', function(module) {
         console.log('module input spec was added to dashboard server: ' + module);
+        VariantService.addModuleInputs(module);
+      });
+
+      socket.on('frameworkError', function(err) {
+        console.log('Error from server: ' + err);
       });
     
       socket.on('modelResult', function(module) {
