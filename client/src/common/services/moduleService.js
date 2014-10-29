@@ -7,7 +7,7 @@ angular.module('idss-dashboard')
     var getModulesFromKpiId = function (kpiId) {
         
         var foundList = _.filter(modules, function(module) {
-            return _.find(module.useKpis, function(kpi) {
+            return _.find(module.kpiList, function(kpi) {
               return kpi === kpiId;
             });
         }); 

@@ -146,6 +146,7 @@ angular.module('idss-dashboard')
             // extend new module with data from module list by id
             ModuleService.extendModuleData(kpi.selectedModule, true);
             // send request for getting inputs from module and save that in dashboard database
+            kpi.uid = variant._id;
             socket.emit('selectModel', kpi);
         }
         saveVariant(variant).then(function(savedVariant) {
@@ -165,6 +166,24 @@ angular.module('idss-dashboard')
             return saveVariant(asIsVariant);
         }
     };
+
+    // when user adds selected module to kpi this result updates the dashboard, the inputs has been saved on the server already
+    var addModuleInputs = function(kpi) {
+        var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
+        if(asIsVariant) {
+            var found = _.find(asIsVariant.kpiList, function(k) {
+                return k.alias === kpi.alias;
+            });
+            if(found) {
+                found.selectedModule.inputs = kpi.selectedModule.inputs;
+                console.log(found.selectedModule);
+            } else {
+                console.log('Error updating the module input: Kpi not found');
+            }
+        } else {
+            console.log('Error updating the module input: Variant not found');
+        }
+    };
    
     return {
         loadVariants: loadVariants,
@@ -173,6 +192,7 @@ angular.module('idss-dashboard')
         deleteVariant: deleteVariant,
         addKpi: addKpi,
         updateKpi: updateKpi,
-        removeKpi: removeKpi
+        removeKpi: removeKpi,
+        addModuleInputs: addModuleInputs
     };
 }]);
