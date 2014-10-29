@@ -148,23 +148,24 @@ angular.module('idss-dashboard')
         }
     };
 
-    var addInputsToModule = function(module) {
-        _.each(currentProcess.kpiList, function(kpi) {
-            if(kpi.selectedModule.id === module.id) {
-                kpi.selectedModule.inputs = module.inputs;
-            }
-        }); 
-    };
+    // Move to variant! 
+    // var addInputsToModule = function(module) {
+    //     _.each(currentProcess.kpiList, function(kpi) {
+    //         if(kpi.selectedModule.id === module.id) {
+    //             kpi.selectedModule.inputs = module.inputs;
+    //         }
+    //     }); 
+    // };
 
-    var addOutputsToModule = function(module) {
-        console.log(module);
-        _.each(currentProcess.kpiList, function(kpi) {
-            if(kpi.selectedModule.id === module.id) {
-                kpi.selectedModule.outputs = module.outputs;
-                kpi.selectedModule.isProcessing = false;
-            }
-        }); 
-    };
+    // var addOutputsToModule = function(module) {
+    //     console.log(module);
+    //     _.each(currentProcess.kpiList, function(kpi) {
+    //         if(kpi.selectedModule.id === module.id) {
+    //             kpi.selectedModule.outputs = module.outputs;
+    //             kpi.selectedModule.isProcessing = false;
+    //         }
+    //     }); 
+    // };
 
     var addLog = function(log) {
         log.date = Date.now();
@@ -196,8 +197,6 @@ angular.module('idss-dashboard')
         addLog: addLog,
         addVariant: addVariant,
         removeVariant: removeVariant,
-        addInputsToModule: addInputsToModule,
-        addOutputsToModule: addOutputsToModule,
         getAsIsVariant: getAsIsVariant,
         deleteCurrentProcess: deleteCurrentProcess
     };

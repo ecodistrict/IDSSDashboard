@@ -1,6 +1,6 @@
 angular.module('idss-dashboard')
 
-.factory('VariantService', ['$http', 'NotificationService', 'ProcessService', 'ModuleService', function ($http, NotificationService, ProcessService, ModuleService) {
+.factory('VariantService', ['$http', 'NotificationService', 'ProcessService', 'ModuleService', 'socket', function ($http, NotificationService, ProcessService, ModuleService, socket) {
 
     var variants = [];
 
@@ -13,8 +13,6 @@ angular.module('idss-dashboard')
     };
 
     var loadVariants = function () {
-          console.log('length work');
-
         return $http
             .get('variants')
             .error(function(status, data) {
@@ -140,9 +138,15 @@ angular.module('idss-dashboard')
         kpi.inputs = kpiToUpdate.inputs;
         // if the selected module is changed delete all module data in variant
         // TODO: NOTIFY USER!!! 
+        console.log('update kpi');
         if(kpi.selectedModule.id !== kpiToUpdate.selectedModule.id) {
+            console.log('update selected module');
+            // clear the previous selected module and set the new id
             kpi.selectedModule = kpiToUpdate.selectedModule;
-            ModuleService.extendModuleData(kpi.selectedModule);
+            // extend new module with data from module list by id
+            ModuleService.extendModuleData(kpi.selectedModule, true);
+            // send request for getting inputs from module and save that in dashboard database
+            socket.emit('selectModel', kpi);
         }
         saveVariant(variant).then(function(savedVariant) {
             return savedVariant;

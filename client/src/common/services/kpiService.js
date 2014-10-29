@@ -25,7 +25,7 @@ angular.module('idss-dashboard')
             .then(function (res) {
                 var kpi = res.data;
                 var label = 'KPI ' + kpi.name + ' was successfully created';
-                NotificationService.createErrorFlash(label);
+                NotificationService.createSuccessFlash(label);
                 ProcessService.addLog({
                     label:label
                 });
@@ -48,7 +48,7 @@ angular.module('idss-dashboard')
             .then(function (res) {
                 var kpi = res.data;
                 var label = 'KPI ' + kpi.name + ' was successfully deleted';
-                NotificationService.createErrorFlash(label);
+                NotificationService.createSuccessFlash(label);
                 ProcessService.addLog({
                     label:label
                 });
