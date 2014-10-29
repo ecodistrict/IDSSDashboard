@@ -29,10 +29,12 @@ module.exports = function ( grunt ) {
                 '<%= vendor_dir %>/d3/d3.js',
                 '<%= vendor_dir %>/nvd3/nv.d3.js',
                 '<%= vendor_dir %>/angular-nvd3/dist/angular-nvd3.js',
-                '<%= vendor_dir %>/angular-flash/dist/angular-flash.js'
+                '<%= vendor_dir %>/angular-flash/dist/angular-flash.js',
+                '<%= vendor_dir %>/seiyria-bootstrap-slider/js/bootstrap-slider.js'
             ],
             stylesheets: [
-                '<%= vendor_dir %>/nvd3/nv.d3.css'
+                '<%= vendor_dir %>/nvd3/nv.d3.css',
+                '<%= vendor_dir %>/seiyria-bootstrap-slider/css/bootstrap-slider.css'
             ],  
             assets: [
                 '<%= vendor_dir %>/bootstrap/dist/fonts/glyphicons-halflings-regular.eot',
