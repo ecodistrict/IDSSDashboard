@@ -75,7 +75,7 @@ angular.module('idss-dashboard').directive('districtMap', [function () {
                 interactions: ol.interaction.defaults({mouseWheelZoom: false}),
                 layers: layers,
                 controls: [zoomControl],
-                target: element[0],
+                target: 'district-map',//element[0],
                 ol3Logo: false,
                 view: new ol.View2D(viewSettings)
             });
@@ -168,12 +168,14 @@ angular.module('idss-dashboard').directive('districtMap', [function () {
 
             scope.$watch('layer', function(newLayer, oldLayer) {
                 if(newLayer !== oldLayer) {
+                    console.log(newLayer, oldLayer);
                     changeLayer(newLayer || 'Road');
                 }
             });
 
             scope.$watch('district', function(newDistrict, oldDistrict) {
-                if(newDistrict !== oldDistrict) {
+                if(newDistrict.geometry.length > 0 && newDistrict.geometry !== oldDistrict.geometry) {
+                    console.log(newDistrict, oldDistrict);
                     addDistrictFeature(newDistrict);
                 }
             });

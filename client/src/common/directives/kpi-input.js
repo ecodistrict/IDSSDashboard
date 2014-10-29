@@ -1,7 +1,7 @@
 angular.module('idss-dashboard').directive('kpiInput', ['$compile', function($compile) {
 
     // a simple check to see if input is not misspelled (that will crash browser because of ng-include cant find template)
-    var registeredInputs = ['number', 'input-group'];
+    var registeredInputs = ['number', 'input-group', 'slider'];
 
     return {
         restrict: 'E',

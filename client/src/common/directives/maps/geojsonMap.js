@@ -143,6 +143,7 @@ angular.module('idss-dashboard').directive('geojsonMap', [ 'ProcessService', '$t
 
             scope.$watch('data', function(newData, oldData) {
                 if(oldData !== newData) {
+                    console.log(newData);
                     initGeometryData(newData);
                 }
             });
