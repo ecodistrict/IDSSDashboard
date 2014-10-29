@@ -514,6 +514,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
       var requestObj = { 
         "type": "request",
         "method": "selectModel",
+        "uid": kpi.uid,
         "id": kpi.selectedModule.id,
         "kpi": kpi.alias
       };
@@ -548,8 +549,12 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     if(message.method === 'getModels') {
       dashboardWebClientSocket.emit(message.method, message);
     } else if(message.method === 'selectModel') {
-      variantRepository.addModel(message, function(model) {
-        dashboardWebClientSocket.emit(message.method, model);
+      variantRepository.addModel(message, function(err, model) {
+        if(err) {
+          dashboardWebClientSocket.emit("frameworkError", err);
+        } else {
+          dashboardWebClientSocket.emit(message.method, model);
+        }
       });
     } else if(message.method === 'startModel') {
       dashboardWebClientSocket.emit(message.method, message);
