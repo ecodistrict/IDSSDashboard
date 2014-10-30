@@ -66,9 +66,9 @@ angular.module( 'idss-dashboard', [
         ModuleService.addModule(moduleData);
       });
 
-      socket.on('selectModel', function(module) {
-        console.log('module input spec was added to dashboard server: ' + module);
-        VariantService.addModuleInputs(module);
+      socket.on('selectModel', function(modelInput) {
+        console.log('module input spec was added to dashboard server: ' + modelInput);
+        //VariantService.addModuleInputs(modelInput);
       });
 
       socket.on('frameworkError', function(err) {
