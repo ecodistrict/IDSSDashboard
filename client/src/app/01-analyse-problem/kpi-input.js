@@ -20,7 +20,7 @@ angular.module( 'idss-dashboard.analyse-problem.kpi-input', [])
   });
 }])
 
-.controller( 'KpiInputCtrl', ['$scope', 'ProcessService', '$stateParams', '$fileUploader', function KpiInputCtrl( $scope, ProcessService, $stateParams, $fileUploader ) {
+.controller( 'KpiInputCtrl', ['$scope', 'ProcessService', '$stateParams', 'FileUploader', function KpiInputCtrl( $scope, ProcessService, $stateParams, FileUploader ) {
 
   if(!$stateParams.kpiAlias) {
     console.log('missing params');
@@ -88,8 +88,7 @@ angular.module( 'idss-dashboard.analyse-problem.kpi-input', [])
   var uploadUrl = 'kpi/import/' + $stateParams.kpiAlias;
   console.log(uploadUrl);
 
-  var uploader = $scope.uploader = $fileUploader.create({
-    scope: $scope, 
+  var uploader = $scope.uploader = new FileUploader({
     url: uploadUrl
   });
 
@@ -100,23 +99,23 @@ angular.module( 'idss-dashboard.analyse-problem.kpi-input', [])
     item.upload();
   };
 
-  uploader.bind('success', function (event, xhr, item, response) {
-      // TODO: add item formdata to input.sources array
-      console.info('Success', xhr, item, response);
-      var inputId = item.formData[0].inputId;
-      console.log('adding data to input id: ' + inputId);
-      addInputDataToModule(module.inputs, inputId, response.data); // TODO: set these on module service
-      addItemToSource(module.inputs, inputId, item); // TODO: set these on module service
-      ProcessService.setIsModified(true);
-  });
+  // uploader.bind('success', function (event, xhr, item, response) {
+  //     // TODO: add item formdata to input.sources array
+  //     console.info('Success', xhr, item, response);
+  //     var inputId = item.formData[0].inputId;
+  //     console.log('adding data to input id: ' + inputId);
+  //     addInputDataToModule(module.inputs, inputId, response.data); // TODO: set these on module service
+  //     addItemToSource(module.inputs, inputId, item); // TODO: set these on module service
+  //     ProcessService.setIsModified(true);
+  // });
 
-  uploader.bind('cancel', function (event, xhr, item) {
-      console.info('Cancel', xhr, item);
-  });
+  // uploader.bind('cancel', function (event, xhr, item) {
+  //     console.info('Cancel', xhr, item);
+  // });
 
-  uploader.bind('error', function (event, xhr, item, response) {
-      console.info('Error', xhr, item, response);
-  });
+  // uploader.bind('error', function (event, xhr, item, response) {
+  //     console.info('Error', xhr, item, response);
+  // });
 
   var addFileSource = function(inputs) {
     _.each(inputs, function(input) {
