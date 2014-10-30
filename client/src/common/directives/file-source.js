@@ -1,50 +1,37 @@
-angular.module('idss-dashboard').directive('fileSource', ['$fileUploader', 'ProcessService', '$modal', function($fileUploader, ProcessService, $modal) {
+angular.module('idss-dashboard').directive('fileSource', ['FileUploader', 'ProcessService', '$templateCache', '$compile',function(FileUploader, ProcessService, $templateCache, $compile) {
 
     return {
         restrict: 'E',
-        templateUrl: 'directives/file-source.tpl.html',
         scope: {
             input: '='
         },
         link: function ( scope, element, attrs ) {
 
-            console.log(scope.$parent.module);
-
             var input = scope.input;
-            var moduleId = scope.$parent.module.id;
-            var kpiId = scope.$parent.kpiId;
 
-            var uploadUrl = 'module/import/' + kpiId + '/' + moduleId + '/' + input.id;
-            console.log(uploadUrl);
+            var uploadUrl = scope.url;
 
-            var uploader = scope.uploader = $fileUploader.create({
-                scope: scope, 
-                url: uploadUrl
+            var uploader = scope.uploader = new FileUploader({
+                url: 'import/geojson'
             });
 
-            // this is used to trigger directive on file upload success
-            scope.type = null;
-            // to use in the file upload result directive
-            scope.input = input;
+            var template = $templateCache.get('directives/file-source.tpl.html');
+            element.html('').append( $compile( template )( scope ) );
+
+            console.log(uploader);
 
             if(input.source) {
                 uploader.queue.push(input.source);
             }
 
             scope.uploadFile = function(item) {
-                console.log('uploading file with for input id: ' + input.id);
-                item.formData = [{
-                    inputType: input.type, 
-                    inputId: input.id,
-                    moduleId: moduleId
-                }];
                 item.upload();
             };
 
-            uploader.bind('success', function (event, xhr, item, response) {
+            uploader.onSuccessItem = function(item, response, status, headers) {
                 // TODO: add item formdata to input.sources array
-                console.info('Success', xhr, item, response);
-                input.value = response.data;
+                console.info('Success');
+                input.value = response.data; // this needs to trigger update in other directives that listens on input (geojson for ex)
                 input.source = {
                     file:{
                         name: item.file.name,
@@ -60,26 +47,13 @@ angular.module('idss-dashboard').directive('fileSource', ['$fileUploader', 'Proc
                     isUploaded: item.isUploaded,
                     progress: item.progress
                 };
-                ProcessService.setIsModified(true);
-                
-                scope.uploadedData = response.data;
 
-                // trigger directive for feedback on uploaded data
-                // TODO: not working - map cannot render on added dom element?
-                //scope.type = input.type; 
-            });
+            };
 
-            uploader.bind('cancel', function (event, xhr, item) {
-                console.info('Cancel', xhr, item);
-            });
+            uploader.onErrorItem = function(item, response, status, headers) {};
 
-            uploader.bind('error', function (event, xhr, item, response) {
-                console.info('Error', xhr, item, response);
-            });
-
+            uploader.onCancelItem = function(item, response, status, headers) {};
         }
-  };
-
-
+    };
 }]);
 

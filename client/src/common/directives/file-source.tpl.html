@@ -1,5 +1,5 @@
-<h3>{{input.label}}</h3>
-<input ng-file-select type="file" />
+<h3>Upload file</h3>
+<input type="file" nv-file-select="" uploader="uploader" />
 <table ng-show="uploader.queue.length > 0" class="table">
     <thead>
         <tr>
@@ -38,5 +38,3 @@
         </tr>
     </tbody>
 </table>
-<!-- <file-source-result type="type" input="input"></file-source-result> -->
-<geojson-map ng-if="uploadedData" data="uploadedData"></geojson-map>
