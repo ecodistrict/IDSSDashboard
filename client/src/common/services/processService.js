@@ -170,7 +170,7 @@ angular.module('idss-dashboard')
     var addLog = function(log) {
         log.date = Date.now();
         if(currentProcess.logs.length === 10) {
-            currentProcess.shift(currentProcess.logs);
+            currentProcess.logs.shift(currentProcess.logs);
         }
         currentProcess.logs.push(log);
         // if the current process last saved date needs to update
