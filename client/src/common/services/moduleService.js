@@ -41,10 +41,29 @@ angular.module('idss-dashboard')
         }
     };
 
+    var getModuleInput = function(variantId, moduleId) {
+        return $http
+            .get('variants/moduleinput/' + variantId + '/' + moduleId)
+            .error(function(status, data) {
+                var label = 'Error when loading inputs';
+                NotificationService.createErrorFlash(label);
+                ProcessService.addLog({
+                    err: err, 
+                    label:label,
+                    status: status
+                });
+            })
+            .then(function (res) {
+                module = res.data;
+                return module;
+            });
+    };
+
     return {
         getModulesFromKpiId: getModulesFromKpiId,
         getAllModules: getAllModules,
         addModule: addModule,
-        extendModuleData: extendModuleData
+        extendModuleData: extendModuleData,
+        getModuleInput: getModuleInput
     };
 }]);
