@@ -20,29 +20,28 @@ angular.module( 'idss-dashboard.start.upload', [])
   });
 }])
 
-.controller( 'UploadCtrl', ['$scope', '$fileUploader', 'ProcessService', '$state', function UploadCtrl( $scope, $fileUploader, ProcessService, $state ) {
+.controller( 'UploadCtrl', ['$scope', 'FileUploader', 'ProcessService', '$state', function UploadCtrl( $scope, FileUploader, ProcessService, $state ) {
   
   var uploadUrl = 'processes/upload';
 
-  var uploader = $scope.uploader = $fileUploader.create({
-    scope: $scope, 
+  var uploader = $scope.uploader = new FileUploader({
     url: uploadUrl
   });
 
-  uploader.bind('success', function (event, xhr, item, response) {
-      // TODO: add item formdata to input.sources array
-      console.info('Success', xhr, item, response);
-      ProcessService.updateProcess(response);
-      $state.transitionTo('analyse-problem');
-  });
+  // uploader.bind('success', function (event, xhr, item, response) {
+  //     // TODO: add item formdata to input.sources array
+  //     console.info('Success', xhr, item, response);
+  //     ProcessService.updateProcess(response);
+  //     $state.transitionTo('analyse-problem');
+  // });
 
-  uploader.bind('cancel', function (event, xhr, item) {
-      console.info('Cancel', xhr, item);
-  });
+  // uploader.bind('cancel', function (event, xhr, item) {
+  //     console.info('Cancel', xhr, item);
+  // });
 
-  uploader.bind('error', function (event, xhr, item, response) {
-      console.info('Error', xhr, item, response);
-  });
+  // uploader.bind('error', function (event, xhr, item, response) {
+  //     console.info('Error', xhr, item, response);
+  // });
 
 }]);
 
