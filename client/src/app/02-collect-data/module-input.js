@@ -1,6 +1,4 @@
-angular.module( 'idss-dashboard.collect-data.module-input', [
-  'idss-dashboard.collect-data.module-input.file-result'
-])
+angular.module( 'idss-dashboard.collect-data.module-input', [])
 
 .config(['$stateProvider', function config( $stateProvider ) {
   $stateProvider.state( 'module-input', {
@@ -32,17 +30,12 @@ angular.module( 'idss-dashboard.collect-data.module-input', [
   });
 }])
 
-.controller( 'ModuleInputCtrl', ['$scope', 'ProcessService', '$stateParams', '$fileUploader', 'variants', function ModuleInputCtrl( $scope, ProcessService, $stateParams, $fileUploader, variants ) {
+.controller( 'ModuleInputCtrl', ['$scope', '$stateParams', 'variants', 'ModuleService', function ModuleInputCtrl( $scope, $stateParams, variants, ModuleService ) {
 
   if(!$stateParams.kpiAlias) {
     console.log('missing params');
     return;
   }
-
-  // TODO: this is module input from modules stored (copied) to users process. 
-  // If the module input format will change from the module spec 
-  // - THE MODULE INDATA SPEC IN PROCESS NEED TO BE UPDATED
-  // Create a test somehow to check if the module original spec has been updated
 
   $scope.asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
 
@@ -51,31 +44,16 @@ angular.module( 'idss-dashboard.collect-data.module-input', [
   });
 
   if(!kpi) {
-    console.log('missing module');
+    console.log('missing kpi/module');
     return;
   }
 
-  // var module = kpi.selectedModule;
+  $scope.kpi = kpi;
 
-  // console.log(module);
+  ModuleService.getModuleInput($scope.asIsVariant._id, kpi.selectedModule.id).then(function(module) {
+    $scope.module = module;
+  });
 
-  // // set template urls to all inputs to generate corresponding directive
-  // var setTemplateUrl = function(inputs) {
-  //   _.each(inputs, function(input) {
-  //     input.template = 'directives/module-inputs/' + input.type + '.tpl.html';
-  //     if(input.inputs) {
-  //       setTemplateUrl(input.inputs);
-  //     }
-  //   });
-  // };
-
-  // setTemplateUrl(module.inputs);
-
-  $scope.module = kpi.selectedModule;
-
-  // TODO: find the input of module!
-
-  console.log($scope.module);
 
 }]);
 
