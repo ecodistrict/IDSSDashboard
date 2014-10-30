@@ -142,6 +142,9 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
                 });
                 map.addLayer(vectorLayer);
                 console.log(map);
+                var extent = vectorLayer.getSource().getExtent();
+
+                view.fitExtent(extent, map.getSize());
             };
 
             scope.$watch('input.value', function(newData, oldData) {

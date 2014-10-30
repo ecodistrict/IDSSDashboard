@@ -31,7 +31,7 @@ angular.module('idss-dashboard').directive('fileSource', ['FileUploader', 'Proce
             uploader.onSuccessItem = function(item, response, status, headers) {
                 // TODO: add item formdata to input.sources array
                 console.info('Success');
-                input.value = response.data; // this needs to trigger update in other directives that listens on input (geojson for ex)
+                input.value = response.data; // this triggers update in other directives that listens on input (geojson for ex)
                 input.source = {
                     file:{
                         name: item.file.name,
