@@ -21,6 +21,7 @@ angular.module( 'idss-dashboard.header', [])
     		// when loading a non existing process, a new process is created
     		ProcessService.loadCurrentProcess().then(function(newProcess) {
     			$scope.currentProcess = newProcess;
+                $state.transitionTo('start');
     		});
     	});
     };
