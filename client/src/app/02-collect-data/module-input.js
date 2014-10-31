@@ -26,7 +26,7 @@ angular.module( 'idss-dashboard.collect-data.module-input', [])
           return VariantService.loadVariants();
         }
       }]
-    }, 
+    } 
   });
 }])
 
@@ -50,7 +50,14 @@ angular.module( 'idss-dashboard.collect-data.module-input', [])
 
   $scope.kpi = kpi;
 
+  $scope.saveInput = function() {
+    ModuleService.saveModuleInput($scope.asIsVariant._id, $scope.module);
+  };
+
   ModuleService.getModuleInput($scope.asIsVariant._id, kpi.selectedModule.id).then(function(module) {
+    // TODO: fix a way to update save button
+    // module.isModified = false; // init a save input flag
+    module.isModified = true;
     $scope.module = module;
   });
 
