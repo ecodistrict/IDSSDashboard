@@ -154,7 +154,9 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
                 }
             });
 
-            initGeometryData(scope.input);
+            if(scope.input.value) {
+                initGeometryData(scope.input.value);
+            }
 
             changeLayer('Road');
 
