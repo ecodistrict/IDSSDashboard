@@ -19,15 +19,29 @@ angular.module( 'idss-dashboard.as-is', [
     data:{ 
       pageTitle: 'As is',
       authorizedRoles: ['Facilitator']
+    },
+    resolve:{
+      variants: ['VariantService', function(VariantService) {
+        var v = VariantService.getVariants();
+        if(v) {
+          return v;
+        } else {
+          return VariantService.loadVariants();
+        }
+      }]
     }
   });
 }])
 
-.controller( 'AsIsController', ['$scope', 'ProcessService', '$timeout', '$sce', 'socket', '$state', function AsIsController( $scope, ProcessService, $timeout, $sce, socket, $state ) {
+.controller( 'AsIsController', ['$scope', '$timeout', '$sce', 'socket', '$state', 'variants', 'ModuleService', function AsIsController( $scope, $timeout, $sce, socket, $state, variants, ModuleService ) {
 
-  console.log($state.params.startOnPageLoad);
+  var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
 
-  $scope.currentProcess = ProcessService.getCurrentProcess();
+  $scope.kpiOutputs = [];
+
+  _.each(asIsVariant.kpiList, function(kpi) {
+    // load status/output of every output from kpi.selectedModule.id
+  });
 
   // since nvd3 options need functions and module config JSON does not allow functions
   // this function converts some settings to function for D3 
