@@ -167,17 +167,6 @@ angular.module('idss-dashboard')
         }
     };
 
-    // // when user adds selected module to kpi this result updates the dashboard, the inputs has been saved on the server already
-    // var addModuleInputs = function(modelInput) {
-    //     var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
-    //     if(asIsVariant) {
-    //         asIsVariant.inputData = asIsVariant.inputData || [];
-    //         asIsVariant.inputData.push(modelInput);
-    //     } else {
-    //         console.log('Error updating the module input: Variant not found');
-    //     }
-    // };
-   
     return {
         loadVariants: loadVariants,
         createVariant: createVariant,
@@ -186,6 +175,5 @@ angular.module('idss-dashboard')
         addKpi: addKpi,
         updateKpi: updateKpi,
         removeKpi: removeKpi
-        //addModuleInputs: addModuleInputs
     };
 }]);
