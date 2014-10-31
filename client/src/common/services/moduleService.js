@@ -1,6 +1,6 @@
 angular.module('idss-dashboard')
 
-.factory('ModuleService', ['$http', function ($http) {
+.factory('ModuleService', ['$http', 'NotificationService','ProcessService', function ($http, NotificationService, ProcessService) {
 
     var modules = [];
 
@@ -54,7 +54,49 @@ angular.module('idss-dashboard')
                 });
             })
             .then(function (res) {
-                module = res.data;
+                var module = res.data;
+                return module;
+            });
+    };
+
+    var saveModuleInput = function(variantId, moduleObject) {
+
+        return $http
+            .put('variants/moduleinput/' + variantId, moduleObject)
+            .error(function(status, data) {
+                var label = 'Error when saving inputs';
+                NotificationService.createErrorFlash(label);
+                ProcessService.addLog({
+                    err: err, 
+                    label:label,
+                    status: status
+                });
+            })
+            .then(function (res) {
+                var module = res.data;
+                var label = 'Input data was successfully saved';
+                NotificationService.createSuccessFlash(label);
+                ProcessService.addLog({
+                    label:label
+                });
+                return module;
+            });
+    };
+
+    var getModuleOutput = function(variantId, moduleId) {
+        return $http
+            .get('variants/moduleout/' + variantId + '/' + moduleId)
+            .error(function(status, data) {
+                var label = 'Error when loading outputs';
+                NotificationService.createErrorFlash(label);
+                ProcessService.addLog({
+                    err: err, 
+                    label:label,
+                    status: status
+                });
+            })
+            .then(function (res) {
+                var module = res.data;
                 return module;
             });
     };
@@ -64,6 +106,7 @@ angular.module('idss-dashboard')
         getAllModules: getAllModules,
         addModule: addModule,
         extendModuleData: extendModuleData,
-        getModuleInput: getModuleInput
+        getModuleInput: getModuleInput,
+        saveModuleInput: saveModuleInput
     };
 }]);
