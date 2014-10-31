@@ -17,6 +17,8 @@
         <form role="form">
           <div class="form-group">
             <button class="btn btn-primary pull-right" ui-sref="collect-data"> Next kpi <span class="glyphicon glyphicon-chevron-right"></span></button>
+            <button ng-show="!module.isModified" class="btn btn-success pull-right"> Saved <span class="glyphicon glyphicon-floppy-disk"></span></button>
+            <button ng-show="module.isModified" class="btn btn-warning pull-right" ng-click="saveInput()"> Save input <span class="glyphicon glyphicon-floppy-disk"></span></button>
             <button class="btn btn-primary pull-left" ui-sref="collect-data"><span class="glyphicon glyphicon-chevron-left"></span> Previous kpi</button>
           </div>
         </form>
