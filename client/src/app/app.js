@@ -66,6 +66,7 @@ angular.module( 'idss-dashboard', [
         ModuleService.addModule(moduleData);
       });
 
+      // should this be a global listener?
       socket.on('selectModel', function(modelInput) {
         console.log('module input spec was added to dashboard server: ' + modelInput);
         //VariantService.addModuleInputs(modelInput);
@@ -75,10 +76,6 @@ angular.module( 'idss-dashboard', [
         console.log('Error from server: ' + err);
       });
     
-      socket.on('modelResult', function(module) {
-        console.log(module);
-      });
-
       // register event to check auth on page change
       $rootScope.$on('$stateChangeStart', function (event, next) {
           var authorizedRoles = next.data.authorizedRoles;
