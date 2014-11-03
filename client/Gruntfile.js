@@ -30,7 +30,9 @@ module.exports = function ( grunt ) {
                 '<%= vendor_dir %>/nvd3/nv.d3.js',
                 '<%= vendor_dir %>/angular-nvd3/dist/angular-nvd3.js',
                 '<%= vendor_dir %>/angular-flash/dist/angular-flash.js',
-                '<%= vendor_dir %>/seiyria-bootstrap-slider/js/bootstrap-slider.js'
+                '<%= vendor_dir %>/seiyria-bootstrap-slider/js/bootstrap-slider.js',
+                '<%= vendor_dir %>/Q-0.9.7.js',
+                '<%= vendor_dir %>/Hammer-1.0.5.js'
             ],
             stylesheets: [
                 '<%= vendor_dir %>/nvd3/nv.d3.css',
