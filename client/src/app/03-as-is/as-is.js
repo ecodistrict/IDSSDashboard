@@ -37,11 +37,45 @@ angular.module( 'idss-dashboard.as-is', [
 
   var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
 
-  $scope.kpiOutputs = [];
+  $scope.kpiOutputs = []; 
 
   _.each(asIsVariant.kpiList, function(kpi) {
-    // load status/output of every output from kpi.selectedModule.id
+
+    // add the kpi outputs with loading status
+    $scope.kpiOutputs.push({
+      kpiName: kpi.name,
+      kpiAlias: kpi.alias,
+      moduleName: kpi.selectedModule.name,
+      status: "warning"
+    });
+    
+    // fetch existing output from server
+    ModuleService.getModuleOutput(asIsVariant._id, kpi.selectedModule.id, kpi.alias).then(function(outputs) {
+      var kpiOutput = _.find($scope.kpiOutputs, function(k) {return k.kpiAlias === kpi.alias;});
+      kpiOutput.status = "success";// when loaded, it should be rendered
+      kpiOutput.outputs = outputs; // listen on this to trigger rendering
+
+      console.log(kpiOutput);
+    });
+      
   });
+
+  // listen on any model that was started, for updating loading status
+  socket.on('startModel', function(module) {
+        // TODO: change in kpiInputs the status for the kpi
+        console.log(module);
+  });
+
+  socket.on('modelResult', function(module) {
+        // find the kpi and add to kpiOutputs = listen in directive on collection length will render visualisation
+        // But what if it is several results ex buildings coming one and one?
+        console.log(module);
+  });
+
+  // TODO: when pushing calculate button on kpi, set status to calculating and save outputs status without outputs from modules.. how?
+  var calculateKpi = function(kpi) {
+    // set status to init calculation
+  };
 
   // since nvd3 options need functions and module config JSON does not allow functions
   // this function converts some settings to function for D3 
