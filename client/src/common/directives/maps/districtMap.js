@@ -77,7 +77,7 @@ angular.module('idss-dashboard').directive('districtMap', [function () {
                 controls: [zoomControl],
                 target: 'district-map',//element[0],
                 ol3Logo: false,
-                view: new ol.View2D(viewSettings)
+                view: new ol.View(viewSettings)
             });
 
             var view = map.getView();
