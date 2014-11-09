@@ -1,4 +1,10 @@
-angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService', '$compile', function (ProcessService, $compile) {
+angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService', '$compile', 'ModuleService', function (ProcessService, $compile, ModuleService) {
+
+    var uidCount = 1; // user this global variable to create temporary unique ids for features during editing
+
+    var defaultProjection = 'EPSG:3857';
+
+    var origData;
 
     // get the current project to use district geometry
     var district = ProcessService.getCurrentProcess().district;
@@ -147,26 +153,48 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
     return {
         restrict: 'E',
         scope: {
-            input: '='
+            input: '=',
+            variantid: '=', 
+            moduleid: '='
         },
         link: function(scope, element, attrs) {
 
+            // use the original inputs for default
+            scope.userInput = angular.copy(scope.input.inputs);
+
             scope.selectedFeatures = [];
-            //var highlightedFeatures = [];
 
-            // var unselectHighlightedFeatures = function() {
-            //     _.each(highlightedFeatures, function(feature) {
-            //         // only reset style if this is not a selected feature
-            //         if(!feature.selected) {
-            //             feature.setStyle(featureStyleNormal);
-            //         }
-            //     });
-            //     highlightedFeatures = [];
-            // };      
+            console.log(scope.variantid);
+            console.log(scope.moduleid);
+            console.log(scope.input);
 
+            // this function should be used to create a user input object that shows either
+            // 1. a features' existing properties
+            // 2. a span between the selected features values (TODO)
+            // 3. the default input specified in module
+            // right now it just uses the last selected features values
+            var setUserInput = function() {
+
+                _.each(scope.selectedFeatures, function(f) {
+
+                    var properties = f.getProperties();
+
+                    _.each(scope.userInput, function(input) {
+                        
+                        input.value = properties[input.id] || input.value;
+
+                    });
+
+                    f.setProperties(properties);
+
+                });
+                    
+            };
+            
             var toggleSelectedFeature = function(feature) {
                 var found = _.find(scope.selectedFeatures, function(f){return f === feature;});
                 if(found) {
+                    setUserInput();
                     found.setStyle(null);
                     var index = scope.selectedFeatures.indexOf(found);
                     scope.selectedFeatures.splice(index, 1);  
@@ -180,16 +208,11 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
                     // } else {
                     //     feature.setStyle(featureStyleSelected);
                     // }
+
                     feature.setStyle(featureStyleSelected);
                     scope.selectedFeatures.push(feature);
-                }
-            };
+                    setUserInput();
 
-
-            scope.unselectAllFeatures = function() {
-                while(scope.selectedFeatures.length > 0) {
-                    scope.selectedFeatures[scope.selectedFeatures.length-1].setStyle(null);
-                    scope.selectedFeatures.pop();
                 }
             };
 
@@ -231,18 +254,53 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
                 }
             };
 
+            var vectorSource;
+
             var initGeometryData = function(data) {
                 if(!data) {
                     return;
                 }
-                var epsg = 'EPSG:3857';
+                // default projection
+                var epsg = defaultProjection;
                 if(data.crs && data.crs.properties && data.crs.properties.name) {
                     epsg = data.crs.properties.name;
                 }
-                var vectorSource = new ol.source.GeoJSON({
-                        object:data,
-                        projection: epsg
+
+                console.log('projection was set');
+                // set uid on every feature if not exists
+                _.each(data.features, function(f) {
+                    f.properties = f.properties || {};
+                    f.properties.uid = f.properties.uid || uidCount;
+                    uidCount++;
                 });
+                console.log('features uid was set');
+                console.log(data);
+                console.log(epsg);
+                // if(origData) {
+                //     _.each(origData.features, function(d, i) {
+                //         var dataGeo = data.features[i].geometry;
+                //         var origDataGeo = d.geometry;
+                //         if(d.type !== data.features[i].type) {
+                //             console.log(d.type, data.features[i].type);
+                //         }
+                //         if(dataGeo.type !== origDataGeo.type) {
+                //             console.log(dataGeo.type, origDataGeo.type);
+                //         }
+                //         //if(dataGeo.coordinates.length !== origDataGeo.coordinates.length) {
+                //             console.log(dataGeo.coordinates[0][0]);
+                //             console.log(origDataGeo.coordinates[0][0]);
+                //         //}
+                //     });
+                //     // console.log(origData);
+                //     // console.log(data);
+                //     //data = origData;    
+                // }
+                vectorSource = new ol.source.GeoJSON({
+                    object:data,
+                    projection: epsg
+                });
+
+                console.log('setting new vector source');
                 if(vectorLayer) {
                     map.removeLayer(vectorLayer);
                 }
@@ -251,6 +309,8 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
                   style: featureStyleNormal
                 });
 
+                //origData = data;
+                console.log('creating new vector layer');
                 // style geometries individually in output:
 
                 // var features = vectorSource.getFeatures();
@@ -263,12 +323,14 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
                 // });
 
                 map.addLayer(vectorLayer);
-                console.log(map);
+                console.log('add vector layer to map');
                 var extent = vectorLayer.getSource().getExtent();
 
                 view.fitExtent(extent, map.getSize());
+                console.log('fit to extent');
             };
 
+            // this watched the geojson data set if changed, for example if a new file was uploaded
             scope.$watch('input.value', function(newData, oldData) {
                 if(oldData !== newData) {
                     console.log(newData);
@@ -295,15 +357,55 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
             map.on('click', function(event) {
                 //unselectPreviousFeatures();
                 map.forEachFeatureAtPixel(event.pixel, function(feature) {
-                    console.log(feature);
+                    console.log(feature.getProperties());
                     toggleSelectedFeature(feature);
                 });
                 scope.$apply();
             });
 
+            scope.unselectAllFeatures = function() {
+                while(scope.selectedFeatures.length > 0) {
+                    scope.selectedFeatures[scope.selectedFeatures.length-1].setStyle(null);
+                    scope.selectedFeatures.pop();
+                }
+            };
+
             scope.saveProperties = function() {
-                // this is the changed input object, copy it to selected features, return the geojson of map
-                console.log(scope.input.inputs); 
+
+                var geoJsonFormat = new ol.format.GeoJSON();
+                
+                console.log(scope.userInput); 
+                _.each(scope.selectedFeatures, function(f) {
+                    
+                    var properties = f.getProperties();
+
+                    _.each(scope.userInput, function(input) {
+                        properties[input.id] = input.value;
+                    });
+
+                    f.setProperties(properties);
+                });
+                scope.unselectAllFeatures();
+
+                var newInputValue = geoJsonFormat.writeFeatures(vectorSource.getFeatures(), {
+                    //  dataProjection: defaultProjection,
+                    featureProjection: defaultProjection
+                });
+
+                newInputValue.crs = {type: 'none'};
+
+                console.log(newInputValue);
+
+                initGeometryData(newInputValue);
+
+                ModuleService.saveModuleInput(scope.variantid, {
+                    moduleId: scope.moduleid, 
+                    inputs: [{
+                        id: scope.input.id, // only id and value are updated on save module input
+                        value: newInputValue
+                    }]
+                });
+
             };
 
             var selectMouseMove = new ol.interaction.Select({
@@ -312,15 +414,11 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
 
             map.addInteraction(selectMouseMove);
 
-            scope.saveProperties = function() {
-                console.log(scope.input.inputs);
-            };
-
             // create directive, copy input.inputs to every selected feature
             var featurePanel = angular.element(
                 '<div id="properties-panel" ng-show="selectedFeatures.length > 0" class="panel panel-default">' +
                     '<div class="panel-heading"><h2>{{selectedFeatures.length}} selected features</h2></div>' +
-                    '<div class="panel-body"><kpi-input inputs=input.inputs></kpi-input></div>' +
+                    '<div class="panel-body"><kpi-input inputs=userInput></kpi-input></div>' +
                     '<div class="panel-footer clearfix">' +
                         '<div class="pull-right">' +
                             '<a ng-click="unselectAllFeatures()" class="btn btn-danger">Cancel</a>' +
