@@ -133,7 +133,7 @@ imbConnection.connect('imb.lohman-solutions.com', 4000, 1234, 'dashboard', 'ecod
 
 var imbFrameworkSocket = imbConnection.subscribe('dashboard', true);
 
-var sendModelRequest = function(requestObj) {
+var sendModuleRequest = function(requestObj) {
   var request = JSON.stringify(requestObj).toString();
   var message = imbConnection.publish('models', true);
   var messageByteLength = Buffer.byteLength(request);
@@ -175,39 +175,54 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         "kpiList": kpiList
       }
     }
-    sendModelRequest(requestObj);
+    sendModuleRequest(requestObj);
   });
 
   dashboardWebClientSocket.on('selectModel', function(kpi) {
     var method = 'selectModel';
-    console.log('From client: ' + method + ', data: ' + kpi.selectedModule.id);
+    console.log('From dashboard client: ' + method + ', data: ' + kpi.selectedModule.id);
     if(kpi.selectedModule && kpi.selectedModule.id) {
-      var requestObj = { 
-        "type": "request",
-        "method": "selectModel",
-        "uid": kpi.uid,
-        "id": kpi.selectedModule.id,
-        "kpi": kpi.alias
-      };
-      sendModelRequest(requestObj);
+      if(kpi.variantId) {
+        var requestObj = { 
+          "type": "request",
+          "method": "selectModel",
+          "variantId": kpi.variantId,
+          "moduleId": kpi.selectedModule.id,
+          "kpiAlias": kpi.alias
+        };
+        sendModuleRequest(requestObj);
+      } else {
+        console.log('no variant id for selecting module: ' + kpi.alias);
+      }
     } else {
       console.log('no model selected for kpi: ' + kpi.alias);
     }
   });
 
   dashboardWebClientSocket.on('startModel', function(module) {
-    var method = 'startModel';
-    console.log('From client: ' + method + ' data: ' + module);
-    var requestObj = {
-      "type": "request",
-      "method": method,
-      "id": module.id,
-      "parameters": {
-        "inputs": module.inputs,
-        "variantId": 123456 // TODO: create an id on every as-is and variant
-       }
-    };
-    sendModelRequest(requestObj);
+    variantRepository.getModuleInputFramework(module, function(err, moduleInput) {
+      if(err) {
+        dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
+      } else {
+        variantRepository.saveModuleOutputStatus(module, "initializing", function(err) {
+          if(err) {
+            dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
+          } else {
+            var method = 'startModel';
+            console.log('From dashboard client: ' + method + ' data: ' + module);
+            var requestObj = {
+              "type": "request",
+              "method": method,
+              "moduleId": module.moduleId,
+              "variantId": module.variantId,
+              "kpiAlias": module.kpiAlias,
+              "input": moduleInput
+            };
+            sendModuleRequest(requestObj);
+          }
+        });
+      }
+    });
   });
 
   imbFrameworkSocket.onNormalEvent = function(eventDefinition, eventPayload) {
@@ -220,17 +235,24 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     if(message.method === 'getModels') {
       dashboardWebClientSocket.emit(message.method, message);
     } else if(message.method === 'selectModel') {
-      variantRepository.addModel(message, function(err, model) {
+      variantRepository.addModule(message, function(err, model) {
         if(err) {
-          dashboardWebClientSocket.emit("frameworkError", err);
+          dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
         } else {
           dashboardWebClientSocket.emit(message.method, model);
         }
       });
     } else if(message.method === 'startModel') {
-      dashboardWebClientSocket.emit(message.method, message);
+      variantRepository.saveModuleOutputStatus(message, 'processing', function(err, success) {
+        if(err) {
+          dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
+        } else {
+          console.log(success);
+          dashboardWebClientSocket.emit(message.method, message);
+        }
+      });
     } else if(message.method === 'modelResult') {
-      variantRepository.addModelResult(message, function(model) {
+      variantRepository.addModuleResult(message, function(model) {
         dashboardWebClientSocket.emit(message.method, model);
       });
     }

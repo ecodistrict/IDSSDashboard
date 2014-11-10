@@ -113,7 +113,6 @@ angular.module('idss-dashboard')
                 // add properties for instantiated kpi on variant
                 kpiToAdd.selectedModule = {id: null};
                 asIsVariant.kpiList.push(kpiToAdd);
-                console.log(asIsVariant);
                 return saveVariant(asIsVariant);
             } else {
                 label = 'KPI is already added';
@@ -146,7 +145,7 @@ angular.module('idss-dashboard')
             // extend new module with data from module list by id
             ModuleService.extendModuleData(kpi.selectedModule, true);
             // send request for getting inputs from module and save that in dashboard database
-            kpi.uid = variant._id;
+            kpi.variantId = variant._id;
             socket.emit('selectModel', kpi);
         }
         saveVariant(variant).then(function(savedVariant) {
