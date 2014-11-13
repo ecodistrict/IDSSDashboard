@@ -240,12 +240,9 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
             var currentFeature;
             var drawInteraction; 
             var vectorLayer;
+            var vectorSource;
 
-            featureOverlay.setMap(map);
-            //featureOverlay.addFeature();
-            //map.addInteraction(modify);
             var zoomslider = new ol.control.ZoomSlider();
-
             map.addControl(zoomslider);
 
             var changeLayer = function(layer) {
@@ -253,8 +250,6 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
                     layers[i].set('visible', (layers[i].get('style') === layer));
                 }
             };
-
-            var vectorSource;
 
             var initGeometryData = function(data) {
                 if(!data) {
