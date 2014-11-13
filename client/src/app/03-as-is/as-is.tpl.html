@@ -1,12 +1,16 @@
 <div class="container">
-        
-    <div ng-repeat="kpi in kpiOutputs" class="panel {{'panel-' + kpi.status}} module-item">
+
+    <!-- <geojsonMapOutput outputs="kpiOutputs"></geojsonMapOutput> -->
+   
+    <div ng-repeat="kpi in kpiOutputs" class="panel {{'panel-' + getStatus(kpi)}} module-item">
       <div class="panel-heading">
-        <h3 class="panel-title">{{kpi.kpiName}} <span ng-show="kpi.status == 'warning'" class="glyphicon glyphicon-refresh spin"></span></h3>
+        <h3 class="panel-title">{{kpi.kpiName}} status: {{kpi.status}}<span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
+          <button ng-show="!kpi.loading" class="btn btn-xs btn-default pull-right" ng-click="calculateKpi(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-cloud-upload"></i> Calculate</button>
+        </h3>
       </div>
       <div class="panel-body">
         {{kpi.moduleName}}
-        <kpi-output outputs="kpi.outputs"></kpi-output>
+        <!-- <kpi-output outputs="kpi.outputs"></kpi-output> -->
       </div>
     </div>
    
@@ -14,6 +18,7 @@
         <form role="form">
           <div class="form-group">
             <button class="pull-right btn btn-primary" ui-sref="to-be">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
+            <button class="pull-right btn btn-warning" ng-click="calculateAllKpis()">Calculate all <span class="glyphicon glyphicon-cloud-upload"></span></button>
           </div>
         </form>
     </div>

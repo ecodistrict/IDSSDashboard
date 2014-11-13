@@ -51,10 +51,10 @@ angular.module('idss-dashboard')
         }
     };
 
-    var getModuleInput = function(variantId, moduleId) {
+    var getModuleInput = function(variantId, moduleId, kpiAlias) {
         return $http
-            .get('variants/moduleinput/' + variantId + '/' + moduleId)
-            .error(function(status, data) {
+            .get('variants/moduleinput/' + variantId + '/' + moduleId + '/' + kpiAlias)
+            .error(function(data, status) {
                 var label = 'Error when loading inputs';
                 NotificationService.createErrorFlash(label);
                 ProcessService.addLog({
@@ -73,7 +73,7 @@ angular.module('idss-dashboard')
 
         return $http
             .put('variants/moduleinput/' + variantId, moduleObject)
-            .error(function(status, data) {
+            .error(function(data, status) {
                 var label = 'Error when saving inputs';
                 NotificationService.createErrorFlash(label);
                 ProcessService.addLog({
@@ -107,7 +107,7 @@ angular.module('idss-dashboard')
 
             return $http
             .get('variants/moduleoutput/' + variantId + '/' + moduleId + '/' + kpiAlias)
-            .error(function(status, data) {
+            .error(function(data, status) {
                 var label = 'Error when loading outputs';
                 NotificationService.createErrorFlash(label);
                 ProcessService.addLog({
