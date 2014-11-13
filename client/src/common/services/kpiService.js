@@ -13,11 +13,11 @@ angular.module('idss-dashboard')
     var createKpi = function(kpiToCreate) {
         return $http
             .post('kpis', kpiToCreate)
-            .error(function(status, data) {
+            .error(function(data, status) {
                 var label = 'Error when creating KPI';
                 NotificationService.createErrorFlash(label);
                 ProcessService.addLog({
-                    err: err, 
+                    err: data, 
                     label:label,
                     status: status
                 });
@@ -36,7 +36,7 @@ angular.module('idss-dashboard')
     var deleteKpi = function(kpiToDelete) {
         return $http
             .delete('kpis/' + kpiToDelete._id)
-            .error(function(status, data) {
+            .error(function(data, status) {
                 var label = 'Error when deleting KPI';
                 NotificationService.createErrorFlash(label);
                 ProcessService.addLog({

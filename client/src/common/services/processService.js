@@ -4,14 +4,7 @@ angular.module('idss-dashboard')
 
     // this is used while process is loading to avoid errors in GUI
     var currentProcess = {
-        district: {
-            properties: {
-                center: null,
-                zoom: null
-            },
-            area: null,
-            geometry: []
-        },
+        district: {},
         title: null,
         contextList: [],
         kpiList: [],

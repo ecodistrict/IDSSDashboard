@@ -122,7 +122,6 @@ angular.module('idss-dashboard')
             label = 'Error: As Is was not loaded properly';
             NotificationService.createErrorFlash(label);
             ProcessService.addLog({
-                err: err, 
                 label:label,
                 status: status
             });
@@ -162,8 +161,45 @@ angular.module('idss-dashboard')
         if(found) {
             var index = _.indexOf(asIsVariant.kpiList, found);
             asIsVariant.kpiList.splice(index, 1);
+            // kpi was removed, clean all stored input and output
+            removeInputData(asIsVariant._id, found.alias);
+            removeOutputData(asIsVariant._id, found.alias);
             return saveVariant(asIsVariant);
         }
+    };
+
+    var removeInputData = function(variantId, kpiAlias) {
+        return $http
+            .delete('variants/moduleInput/' + variantId + '/' + kpiAlias)
+            .error(function(status, data) {
+                var label = 'Error when deleting module input';
+                NotificationService.createErrorFlash(label);
+                ProcessService.addLog({
+                    err: data, 
+                    label:label,
+                    status: status
+                });
+            })
+            .then(function (res) {
+                console.log(res);
+            });  
+    };
+
+    var removeOutputData = function(variantId, kpiAlias) {
+        return $http
+            .delete('variants/moduleOutput/' + variantId + '/' + kpiAlias)
+            .error(function(status, data) {
+                var label = 'Error when deleting module output';
+                NotificationService.createErrorFlash(label);
+                ProcessService.addLog({
+                    err: data, 
+                    label:label,
+                    status: status
+                });
+            })
+            .then(function (res) {
+                console.log(res);
+            });  
     };
 
     return {
