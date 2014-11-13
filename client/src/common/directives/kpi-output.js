@@ -10,9 +10,6 @@ angular.module('idss-dashboard').directive('kpiOutput', ['$compile', function($c
         },
         link: function ( scope, element, attrs ) {
 
-            // for common output, create collections for module outputs to use in one common directive
-            scope.geojsonOutputs = [];
-
             var render = function() {
 
                 // set template urls to all outputs to generate corresponding directive
@@ -34,9 +31,7 @@ angular.module('idss-dashboard').directive('kpiOutput', ['$compile', function($c
                 };
 
                 prepareOutputs(scope.outputs);
-
-                var commonGeoJsonMap = '<geojsonMapOutput outputs="geojsonOutputs"></geojsonMapOutput>';
-
+                
                 var template = '<div ng-repeat="output in outputs" ng-include="output.template"></div>';
 
                 element.html('').append( $compile( template )( scope ) );
