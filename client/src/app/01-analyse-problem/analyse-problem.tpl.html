@@ -14,13 +14,7 @@
     <div class="row">
         <label>Please define the area of your project: </label>
         <div id="district-map"></div>
-        <district-map class="selection-map" district="currentProcess.district" layer="layer"></district-map>
-        <select ng-model="layer" ng-options="l.name as l.label for l in layerOptions">
-        </select>
-        <!-- <p ng-show="currentProcess.district.area">Area: {{(currentProcess.district.area / 10) | number : 0}} m<sup>2</sup></p>
-        <span ng-show="currentProcess.district.geometry" ng-repeat="geo in currentProcess.district.geometry[0]">
-            {{geo}}
-        </span> -->
+        <district-map district="currentProcess.district"></district-map>
     </div>
     <div class="row">
         <form role="form">
