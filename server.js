@@ -1,6 +1,7 @@
 var express = require('express');
 var http = require('http');
-var _ = require('underscore');  
+var _ = require('underscore'); 
+var util = require('util');
 
 var mongoose = require('mongoose');
 var passport = require('passport');
@@ -200,11 +201,11 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
   });
 
   dashboardWebClientSocket.on('startModel', function(module) {
-    variantRepository.getModuleInputFramework(module, function(err, moduleInput) {
+    variantRepository.getModuleInputFramework(module, userRepository, processRepository, function(err, moduleInput) {
       if(err) {
         dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
       } else {
-        variantRepository.saveModuleOutputStatus(module, "initializing", function(err) {
+        variantRepository.saveModuleOutputStatus(module, function(err) {
           if(err) {
             dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
           } else {
@@ -243,7 +244,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         }
       });
     } else if(message.method === 'startModel') {
-      variantRepository.saveModuleOutputStatus(message, 'processing', function(err, success) {
+      variantRepository.saveModuleOutputStatus(message, function(err, success) {
         if(err) {
           dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
         } else {
@@ -252,7 +253,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         }
       });
     } else if(message.method === 'modelResult') {
-      variantRepository.addModuleResult(message, function(model) {
+      variantRepository.addModuleResult(message, function(err, model) {
         dashboardWebClientSocket.emit(message.method, model);
       });
     }
