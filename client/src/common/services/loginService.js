@@ -5,6 +5,11 @@ angular.module('idss-dashboard')
     var login = function (credentials) {
         return $http
             .post('users/login', credentials)
+            .error(function(status, data) {
+                var label = 'Email or password was not correct';
+                console.log(label);
+                NotificationService.createErrorFlash(label);
+            })
             .then(function (res) {
                 var user = res.data;
                 authService.loginConfirmed();
@@ -30,8 +35,7 @@ angular.module('idss-dashboard')
             .get('users/logout')
             .then(function (res) {
                 Session.destroy();
-                $rootScope.$broadcast('event:auth-loginRequired');
-                return true;
+                //$rootScope.$broadcast('event:auth-loginRequired');
             });
     };
 
@@ -93,7 +97,7 @@ angular.module('idss-dashboard')
     };
 }])
 
-.service('Session', function () {
+.service('Session', [function () {
   this.create = function (sessionId, userId, userRole) {
     this.id = sessionId;
     this.userId = userId;
@@ -105,4 +109,4 @@ angular.module('idss-dashboard')
     this.userRole = null;
   };
   return this;
-});
+}]);

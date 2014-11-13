@@ -72,7 +72,7 @@
             </ul>
 
             <ul ng-show="!isAuthenticated" class="nav navbar-nav navbar-right">
-                <li><a style="cursor: pointer" ng-click="login()">Log in</a></li>
+                <li><a style="cursor: pointer" ui-sref="login">Log in</a></li>
             </ul>
           
             <ul ng-show="isAuthenticated" class="nav navbar-nav navbar-right">
@@ -92,7 +92,7 @@
                 <a class="dropdown-toggle">Last saved: {{ currentProcess.dateModified | date:'HH:mm:ss' }} <span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
                     <li ng-repeat="log in currentProcess.logs.slice().reverse()">
-                        <a data-toggle="tooltip" data-placement="left" data-html="true" title="<p><b>{{log.label}}</b></p><p>Date: {{log.date | date: 'MMM dd yyyy HH:mm:ss'}}</p>" tooltip>{{log.date | date:'MMM dd HH:mm:ss'}} {{log.label}}</a>
+                        <a data-toggle="tooltip" data-placement="left" data-html="true" title="<p><b>{{log.label}}</b></p><p>Date: {{log.date | date: 'MMM dd yyyy HH:mm:ss'}}</p><p>{{log.err}}</p>" tooltip>{{log.date | date:'MMM dd HH:mm:ss'}} {{log.label}}</a>
                     </li>
                 </ul>
             </li>

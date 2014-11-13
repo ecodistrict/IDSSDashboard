@@ -29,8 +29,6 @@ angular.module( 'idss-dashboard.login', [
     $scope.login = function (credentials) {
         LoginService.login(credentials).then(function () {
             authService.loginConfirmed();
-        }, function () {
-            authService.loginCancelled();
         });
     };
 }]);

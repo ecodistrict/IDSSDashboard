@@ -102,6 +102,7 @@ angular.module( 'idss-dashboard', [
     $scope.$on('event:auth-loginRequired', function() {
         console.log('login required');
         $scope.isAuthenticated = LoginService.isAuthenticated();
+        // TODO: fix this, page freezes
         $state.transitionTo('login');
     });
 

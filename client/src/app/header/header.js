@@ -5,7 +5,6 @@ angular.module( 'idss-dashboard.header', [])
     $scope.logout = function() {
 
         LoginService.logout();
-
     };
 
     $scope.$on('$stateChangeSuccess', function(event, toState){
