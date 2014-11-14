@@ -3,7 +3,8 @@
         <div class="col-sm-offset-8 col-sm-4">
           <div class="checkbox">
             <label>
-                <input ng-model="input.value" type="checkbox"> {{input.label}}
+                <input ng-model="input.value" ng-model-options="{ updateOn: 'blur' }"
+           ng-keyup="cancel($event)" ng-change="$parent.saveInput(input)" type="checkbox"> {{input.label}}
             </label>
           </div>
         </div>

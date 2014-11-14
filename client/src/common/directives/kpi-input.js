@@ -1,4 +1,4 @@
-angular.module('idss-dashboard').directive('kpiInput', ['$compile', function($compile) {
+angular.module('idss-dashboard').directive('kpiInput', ['$compile', 'ModuleService', function($compile, ModuleService) {
 
     // a simple check to see if input is not misspelled (that will crash browser because of ng-include cant find template)
     var registeredInputs = ['number', 'input-group', 'slider', 'geojson', 'select', 'text', 'checkbox', 'list', 'district-polygon'];
@@ -8,8 +8,9 @@ angular.module('idss-dashboard').directive('kpiInput', ['$compile', function($co
         scope: {
             inputs: '=',
             process: '=', // used by some inputs
-            variantid: '=', // used by some inputs
-            moduleid: '=' // used by some inputs
+            kpialias: '=', 
+            variantid: '=',
+            moduleid: '=' 
         },
         link: function ( scope, element, attrs ) {
 
@@ -34,6 +35,22 @@ angular.module('idss-dashboard').directive('kpiInput', ['$compile', function($co
                 element.html('').append( $compile( template )( scope ) );
 
             };
+
+            scope.saveInput = function(input) {
+                console.log(scope.moduleid, 
+                    scope.kpialias,
+                    scope.inputs);
+                ModuleService.saveModuleInput(scope.variantid, {
+                    moduleId: scope.moduleid, 
+                    kpiAlias: scope.kpialias,
+                    inputs: [input]
+                });
+            };
+
+            console.log(scope.moduleid);
+            scope.$watch('moduleid', function(newid, oldid) {
+                console.log(newid, oldid);
+            });
 
             scope.$watchCollection('inputs', function(newInputs, oldInputs) {
                 if(newInputs && newInputs.length) {
