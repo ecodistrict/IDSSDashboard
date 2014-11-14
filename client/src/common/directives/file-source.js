@@ -1,9 +1,12 @@
-angular.module('idss-dashboard').directive('fileSource', ['FileUploader', 'ProcessService', '$templateCache', '$compile',function(FileUploader, ProcessService, $templateCache, $compile) {
+angular.module('idss-dashboard').directive('fileSource', ['FileUploader', 'ProcessService', '$templateCache', '$compile', 'ModuleService', function(FileUploader, ProcessService, $templateCache, $compile, ModuleService) {
 
     return {
         restrict: 'E',
         scope: {
-            input: '='
+            input: '=',
+            variantid: '=', 
+            kpialias: '=',
+            moduleid: '='
         },
         link: function ( scope, element, attrs ) {
 
@@ -18,7 +21,7 @@ angular.module('idss-dashboard').directive('fileSource', ['FileUploader', 'Proce
             var template = $templateCache.get('directives/file-source.tpl.html');
             element.html('').append( $compile( template )( scope ) );
 
-            console.log(uploader);
+            console.log(scope);
 
             if(input.source) {
                 uploader.queue.push(input.source);
@@ -47,6 +50,17 @@ angular.module('idss-dashboard').directive('fileSource', ['FileUploader', 'Proce
                     isUploaded: item.isUploaded,
                     progress: item.progress
                 };
+
+                // TODO: add source on input
+                ModuleService.saveModuleInput(scope.variantid, {
+                    moduleId: scope.moduleid, 
+                    kpiAlias: scope.kpialias,
+                    inputs: [{
+                        id: scope.input.id, // only id and value are updated on save module input
+                        value: input.value,
+                        source: input.source
+                    }]
+                });
 
             };
 
