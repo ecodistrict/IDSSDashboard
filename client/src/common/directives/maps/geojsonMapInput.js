@@ -155,11 +155,12 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
         scope: {
             input: '=',
             variantid: '=', 
+            kpialias: '=',
             moduleid: '='
         },
         link: function(scope, element, attrs) {
 
-            // use the original inputs for default
+            // use the original inputs for default, userInput is the current selected building object
             scope.userInput = angular.copy(scope.input.inputs);
 
             scope.selectedFeatures = [];
@@ -179,9 +180,12 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
 
                     var properties = f.getProperties();
 
-                    _.each(scope.userInput, function(input) {
+                    _.each(scope.userInput, function(input, i) {
+
+                        console.log(properties);
+                        console.log(input);
                         
-                        input.value = properties[input.id] || input.value;
+                        input.value = properties[input.id] || scope.input.inputs[i].value; // set to default value
 
                     });
 
@@ -395,6 +399,7 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
 
                 ModuleService.saveModuleInput(scope.variantid, {
                     moduleId: scope.moduleid, 
+                    kpiAlias: scope.kpialias,
                     inputs: [{
                         id: scope.input.id, // only id and value are updated on save module input
                         value: newInputValue
