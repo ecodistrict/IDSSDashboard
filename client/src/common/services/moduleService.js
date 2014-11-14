@@ -69,6 +69,7 @@ angular.module('idss-dashboard')
             });
     };
 
+    // moduleObject must contain moduleId, kpiAlias and inputs
     var saveModuleInput = function(variantId, moduleObject) {
 
         return $http
