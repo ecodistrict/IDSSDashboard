@@ -12,7 +12,7 @@ var port = 4568;
 var httpServer = http.createServer(app);
 var imb = require('../../lib/imb.js');
 
-var moduleId = "test-geojson-input";
+var moduleId = "test-district-input";
 var kpi = "district-polygon";
 
 var imbConnection = new imb.TIMBConnection();
