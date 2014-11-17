@@ -91,17 +91,17 @@ angular.module( 'idss-dashboard.as-is', [
   socket.on('modelResult', function(module) {
     console.log('model result', module);
 
-    // var kpiOutput = _.find($scope.kpiOutputs, function(kpi) {
-    //   return kpi.kpiAlias === module.kpiAlias;
-    // });
-    // if(kpiOutput) {
-    //   kpiOutput.status = module.status;
-    // } else {
-    //   console.log('Dashboard recieved model result but couldnt find the kpi');
-    // }
-      // find the kpi and add to kpiOutputs = listen in directive on collection length will render visualisation
-      // But what if it is several results ex buildings coming one and one?
-      // should be status "success"
+    var kpiOutput = _.find($scope.kpiOutputs, function(kpi) {
+      return kpi.kpiAlias === module.kpiAlias;
+    });
+    if(kpiOutput) {
+      kpiOutput.status = module.status;
+      kpiOutput.outputs = module.outputs;
+    } else {
+      console.log('Dashboard recieved model result but couldnt find the kpi');
+    }
+      
+    // But what if it is several results ex buildings coming one and one?
 
   });
 
@@ -117,6 +117,13 @@ angular.module( 'idss-dashboard.as-is', [
       status: kpiOutput.status
     });
 
+  };
+
+  $scope.stopCalculation = function(kpiOutput) {
+    kpiOutput.status = 'unprocessed';
+    kpiOutput.loading = false;
+
+    // send message to model?
   };
 
   // since nvd3 options need functions and module config JSON does not allow functions

@@ -6,11 +6,12 @@
       <div class="panel-heading">
         <h3 class="panel-title">{{kpi.kpiName}} status: {{kpi.status}}<span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
           <button ng-show="!kpi.loading" class="btn btn-xs btn-default pull-right" ng-click="calculateKpi(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-cloud-upload"></i> Calculate</button>
+          <button ng-show="kpi.loading" class="btn btn-xs btn-danger pull-right" ng-click="stopCalculation(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-cloud-upload"></i> Stop</button>
         </h3>
       </div>
       <div class="panel-body">
         {{kpi.moduleName}}
-        <!-- <kpi-output outputs="kpi.outputs"></kpi-output> -->
+        <kpi-output outputs="kpi.outputs"></kpi-output>
       </div>
     </div>
    
