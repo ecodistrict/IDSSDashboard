@@ -16,7 +16,7 @@ var moduleId = "test-input-group";
 var kpi = "input-group";
 
 var imbConnection = new imb.TIMBConnection();
-imbConnection.connect('imb.lohman-solutions.com', 4000, 1234, 'testModule', 'ecodistrict');
+imbConnection.connect('imb.lohman-solutions.com', 4000, 1234, 'testModuleInputGroup', 'ecodistrict');
 var messageSub = imbConnection.subscribe('models', true);
 
 var sendDashboard = function(requestObj) {
@@ -117,8 +117,8 @@ var modelResult = {
     "method": "modelResult",
     "type": "result",
     "outputs": [{
-      "type": "test",
-      "value": "test"
+      "type": "kpi",
+      "value": 5
     }] 
 };
 
@@ -145,6 +145,7 @@ messageSub.onNormalEvent = function(eventDefinition, eventPayload) {
       modelResult.kpiAlias = message.kpiAlias;
       modelResult.variantId = message.variantId;
       modelResult.moduleId = moduleId;
+      console.log(modelResult);
       sendDashboard(modelResult);
       // also send new status
       startModel.status = 'success';

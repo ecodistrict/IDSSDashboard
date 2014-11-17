@@ -16,7 +16,7 @@ var moduleId = "test-geojson-input";
 var kpi = "geojson-input";
 
 var imbConnection = new imb.TIMBConnection();
-imbConnection.connect('imb.lohman-solutions.com', 4000, 1234, 'testModule', 'ecodistrict');
+imbConnection.connect('imb.lohman-solutions.com', 4000, 1234, 'testModuleGeojsonInput', 'ecodistrict');
 var messageSub = imbConnection.subscribe('models', true);
 
 var sendDashboard = function(requestObj) {
