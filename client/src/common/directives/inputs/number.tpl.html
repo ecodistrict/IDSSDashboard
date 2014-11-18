@@ -2,8 +2,8 @@
     <span class="error" ng-show="innerForm.div.div.input.$error.required">Required!</span>
     <span class="error" ng-show="innerForm.div.div.input.$error.number">Not valid number!</span>
     <div class="form-group">
-      <label for="{{input.id}}" class="col-sm-8 control-label">{{input.label}} <i ng-show="input.info" class="glyphicon glyphicon-question-sign" data-container="body" data-toggle="popover" data-placement="top" data-content="{{input.info}}" popover></i></label>
-      <div class="col-sm-4">
+      <label for="{{input.id}}" class="col-sm-7 control-label">{{input.label}} <i ng-show="input.info" class="glyphicon glyphicon-question-sign" data-container="body" data-toggle="popover" data-placement="top" data-content="{{input.info}}" popover></i></label>
+      <div class="col-sm-5">
         <div class="input-group">
             <input ng-model="input.value" min="{{input.min}}" max="{{input.max}}" ng-model-options="{ updateOn: 'blur' }"
            ng-keyup="cancel($event)" ng-change="$parent.saveInput(input)" required id="{{input.id}}" class="form-control text-right" type="number">
