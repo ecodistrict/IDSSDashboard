@@ -14,11 +14,11 @@ angular.module('idss-dashboard')
     }
     */
 
-    var getModulesFromKpiId = function (kpiId) {
+    var getModulesFromKpiId = function (kpiAlias) {
         
         var foundList = _.filter(modules, function(module) {
             return _.find(module.kpiList, function(kpi) {
-              return kpi === kpiId;
+              return kpi === kpiAlias;
             });
         }); 
 
@@ -31,7 +31,14 @@ angular.module('idss-dashboard')
     };
 
     var addModule = function(module) {
-        modules.push(module);
+        var found = _.find(modules, function(m) {
+            return m.id === module.id;
+        });
+        if(found) {
+            console.log('the module with id ' + module.id + ' already is loaded in dashboard');
+        } else {
+            modules.push(module);
+        }
     };
 
     var extendModuleData = function(module, basic) {
