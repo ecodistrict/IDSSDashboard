@@ -20,6 +20,65 @@
 @brand-warning:         #f0ad4e;
 @brand-danger:          #d9534f;
 
+//########################
+//## ecodistr-ict colors
+//########################
+@menu-link-color:       @darkercyan;
+@menu-link-hover-color: @green;
+
+@lightgreen:            #c0f069;
+@green:                 #8cc63f;
+@darkgreen:             #478a2d;
+@darkergreen:           #2f6e35;
+
+@lightcyan:             #73d5e0;
+@cyan:                  #57c4be;
+@darkcyan:              #3f9c92;
+@darkercyan:            #577f83;
+
+@brand-primary:         @darkcyan;
+@brand-success:         @green;
+@brand-info:            #73d5e0;
+@brand-warning:         #7DA070;
+@brand-danger:          #971A00;
+
+
+
+//== Panels
+@panel-primary: lighten(@darkcyan,30%);
+@panel-success: lighten(@darkcyan,45%) !important;
+@panel-info:    lighten(#73d5e0,10%);
+@panel-warning: #92A679;
+//@panel-danger:  lighten(@brand-danger, 60%);
+
+//** Border color for elements within panels
+@panel-inner-border:          #ddd;
+@panel-footer-bg:             #f5f5f5;
+
+@panel-default-text:          @gray-dark;
+@panel-default-border:        #ddd;
+@panel-default-heading-bg:    #f5f5f5;
+
+@panel-primary-text:          #fff;
+@panel-primary-border:        @brand-primary;
+@panel-primary-heading-bg:    @panel-primary !important;
+
+@panel-success-text:          @state-success-text;
+@panel-success-border:        lighten(@darkcyan,35%);
+@panel-success-heading-bg:    @panel-success !important;
+
+@panel-info-text:             @state-info-text;
+@panel-info-border:           @state-info-border;
+@panel-info-heading-bg:       @panel-info !important;
+
+@panel-warning-text:          #fff;
+@panel-warning-border:        @state-warning-border;
+@panel-warning-heading-bg:    @panel-warning !important;
+
+@panel-danger-text:           #fff;
+@panel-danger-border:         darken(#577f83,10%);
+@panel-danger-heading-bg:     #577f83;
+
 
 //== Scaffolding
 //
@@ -687,7 +746,7 @@
 @panel-border-radius:         @border-radius-base;
 
 //** Border color for elements within panels
-@panel-inner-border:          #ddd;
+/*@panel-inner-border:          #ddd;
 @panel-footer-bg:             #f5f5f5;
 
 @panel-default-text:          @gray-dark;
@@ -712,7 +771,7 @@
 
 @panel-danger-text:           @state-danger-text;
 @panel-danger-border:         @state-danger-border;
-@panel-danger-heading-bg:     @state-danger-bg;
+@panel-danger-heading-bg:     @state-danger-bg;*/
 
 
 //== Thumbnails
