@@ -45,6 +45,7 @@ angular.module( 'idss-dashboard.as-is', [
     $scope.kpiOutputs.push({
       kpiName: kpi.name,
       kpiAlias: kpi.alias,
+      inputs: kpi.inputs,
       moduleName: kpi.selectedModule.name,
       moduleId: kpi.selectedModule.id,
       status: kpi.selectedModule.status,

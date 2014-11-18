@@ -9,9 +9,9 @@
           <button ng-show="kpi.loading" class="btn btn-xs btn-danger pull-right" ng-click="stopCalculation(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-cloud-upload"></i> Stop</button>
         </h3>
       </div>
-      <div class="panel-body">
+      <div class="panel-body" style="position:relative">
         {{kpi.moduleName}}
-        <kpi-output outputs="kpi.outputs"></kpi-output>
+        <kpi-output outputs="kpi.outputs" inputs="kpi.inputs"></kpi-output>
       </div>
     </div>
    
