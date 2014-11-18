@@ -248,7 +248,6 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         if(err) {
           dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
         } else {
-          console.log(success);
           dashboardWebClientSocket.emit(message.method, message);
         }
       });
