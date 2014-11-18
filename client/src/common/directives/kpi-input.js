@@ -37,14 +37,13 @@ angular.module('idss-dashboard').directive('kpiInput', ['$compile', 'ModuleServi
             };
 
             scope.saveInput = function(input) {
-                console.log(scope.moduleid, 
-                    scope.kpialias,
-                    scope.inputs);
-                ModuleService.saveModuleInput(scope.variantid, {
-                    moduleId: scope.moduleid, 
-                    kpiAlias: scope.kpialias,
-                    inputs: [input]
-                });
+                if(scope.moduleId && scope.kpialias && scope.inputs) {
+                    ModuleService.saveModuleInput(scope.variantid, {
+                        moduleId: scope.moduleid, 
+                        kpiAlias: scope.kpialias,
+                        inputs: [input]
+                    });
+                }
             };
 
             console.log(scope.moduleid);
