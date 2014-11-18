@@ -120,11 +120,7 @@ var startModel = {
 // modelResult test
 var modelResult = {
     "method": "modelResult",
-    "type": "result",
-    "outputs": [{
-      "type": "test",
-      "value": "test"
-    }] 
+    "type": "result"
 };
 
 messageSub.onNormalEvent = function(eventDefinition, eventPayload) {
@@ -150,6 +146,15 @@ messageSub.onNormalEvent = function(eventDefinition, eventPayload) {
       modelResult.kpiAlias = message.kpiAlias;
       modelResult.variantId = message.variantId;
       modelResult.moduleId = moduleId;
+      // some assumptions here!
+
+      console.log(message);
+      modelResult.outputs = [{
+        type: "geojson",
+        kpiProperty: "GEBHOOGTE",
+        displayProperties: [{property: "GEBHOOGTE", label: "GEB HOOGTE"}],
+        value: message.inputs[0].value
+      }];
       sendDashboard(modelResult);
       // also send new status
       startModel.status = 'success';

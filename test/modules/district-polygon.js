@@ -86,6 +86,7 @@ messageSub.onNormalEvent = function(eventDefinition, eventPayload) {
     }
   } else if(message.method === 'startModel') {
     if(message.moduleId === moduleId) {
+      console.log(message);
       // first send status that model started
       startModel.status = 'processing'; 
       startModel.kpiAlias = message.kpiAlias;
