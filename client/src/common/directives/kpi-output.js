@@ -1,18 +1,17 @@
 angular.module('idss-dashboard').directive('kpiOutput', ['$compile', '$timeout', function($compile, $timeout) {
 
     // this check could be better implemented, maybe look through folder on server and generate this list from file names
-    var registeredOutputs = ['kpi'];
+    var registeredOutputs = ['kpi', 'geojson'];
 
     return {
         restrict: 'E',
         scope: {
-            outputs: '='
+            outputs: '=',
+            inputs: '='
         },
         link: function ( scope, element, attrs ) {
 
             var elementWidth = element.width();
-
-            console.log(elementWidth);
 
             var render = function() {
 
@@ -43,7 +42,6 @@ angular.module('idss-dashboard').directive('kpiOutput', ['$compile', '$timeout',
             };
 
             scope.$watchCollection('outputs', function(newOutputs, oldOutputs) {
-                console.log(newOutputs, oldOutputs);
                 var oldOutputsLength = oldOutputs ? oldOutputs.length : 0;
                 if(newOutputs && newOutputs.length) {
                     console.log(newOutputs);
