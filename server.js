@@ -217,7 +217,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
               "moduleId": module.moduleId,
               "variantId": module.variantId,
               "kpiAlias": module.kpiAlias,
-              "input": moduleInput
+              "inputs": moduleInput.inputs
             };
             sendModuleRequest(requestObj);
           }
