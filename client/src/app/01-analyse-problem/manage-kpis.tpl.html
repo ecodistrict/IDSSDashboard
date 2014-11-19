@@ -4,7 +4,7 @@
             <h2>KPI database</h2>
             <div ng-repeat="kpi in kpiList" class="panel panel-default kpi-item" ng-click="useKpi(kpi)">
               <div class="panel-heading">
-                <h3 class="panel-title">{{kpi.name}} <button class="btn btn-xs btn-danger pull-right" ng-click="deleteKpi(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-trash"></i> Delete</button></h3>
+                <h3 class="panel-title">{{kpi.name}} <button ng-show="kpi.canDelete" class="btn btn-xs btn-danger pull-right" ng-click="deleteKpi(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-trash"></i> Delete</button></h3>
               </div>
               <div class="panel-body">
                 {{kpi.description}}
