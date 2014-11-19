@@ -57,7 +57,7 @@ app.use(session({
     saveUninitialized: true,
     resave: true,
     store: new MongoStore({
-            url: dbConnect,
+            db: mongoose.connection.db,
             auto_reconnect:true
     })
 }));
