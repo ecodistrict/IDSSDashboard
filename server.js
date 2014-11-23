@@ -132,11 +132,20 @@ app.all('/*', function(req, res) {
 var imbConnection = new imb.TIMBConnection();
 imbConnection.connect('imb.lohman-solutions.com', 4000, 1234, 'dashboard', 'ecodistrict');
 
-var imbFrameworkSocket = imbConnection.subscribe('dashboard', true);
+var SUBSCRIBE_EVENT;
+var PUBLISH_EVENT;
+if(process.env.NODE_ENV === 'production') {
+  SUBSCRIBE_EVENT = 'dashboard';
+  PUBLISH_EVENT = 'models';
+} else {
+  SUBSCRIBE_EVENT = 'dashboardTEST';
+  PUBLISH_EVENT = 'modelsTEST';
+}
+var imbFrameworkSocket = imbConnection.subscribe(SUBSCRIBE_EVENT, true);
 
 var sendModuleRequest = function(requestObj) {
   var request = JSON.stringify(requestObj).toString();
-  var message = imbConnection.publish('models', true);
+  var message = imbConnection.publish(PUBLISH_EVENT, true);
   var messageByteLength = Buffer.byteLength(request);
   var eventPayload = new Buffer(4+messageByteLength);
   var offset = 0;
@@ -236,6 +245,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     if(message.method === 'getModels') {
       dashboardWebClientSocket.emit(message.method, message);
     } else if(message.method === 'selectModel') {
+      dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
       variantRepository.addModule(message, function(err, model) {
         if(err) {
           dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
@@ -244,6 +254,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         }
       });
     } else if(message.method === 'startModel') {
+      dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
       variantRepository.saveModuleOutputStatus(message, function(err, success) {
         if(err) {
           dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
@@ -252,6 +263,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         }
       });
     } else if(message.method === 'modelResult') {
+      dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
       variantRepository.addModuleResult(message, function(err, model) {
         dashboardWebClientSocket.emit(message.method, model);
       });
