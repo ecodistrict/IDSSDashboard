@@ -1,10 +1,6 @@
-angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService', '$compile', 'ModuleService', function (ProcessService, $compile, ModuleService) {
+angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService', '$compile', 'ModuleService', '$timeout', function (ProcessService, $compile, ModuleService, $timeout) {
 
     var defaultProjection = 'EPSG:3857';
-
-    // KPI limits
-    var excellent = null;
-    var bad = null;
 
     // get the current project to use district geometry
     var district = ProcessService.getCurrentProcess().district;
@@ -106,8 +102,8 @@ angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService'
 
     // style output features depending on some property
 
-    var getFeatureStyle = function(feature, property) {
-        var color = greenYellowRed(property);
+    var getFeatureStyle = function(feature, property, bad, excellent) {
+        var color = greenYellowRed(property, bad, excellent);
         
         return new ol.style.Style({
             stroke: new ol.style.Stroke({
@@ -122,7 +118,7 @@ angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService'
 
     // use for colorizing output
     // TODO: clean this mess up!
-    var greenYellowRed = function(kpiValue) {
+    var greenYellowRed = function(kpiValue, bad, excellent) {
         if(!bad || !excellent) {
             return;
         }
@@ -155,204 +151,242 @@ angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService'
     return {
         restrict: 'E',
         scope: {
-            output: '=',
-            inputs: '='
+            outputs: '=',
+            trig: '='
         },
         link: function(scope, element, attrs) {
 
-            scope.selectedFeatures = [];
-            scope.featureProperties = [];
+            // wrap the execution in a function to wait for dom to be ready
+            // TODO: this is not a nice solution, maybe use http://buzzdecafe.github.io/2014/03/20/directive-after-dom/
+            // TODO: examine also precompile vs default postcompile
+            function initMap() {
 
-            console.log(scope.inputs);
-            console.log(scope.output);
+                $timeout(function() {
 
-            if(scope.inputs) {
-                var kpiScores = _.find(scope.inputs, function(input) {return input.id === 'kpi-scores';});
-                if(kpiScores && kpiScores.inputs) {
-                    // assume order
-                    excellent = kpiScores.inputs[0].value;
-                    bad = kpiScores.inputs[1].value;
-                }
-            }
-            
-            var setFeatureProperty = function(feature) {
+                    scope.selectedFeatures = [];
+                    scope.featureProperties = [];
+                    console.log('geojsonmapoutput');
+                    console.log(scope.outputs);
 
-                scope.featureProperties = [];
-                var properties = feature.getProperties();
-                _.each(scope.output.displayProperties, function(property) {
-                    if(properties[property.property]) {
-                        property.value = properties[property.property];
-                        scope.featureProperties.push(property);
-                    }
-                });
+                    var setFeatureProperty = function(feature) {
 
-                //scope.featureProperties = feature.getProperties();
-                    
-            };
+                        scope.featureProperties = [];
+                        var properties = feature.getProperties();
+                        _.each(scope.output.displayProperties, function(property) {
+                            if(properties[property.property]) {
+                                property.value = properties[property.property];
+                                scope.featureProperties.push(property);
+                            }
+                        });
 
-            var toggleSelectedFeature = function(feature) {
-                var found = _.find(scope.selectedFeatures, function(f){return f === feature;});
-                if(found) {
-                    found.setStyle(feature.savedStyle);
-                    var index = scope.selectedFeatures.indexOf(found);
-                    scope.selectedFeatures.splice(index, 1);  
-                    if(scope.selectedFeatures.length === 0) {
+                        //scope.featureProperties = feature.getProperties();
+                            
+                    };
+
+                    var toggleSelectedFeature = function(feature) {
+                        var found = _.find(scope.selectedFeatures, function(f){return f === feature;});
+                        if(found) {
+                            found.setStyle(feature.savedStyle);
+                            var index = scope.selectedFeatures.indexOf(found);
+                            scope.selectedFeatures.splice(index, 1);  
+                            if(scope.selectedFeatures.length === 0) {
+                                scope.featureProperties = null;
+                            }
+                        } else {
+
+                            // style for showing certain property (use for output)
+                            
+                            var properties = feature.getProperties();
+                            feature.savedStyle = feature.getStyle();
+                            feature.setStyle(featureStyleSelected);
+                            scope.selectedFeatures.push(feature);
+
+                        }
+                        setFeatureProperty(feature);
+                    };
+
+                    scope.layerOptions = [
+                        {name: "Road", label: "Road"},
+                        {name: "Aerial", label: "Aerial"},
+                        {name: "AerialWithLabels", label: "Aerial with labels"}
+                    ];
+
+                    var viewSettings = {
+                        center: district.center || [1000000, 6600000],
+                        zoom: district.zoom || 6
+                    };  
+
+                    console.log(element);
+
+                    var map = new ol.Map({
+                        interactions: ol.interaction.defaults({mouseWheelZoom: false}),
+                        layers: layers,
+                        controls: [zoomControl],
+                        target: element[0],
+                        ol3Logo: false,
+                        view: new ol.View(viewSettings)
+                    });
+
+                    var view = map.getView();
+                    var currentFeature;
+                    var vectorLayer;
+                    var vectorSource;
+
+                    var zoomslider = new ol.control.ZoomSlider();
+                    map.addControl(zoomslider);
+
+                    var changeLayer = function(layer) {
+                        for (var i = 0; i < layers.length; i++) {
+                            layers[i].set('visible', (layers[i].get('style') === layer));
+                        }
+                    };
+
+                    var initGeometryData = function(data) {
+                        if(!data) {
+                            return;
+                        }
+
+                        // TODO: Add a new vector layer for this data
+
+                        // default projection
+                        var epsg = defaultProjection;
+                        if(data.value.crs && data.value.crs.properties && data.value.crs.properties.name) {
+                            epsg = data.value.crs.properties.name;
+                        }
+
+                        console.log('projection was set');
+                        
+                        console.log('features uid was set');
+                        console.log(data.value);
+                        console.log(epsg);
+                        
+                        vectorSource = new ol.source.GeoJSON({
+                            object:data.value,
+                            projection: epsg
+                        });
+
+                        console.log('setting new vector source');
+                        if(vectorLayer) {
+                            map.removeLayer(vectorLayer);
+                        }
+                        vectorLayer = new ol.layer.Vector({
+                          source: vectorSource,
+                          style: featureStyleNormal
+                        });
+
+                        var features = vectorSource.getFeatures();
+
+                        _.each(features, function(f) {
+
+                            var properties = f.getProperties();
+                            if(properties[data.kpiProperty]) {
+                                f.setStyle([getFeatureStyle(f, properties[data.kpiProperty], data.kpiBad, data.kpiExcellent)]);
+                                //f.setStyle([getFeatureStyle(f, properties.SHADOW_FRACTION), selectedTextStyleFunction(properties.SHADOW_FRACTION)]);
+                            } else {
+                                f.setStyle(featureStyleNormal);
+                            }
+
+                        });
+
+                        console.log('creating new vector layer');
+
+                        map.addLayer(vectorLayer);
+                        console.log('add vector layer to map');
+                        var extent = vectorLayer.getSource().getExtent();
+
+                        view.fitExtent(extent, map.getSize());
+                        console.log('fit to extent');
+                    };
+
+                    scope.$watchCollection('outputs', function(newOutputs, oldOutputs) {
+                        // ignore first run, when undefined
+                        if(newOutputs && newOutputs.length) {
+
+
+                            console.log(newOutputs);
+
+                            initGeometryData(newOutputs[newOutputs.length - 1]);
+                            // elementWidth = 0; 
+                            // // if output changed
+                            // if(oldOutputs && oldOutputs.length === newOutputs.length) {
+                            //     _.each(newOutputs, function(output, i) {
+                            //         if(output !== oldOutputs[i]) {
+                            //             console.log(output.type);
+                            //             if(output.type === 'geojson') {
+                            //                 render(output);
+                            //             }
+                            //         }
+                            //     });
+                            // } else {
+                            //     // TODO: bad solution, fix this
+                            //     // if output was added
+                            //     _.each(newOutputs, function(output, i) {
+                            //         if(output.type === 'geojson') {
+                            //             render(output);
+                            //         }
+                            //     });
+
+                            // }
+                        }
+                    });
+
+                    // if(scope.output.value) {
+                    //     initGeometryData(scope.output.value);
+                    // }
+
+                    map.on('click', function(event) {
+                        //unselectPreviousFeatures();
+                        map.forEachFeatureAtPixel(event.pixel, function(feature) {
+                            console.log(feature.getProperties());
+                            toggleSelectedFeature(feature);
+                        });
+                        scope.$apply();
+                    });
+
+                    scope.unselectAllFeatures = function() {
+                        while(scope.selectedFeatures.length > 0) {
+                            scope.selectedFeatures[scope.selectedFeatures.length-1].setStyle(scope.selectedFeatures[scope.selectedFeatures.length-1].savedStyle);
+                            scope.selectedFeatures.pop();
+                        }
                         scope.featureProperties = null;
-                    }
-                } else {
+                    };
 
-                    // style for showing certain property (use for output)
-                    
-                    var properties = feature.getProperties();
-                    feature.savedStyle = feature.getStyle();
-                    feature.setStyle(featureStyleSelected);
-                    scope.selectedFeatures.push(feature);
+                    var selectMouseMove = new ol.interaction.Select({
+                        condition: ol.events.condition.mouseMove
+                    });
 
-                }
-                setFeatureProperty(feature);
-            };
+                    map.addInteraction(selectMouseMove);
 
-            scope.layerOptions = [
-                {name: "Road", label: "Road"},
-                {name: "Aerial", label: "Aerial"},
-                {name: "AerialWithLabels", label: "Aerial with labels"}
-            ];
+                    // create directive, copy input.inputs to every selected feature
+                    var featurePanel = angular.element([
+                        '<div id="properties-panel" ng-show="featureProperties.length > 0" class="panel panel-default">',
+                            '<div class="panel-heading"><h2>{{selectedFeatures.length}} selected features</h2></div>',
+                            '<div class="panel-body">',
+                                '<p ng-repeat="property in featureProperties">',
+                                    '<b>{{property.label}}: </b> {{property.value}}',
+                                '</p>',
+                            '</div>',
+                            '<div class="panel-footer clearfix">',
+                                '<div class="pull-right">',
+                                    '<a ng-click="unselectAllFeatures()" class="btn btn-primary">Ok</a>',
+                                '</div>',
+                            '</div>',
+                        '</div>'].join(''));
+                    $compile(featurePanel)(scope);
+                    element.append(featurePanel);
 
-            var viewSettings = {
-                center: district.center || [1000000, 6600000],
-                zoom: district.zoom || 6
-            };  
-
-            var map = new ol.Map({
-                interactions: ol.interaction.defaults({mouseWheelZoom: false}),
-                layers: layers,
-                controls: [zoomControl],
-                target: element[0],
-                ol3Logo: false,
-                view: new ol.View(viewSettings)
-            });
-
-            var view = map.getView();
-            var currentFeature;
-            var vectorLayer;
-            var vectorSource;
-
-            var zoomslider = new ol.control.ZoomSlider();
-            map.addControl(zoomslider);
-
-            var changeLayer = function(layer) {
-                for (var i = 0; i < layers.length; i++) {
-                    layers[i].set('visible', (layers[i].get('style') === layer));
-                }
-            };
-
-            var initGeometryData = function(data) {
-                if(!data) {
-                    return;
-                }
-                // default projection
-                var epsg = defaultProjection;
-                if(data.crs && data.crs.properties && data.crs.properties.name) {
-                    epsg = data.crs.properties.name;
-                }
-
-                console.log('projection was set');
-                
-                console.log('features uid was set');
-                console.log(data);
-                console.log(epsg);
-                
-                vectorSource = new ol.source.GeoJSON({
-                    object:data,
-                    projection: epsg
-                });
-
-                console.log('setting new vector source');
-                if(vectorLayer) {
-                    map.removeLayer(vectorLayer);
-                }
-                vectorLayer = new ol.layer.Vector({
-                  source: vectorSource,
-                  style: featureStyleNormal
-                });
-
-                var features = vectorSource.getFeatures();
-                _.each(features, function(f) {
-
-                    var properties = f.getProperties();
-                    if(properties[scope.output.kpiProperty]) {
-                        f.setStyle([getFeatureStyle(f, properties[scope.output.kpiProperty])]);
-                        //f.setStyle([getFeatureStyle(f, properties.SHADOW_FRACTION), selectedTextStyleFunction(properties.SHADOW_FRACTION)]);
-                    } else {
-                        f.setStyle(featureStyleNormal);
-                    }
-
-                });
-
-                console.log('creating new vector layer');
-
-                map.addLayer(vectorLayer);
-                console.log('add vector layer to map');
-                var extent = vectorLayer.getSource().getExtent();
-
-                view.fitExtent(extent, map.getSize());
-                console.log('fit to extent');
-            };
-
-            // this watched the geojson data set if changed, for example if a new file was uploaded
-            scope.$watch('input.value', function(newData, oldData) {
-                if(oldData !== newData) {
-                    console.log(newData);
-                    initGeometryData(newData);
-                }
-            });
-
-            if(scope.output.value) {
-                initGeometryData(scope.output.value);
+                    changeLayer('Road');
+                }, 200);
             }
 
-            map.on('click', function(event) {
-                //unselectPreviousFeatures();
-                map.forEachFeatureAtPixel(event.pixel, function(feature) {
-                    console.log(feature.getProperties());
-                    toggleSelectedFeature(feature);
-                });
-                scope.$apply();
-            });
+            //initMap();
 
-            scope.unselectAllFeatures = function() {
-                while(scope.selectedFeatures.length > 0) {
-                    scope.selectedFeatures[scope.selectedFeatures.length-1].setStyle(scope.selectedFeatures[scope.selectedFeatures.length-1].savedStyle);
-                    scope.selectedFeatures.pop();
+            scope.watch('trig', function(newValue, oldValue) {
+                if(newValue && newValue !== oldValue) {
+                    element.html('');
+                    initMap();
                 }
-                scope.featureProperties = null;
-            };
-
-            var selectMouseMove = new ol.interaction.Select({
-                condition: ol.events.condition.mouseMove
             });
-
-            map.addInteraction(selectMouseMove);
-
-            // create directive, copy input.inputs to every selected feature
-            var featurePanel = angular.element([
-                '<div id="properties-panel" ng-show="featureProperties.length > 0" class="panel panel-default">',
-                    '<div class="panel-heading"><h2>{{selectedFeatures.length}} selected features</h2></div>',
-                    '<div class="panel-body">',
-                        '<p ng-repeat="property in featureProperties">',
-                            '<b>{{property.label}}: </b> {{property.value}}',
-                        '</p>',
-                    '</div>',
-                    '<div class="panel-footer clearfix">',
-                        '<div class="pull-right">',
-                            '<a ng-click="unselectAllFeatures()" class="btn btn-primary">Ok</a>',
-                        '</div>',
-                    '</div>',
-                '</div>'].join(''));
-            $compile(featurePanel)(scope);
-            element.append(featurePanel);
-
-            changeLayer('Road');
 
 
         }
