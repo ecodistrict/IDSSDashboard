@@ -1,17 +1,22 @@
 angular.module('idss-dashboard').directive('kpiOutput', ['$compile', '$timeout', function($compile, $timeout) {
 
-    // this check could be better implemented, maybe look through folder on server and generate this list from file names
-    var registeredOutputs = ['kpi', 'geojson'];
+    var registeredOutputs = [];
+    // The reserved outputs are rendered in other places
+    var reservedOutputs = ['kpi', 'geojson', 'district-polygon'];
 
     return {
         restrict: 'E',
         scope: {
             outputs: '=',
-            inputs: '='
+            inputs: '=', 
+            kpiunit: '='
         },
         link: function ( scope, element, attrs ) {
 
             var elementWidth = element.width();
+
+            // var bad;
+            // var excellent;
 
             var render = function() {
 
@@ -20,13 +25,9 @@ angular.module('idss-dashboard').directive('kpiOutput', ['$compile', '$timeout',
                     outputs = outputs || [];
                     _.each(outputs, function(output) {
                         if(_.find(registeredOutputs, function(rO) {return rO === output.type;})) {
-                            // // first look for common output types
-                            // if(output.type === 'geojson') {
-                            //     scope.geojsonOutputs.push(output);
-                            // } else {
-                            //     // if not common, it should be one of the specific individual outputs
                             output.template = 'directives/outputs/' + output.type + '.tpl.html';
-                            //}
+                        } else if(_.find(reservedOutputs, function(rO) {return rO === output.type;})) {
+                            // skip this, rendered in other place
                         } else {
                             output.template = 'directives/outputs/not-found.tpl.html';
                         }
@@ -41,52 +42,100 @@ angular.module('idss-dashboard').directive('kpiOutput', ['$compile', '$timeout',
 
             };
 
+            // for updating the outputs after calculation, the length change cannot be checked because it should be the same
+            // this should be per module!
             scope.$watchCollection('outputs', function(newOutputs, oldOutputs) {
-                var oldOutputsLength = oldOutputs ? oldOutputs.length : 0;
+                // ignore first run, when undefined
                 if(newOutputs && newOutputs.length) {
+                    elementWidth = 0; 
+                    // _.each(newOutputs, function(output, i) {
+                    //     if(output !== oldOutputs[i]) {
+                    //         console.log(output.type);
+                    //         if(output.type === 'kpi') {
+                    //             //initKpiValue(output);
+                    //         }
+                    //         // check type and prepare data, this is per module so some function can run at this level (if kpi type is used once!)
+                            
+                    //     }
+                    // });
+                    render();
                     console.log(newOutputs);
                     // hack to let getWidth function to recalculate width, this should not be necessary but will do for now
-                    elementWidth = 0; 
-                    render();
+                    
                 }
             });
 
-            scope.x = function() {
-                return function(d) {
-                  return d.type;
-                };
-              };
+            // scope.x = function() {
+            //     return function(d) {
+            //       return d.type;
+            //     };
+            // };
 
-            scope.y = function() {
-                return function(d) {
-                  return d.value;
-                };
-              };
+            // scope.y = function() {
+            //     return function(d) {
+            //       return d.value;
+            //     };
+            // };
 
             // TODO: this is very hacky, and the function is executed a lot of times! 
             // The problem is to get the width of the element after the DOM is ready (try controller) 
-            scope.getWidth = function() {
+            // setKpiWidth = function() {
 
-                var offset = 40;
+            //     var offset = 40;
 
-                if(!elementWidth) {
+            //     //scope.kpiWidth = 400;
 
-                    $timeout(function() {
+            //     if(!elementWidth) {
 
-                        elementWidth = element.width();
-                        console.log(offset, elementWidth);
-                        console.log($(element).width());
-                        return elementWidth - offset * 2;
+            //          $timeout(function() {
 
-                    }, 100);
+            //             elementWidth = element.width();
+            //             console.log(offset, elementWidth);
+            //             console.log($(element).width());
+            //             scope.kpiWidth = elementWidth - offset * 2;
 
-                } else {
-                    return elementWidth - offset * 2;
-                }
+            //          }, 100);
 
-            };
+            //     } else {
+            //         scope.kpiWidth = elementWidth - offset * 2;
+            //     }
 
-            scope.data = [{category: "test", value: 5},{category: "test", value: 5},{category: "test2", value: 5},{category: "test", value: 5}];
+            // };
+
+            // var getKpiSettings = function() {
+            //     if(scope.inputs) {
+            //         console.log(scope.inputs);
+            //         var kpiScores = _.find(scope.inputs, function(input) {return input.id === 'kpi-scores';});
+            //         if(kpiScores && kpiScores.inputs) {
+            //             // assume order
+            //             excellent = kpiScores.inputs[0].value;
+            //             bad = kpiScores.inputs[1].value;
+            //         }
+            //     }
+            // };
+
+            // var setKpiData = function(kpiValue) {
+
+            //     console.log(kpiValue);
+
+            //     getKpiSettings();
+
+            //     var kpiValues = {
+            //         "title": "KPI value in blue",
+            //         "subtitle": "Bad and excellent in grey",
+            //         "measures": [kpiValue],
+            //         "markers": [0]
+            //     };
+
+            //     if(bad && excellent) {
+            //         kpiValues.ranges = [Math.min(bad, excellent), Math.max(bad, excellent)];
+            //     }
+
+            //     scope.kpiValue = kpiValues;
+
+            // };
+
+            //scope.data = [{category: "test", value: 5},{category: "test", value: 5},{category: "test2", value: 5},{category: "test", value: 5}];
 
 
         }
