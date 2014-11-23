@@ -37,18 +37,41 @@ angular.module( 'idss-dashboard.as-is', [
 
   var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
 
-  $scope.kpiOutputs = []; 
+  $scope.kpiOutputs = []; // TODO: there are different type of outputs; kpi value, map outputs, charts, lists. In different tabs. New structure of outputs needed? 
+  $scope.kpiMapOutputs = [];
+
+  var getBad = function(inputs) {
+    var kpiScores = _.find(inputs, function(input) {return input.id === 'kpi-scores';});
+    if(kpiScores && kpiScores.inputs) {
+      // assume order
+      return kpiScores.inputs[1].value;
+    }
+  };
+
+  var getExcellent = function(inputs) {
+    var kpiScores = _.find(inputs, function(input) {return input.id === 'kpi-scores';});
+    if(kpiScores && kpiScores.inputs) {
+      // assume order
+      return kpiScores.inputs[0].value;
+    }
+  };
 
   _.each(asIsVariant.kpiList, function(kpi) {
+
+    var bad = getBad(kpi.inputs);
+    var excellent = getExcellent(kpi.inputs);
 
     // add the kpi outputs with loading status
     $scope.kpiOutputs.push({
       kpiName: kpi.name,
       kpiAlias: kpi.alias,
+      kpiBad: bad,
+      kpiExcellent: excellent, 
       inputs: kpi.inputs,
+      kpiUnit: kpi.unit,
       moduleName: kpi.selectedModule.name,
       moduleId: kpi.selectedModule.id,
-      status: kpi.selectedModule.status,
+      status: 'loading',
       loading: true
     });
     
@@ -66,6 +89,17 @@ angular.module( 'idss-dashboard.as-is', [
         kpiOutput.loading = false;
       }
       kpiOutput.outputs = output.outputs; // listen on this to trigger rendering
+
+      _.each(output.outputs, function(o) {
+        if(o.type === 'geojson') {
+          console.log(kpi.alias);
+          o.kpiAlias = kpi.alias;
+          o.kpiName = kpi.name;
+          o.kpiBad = bad;
+          o.kpiExcellent = excellent;
+          $scope.kpiMapOutputs.push(o);
+        }
+      });
 
       console.log(kpiOutput);
     });
@@ -98,6 +132,15 @@ angular.module( 'idss-dashboard.as-is', [
     if(kpiOutput) {
       kpiOutput.status = module.status;
       kpiOutput.outputs = module.outputs;
+      _.each(module.outputs, function(o) {
+        if(o.type === 'geojson') {
+          o.kpiAlias = module.kpiAlias;
+          o.kpiBad = kpiOutput.kpiBad;
+          o.kpiExcellent = kpiOutput.kpiExcellent;
+          // find kpi output and only rewrite o.value
+          $scope.kpiMapOutputs.push(o);
+        }
+      });
     } else {
       console.log('Dashboard recieved model result but couldnt find the kpi');
     }
@@ -124,112 +167,35 @@ angular.module( 'idss-dashboard.as-is', [
     kpiOutput.status = 'unprocessed';
     kpiOutput.loading = false;
 
+    ModuleService.updateModuleOutputStatus(asIsVariant._id, kpiOutput.moduleId, kpiOutput.kpiAlias, kpiOutput.status);
+
     // send message to model?
   };
 
-  // since nvd3 options need functions and module config JSON does not allow functions
-  // this function converts some settings to function for D3 
-  // var prepareNvd3Options = function(options) {
-  //   var chart = options.chart;
-  //   if(!chart) {
-  //     return;
-  //   }
-  //   if(chart.x && !_.isFunction(chart.x)) {
-  //     chart.xOption = chart.x;
-  //     chart.x = function(d) {
-  //       if(!d) {
-  //         return;
-  //       }
-  //       return d[chart.xOption];
-  //     };
-  //   }
-  //   if(chart.y && !_.isFunction(chart.y)) {
-  //     chart.yOption = chart.y;
-  //     chart.y = function(d) {
-  //       if(!d) {
-  //         return;
-  //       }
-  //       return d[chart.yOption];
-  //     };
-  //   }
-  //   if(chart.valueFormat && !_.isFunction(chart.valueFormat)) {
-  //     chart.valueFormatOption = chart.valueFormat;
-  //     chart.valueFormat = function(d) {
-  //       if(!d) {
-  //         return;
-  //       }
-  //       return d[chart.valueFormatOption];
-  //     };
-  //   }
-  // };
+  $scope.calculateAllKpis = function() {
 
-  // set template urls to all outputs to generate corresponding directive
-  // var setTemplateUrl = function(outputs) {
-  //   if(!outputs) {return;}
-  //   _.each(outputs, function(output) {
-  //     output.template = 'directives/module-outputs/' + output.type + '.tpl.html';
-  //     if(output.type === 'nvd3') {
-  //       prepareNvd3Options(output.options);
-  //     }
-  //     if(output.outputs) {
-  //       setTemplateUrl(output.outputs);
-  //     }
-  //   });
-  // };
-
-  $scope.runModules = function() {
-
-    _.each($scope.currentProcess.kpiList, function(kpi) {
-      var module = kpi.selectedModule;
-      module.isProcessing = true;
-      module.status = 'default';
-      socket.emit('startModel', module);
-      // socket.on('startModel', function(module) {
-      //   //module.outputs = outputs;
-      //   console.log(module);
-      //   //setTemplateUrl(module.outputs);
-      // });
+    _.each($scope.kpiOutputs, function(kpiOutput) {
+      $scope.calculateKpi(kpiOutput);
     });
 
   };
 
+  $scope.selectMap = function() {
+    $scope.trig = true;
+  };
+
   $scope.getStatus = function(kpi) {
+    console.log(kpi.status);
     if(kpi.status === 'unprocessed') {
       return 'warning';
+    } else if(kpi.status === 'initializing') {
+      return 'primary';
     } else if(kpi.status === 'processing') {
       return 'info';
     } else if(kpi.status === 'success') {
       return 'success';
     }
   };
-
-  // var modulesAreProcessing = function() {
-
-  //   var processing = false;
-  //   _.each($scope.currentProcess.kpiList, function(kpi) {
-  //     if(kpi.selectedModule.isProcessing) {
-  //       processing = true;
-  //     }
-  //   });
-  //   return processing;
-  // };
-
-  //$scope.processing = modulesAreProcessing();
-
-  // $timeout(function() {
-  //   _.each($scope.currentProcess.kpiList, function(kpi) {
-  //     var module = kpi.selectedModule;
-  //     $scope.processing = modulesAreProcessing();
-  //     setTemplateUrl(module.outputs);
-  //     console.log(module);
-  //   });
-      
-  // }, 1000);
-
-  // All calculations needs an indicator to show calculation progress
-
-  // The results are saved in the modules and shown in results
-  
 
 }]);
 
