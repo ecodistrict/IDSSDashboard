@@ -265,7 +265,11 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     } else if(message.method === 'modelResult') {
       dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
       variantRepository.addModuleResult(message, function(err, model) {
-        dashboardWebClientSocket.emit(message.method, model);
+        if(err) {
+          dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
+        } else {
+          dashboardWebClientSocket.emit(message.method, model);
+        }
       });
     }
   };
