@@ -44,7 +44,7 @@ angular.module( 'idss-dashboard', [
     flashProvider.errorClassnames.push('alert-danger');
 }])
 
-.controller( 'AppCtrl', [ '$scope', '$rootScope', '$location', 'USER_ROLES', 'authService', 'LoginService', 'ProcessService', 'socket', 'ModuleService', '$state', 'VariantService', function AppCtrl ( $scope, $rootScope, $location, USER_ROLES, authService, LoginService, ProcessService, socket, ModuleService, $state, VariantService) {
+.controller( 'AppCtrl', [ '$scope', '$rootScope', '$location', 'USER_ROLES', 'authService', 'LoginService', 'ProcessService', 'socket', 'ModuleService', '$state', 'VariantService', 'NotificationService', function AppCtrl ( $scope, $rootScope, $location, USER_ROLES, authService, LoginService, ProcessService, socket, ModuleService, $state, VariantService, NotificationService) {
 
     var init = function(user) {
       $scope.isAuthenticated = LoginService.isAuthenticated();
@@ -74,6 +74,17 @@ angular.module( 'idss-dashboard', [
 
       socket.on('frameworkError', function(err) {
         console.log('Error from server: ' + err);
+      });
+
+      socket.on('frameworkActivity', function(messageObject) {
+        console.log(messageObject);
+        messageObject = JSON.parse(messageObject);
+        var label = messageObject.message;
+        console.log(label);
+        NotificationService.createInfoFlash(label);
+        ProcessService.addLog({
+          label:label
+        });
       });
     
       // register event to check auth on page change
