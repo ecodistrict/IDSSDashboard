@@ -17,11 +17,11 @@ var kpi = "geojson-input";
 
 var imbConnection = new imb.TIMBConnection();
 imbConnection.connect('imb.lohman-solutions.com', 4000, 1234, 'testModuleGeojsonInput', 'ecodistrict');
-var messageSub = imbConnection.subscribe('models', true);
+var messageSub = imbConnection.subscribe('modelsTEST', true);
 
 var sendDashboard = function(requestObj) {
   var request = JSON.stringify(requestObj).toString();
-  var message = imbConnection.publish('dashboard', true);
+  var message = imbConnection.publish('dashboardTEST', true);
   var messageByteLength = Buffer.byteLength(request);
   var eventPayload = new Buffer(4+messageByteLength);
   var offset = 0;
