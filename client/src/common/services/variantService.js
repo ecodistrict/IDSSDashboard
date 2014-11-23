@@ -162,9 +162,12 @@ angular.module('idss-dashboard')
             var index = _.indexOf(asIsVariant.kpiList, found);
             asIsVariant.kpiList.splice(index, 1);
             // kpi was removed, clean all stored input and output
-            removeInputData(asIsVariant._id, found.alias);
-            removeOutputData(asIsVariant._id, found.alias);
-            return saveVariant(asIsVariant);
+            return removeInputData(asIsVariant._id, found.alias).then(function() {
+                return removeOutputData(asIsVariant._id, found.alias).then(function() {
+                    console.log('input and output was removed');
+                    return saveVariant(asIsVariant);
+                });
+            });
         }
     };
 
