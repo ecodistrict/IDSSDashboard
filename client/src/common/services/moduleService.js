@@ -134,6 +134,37 @@ angular.module('idss-dashboard')
 
     };
 
+    var updateModuleOutputStatus = function(variantId, moduleId, kpiAlias, status) {
+
+        var moduleOutput = {
+            variantId: variantId,
+            moduleId: moduleId,
+            kpiAlias: kpiAlias,
+            status: status
+        };
+
+        return $http
+            .put('variants/moduleoutput/outputstatus', moduleOutput)
+            .error(function(data, status) {
+                var label = 'Error when saving inputs';
+                NotificationService.createErrorFlash(label);
+                ProcessService.addLog({
+                    err: data, 
+                    label:label,
+                    status: status
+                });
+            })
+            .then(function (res) {
+                var module = res.data;
+                var label = 'Input data was successfully saved';
+                NotificationService.createSuccessFlash(label);
+                ProcessService.addLog({
+                    label:label
+                });
+                return module;
+            });
+    };
+
     return {
         getModulesFromKpiId: getModulesFromKpiId,
         getAllModules: getAllModules,
@@ -141,6 +172,7 @@ angular.module('idss-dashboard')
         extendModuleData: extendModuleData,
         getModuleInput: getModuleInput,
         getModuleOutput: getModuleOutput,
-        saveModuleInput: saveModuleInput
+        saveModuleInput: saveModuleInput,
+        updateModuleOutputStatus: updateModuleOutputStatus
     };
 }]);
