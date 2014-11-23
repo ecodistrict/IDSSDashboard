@@ -74,6 +74,15 @@ angular.module( 'idss-dashboard.as-is', [
       status: 'loading',
       loading: true
     });
+
+    var prepareKpiData = function(o) {
+      o.kpiAlias = kpi.alias;
+      o.kpiName = kpi.name;
+      o.kpiBad = bad;
+      o.kpiExcellent = excellent;
+      o.kpiUnit = kpi.unit;
+      o.moduleId = kpi.selectedModule.id;
+    };
     
     // fetch existing output from server
     ModuleService.getModuleOutput(asIsVariant._id, kpi.selectedModule.id, kpi.alias).then(function(output) {
@@ -88,20 +97,16 @@ angular.module( 'idss-dashboard.as-is', [
       } else {
         kpiOutput.loading = false;
       }
-      kpiOutput.outputs = output.outputs; // listen on this to trigger rendering
 
       _.each(output.outputs, function(o) {
+        prepareKpiData(o);
         if(o.type === 'geojson') {
-          console.log(kpi.alias);
-          o.kpiAlias = kpi.alias;
-          o.kpiName = kpi.name;
-          o.kpiBad = bad;
-          o.kpiExcellent = excellent;
           $scope.kpiMapOutputs.push(o);
-        }
+        } 
       });
 
-      console.log(kpiOutput);
+      kpiOutput.outputs = output.outputs; // listen on this to trigger rendering
+
     });
       
   });
@@ -131,16 +136,33 @@ angular.module( 'idss-dashboard.as-is', [
     });
     if(kpiOutput) {
       kpiOutput.status = module.status;
-      kpiOutput.outputs = module.outputs;
       _.each(module.outputs, function(o) {
+        o.kpiAlias = kpiOutput.kpiAlias;
+        o.kpiName = kpiOutput.kpiName;
+        o.kpiBad = kpiOutput.kpiBad;
+        o.kpiExcellent = kpiOutput.kpiExcellent;
+        o.kpiUnit = kpiOutput.kpiUnit;
+        o.moduleId = kpiOutput.moduleId;
         if(o.type === 'geojson') {
-          o.kpiAlias = module.kpiAlias;
-          o.kpiBad = kpiOutput.kpiBad;
-          o.kpiExcellent = kpiOutput.kpiExcellent;
-          // find kpi output and only rewrite o.value
+          // TODO: update any existing map output, use id?
           $scope.kpiMapOutputs.push(o);
         }
+
+      //    var existingOutput  = _.find(kpiOutput.outputs, function(kO) {return kO.id === o.id;});
+      //    if(existingOutput) {
+      //      console.log('output exists - update value');
+      // //     // update value, look for type
+      //    } else {
+      //      console.log('output did not exist - create new output object');
+      // //     // push value, look for type
+      // //     if()
+      // //     $scope.kpiMapOutputs.push(o);
+      //    }
+        
       });
+
+      kpiOutput.outputs = module.outputs;
+
     } else {
       console.log('Dashboard recieved model result but couldnt find the kpi');
     }

@@ -14,7 +14,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
             var render = function(output) {
 
-                scope.outputId = 'dfgdf'; // generate a unique id
+                scope.outputId = scope.moduleId + '_aggregated_kpi'; // generate a unique id
                 scope.noDataMessage = "No overall KPI is given for this result";
                 scope.tooltipFunction = function(){
                     return function(key, x, y, e, graph) {
@@ -29,15 +29,8 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                     };
                 };
 
-                if(scope.kpi.inputs) {
-                    console.log(scope.kpi.inputs);
-                    var kpiScores = _.find(scope.kpi.inputs, function(input) {return input.id === 'kpi-scores';});
-                    if(kpiScores && kpiScores.inputs) {
-                        // assume order
-                        excellent = kpiScores.inputs[0].value;
-                        bad = kpiScores.inputs[1].value;
-                    }
-                }
+                bad = scope.kpi.kpiBad;
+                excellent = scope.kpi.kpiExcellent;
 
                 var kpiValues = {
                     "title": "KPI value in blue",
@@ -56,8 +49,8 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
                 var template = ['<nvd3-bullet-chart ',
                             'data="kpiValue" ',
-                            'id="outputId" ',
-                            'noData="noDataMessage" ',
+                            'id="{{outputId}}" ',
+                            'noData="{{noDataMessage}}" ',
                             'interactive="true" ',
                             'tooltips="true" ',
                             'tooltipcontent="tooltipFunction()" ',

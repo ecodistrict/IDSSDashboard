@@ -1,6 +1,6 @@
 angular.module('idss-dashboard').directive('kpiOutput', ['$compile', '$timeout', function($compile, $timeout) {
 
-    var registeredOutputs = [];
+    var registeredOutputs = ['kpi-list'];
     // The reserved outputs are rendered in other places
     var reservedOutputs = ['kpi', 'geojson', 'district-polygon'];
 
@@ -28,10 +28,17 @@ angular.module('idss-dashboard').directive('kpiOutput', ['$compile', '$timeout',
                             output.template = 'directives/outputs/' + output.type + '.tpl.html';
                         } else if(_.find(reservedOutputs, function(rO) {return rO === output.type;})) {
                             // skip this, rendered in other place
-                        } else {
+                            // if geojson, put notification
+                            if(output.type === 'geojson') {
+                                output.template = 'directives/outputs/geojson-found.tpl.html';
+                            }
+                        } else if(output.type) {
                             output.template = 'directives/outputs/not-found.tpl.html';
                         }
                     });
+                    if(!_.find(outputs, function(o) {return o.template;})) {
+                        outputs.push({template: 'directives/outputs/no-details.tpl.html'});
+                    }
                 };
 
                 prepareOutputs(scope.outputs);

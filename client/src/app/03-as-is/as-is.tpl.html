@@ -7,11 +7,11 @@
 
   <div class="tab-content">
     <div class="tab-pane fade in active" id="kpilist">
-      <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+      <div class="panel-group" id="kpi-result-accordion" role="tablist" aria-multiselectable="true">
         <div ng-repeat="kpi in kpiOutputs" class="panel {{'panel-' + getStatus(kpi)}} module-item">
             <div class="panel-heading" role="tab">
               <h4 class="panel-title">
-                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="as-is#{{$index}}"><b>{{kpi.kpiName}}</b> delivered by <b>{{kpi.moduleName}}</b> <i>(status: {{kpi.status}})</i><span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
+                <a class="collapsed accordion-toggle" data-toggle="collapse" data-parent="#kpi-result-accordion" href="as-is#{{$index}}"><b>{{kpi.kpiName}}</b> delivered by <b>{{kpi.moduleName}}</b> <i>(status: {{kpi.status}})</i><span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
                 </a>
                 <button ng-show="!kpi.loading" class="btn btn-xs btn-default pull-right" ng-click="calculateKpi(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-cloud-upload"></i> Calculate</button>
                   <button ng-show="kpi.loading" class="btn btn-xs btn-danger pull-right" ng-click="stopCalculation(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-cloud-upload"></i> Stop</button>
