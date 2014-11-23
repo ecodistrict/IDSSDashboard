@@ -17,11 +17,11 @@ var kpi = "list";
 
 var imbConnection = new imb.TIMBConnection();
 imbConnection.connect('imb.lohman-solutions.com', 4000, 1234, 'testModuleListInput', 'ecodistrict');
-var messageSub = imbConnection.subscribe('modelsTEST', true);
+var messageSub = imbConnection.subscribe('models', true);
 
 var sendDashboard = function(requestObj) {
   var request = JSON.stringify(requestObj).toString();
-  var message = imbConnection.publish('dashboardTEST', true);
+  var message = imbConnection.publish('dashboard', true);
   var messageByteLength = Buffer.byteLength(request);
   var eventPayload = new Buffer(4+messageByteLength);
   var offset = 0;
@@ -109,19 +109,19 @@ var modelResult = {
     "type": "result",
     "outputs": [{
       "type": "kpi",
-      "value": 5,
+      "value": 8,
       "info": "Mean value.."
     },{
       "type": "kpi-list",
       "label": "Buildings and their heating systems",
-      "outputs": [
+      "value": [
         {
-          "type": "kpi",
-          "value": 6
+          "kpiValue": 9,
+          "name": "Building 1"
         },
         {
-          "type": "kpi",
-          "value": 5
+          "kpiValue": 10,
+          "name": "Building 2"
         }
       ]
     }] 
