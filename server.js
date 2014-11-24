@@ -160,7 +160,6 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
   console.log(dashboardWebClientSocket.id);
 
   dashboardWebClientSocket.on('privateRoom', function(data) {
-    console.log(data.userId);
     dashboardWebClientSocket.join(data.userId);
   });
 
