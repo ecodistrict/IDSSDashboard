@@ -159,6 +159,11 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
 
   console.log(dashboardWebClientSocket.id);
 
+  dashboardWebClientSocket.on('privateRoom', function(data) {
+    console.log(data.userId);
+    dashboardWebClientSocket.join(data.userId);
+  });
+
   // get requests from client
   dashboardWebClientSocket.on('message', function(method){
 
@@ -248,27 +253,32 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
       dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
       variantRepository.addModule(message, function(err, model) {
         if(err) {
-          dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
+          console.log(err.userId);
+          io.to(err.userId).emit("frameworkError", JSON.stringify(err));
+          //dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
         } else {
-          dashboardWebClientSocket.emit(message.method, model);
+          console.log(model.userId);
+          io.to(model.userId).emit(message.method, model);
+          //dashboardWebClientSocket.emit(message.method, model);
         }
       });
     } else if(message.method === 'startModel') {
       dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
       variantRepository.saveModuleOutputStatus(message, function(err, success) {
         if(err) {
-          dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
+          io.to(err.userId).emit("frameworkError", JSON.stringify(err));
         } else {
-          dashboardWebClientSocket.emit(message.method, message);
+          io.to(success.userId).emit(message.method, message);
         }
       });
     } else if(message.method === 'modelResult') {
       dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
       variantRepository.addModuleResult(message, function(err, model) {
         if(err) {
-          dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
+          io.to(err.userId).emit("frameworkError", JSON.stringify(err));
         } else {
-          dashboardWebClientSocket.emit(message.method, model);
+          console.log(model);
+          io.to(model.userId).emit(message.method, message);
         }
       });
     }
