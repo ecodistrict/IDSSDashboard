@@ -130,10 +130,15 @@ angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService'
         } else if(kpiValue > Math.max(bad, excellent)) {
             kpiValue = Math.max(bad, excellent);
         }
-        var value = Math.abs(kpiValue - Math.min(bad, excellent));
+        var value = kpiValue - Math.min(bad, excellent);
         var factor = value / span;
+        var badIsLarger = false;
 
-        if (value < average) {
+        if(bad > excellent) {
+            badIsLarger = true;
+        }
+
+        if ((value < average && !badIsLarger) || (value > average && !badIsLarger)) {
             // green to yellow
             $r = Math.floor(255 * factor);
             $g = 255;
