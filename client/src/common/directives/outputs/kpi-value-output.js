@@ -40,6 +40,8 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                 bad = scope.kpi.kpiBad;
                 excellent = scope.kpi.kpiExcellent;
 
+                console.log(output);
+
                 var kpiValues = {
                     "title": "KPI value in blue",
                     "subtitle": "Bad and excellent in grey",
@@ -47,14 +49,14 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                     "markers": [0]
                 };
 
-                if(bad && excellent) {
+                //if(bad && excellent) {
                     kpiValues.ranges = [Math.min(bad, excellent), Math.max(bad, excellent)];
-                }
+                //}
 
                 scope.kpiValue = kpiValues;
 
                 console.log(scope.kpiValue);
-
+                console.log(scope);
                 var template = ['<nvd3-bullet-chart ',
                             'data="kpiValue" ',
                             'id="{{outputId}}" ',
@@ -63,7 +65,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                             'tooltips="true" ',
                             'tooltipcontent="tooltipFunction()" ',
                             'margin="{left:140,top:30,bottom:30,right:10}" ',
-                            'width="{{kpiWidth}}" ',
+                            'width="600" ',
                             'height="100"> ',
                     '<svg></svg>',
                 '</nvd3-bullet-chart>'].join('');
