@@ -60,6 +60,8 @@ angular.module( 'idss-dashboard', [
       });
 
       socket.emit('getModels', {kpiList: []});
+
+      socket.emit('privateRoom', {userId: user._id});
     
       socket.on('getModels', function(moduleData) {
         console.log(moduleData);
