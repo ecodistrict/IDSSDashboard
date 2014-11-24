@@ -37,18 +37,8 @@ angular.module( 'idss-dashboard.collect-data', [
 
   $scope.asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
 
-  // $scope.moduleList = [];
-  // console.log($scope.currentProcess);
-  // _.each($scope.currentProcess.kpiList, function(kpi) {
-  //   if(kpi.selectedModule) {
-  //     $scope.moduleList.push({
-  //       kpi: kpi, 
-  //       module: kpi.selectedModule
-  //     });
-  //   }
-  // });
-
   $scope.moduleInputIsOk = function(module) {
+    // create API call?
     return false;
   };
 
