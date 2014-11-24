@@ -26,9 +26,17 @@ angular.module('idss-dashboard').directive('kpiValueOutputSingle', ['$compile', 
                 scope.tooltipFunction = function(){
                     return function(key, x, y, e, graph) {
                         if(x === 'Maximum') {
-                            x = 'excellent';
+                            if(scope.bad > scope.excellent) {
+                                x = 'bad';
+                            } else {
+                                x = 'excellent';
+                            }
                         } else if (x === 'Minimum'){
-                            x = 'bad';
+                            if(scope.bad > scope.excellent) {
+                                x = 'excellent';
+                            } else {
+                                x = 'bad';
+                            }
                         } else if(x === 'Current') {
                             x = 'current';
                         }
@@ -43,9 +51,9 @@ angular.module('idss-dashboard').directive('kpiValueOutputSingle', ['$compile', 
                     "markers": [0]
                 };
 
-                if(scope.bad && scope.excellent) {
+                //if(scope.bad && scope.excellent) {
                     data.ranges = [Math.min(scope.bad, scope.excellent), Math.max(scope.bad, scope.excellent)];
-                }
+                //}
 
                 scope.data = data;
 
