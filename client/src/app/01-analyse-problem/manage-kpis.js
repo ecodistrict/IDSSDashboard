@@ -115,8 +115,21 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
   };
 
   // TODO: this is an indicator whether the KPI is ok or not 
-  $scope.kpiIsManaged = function(kpi) {
-    return false;
+  $scope.kpiIsConfigured = function(kpi) {
+    var isConfigured = true;
+    if(!kpi.selectedModule || kpi.selectedModule.id === null) {
+      isConfigured = false;
+    }
+    _.each(kpi.inputs, function(input) {
+      if(input.id === 'kpi-scores') {
+        _.each(input.inputs, function(score) {
+          if(!score.value) {
+            isConfigured = false;
+          }
+        });
+      }
+    });
+    return isConfigured;
   };
 
 }]);

@@ -234,7 +234,7 @@ angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService'
 
                     var view = map.getView();
                     var currentFeature;
-                    var vectorLayer;
+                    var vectorLayers = [];
                     var vectorSource;
 
                     var zoomslider = new ol.control.ZoomSlider();
@@ -265,19 +265,21 @@ angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService'
                         console.log(data.value);
                         console.log(epsg);
                         
-                        vectorSource = new ol.source.GeoJSON({
+                        var vectorSource = new ol.source.GeoJSON({
                             object:data.value,
                             projection: epsg
                         });
 
                         console.log('setting new vector source');
-                        if(vectorLayer) {
-                            map.removeLayer(vectorLayer);
-                        }
-                        vectorLayer = new ol.layer.Vector({
+                        // if(vectorLayer) {
+                        //     map.removeLayer(vectorLayer);
+                        // }
+                        var vectorLayer = new ol.layer.Vector({
                           source: vectorSource,
                           style: featureStyleNormal
                         });
+
+                        vectorLayers.push({vectorLayer: vectorLayer, vectorSource: vectorSource});
 
                         var features = vectorSource.getFeatures();
 
