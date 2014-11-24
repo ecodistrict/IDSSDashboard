@@ -19,9 +19,17 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                 scope.tooltipFunction = function(){
                     return function(key, x, y, e, graph) {
                         if(x === 'Maximum') {
-                            x = 'excellent';
+                            if(bad > excellent) {
+                                x = 'bad';
+                            } else {
+                                x = 'excellent';
+                            }
                         } else if (x === 'Minimum'){
-                            x = 'bad';
+                            if(bad > excellent) {
+                                x = 'excellent';
+                            } else {
+                                x = 'bad';
+                            }
                         } else if(x === 'Current') {
                             x = 'current';
                         }
