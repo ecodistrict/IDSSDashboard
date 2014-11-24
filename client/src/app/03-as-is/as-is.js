@@ -135,7 +135,7 @@ angular.module( 'idss-dashboard.as-is', [
       return kpi.kpiAlias === module.kpiAlias;
     });
     if(kpiOutput) {
-      kpiOutput.status = module.status;
+      //kpiOutput.status = module.status;
       _.each(module.outputs, function(o) {
         o.kpiAlias = kpiOutput.kpiAlias;
         o.kpiName = kpiOutput.kpiName;
@@ -216,7 +216,7 @@ angular.module( 'idss-dashboard.as-is', [
       return 'info';
     } else if(kpi.status === 'success') {
       return 'success';
-    }
+    } 
   };
 
 }]);
