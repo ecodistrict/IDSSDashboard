@@ -177,14 +177,15 @@ angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService'
 
                         scope.featureProperties = [];
                         var properties = feature.getProperties();
-                        _.each(scope.output.displayProperties, function(property) {
-                            if(properties[property.property]) {
-                                property.value = properties[property.property];
-                                scope.featureProperties.push(property);
-                            }
-                        });
+                        console.log(properties);
+                        // _.each(scope.output.displayProperties, function(property) {
+                        //     if(properties[property.property]) {
+                        //         property.value = properties[property.property];
+                        //         scope.featureProperties.push(property);
+                        //     }
+                        // });
 
-                        //scope.featureProperties = feature.getProperties();
+                        scope.featureProperties = feature.getProperties();
                             
                     };
 
@@ -342,7 +343,7 @@ angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService'
                     map.on('click', function(event) {
                         //unselectPreviousFeatures();
                         map.forEachFeatureAtPixel(event.pixel, function(feature) {
-                            console.log(feature.getProperties());
+                            //console.log(feature.getProperties());
                             toggleSelectedFeature(feature);
                         });
                         scope.$apply();
@@ -364,11 +365,11 @@ angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService'
 
                     // create directive, copy input.inputs to every selected feature
                     var featurePanel = angular.element([
-                        '<div id="properties-panel" ng-show="featureProperties.length > 0" class="panel panel-default">',
-                            '<div class="panel-heading"><h2>{{selectedFeatures.length}} selected features</h2></div>',
+                        '<div id="properties-panel" ng-show="selectedFeatures.length" class="panel panel-default">',
+                            '<div class="panel-heading"><h2>Selected feature</h2></div>',
                             '<div class="panel-body">',
-                                '<p ng-repeat="property in featureProperties">',
-                                    '<b>{{property.label}}: </b> {{property.value}}',
+                                '<p ng-repeat="(key, property) in featureProperties">',
+                                    '<b>{{key}}: </b> {{property}}',
                                 '</p>',
                             '</div>',
                             '<div class="panel-footer clearfix">',
