@@ -123,7 +123,7 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
     _.each(kpi.inputs, function(input) {
       if(input.id === 'kpi-scores') {
         _.each(input.inputs, function(score) {
-          if(!score.value) {
+          if(!score.value && score.value !== 0) {
             isConfigured = false;
           }
         });
