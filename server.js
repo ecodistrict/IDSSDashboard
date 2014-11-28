@@ -276,7 +276,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         if(err) {
           io.to(err.userId).emit("frameworkError", JSON.stringify(err));
         } else {
-          console.log(model);
+          //console.log(model);
           io.to(model.userId).emit(message.method, message);
         }
       });
