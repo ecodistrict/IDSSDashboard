@@ -119,7 +119,7 @@ angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService'
     // use for colorizing output
     // TODO: clean this mess up!
     var greenYellowRed = function(kpiValue, bad, excellent) {
-        if(!bad || !excellent) {
+        if((!bad && bad !== 0) || (!excellent && excellent !== 0)) {
             return;
         }
         var span = Math.abs(bad - excellent);
@@ -271,9 +271,7 @@ angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService'
                         });
 
                         console.log('setting new vector source');
-                        // if(vectorLayer) {
-                        //     map.removeLayer(vectorLayer);
-                        // }
+                        
                         var vectorLayer = new ol.layer.Vector({
                           source: vectorSource,
                           style: featureStyleNormal
@@ -389,6 +387,8 @@ angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService'
             //initMap();
 
             scope.watch('trig', function(newValue, oldValue) {
+                //console.log('trig');
+                //element.html('').append('<p style="position:absolute;width:500px;height:500px;z-index:9999">TEst</p>');
                 if(newValue && newValue !== oldValue) {
                     element.html('');
                     initMap();

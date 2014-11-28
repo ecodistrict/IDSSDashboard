@@ -47,7 +47,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                 var kpiValues = {
                     "title": "KPI value in blue",
                     "subtitle": "Bad and excellent in grey",
-                    "measures": [output.value],
+                    "measures": [Math.round(output.value)],
                     "markers": [0]
                 };
 
