@@ -105,13 +105,13 @@ angular.module('idss-dashboard')
 
         // first check cache
         // TODO: when a new startModel returns a new output to server, let client know to clear the cache
-        var deferred = $q.defer();
-        var cacheKey = variantId + moduleId + kpiAlias;
+        // var deferred = $q.defer();
+        // var cacheKey = variantId + moduleId + kpiAlias;
 
-        if(moduleOutputs[cacheKey]) {
-            deferred.resolve(moduleOutputs[cacheKey]);
-            return deferred.promise;
-        } else {
+        // if(moduleOutputs[cacheKey]) {
+        //     deferred.resolve(moduleOutputs[cacheKey]);
+        //     return deferred.promise;
+        // } else {
 
             return $http
             .get('variants/moduleoutput/' + variantId + '/' + moduleId + '/' + kpiAlias)
@@ -126,11 +126,12 @@ angular.module('idss-dashboard')
             })
             .then(function (res) {
                 var outputs = res.data;
-                moduleOutputs[cacheKey] = outputs;
-                return moduleOutputs[cacheKey];
+                return outputs;
+                //moduleOutputs[cacheKey] = outputs;
+                //return moduleOutputs[cacheKey];
             });
 
-        }
+        //}
 
     };
 
