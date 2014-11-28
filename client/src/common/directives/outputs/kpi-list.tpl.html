@@ -1,4 +1,4 @@
 <div ng-repeat="output in output.value" class="alert alert-info" role="alert">
 	<label>{{$parent.output.kpiName}} - {{output.name}}</label><br>
-  <kpi-value-output-single kpi="output" bad="{{$parent.output.kpiBad}}" excellent="{{$parent.output.kpiExcellent}}" unit="{{$parent.output.kpiUnit}}" index="{{$index}}"></kpi-value-output-single>
+  <kpi-value-output-single kpi="output" bad="{{$parent.output.kpiBad}}" moduleid="{{$parent.output.moduleId}}" excellent="{{$parent.output.kpiExcellent}}" unit="{{$parent.output.kpiUnit}}" index="{{$index}}"></kpi-value-output-single>
 </div>

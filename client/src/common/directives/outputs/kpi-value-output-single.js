@@ -7,7 +7,8 @@ angular.module('idss-dashboard').directive('kpiValueOutputSingle', ['$compile', 
             bad: '@',
             excellent: '@',
             unit: '@',
-            index: '@'
+            index: '@',
+            moduleid: '@'
         },
         link: function ( scope, element, attrs ) {
 
@@ -21,7 +22,7 @@ angular.module('idss-dashboard').directive('kpiValueOutputSingle', ['$compile', 
 
             var render = function() {
 
-                scope.outputId = scope.moduleId + '_' + scope.index; // generate a unique id
+                scope.outputId = scope.moduleid + '_' + scope.index; // generate a unique id
                 scope.noDataMessage = "No overall KPI is given for this result";
                 scope.tooltipFunction = function(){
                     return function(key, x, y, e, graph) {

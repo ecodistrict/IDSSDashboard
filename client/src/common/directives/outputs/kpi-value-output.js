@@ -14,7 +14,9 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
             var render = function(output) {
 
-                scope.outputId = scope.moduleId + '_aggregated_kpi'; // generate a unique id
+                console.log(scope);
+
+                scope.outputId = scope.kpi.moduleId + '_aggregated_kpi'; // generate a unique id
                 scope.noDataMessage = "No overall KPI is given for this result";
                 scope.tooltipFunction = function(){
                     return function(key, x, y, e, graph) {
