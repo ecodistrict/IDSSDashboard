@@ -5,7 +5,7 @@ angular.module( 'idss-dashboard.as-is', [
 
 .config(['$stateProvider', function config( $stateProvider ) {
   $stateProvider.state( 'as-is', {
-    url: '/as-is/:startOnPageLoad',
+    url: '/as-is',
     views: {
       "main": {
         controller: 'AsIsController',
