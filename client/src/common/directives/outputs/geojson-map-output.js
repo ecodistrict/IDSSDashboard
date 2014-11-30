@@ -175,8 +175,9 @@ angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService'
 
                     var setFeatureProperty = function(feature) {
 
-                        scope.featureProperties = [];
+                        //scope.featureProperties = [];
                         var properties = feature.getProperties();
+                        var set = {};
                         console.log(properties);
                         // _.each(scope.output.displayProperties, function(property) {
                         //     if(properties[property.property]) {
@@ -184,8 +185,13 @@ angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService'
                         //         scope.featureProperties.push(property);
                         //     }
                         // });
+                        for(var p in properties) {
+                            if(properties.hasOwnProperty(p)) {
+                                set[p] = properties[p];
+                            }
+                        }
 
-                        scope.featureProperties = feature.getProperties();
+                        scope.featureProperties = set;
                             
                     };
 
@@ -365,7 +371,7 @@ angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService'
 
                     // create directive, copy input.inputs to every selected feature
                     var featurePanel = angular.element([
-                        '<div id="properties-panel" ng-show="selectedFeatures.length" class="panel panel-default">',
+                        '<div id="properties-panel" ng-show="selectedFeatures.length > 0" class="panel panel-default">',
                             '<div class="panel-heading"><h2>Selected feature</h2></div>',
                             '<div class="panel-body">',
                                 '<p ng-repeat="(key, property) in featureProperties">',
