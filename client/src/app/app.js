@@ -2,6 +2,7 @@ angular.module( 'idss-dashboard', [
   'templates-app',
   'templates-common',
   'http-auth-interceptor',
+  'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
   'angularFileUpload',
@@ -44,7 +45,7 @@ angular.module( 'idss-dashboard', [
     flashProvider.errorClassnames.push('alert-danger');
 }])
 
-.controller( 'AppCtrl', [ '$scope', '$rootScope', '$location', 'USER_ROLES', 'authService', 'LoginService', 'ProcessService', 'socket', 'ModuleService', '$state', 'VariantService', 'NotificationService', function AppCtrl ( $scope, $rootScope, $location, USER_ROLES, authService, LoginService, ProcessService, socket, ModuleService, $state, VariantService, NotificationService) {
+.controller( 'AppCtrl', [ '$scope', '$rootScope', '$location', 'USER_ROLES', 'authService', 'LoginService', 'ProcessService', 'mySocket', 'ModuleService', '$state', 'VariantService', 'NotificationService', function AppCtrl ( $scope, $rootScope, $location, USER_ROLES, authService, LoginService, ProcessService, socket, ModuleService, $state, VariantService, NotificationService) {
 
     var init = function(user) {
       $scope.isAuthenticated = LoginService.isAuthenticated();
@@ -135,36 +136,6 @@ angular.module( 'idss-dashboard', [
         }
     });    
 
-}]).factory('socket', ['$rootScope', function ($rootScope) {
-  var socket = io.connect();
-  return {
-    on: function (eventName, callback) {
-      socket.on(eventName, function () {  
-        var args = arguments;
-        $rootScope.$apply(function () {
-          callback.apply(socket, args);
-        });
-      });
-    },
-    emit: function (eventName, data, callback) {
-      socket.emit(eventName, data, function () {
-        var args = arguments;
-        $rootScope.$apply(function () {
-          if (callback) {
-            callback.apply(socket, args);
-          }
-        });
-      });
-    },
-    send: function (eventName, callback) {
-      socket.send(eventName, function () {
-        var args = arguments;
-        $rootScope.$apply(function () {
-          if (callback) {
-            callback.apply(socket, args);
-          }
-        });
-      });
-    }
-  };
+}]).factory('mySocket', ['socketFactory', function (socketFactory) {
+  return socketFactory();
 }]);
