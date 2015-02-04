@@ -1,4 +1,13 @@
+// Lots of ideas taken from
+// https://github.com/ngbp/ngbp/blob/v0.3.2-release/Gruntfile.js
+// Copyright (c) 2013 Josh David Miller <josh@joshdmiller.com>
+var mongoose = require('mongoose');
+
 module.exports = function ( grunt ) {
+
+    require('load-grunt-tasks')(grunt);
+
+    require('time-grunt')(grunt);
 
     grunt.initConfig({
 
@@ -8,7 +17,7 @@ module.exports = function ( grunt ) {
         vendor_dir: 'vendor',
 
         app_files: {
-            javascript: [ 'src/**/*.js' ],
+            javascript: [ 'src/app/**/*.js', 'src/common/**/*.js', '!src/app/**/*.spec.js', '!src/common/**/*.spec.js', 'src/assets/**/*.js' ],
 
             app_tpl: [ 'src/app/**/*.tpl.html' ],
             common_tpl: [ 'src/common/**/*.tpl.html' ],
@@ -20,6 +29,7 @@ module.exports = function ( grunt ) {
             javascript: [
                 '<%= vendor_dir %>/jquery/dist/jquery.js',
                 '<%= vendor_dir %>/angular/angular.js',
+                '<%= vendor_dir %>/angular-socket-io/socket.js',
                 '<%= vendor_dir %>/underscore/underscore.js',
                 '<%= vendor_dir %>/angular-http-auth/src/http-auth-interceptor.js',
                 '<%= vendor_dir %>/bootstrap/dist/js/bootstrap.js',
@@ -40,6 +50,13 @@ module.exports = function ( grunt ) {
                 '<%= vendor_dir %>/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf',
                 '<%= vendor_dir %>/bootstrap/dist/fonts/glyphicons-halflings-regular.woff'
             ]
+        },
+
+        // vendor files but only for testing
+        vendor_files_test: {
+          javascript: [
+            '<%= vendor_dir %>/angular-mocks/angular-mocks.js'
+          ]
         },
 
         pkg: grunt.file.readJSON("package.json"),
@@ -231,6 +248,34 @@ module.exports = function ( grunt ) {
                 noarg:true,
                 sub:true
             }
+        },
+
+        // karmaconfig: {
+        //   unit: {
+        //     dir: '<%= build_dir %>',
+        //     src: [ 
+        //       '<%= vendor_files.javascript %>',
+        //       '<%= vendor_files_test.javascript %>',
+        //       '<%= html2js.app.dest %>',
+        //       '<%= html2js.common.dest %>',
+        //       '<%= html2js.foundation.dest %>'
+        //     ]
+        //   }
+        // },
+
+        karma: {
+          unit: {
+            configFile: 'karma.conf.js',
+            singleRun: true
+          },
+        },
+
+        protractor: {
+          options: {
+            keepAlive: true,
+            configFile: "protractor.conf.js"
+          },
+          run: {}
         }
 
     });
@@ -269,15 +314,40 @@ module.exports = function ( grunt ) {
             });
           }
         });
-      });
-  
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-less');
-    grunt.loadNpmTasks('grunt-html2js');
+    });
+
+    // use karma-unit.tpl.js to add karma-unit.js to build dir with dependencies and tests
+    // TODO: use this to set files for testing
+    // grunt.registerMultiTask( 'karmaconfig', 'Process karma config templates', function () {
+    //   var jsFiles = filterForJS( this.filesSrc );
+      
+    //   grunt.file.copy( 'karma.conf.js', grunt.config( 'build_dir' ) + '/karma-unit.js', { 
+    //     process: function ( contents, path ) {
+    //       return grunt.template.process( contents, {
+    //         data: {
+    //           scripts: jsFiles
+    //         }
+    //       });
+    //     }
+    //   });
+    // });
+
+    grunt.registerTask('drop_test_db', 'drop test database', function() {
+        // // async mode
+        // var done = this.async();
+        var connection = mongoose.createConnection('mongodb://localhost:27017/idssdashboard');
+
+        connection.on('open', function () { 
+          connection.db.dropDatabase(function(err) {
+            if(err) {
+              console.log(err);
+            } else {
+              console.log('Successfully dropped db');
+            }
+            connection.close();
+          });
+        });
+    });
 
     grunt.registerTask('default', ['build', 'compile']);
     grunt.registerTask('build', [
@@ -301,6 +371,10 @@ module.exports = function ( grunt ) {
         'uglify', 
         'index:compile'
     ]);
-
+    grunt.registerTask('test', [
+        'drop_test_db',
+        'karma',
+        'protractor:run'
+    ]);
 
  };
