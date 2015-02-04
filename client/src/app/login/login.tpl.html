@@ -6,11 +6,11 @@
                 <form class="form-signin" ng-submit="login(credentials)">
                     <input ng-model="credentials.username" type="text" class="form-control" placeholder="Email" required autofocus>
                     <input ng-model="credentials.password" type="password" class="form-control" placeholder="Password" required>
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
-                    <div class="pull-right"><a ui-sref="forgotpassword({email: credentials.username})">Forgot password?</a></div>
+                    <button id="login-button" class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
+                    <div class="pull-right"><a id="forgot-password" ui-sref="forgotpassword({email: credentials.username})">Forgot password?</a></div>
                 </form>
             </div>
-            <a ui-sref="register" class="text-center new-account">Create an account </a>
+            <a id="create-account" ui-sref="register" class="text-center new-account">Create an account </a>
         </div>
     </div>
 </div>
