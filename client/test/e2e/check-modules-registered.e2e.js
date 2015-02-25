@@ -12,7 +12,7 @@ describe('modules are registered', function() {
 
     expect(browser.getCurrentUrl()).toMatch('/modules');
 
-    browser.driver.sleep(1000);
+    browser.driver.sleep(2000);
 
     expect(page.modules.count()).toEqual(1);
 
