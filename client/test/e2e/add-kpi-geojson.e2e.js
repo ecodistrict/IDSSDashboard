@@ -28,6 +28,10 @@ describe('manage kpis', function() {
 
     expect(page.kpis.count()).toEqual(1);
 
+    page.clickSelectGeoJsonKpi();
+
+    expect(page.connectedModules.count()).toEqual(1);
+
   });
 
 });
