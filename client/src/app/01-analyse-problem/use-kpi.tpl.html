@@ -1,6 +1,6 @@
 <div class="modal-header">
 	<button type="button" class="close" ng-click="cancel()" data-dismiss="modalInstance" aria-hidden="true">&times;</button>
-	<h3>{{ kpi.name }}</h3>
+	<h3 class="kpi-title">{{kpi.name}}</h3>
 </div>
 <div class="modal-body">
 	<h3>Info</h3>
@@ -14,5 +14,5 @@
 </div>	
 <div class="modal-footer">
 	<a class="btn btn-sm btn-warning" ng-click="cancel()">Cancel</a>
-	<a class="btn btn-primary btn-sm" ng-click="useKPI()">Use this KPI</a>
+	<a id="{{'use-kpi-' + kpi.alias}}" class="btn btn-primary btn-sm" ng-click="useKPI()">Use this KPI</a>
 </div>	

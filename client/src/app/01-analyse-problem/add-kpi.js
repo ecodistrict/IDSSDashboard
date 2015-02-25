@@ -43,6 +43,7 @@ angular.module( 'idss-dashboard.analyse-problem.add-kpi', [])
         info: 'Select a value between 1 - 5 where 1 is very important and 5 is not very important',
         inputs: [{
           //type: 'slider',
+          id: 'priority-value',
           type: 'number',
           label: 'Priority 1 - 5',
           value: 3,
