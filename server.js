@@ -12,7 +12,7 @@ var path = require('path');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 3300;
 
 var imb = require('./lib/imb.js');
 
