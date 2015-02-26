@@ -1,6 +1,6 @@
 angular.module('idss-dashboard')
 
-.factory('VariantService', ['$http', 'NotificationService', 'ProcessService', 'ModuleService', 'mySocket', function ($http, NotificationService, ProcessService, ModuleService, socket) {
+.factory('VariantService', ['$http', 'NotificationService', 'ProcessService', 'ModuleService', 'socket', function ($http, NotificationService, ProcessService, ModuleService, socket) {
 
     var variants = [];
 
