@@ -45,7 +45,7 @@ angular.module( 'idss-dashboard', [
     flashProvider.errorClassnames.push('alert-danger');
 }])
 
-.controller( 'AppCtrl', [ '$scope', '$rootScope', '$location', 'USER_ROLES', 'authService', 'LoginService', 'ProcessService', 'mySocket', 'ModuleService', '$state', 'VariantService', 'NotificationService', function AppCtrl ( $scope, $rootScope, $location, USER_ROLES, authService, LoginService, ProcessService, socket, ModuleService, $state, VariantService, NotificationService) {
+.controller( 'AppCtrl', [ '$scope', '$rootScope', '$location', 'USER_ROLES', 'authService', 'LoginService', 'ProcessService', 'socket', 'ModuleService', '$state', 'VariantService', 'NotificationService', function AppCtrl ( $scope, $rootScope, $location, USER_ROLES, authService, LoginService, ProcessService, socket, ModuleService, $state, VariantService, NotificationService) {
 
     var init = function(user) {
       $scope.isAuthenticated = LoginService.isAuthenticated();
@@ -136,6 +136,6 @@ angular.module( 'idss-dashboard', [
         }
     });    
 
-}]).factory('mySocket', ['socketFactory', function (socketFactory) {
+}]).factory('socket', ['socketFactory', function (socketFactory) {
   return socketFactory();
 }]);
