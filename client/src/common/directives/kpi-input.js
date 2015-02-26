@@ -1,7 +1,7 @@
 angular.module('idss-dashboard').directive('kpiInput', ['$compile', 'ModuleService', function($compile, ModuleService) {
 
     // a simple check to see if input is not misspelled (that will crash browser because of ng-include cant find template)
-    var registeredInputs = ['number', 'input-group', 'slider', 'geojson', 'select', 'text', 'checkbox', 'list', 'district-polygon'];
+    var registeredInputs = ['number', 'input-group', 'slider', 'geojson', 'select', 'text', 'checkbox', 'radio', 'list', 'district-polygon'];
 
     return {
         restrict: 'E',
@@ -30,7 +30,7 @@ angular.module('idss-dashboard').directive('kpiInput', ['$compile', 'ModuleServi
 
                 setTemplateUrl(scope.inputs);
 
-                var template = '<div ng-repeat="input in inputs" ng-include="input.template"></div>';
+                var template = '<form class="form-horizontal" role="form"><div ng-repeat="input in inputs" ng-include="input.template"></div></form>';
 
                 element.html('').append( $compile( template )( scope ) );
 
@@ -46,10 +46,18 @@ angular.module('idss-dashboard').directive('kpiInput', ['$compile', 'ModuleServi
                 }
             };
 
-            console.log(scope.moduleid);
-            scope.$watch('moduleid', function(newid, oldid) {
-                console.log(newid, oldid);
-            });
+            // since it's not easy to store a radio input on the form
+            // let the radio value be selected on every radio button..
+            // TODO: find a nicer solution 
+            scope.setRadioInput = function(input) {
+                console.log(input);
+                _.each(scope.inputs, function(i) {
+                    if(i.id !== input.id) {
+                        i.value = input.value;
+                    }
+                });
+                console.log(scope.inputs);
+            };
 
             scope.$watchCollection('inputs', function(newInputs, oldInputs) {
                 if(newInputs && newInputs.length) {

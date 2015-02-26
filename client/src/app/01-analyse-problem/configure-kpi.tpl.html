@@ -3,7 +3,8 @@
 	<h3 class="kpi-title">{{kpi.name}}</h3>
 </div>
 <div class="modal-body">
-	<h3>Input and configuration</h3>
+	<h3 ng-show="!kpi.qualitative">Input and configuration</h3>
+	<h3 ng-show="kpi.qualitative">Preview</h3>
 	<kpi-input inputs="kpi.inputs"></kpi-input>
 	<h3>Select module</h3>
 	<select ng-model="kpi.selectedModule.id" ng-options="module.id as module.name for module in relevantModules">
