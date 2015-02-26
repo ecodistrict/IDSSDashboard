@@ -165,9 +165,9 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
 
             scope.selectedFeatures = [];
 
-            console.log(scope.variantid);
-            console.log(scope.moduleid);
-            console.log(scope.input);
+            //console.log(scope.variantid);
+            //console.log(scope.moduleid);
+            //console.log(scope.input);
 
             // this function should be used to create a user input object that shows either
             // 1. a features' existing properties
@@ -272,9 +272,9 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
                     f.properties.uid = f.properties.uid || uidCount;
                     uidCount++;
                 });
-                console.log('features uid was set');
-                console.log(data);
-                console.log(epsg);
+                // console.log('features uid was set');
+                // console.log(data);
+                // console.log(epsg);
                 // if(origData) {
                 //     _.each(origData.features, function(d, i) {
                 //         var dataGeo = data.features[i].geometry;
@@ -299,7 +299,7 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
                     projection: epsg
                 });
 
-                console.log('setting new vector source');
+                //console.log('setting new vector source');
                 if(vectorLayer) {
                     map.removeLayer(vectorLayer);
                 }
@@ -309,7 +309,7 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
                 });
 
                 //origData = data;
-                console.log('creating new vector layer');
+                //console.log('creating new vector layer');
                 // style geometries individually in output:
 
                 // var features = vectorSource.getFeatures();
@@ -322,17 +322,17 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
                 // });
 
                 map.addLayer(vectorLayer);
-                console.log('add vector layer to map');
+                //console.log('add vector layer to map');
                 var extent = vectorLayer.getSource().getExtent();
 
                 view.fitExtent(extent, map.getSize());
-                console.log('fit to extent');
+                //console.log('fit to extent');
             };
 
             // this watched the geojson data set if changed, for example if a new file was uploaded
             scope.$watch('input.value', function(newData, oldData) {
                 if(oldData !== newData) {
-                    console.log(newData);
+                    //console.log(newData);
                     initGeometryData(newData);
                 }
             });
@@ -356,7 +356,7 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
             map.on('click', function(event) {
                 //unselectPreviousFeatures();
                 map.forEachFeatureAtPixel(event.pixel, function(feature) {
-                    console.log(feature.getProperties());
+                    //console.log(feature.getProperties());
                     toggleSelectedFeature(feature);
                 });
                 scope.$apply();
@@ -373,7 +373,7 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
 
                 var geoJsonFormat = new ol.format.GeoJSON();
                 
-                console.log(scope.userInput); 
+                //console.log(scope.userInput); 
                 _.each(scope.selectedFeatures, function(f) {
                     
                     var properties = f.getProperties();
@@ -393,7 +393,7 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
 
                 newInputValue.crs = {type: 'none'};
 
-                console.log(newInputValue);
+                //console.log(newInputValue);
 
                 initGeometryData(newInputValue);
 
