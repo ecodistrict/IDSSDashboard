@@ -21,6 +21,8 @@ require('./lib/models/user');
 require('./lib/models/process');
 require('./lib/models/kpi');
 require('./lib/models/variant');
+require('./lib/models/input');
+require('./lib/models/output');
 var User = mongoose.model('User'); // needed for passport below
 
 // *********** DB CONNECT ********* //
@@ -202,7 +204,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
           "method": "selectModel",
           "variantId": kpi.variantId,
           "moduleId": kpi.selectedModule.id,
-          "kpiAlias": kpi.alias
+          "kpiId": kpi.alias
         };
         sendModuleRequest(requestObj);
       } else {
@@ -229,7 +231,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
               "method": method,
               "moduleId": module.moduleId,
               "variantId": module.variantId,
-              "kpiAlias": module.kpiAlias,
+              "kpiId": module.kpiId,
               "inputs": moduleInput.inputs
             };
             sendModuleRequest(requestObj);

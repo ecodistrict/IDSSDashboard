@@ -46,7 +46,7 @@ var moduleInput = {
     "method": "selectModel",
     "type": "response",
     "moduleId": moduleId,
-    "kpiAlias": kpi,
+    "kpiId": kpi,
     "inputs": [
       {
         "type": "district-polygon",
@@ -89,11 +89,11 @@ messageSub.onNormalEvent = function(eventDefinition, eventPayload) {
       console.log(message);
       // first send status that model started
       startModel.status = 'processing'; 
-      startModel.kpiAlias = message.kpiAlias;
+      startModel.kpiId = message.kpiId;
       startModel.variantId = message.variantId;
       sendDashboard(startModel);
       // after calculating, send output
-      modelResult.kpiAlias = message.kpiAlias;
+      modelResult.kpiId = message.kpiId;
       modelResult.variantId = message.variantId;
       modelResult.moduleId = moduleId;
       sendDashboard(modelResult);

@@ -12,8 +12,8 @@ var port = 4567;
 var httpServer = http.createServer(app);
 var imb = require('../../lib/imb.js');
 
-var moduleId = "test-geojson-input";
-var kpi = "geojson-input";
+var moduleId = "geojson";
+var kpi = "geojson-test-kpi";
 
 var imbConnection = new imb.TIMBConnection();
 imbConnection.connect('imb.lohman-solutions.com', 4000, 1234, 'testModuleGeojsonInput', 'ecodistrict');
@@ -46,7 +46,7 @@ var moduleInput = {
     "method": "selectModel",
     "type": "response",
     "moduleId": moduleId,
-    "kpiAlias": kpi,
+    "kpiId": kpi,
     "inputs": [
         {
             "type": "geojson",
@@ -129,6 +129,7 @@ messageSub.onNormalEvent = function(eventDefinition, eventPayload) {
   offset += 4;
   var message = JSON.parse(eventPayload.toString('utf8', offset, offset + length));
   if(message.method === 'getModels') {
+    console.log('getModels');
     sendDashboard(moduleDefinition);
   } else if(message.method === 'selectModel') {
     if(message.moduleId === moduleId) {
@@ -139,17 +140,34 @@ messageSub.onNormalEvent = function(eventDefinition, eventPayload) {
     if(message.moduleId === moduleId) {
       // first send status that model started
       startModel.status = 'processing'; 
-      startModel.kpiAlias = message.kpiAlias;
+      startModel.kpiId = message.kpiId;
       startModel.variantId = message.variantId;
       sendDashboard(startModel);
       // after calculating, send output
-      modelResult.kpiAlias = message.kpiAlias;
+      modelResult.kpiId = message.kpiId;
       modelResult.variantId = message.variantId;
       modelResult.moduleId = moduleId;
       // some assumptions here!
 
       console.log(message);
       modelResult.outputs = [{
+      "type": "kpi",
+      "value": 7,
+      "info": "Mean value.."
+    },{
+      "type": "kpi-list",
+      "label": "Buildings and their heating systems",
+      "value": [
+        {
+          "kpiValue": 7,
+          "name": "Building 1"
+        },
+        {
+          "kpiValue": 8,
+          "name": "Building 2"
+        }
+      ]
+    },{
         type: "geojson",
         kpiProperty: "GEBHOOGTE",
         displayProperties: [{property: "GEBHOOGTE", label: "GEB HOOGTE"}],
