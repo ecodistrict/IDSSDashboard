@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-xs-12">
             <h2>To be - go through KPIs again to set ambitions</h2>
-            <div ng-repeat="kpi in currentProcess.kpiList" class="panel panel-success kpi-item" ng-click="configureKpi(kpi)">
+            <div ng-repeat="kpi in toBeVariant.kpiList" id="{{'used-kpi-' + kpi.alias}}" class="panel panel-success kpi-item" ng-click="configureKpi(kpi)">
               <div class="panel-heading">
                 <h3 class="panel-title">{{kpi.name}} <span ng-hide="kpiIsConfigured(kpi)" class="glyphicon glyphicon-exclamation-sign"></span></h3>
               </div>
@@ -10,12 +10,16 @@
                 {{kpi.description}}
               </div>
             </div>
+            <button class="btn btn-primary btn-xs pull-right" ng-show="asIsVariant.kpiList.length">
+                <span class="glyphicon glyphicon-floppy-disk"></span> Save this KPI set
+            </button>
         </div>
     </div>
-    <div ng-show="currentProcess.kpiList.length > 0" class="row">
+    <div class="row">
         <form role="form">
           <div class="form-group">
-            <button class="pull-right btn btn-primary" ui-sref="to-be-overview">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
+            <button class="btn btn-primary pull-left" ui-sref="analyse-problem"><span class="glyphicon glyphicon-chevron-left"></span> Previous</button>
+            <button ng-show="asIsVariant.kpiList.length > 0" class="pull-right btn btn-primary" ui-sref="define-context">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
           </div>
         </form>
     </div>

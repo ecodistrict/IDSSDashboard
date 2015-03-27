@@ -1,19 +1,33 @@
 <div class="modal-header">
-	<button type="button" class="close" ng-click="cancel()" data-dismiss="modalInstance" aria-hidden="true">&times;</button>
-	<h3 class="kpi-title">{{kpi.name}}</h3>
+    <button type="button" class="close" ng-click="cancel()" data-dismiss="modalInstance" aria-hidden="true">&times;</button>
+    <h3 class="kpi-title">{{kpi.name}}</h3>
 </div>
 <div class="modal-body">
-	<h3 ng-show="!kpi.qualitative">Input and configuration</h3>
-	<h3 ng-show="kpi.qualitative">Preview</h3>
-	<kpi-input inputs="kpi.inputs"></kpi-input>
-	<h3>Select module</h3>
-	<select ng-model="kpi.selectedModule.id" ng-options="module.id as module.name for module in relevantModules">
-		<option value="">-- select module --</option>
-	</select>
-	
-</div>	
+    <button class="btn btn-primary btn-xs pull-right" ng-click="editQualitativeKpi()" ng-show="kpi.qualitative && !editKpiMode">
+        <span class="glyphicon glyphicon-floppy-disk"></span> Edit
+    </button>
+    <button class="btn btn-primary btn-xs pull-right" ng-click="saveQualitativeKpi()" ng-show="kpi.qualitative && editKpiMode">
+        <span class="glyphicon glyphicon-floppy-disk"></span> Preview
+    </button>
+    <h3 ng-show="!kpi.qualitative">Input and configuration</h3>
+    <h3 ng-show="kpi.qualitative">Qualitative KPI configuration</h3>
+    
+    <div class="form-group" ng-show="kpi.qualitative && editKpiMode">
+        <div class="btn-group">
+            <button type="button" ng-class="{active: !kpi.inputSpecification.kpiScore2}" class="btn btn-default" ng-click="setNumberOfQualitativeOptions(3)">3 options</button>
+            <button type="button" ng-class="{active: kpi.inputSpecification.kpiScore2}" class="btn btn-default" ng-click="setNumberOfQualitativeOptions(10)">10 options</button>
+        </div>
+    </div>
+    <kpi-input inputs="kpi.inputSpecification"></kpi-input>
+    <div class="well" ng-show="!kpi.qualitative">
+        <h3>Select module</h3>
+        <select ng-model="kpi.selectedModule.id" ng-options="module.moduleId as module.name for module in relevantModules">
+            <option value="">-- select module --</option>
+        </select>
+    </div>
+</div>  
 <div class="modal-footer">
-	<a class="btn btn-sm btn-warning" ng-click="cancel()">Cancel</a>
-	<a class="btn btn-sm btn-danger" ng-click="removeKpiFromProcess()">Don't use this KPI</a>
-	<a id="save-kpi-config" class="btn btn-primary btn-sm" ng-click="ok()">Ok</a>
-</div>	
+    <a class="btn btn-sm btn-warning" ng-click="cancel()">Cancel</a>
+    <a class="btn btn-sm btn-danger" ng-click="removeKpiFromProcess()">Don't use this KPI</a>
+    <a id="save-kpi-config" class="btn btn-primary btn-sm" ng-click="ok()">Ok</a>
+</div>  

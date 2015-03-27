@@ -13,15 +13,17 @@
             <label for="kpi-description">Description</label>
             <textarea type="text" ng-model="kpi.description" rows="3" class="form-control" id="kpi-description" placeholder="Name"></textarea>
         </div>
-        <div class="btn-group">
-          <button type="button" ng-class="{active: kpi.qualitative==false}" class="btn btn-default" ng-click="kpi.qualitative=false">Quantitative</button>
-          <button type="button" ng-class="{active: kpi.qualitative==true}" class="btn btn-default" ng-click="kpi.qualitative=true">Qualitative</button>
+        <div class="form-group">
+            <div class="btn-group">
+              <button type="button" ng-class="{active: kpi.qualitative==false}" class="btn btn-default" ng-click="kpi.qualitative=false">Quantitative</button>
+              <button type="button" ng-class="{active: kpi.qualitative==true}" class="btn btn-default" ng-click="kpi.qualitative=true">Qualitative</button>
+            </div>
         </div>
         <div class="form-group" ng-show="!kpi.qualitative">
             <label for="kpi-unit">Unit</label>
             <input type="text" ng-model="kpi.unit" class="form-control" id="kpi-unit" placeholder="Unit">
         </div>
-        <div class="form-group" ng-show="kpi.qualitative">
+        <!-- <div class="form-group" ng-show="kpi.qualitative">
             <label for="kpi-unit">Number of steps</label>
             <input type="number" ng-model="kpiSteps" class="form-control" min="1" step="1" max="20" id="kpi-steps" placeholder="Steps">
         </div>
@@ -33,23 +35,17 @@
                 <div class="input-group-addon">{{step.unit}}</div>
             </div>
             <input type="text" ng-model="step.unit" class="form-control" placeholder="Reference unit">
-        </div>
-        <div class="checkbox" ng-show="kpi.qualitative">
+        </div> -->
+        <!-- <div class="checkbox" ng-show="kpi.qualitative">
             <label>
               <input type="checkbox" ng-model="multiple"> Enable multiple selection
             </label>
-        </div>
-        <!-- <div class="form-group" ng-show="!qualitative">
-            <label for="kpi-min-value">Min value</label>
-            <input type="text" ng-model="kpi.min" class="form-control" id="kpi-min-value" placeholder="Min value">
-        </div>
-        <div class="form-group" ng-show="!qualitative">
-            <label for="kpi-max-value">Max value</label>
-            <input type="text" ng-model="kpi.max" class="form-control" id="kpi-max-value" placeholder="Max value">
         </div> -->
-        <div class="btn-group">
-          <button id="private-kpi-button" type="button" ng-class="{active: kpi.official==false}" class="btn btn-default" ng-click="kpi.official=false">Private</button>
-          <button id="public-kpi-button" type="button" ng-class="{active: kpi.official==true}" class="btn btn-default" ng-click="kpi.official=true">Public</button>
+        <div class="form-group">
+            <div class="btn-group">
+              <button id="private-kpi-button" type="button" ng-class="{active: kpi.official==false}" class="btn btn-default" ng-click="kpi.official=false">Private</button>
+              <button id="public-kpi-button" type="button" ng-class="{active: kpi.official==true}" class="btn btn-default" ng-click="kpi.official=true">Public</button>
+            </div>
         </div>
     </form>
 </div>  

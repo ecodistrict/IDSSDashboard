@@ -40,34 +40,31 @@ angular.module( 'idss-dashboard.as-is', [
   $scope.kpiOutputs = []; // TODO: there are different type of outputs; kpi value, map outputs, charts, lists. In different tabs. New structure of outputs needed? 
   $scope.kpiMapOutputs = [];
 
-  var getBad = function(inputs) {
-    var kpiScores = _.find(inputs, function(input) {return input.id === 'kpi-scores';});
-    if(kpiScores && kpiScores.inputs) {
-      // assume order
-      return kpiScores.inputs[1].value;
+  // TODO: cahnge to new structure (object)!!
+  var getBad = function(inputSpec) {
+    if(inputSpec.kpiScores && inputSpec.kpiScores.inputs) {
+      return inputSpec.kpiScores.inputs.kpiScoreBad.value;
     }
   };
 
-  var getExcellent = function(inputs) {
-    var kpiScores = _.find(inputs, function(input) {return input.id === 'kpi-scores';});
-    if(kpiScores && kpiScores.inputs) {
-      // assume order
-      return kpiScores.inputs[0].value;
+  var getExcellent = function(inputSpec) {
+    if(inputSpec.kpiScores && inputSpec.kpiScores.inputs) {
+      return inputSpec.kpiScores.inputs.kpiScoreExcellent.value;
     }
   };
 
   _.each(asIsVariant.kpiList, function(kpi) {
 
-    var bad = getBad(kpi.inputs);
-    var excellent = getExcellent(kpi.inputs);
+    var bad = getBad(kpi.inputSpecification);
+    var excellent = getExcellent(kpi.inputSpecification);
 
     // add the kpi outputs with loading status
     $scope.kpiOutputs.push({
       kpiName: kpi.name,
-      kpiAlias: kpi.alias,
+      kpiId: kpi.alias,
       kpiBad: bad,
       kpiExcellent: excellent, 
-      inputs: kpi.inputs,
+      inputs: kpi.inputSpecification,
       kpiUnit: kpi.unit,
       moduleName: kpi.selectedModule.name,
       moduleId: kpi.selectedModule.id,
@@ -76,7 +73,7 @@ angular.module( 'idss-dashboard.as-is', [
     });
 
     var prepareKpiData = function(o) {
-      o.kpiAlias = kpi.alias;
+      o.kpiId = kpi.alias;
       o.kpiName = kpi.name;
       o.kpiBad = bad;
       o.kpiExcellent = excellent;
@@ -86,7 +83,7 @@ angular.module( 'idss-dashboard.as-is', [
     
     // fetch existing output from server
     ModuleService.getModuleOutput(asIsVariant._id, kpi.selectedModule.id, kpi.alias).then(function(output) {
-      var kpiOutput = _.find($scope.kpiOutputs, function(k) {return k.kpiAlias === kpi.alias;});
+      var kpiOutput = _.find($scope.kpiOutputs, function(k) {return k.kpiId === kpi.alias;});
       kpiOutput.status =  output.status; 
       // 'success' (calculation ok and input not changed)
       // 'unprocessed' (input has changed, old output could be rendered)
@@ -105,6 +102,8 @@ angular.module( 'idss-dashboard.as-is', [
         } 
       });
 
+      console.log(output.outputs);
+
       kpiOutput.outputs = output.outputs; // listen on this to trigger rendering
 
     });
@@ -116,7 +115,7 @@ angular.module( 'idss-dashboard.as-is', [
       console.log('start model', module);
       
       var found = _.find($scope.kpiOutputs, function(kpiOutput) {
-        return kpiOutput.moduleId === module.moduleId && kpiOutput.kpiAlias === module.kpiAlias;
+        return kpiOutput.moduleId === module.moduleId && kpiOutput.kpiId === module.kpiId;
       });
       if(found) {
         found.status = module.status;
@@ -132,12 +131,12 @@ angular.module( 'idss-dashboard.as-is', [
     console.log('model result', module);
 
     var kpiOutput = _.find($scope.kpiOutputs, function(kpi) {
-      return kpi.kpiAlias === module.kpiAlias;
+      return kpi.kpiId === module.kpiId;
     });
     if(kpiOutput) {
       //kpiOutput.status = module.status;
       _.each(module.outputs, function(o) {
-        o.kpiAlias = kpiOutput.kpiAlias;
+        o.kpiId = kpiOutput.kpiId;
         o.kpiName = kpiOutput.kpiName;
         o.kpiBad = kpiOutput.kpiBad;
         o.kpiExcellent = kpiOutput.kpiExcellent;
@@ -178,7 +177,7 @@ angular.module( 'idss-dashboard.as-is', [
 
     socket.emit('startModel', {
       variantId: asIsVariant._id, 
-      kpiAlias: kpiOutput.kpiAlias, 
+      kpiId: kpiOutput.kpiId, 
       moduleId: kpiOutput.moduleId,
       status: kpiOutput.status
     });
@@ -189,7 +188,7 @@ angular.module( 'idss-dashboard.as-is', [
     kpiOutput.status = 'unprocessed';
     kpiOutput.loading = false;
 
-    ModuleService.updateModuleOutputStatus(asIsVariant._id, kpiOutput.moduleId, kpiOutput.kpiAlias, kpiOutput.status);
+    ModuleService.updateModuleOutputStatus(asIsVariant._id, kpiOutput.moduleId, kpiOutput.kpiId, kpiOutput.status);
 
     // send message to model?
   };

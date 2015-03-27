@@ -14,11 +14,11 @@ angular.module('idss-dashboard')
     }
     */
 
-    var getModulesFromKpiId = function (kpiAlias) {
+    var getModulesFromKpiId = function (kpiId) {
         
         var foundList = _.filter(modules, function(module) {
             return _.find(module.kpiList, function(kpi) {
-              return kpi === kpiAlias;
+              return kpi === kpiId;
             });
         }); 
 
@@ -32,10 +32,10 @@ angular.module('idss-dashboard')
 
     var addModule = function(module) {
         var found = _.find(modules, function(m) {
-            return m.id === module.id;
+            return m.moduleId === module.moduleId;
         });
         if(found) {
-            console.log('the module with id ' + module.id + ' already is loaded in dashboard');
+            console.log('the module with id ' + module.moduleId + ' already is loaded in dashboard');
         } else {
             modules.push(module);
         }
@@ -43,7 +43,7 @@ angular.module('idss-dashboard')
 
     var extendModuleData = function(module, basic) {
         var found = _.find(modules, function(m) {
-            return m.id === module.id;
+            return m.id === module.moduleId;
         });
         if(found) {
             if(basic) { // only selected module data
@@ -58,9 +58,9 @@ angular.module('idss-dashboard')
         }
     };
 
-    var getModuleInput = function(variantId, moduleId, kpiAlias) {
+    var getModuleInput = function(variantId, moduleId, kpiId) {
         return $http
-            .get('variants/moduleinput/' + variantId + '/' + moduleId + '/' + kpiAlias)
+            .get('variants/moduleinput/' + variantId + '/' + moduleId + '/' + kpiId)
             .error(function(data, status) {
                 var label = 'Error when loading inputs';
                 NotificationService.createErrorFlash(label);
@@ -76,7 +76,7 @@ angular.module('idss-dashboard')
             });
     };
 
-    // moduleObject must contain moduleId, kpiAlias and inputs
+    // moduleObject must contain moduleId, kpiId and inputs
     var saveModuleInput = function(variantId, moduleObject) {
 
         return $http
@@ -101,12 +101,12 @@ angular.module('idss-dashboard')
             });
     };
 
-    var getModuleOutput = function(variantId, moduleId, kpiAlias) {
+    var getModuleOutput = function(variantId, moduleId, kpiId) {
 
         // first check cache
         // TODO: when a new startModel returns a new output to server, let client know to clear the cache
         // var deferred = $q.defer();
-        // var cacheKey = variantId + moduleId + kpiAlias;
+        // var cacheKey = variantId + moduleId + kpiId;
 
         // if(moduleOutputs[cacheKey]) {
         //     deferred.resolve(moduleOutputs[cacheKey]);
@@ -114,7 +114,7 @@ angular.module('idss-dashboard')
         // } else {
 
             return $http
-            .get('variants/moduleoutput/' + variantId + '/' + moduleId + '/' + kpiAlias)
+            .get('variants/moduleoutput/' + variantId + '/' + moduleId + '/' + kpiId)
             .error(function(data, status) {
                 var label = 'Error when loading outputs';
                 NotificationService.createErrorFlash(label);
@@ -135,12 +135,12 @@ angular.module('idss-dashboard')
 
     };
 
-    var updateModuleOutputStatus = function(variantId, moduleId, kpiAlias, status) {
+    var updateModuleOutputStatus = function(variantId, moduleId, kpiId, status) {
 
         var moduleOutput = {
             variantId: variantId,
             moduleId: moduleId,
-            kpiAlias: kpiAlias,
+            kpiId: kpiId,
             status: status
         };
 

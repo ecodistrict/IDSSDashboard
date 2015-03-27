@@ -53,7 +53,7 @@ angular.module('idss-dashboard').directive('listInput', ['ProcessService', '$com
 
                 ModuleService.saveModuleInput(scope.variantid, {
                     moduleId: scope.moduleid, 
-                    kpiAlias: scope.kpialias,
+                    kpiId: scope.kpialias,
                     inputs: [{
                         id: scope.input.id, // only id and value are updated on save module input
                         value: scope.input.value
@@ -97,7 +97,7 @@ angular.module('idss-dashboard').directive('listInput', ['ProcessService', '$com
                 if(!discrete) {
                     ModuleService.saveModuleInput(scope.variantid, {
                         moduleId: scope.moduleid, 
-                        kpiAlias: scope.kpialias,
+                        kpiId: scope.kpialias,
                         inputs: [{
                             id: scope.input.id, // only id and value are updated on save module input
                             value: scope.input.value

@@ -3,11 +3,11 @@
 	<h3>{{ kpi.name }}</h3>
 </div>
 <div class="modal-body">
-	<h3>Input and configuration</h3>
-	<p class="explanation-message">[ Input and configuration of this KPI ]</p>
+	<h3>Set ambition</h3>
 	<kpi-input inputs="kpi.inputs"></kpi-input>
 	<h3>Using module</h3>
-	<p>{{kpi.selectedModule.name}}</p>
+	<p ng-show="kpi.selectedModule.name">{{kpi.selectedModule.name}}</p>
+	<p ng-show="!kpi.selectedModule.name">No module</p>
 	
 </div>	
 <div class="modal-footer">

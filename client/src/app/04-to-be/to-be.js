@@ -1,6 +1,5 @@
 angular.module( 'idss-dashboard.to-be', [
-  'idss-dashboard.to-be.ambitions-kpi',
-  'idss-dashboard.to-be.to-be-overview'
+  'idss-dashboard.to-be.ambitions-kpi'
 ])
 
 .config(['$stateProvider', function config( $stateProvider ) {
@@ -18,14 +17,44 @@ angular.module( 'idss-dashboard.to-be', [
     },
     data:{ 
       pageTitle: 'To be',
-      authorizedRoles: ['facilitator']
+      authorizedRoles: ['Facilitator']
+    },
+    resolve:{
+      variants: ['VariantService', function(VariantService) {
+        var v = VariantService.getVariants();
+        if(v) {
+          return v;
+        } else {
+          return VariantService.loadVariants();
+        }
+      }]
     }
   });
 }])
 
-.controller( 'ToBeController', ['$scope', 'ProcessService', '$modal', function ToBeController( $scope, ProcessService, $modal ) {
+.controller( 'ToBeController', ['$scope', '$timeout', '$sce', 'socket', '$state', 'variants', 'ModuleService', 'VariantService', '$modal', function ToBeController( $scope, $timeout, $sce, socket, $state, variants, ModuleService, VariantService, $modal ) {
 
-  $scope.currentProcess = ProcessService.getCurrentProcess();
+  var toBeVariant = _.find(variants, function(v) {return v.type === 'to-be';});
+  var asIsVariant;
+
+  if(!toBeVariant) {
+    asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
+    if(asIsVariant) {
+      toBeVariant = angular.copy(asIsVariant); // shallow copy
+      delete toBeVariant._id;
+      toBeVariant.name = 'To be';
+      toBeVariant.type = 'to-be';
+      toBeVariant.description = "The TO BE state defines the KPI ambitions for a connected user";
+      VariantService.createVariant(toBeVariant).then(function(newVariant) {
+        console.log(newVariant);
+        $scope.toBeVariant = newVariant;
+      });
+    }
+  } else {
+    $scope.toBeVariant = toBeVariant;
+  }
+
+  console.log(toBeVariant);
 
   $scope.configureKpi = function(kpi) {
 
@@ -40,22 +69,14 @@ angular.module( 'idss-dashboard.to-be', [
     });
 
     kpiModal.result.then(function (configuredKpi) {
-      console.log(configuredKpi);
+      // add the kpi settings and module spec to as is variant
+      VariantService.updateKpi($scope.asIsVariant, configuredKpi);
+      ProcessService.addLog({label: 'Configured KPI ' + kpi.name});
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
     });
 
   };
-
-  $scope.kpiIsManaged = function(kpi) {
-    return false;
-  };
-
-
-  // Show list of KPI - these should be configured for the TO BE state
-
-  // create calculations for optimization to map to the desired values (this is actually not feasible)
-  
 
 }]);
 

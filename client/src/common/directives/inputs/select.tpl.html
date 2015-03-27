@@ -2,7 +2,7 @@
   <div class="form-group">
     <label>{{input.label}} <i ng-show="input.info" class="glyphicon glyphicon-question-sign" data-container="body" data-toggle="popover" data-placement="top" data-content="{{input.info}}" popover></i></label>
     <select class="form-control" ng-model="input.value" ng-model-options="{ updateOn: 'blur' }"
-           ng-keyup="cancel($event)" ng-change="$parent.saveInput(input)" ng-options="option.id as option.label for option in input.options">
+           ng-keyup="cancel($event)" ng-change="$parent.saveInput(key, input)" ng-options="option.value as option.label for option in input.options">
         <option value="">-- Nothing selected --</option>
     </select>
   </div>

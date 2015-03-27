@@ -399,7 +399,7 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
 
                 ModuleService.saveModuleInput(scope.variantid, {
                     moduleId: scope.moduleid, 
-                    kpiAlias: scope.kpialias,
+                    kpiId: scope.kpialias,
                     inputs: [{
                         id: scope.input.id, // only id and value are updated on save module input
                         value: newInputValue

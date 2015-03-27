@@ -2,32 +2,16 @@ angular.module( 'idss-dashboard.to-be.ambitions-kpi', [])
 
 .controller( 'AmbitionsKpiCtrl', ['$scope', '$modalInstance', 'kpi', 'ModuleService', 'ProcessService', function AmbitionsKpiCtrl( $scope, $modalInstance, kpi, ModuleService, ProcessService ) {
 
-    $scope.kpi = kpi;
-
-    $scope.relevantModules = [];
-
-    ModuleService.getModulesFromKpiId(kpi.id).then(function(modules) {
-      _.each(modules, function(module) {
-        $scope.relevantModules.push(module);
-      });
-    });
-
+    // work on a reference
+    $scope.kpi = angular.copy(kpi);
+    
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');
-      $scope.kpi.selectedModule = angular.copy($scope.kpi.selectedModule);
     };
 
     $scope.ok = function() {
-      $modalInstance.close(kpi);
-      $scope.kpi.selectedModule = angular.copy($scope.kpi.selectedModule);
+      $modalInstance.close($scope.kpi);
     };
-
-    $scope.removeKpiFromProcess = function(kpi) {
-      ProcessService.removeKpi(kpi);
-      $modalInstance.dismiss('cancel');
-    };
-
-
 
 }]);
 

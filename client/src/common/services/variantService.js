@@ -44,7 +44,7 @@ angular.module('idss-dashboard')
             })
             .then(function (res) {
                 var variant = res.data;
-                var label = 'Variant ' + variant.title + ' was successfully created';
+                var label = 'Variant ' + variant.name + ' was successfully created';
                 NotificationService.createErrorFlash(label);
                 ProcessService.addLog({
                     label:label
@@ -133,7 +133,8 @@ angular.module('idss-dashboard')
             return k.alias === kpiToUpdate.alias;
         });
         // these are the kpi settings changes 
-        kpi.inputs = kpiToUpdate.inputs;
+        kpi.inputSpecification = kpiToUpdate.inputSpecification;
+        console.log(kpi);
         // if the selected module is changed delete all module data in variant
         // TODO: NOTIFY USER!!! 
         console.log('update kpi');
@@ -171,9 +172,9 @@ angular.module('idss-dashboard')
         }
     };
 
-    var removeInputData = function(variantId, kpiAlias) {
+    var removeInputData = function(variantId, kpiId) {
         return $http
-            .delete('variants/moduleInput/' + variantId + '/' + kpiAlias)
+            .delete('variants/moduleInput/' + variantId + '/' + kpiId)
             .error(function(status, data) {
                 var label = 'Error when deleting module input';
                 NotificationService.createErrorFlash(label);
@@ -188,9 +189,9 @@ angular.module('idss-dashboard')
             });  
     };
 
-    var removeOutputData = function(variantId, kpiAlias) {
+    var removeOutputData = function(variantId, kpiId) {
         return $http
-            .delete('variants/moduleOutput/' + variantId + '/' + kpiAlias)
+            .delete('variants/moduleOutput/' + variantId + '/' + kpiId)
             .error(function(status, data) {
                 var label = 'Error when deleting module output';
                 NotificationService.createErrorFlash(label);

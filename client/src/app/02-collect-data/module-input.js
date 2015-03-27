@@ -2,7 +2,7 @@ angular.module( 'idss-dashboard.collect-data.module-input', [])
 
 .config(['$stateProvider', function config( $stateProvider ) {
   $stateProvider.state( 'module-input', {
-    url: '/collect-data/module-input/:kpiAlias',
+    url: '/collect-data/module-input/:kpiId',
     views: {
       "main": {
         controller: 'ModuleInputCtrl',
@@ -40,7 +40,7 @@ angular.module( 'idss-dashboard.collect-data.module-input', [])
 
 .controller( 'ModuleInputCtrl', ['$scope', '$stateParams', 'variants', 'ModuleService', 'currentProcess', function ModuleInputCtrl( $scope, $stateParams, variants, ModuleService, currentProcess ) {
 
-  if(!$stateParams.kpiAlias) {
+  if(!$stateParams.kpiId) {
     console.log('missing params');
     return;
   }
@@ -49,7 +49,7 @@ angular.module( 'idss-dashboard.collect-data.module-input', [])
   $scope.currentProcess = currentProcess;
 
   var kpi = _.find($scope.asIsVariant.kpiList, function(k) {
-    return k.alias === $stateParams.kpiAlias;
+    return k.alias === $stateParams.kpiId;
   });
 
   if(!kpi) {
