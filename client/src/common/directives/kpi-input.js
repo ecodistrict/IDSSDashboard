@@ -24,6 +24,7 @@ angular.module('idss-dashboard').directive('kpiInput', ['$compile', 'ModuleServi
                     inputs = inputs || {};
                     for(var input in inputs) {
                         if(inputs.hasOwnProperty(input)) {
+                            inputs[input].key = input;
                             if(isRegisteredInput(inputs[input])) {
                                 inputs[input].template = 'directives/inputs/' + inputs[input].type + '.tpl.html';
                             } else {
@@ -43,9 +44,10 @@ angular.module('idss-dashboard').directive('kpiInput', ['$compile', 'ModuleServi
 
             };
 
-            scope.saveInput = function(key, input) {
+            scope.saveInput = function(input) {
                 console.log(scope);
-                console.log(key, input);
+                console.log(input);
+                var key = input.key;
                 var inputWrapper = {};
                 inputWrapper[key] = input;
                 if(scope.moduleid && scope.kpialias && scope.inputs) {
