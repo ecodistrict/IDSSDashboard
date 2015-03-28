@@ -55,10 +55,34 @@ angular.module('idss-dashboard')
                 return kpi;
             });
     };
+
+    var generateQualitativeKpiOutput = function(inputSpecification) {
+
+        var kpiValue = null, outputs = false;
+
+        for(var input in inputSpecification) {
+            if(inputSpecification.hasOwnProperty(input)) {
+                if(inputSpecification[input].value) {
+                    kpiValue = inputSpecification[input].value; // every value in a radio button is the same for now (the duplicated selected value), // TODO: change input spec for radio
+                }
+            }
+        }
+
+        if(kpiValue) {
+            outputs = [{
+              "type": "kpi",
+              "value": kpiValue,
+              "info": "Kpi result"
+            }];
+        }
+
+        return outputs;
+    };
    
     return {
         loadKpis: loadKpis,
         createKpi: createKpi,
-        deleteKpi: deleteKpi
+        deleteKpi: deleteKpi,
+        generateQualitativeKpiOutput: generateQualitativeKpiOutput
     };
 }]);

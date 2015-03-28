@@ -33,7 +33,7 @@ angular.module( 'idss-dashboard.as-is', [
   });
 }])
 
-.controller( 'AsIsController', ['$scope', '$timeout', '$sce', 'socket', '$state', 'variants', 'ModuleService', function AsIsController( $scope, $timeout, $sce, socket, $state, variants, ModuleService ) {
+.controller( 'AsIsController', ['$scope', '$timeout', '$sce', 'socket', '$state', 'variants', 'ModuleService', '$modal', 'KpiService', 'VariantService', function AsIsController( $scope, $timeout, $sce, socket, $state, variants, ModuleService, $modal, KpiService, VariantService ) {
 
   var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
 
@@ -57,20 +57,22 @@ angular.module( 'idss-dashboard.as-is', [
 
     var bad = getBad(kpi.inputSpecification);
     var excellent = getExcellent(kpi.inputSpecification);
-
-    // add the kpi outputs with loading status
-    $scope.kpiOutputs.push({
+    var kpiOutput = {
       kpiName: kpi.name,
       kpiId: kpi.alias,
       kpiBad: bad,
       kpiExcellent: excellent, 
-      inputs: kpi.inputSpecification,
+      inputSpecification: kpi.inputSpecification,
       kpiUnit: kpi.unit,
       moduleName: kpi.selectedModule.name,
       moduleId: kpi.selectedModule.id,
+      qualitative: kpi.qualitative,
       status: 'loading',
       loading: true
-    });
+    };
+
+    // add the kpi outputs with loading status
+    $scope.kpiOutputs.push(kpiOutput);
 
     var prepareKpiData = function(o) {
       o.kpiId = kpi.alias;
@@ -80,33 +82,51 @@ angular.module( 'idss-dashboard.as-is', [
       o.kpiUnit = kpi.unit;
       o.moduleId = kpi.selectedModule.id;
     };
-    
-    // fetch existing output from server
-    ModuleService.getModuleOutput(asIsVariant._id, kpi.selectedModule.id, kpi.alias).then(function(output) {
-      var kpiOutput = _.find($scope.kpiOutputs, function(k) {return k.kpiId === kpi.alias;});
-      kpiOutput.status =  output.status; 
-      // 'success' (calculation ok and input not changed)
-      // 'unprocessed' (input has changed, old output could be rendered)
-      // 'initializing' (waiting for startModel response from model)
-      // 'processing' (model is processing, waiting for model result)
-      if(kpiOutput.status === 'initializing' || kpiOutput.status === 'processing') {
-        kpiOutput.loading = true;
-      } else {
-        kpiOutput.loading = false;
-      }
 
-      _.each(output.outputs, function(o) {
-        prepareKpiData(o);
-        if(o.type === 'geojson') {
-          $scope.kpiMapOutputs.push(o);
-        } 
+    if(!kpi.qualitative) {
+    
+      // fetch existing output from server
+      ModuleService.getModuleOutput(asIsVariant._id, kpi.selectedModule.id, kpi.alias).then(function(output) {
+        kpiOutput.status =  output.status; 
+        // 'success' (calculation ok and input not changed)
+        // 'unprocessed' (input has changed, old output could be rendered)
+        // 'initializing' (waiting for startModel response from model)
+        // 'processing' (model is processing, waiting for model result)
+        if(kpiOutput.status === 'initializing' || kpiOutput.status === 'processing') {
+          kpiOutput.loading = true;
+        } else {
+          kpiOutput.loading = false;
+        }
+
+        // set the kpi values on children outputs
+        _.each(output.outputs, function(o) {
+          prepareKpiData(o);
+          if(o.type === 'geojson') {
+            $scope.kpiMapOutputs.push(o);
+          } 
+        });
+
+        console.log(output.outputs);
+
+        kpiOutput.outputs = output.outputs; // listen on this to trigger rendering
+
       });
 
-      console.log(output.outputs);
+    } else {
+      kpiOutput.outputs = KpiService.generateQualitativeKpiOutput(kpi.inputSpecification);
+      kpiOutput.kpiBad = 1;
+      kpiOutput.kpiExcellent = 10;
+      kpiOutput.kpiUnit = 'score';
+      kpiOutput.moduleName = 'qualitative KPI';
+      kpiOutput.loading = false;
+      if(kpiOutput.outputs) {
+        kpiOutput.status = 'success';
+      } else {
+        kpiOutput.status = 'unprocessed';
+      }
 
-      kpiOutput.outputs = output.outputs; // listen on this to trigger rendering
-
-    });
+      console.log(kpiOutput);
+    }
       
   });
 
@@ -206,7 +226,6 @@ angular.module( 'idss-dashboard.as-is', [
   };
 
   $scope.getStatus = function(kpi) {
-    console.log(kpi.status);
     if(kpi.status === 'unprocessed') {
       return 'warning';
     } else if(kpi.status === 'initializing') {
@@ -216,6 +235,31 @@ angular.module( 'idss-dashboard.as-is', [
     } else if(kpi.status === 'success') {
       return 'success';
     } 
+  };
+
+  $scope.setScore = function(kpi) {
+
+    var kpiModal = $modal.open({
+      templateUrl: 'qualitative-kpi-input/qualitative-kpi-input.tpl.html',
+      controller: 'QualitativeKpiInputCtrl',
+      resolve: {
+        kpi: function() {
+          return kpi;
+        }
+      }
+    });
+
+    kpiModal.result.then(function (configuredKpi) {
+      // TODO: change all alias to kpiId
+      configuredKpi.alias = configuredKpi.kpiId;
+      // update kpi in variant
+      VariantService.updateKpi(asIsVariant, configuredKpi);
+      console.log(configuredKpi.outputs);
+      kpi.outputs = configuredKpi.outputs;
+    }, function () {
+      console.log('Modal dismissed at: ' + new Date());
+    });
+
   };
 
 }]);

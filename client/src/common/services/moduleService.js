@@ -135,13 +135,14 @@ angular.module('idss-dashboard')
 
     };
 
-    var updateModuleOutputStatus = function(variantId, moduleId, kpiId, status) {
+    var updateModuleOutputStatus = function(variantId, moduleId, kpiId, status, outputs) {
 
         var moduleOutput = {
             variantId: variantId,
             moduleId: moduleId,
             kpiId: kpiId,
-            status: status
+            status: status,
+            outputs: outputs
         };
 
         return $http
@@ -157,7 +158,7 @@ angular.module('idss-dashboard')
             })
             .then(function (res) {
                 var module = res.data;
-                var label = 'Input data was successfully saved';
+                var label = 'Data was successfully saved';
                 NotificationService.createSuccessFlash(label);
                 ProcessService.addLog({
                     label:label

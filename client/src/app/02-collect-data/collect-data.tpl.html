@@ -3,7 +3,7 @@
         
         <h2>Collect Data</h2>
         <div ng-show="!asIsVariant.kpiList.length">No kpis are registered</div>
-        <div ng-repeat="kpi in asIsVariant.kpiList" class="panel panel-primary module-item" ui-sref="module-input({kpiId: kpi.alias})">
+        <div ng-repeat="kpi in asIsVariant.kpiList" ng-show="!kpi.qualitative" class="panel panel-primary module-item" ui-sref="module-input({kpiId: kpi.alias})">
           <div class="panel-heading">
             <h3 class="panel-title">{{kpi.name}} <span ng-hide="moduleInputIsOk(kpi.selectedModule)" class="glyphicon glyphicon-exclamation-sign"></span></h3>
           </div>

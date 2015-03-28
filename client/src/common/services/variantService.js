@@ -138,15 +138,18 @@ angular.module('idss-dashboard')
         // if the selected module is changed delete all module data in variant
         // TODO: NOTIFY USER!!! 
         console.log('update kpi');
-        if(kpi.selectedModule.id !== kpiToUpdate.selectedModule.id) {
-            console.log('update selected module');
-            // clear the previous selected module and set the new id
-            kpi.selectedModule = kpiToUpdate.selectedModule;
-            // extend new module with data from module list by id
-            ModuleService.extendModuleData(kpi.selectedModule, true);
-            // send request for getting inputs from module and save that in dashboard database
-            kpi.variantId = variant._id;
-            socket.emit('selectModel', kpi);
+        // qualitative kpi changes from as-is, to-be and alternatives dont have selected module, only inputSpecification should be updated
+        if(kpiToUpdate.selectedModule) {
+            if(kpi.selectedModule.id !== kpiToUpdate.selectedModule.id) {
+                console.log('update selected module');
+                // clear the previous selected module and set the new id
+                kpi.selectedModule = kpiToUpdate.selectedModule;
+                // extend new module with data from module list by id
+                ModuleService.extendModuleData(kpi.selectedModule, true);
+                // send request for getting inputs from module and save that in dashboard database
+                kpi.variantId = variant._id;
+                socket.emit('selectModel', kpi);
+            }
         }
         saveVariant(variant).then(function(savedVariant) {
             return savedVariant;

@@ -47,7 +47,8 @@ angular.module( 'idss-dashboard.analyse-problem.configure-kpi', [])
       var inputSpec = angular.copy($scope.kpi.inputSpecification);
       for(var spec in inputSpec) {
         if (inputSpec.hasOwnProperty(spec)) {
-          inputSpec[spec].type = 'checkbox';
+          inputSpec[spec].type = 'radio';
+          inputSpec[spec].name = $scope.kpi.alias;
           inputSpec[spec].label = inputSpec[spec].value;
           inputSpec[spec].value = false;
         }

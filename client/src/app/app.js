@@ -22,7 +22,7 @@ angular.module( 'idss-dashboard', [
   'idss-dashboard.to-be',
   'idss-dashboard.develop-variants',
   'idss-dashboard.assess-variants',
-  'idss-dashboard.view3d'
+  'idss-dashboard.qualitative-kpi-input'
 ])
 
 .constant('AUTH_EVENTS', {
