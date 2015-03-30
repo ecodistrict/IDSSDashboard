@@ -40,25 +40,13 @@ angular.module( 'idss-dashboard.as-is', [
   $scope.kpiOutputs = []; // TODO: there are different type of outputs; kpi value, map outputs, charts, lists. In different tabs. New structure of outputs needed? 
   $scope.kpiMapOutputs = [];
 
-  var getBad = function(inputSpec) {
-    if(inputSpec.kpiScores && inputSpec.kpiScores.inputs && inputSpec.kpiScores.inputs.kpiScoreBad) {
-      return inputSpec.kpiScores.inputs.kpiScoreBad.value;
-    }
-  };
-
-  var getExcellent = function(inputSpec) {
-    if(inputSpec.kpiScores && inputSpec.kpiScores.inputs && inputSpec.kpiScores.inputs.kpiScoreExcellent) {
-      return inputSpec.kpiScores.inputs.kpiScoreExcellent.value;
-    }
-  };
-
   _.each(asIsVariant.kpiList, function(kpi) {
 
-    var bad = getBad(kpi.inputSpecification);
-    var excellent = getExcellent(kpi.inputSpecification);
+    var bad = KpiService.getBadKpiValue(kpi.inputSpecification);
+    var excellent = KpiService.getExcellentKpiValue(kpi.inputSpecification);
     var kpiOutput = {
       kpiName: kpi.name,
-      kpiId: kpi.alias,
+      alias: kpi.alias, 
       kpiBad: bad,
       kpiExcellent: excellent, 
       inputSpecification: kpi.inputSpecification,
@@ -74,7 +62,7 @@ angular.module( 'idss-dashboard.as-is', [
     $scope.kpiOutputs.push(kpiOutput);
 
     var prepareKpiData = function(o) {
-      o.kpiId = kpi.alias;
+      o.alias = kpi.alias;
       o.kpiName = kpi.name;
       o.kpiBad = bad;
       o.kpiExcellent = excellent;
@@ -134,7 +122,7 @@ angular.module( 'idss-dashboard.as-is', [
       console.log('start model', module);
       
       var found = _.find($scope.kpiOutputs, function(kpiOutput) {
-        return kpiOutput.moduleId === module.moduleId && kpiOutput.kpiId === module.kpiId;
+        return kpiOutput.moduleId === module.moduleId && kpiOutput.alias === module.kpiId;
       });
       if(found) {
         found.status = module.status;
@@ -150,12 +138,12 @@ angular.module( 'idss-dashboard.as-is', [
     console.log('model result', module);
 
     var kpiOutput = _.find($scope.kpiOutputs, function(kpi) {
-      return kpi.kpiId === module.kpiId;
+      return kpi.alias === module.kpiId;
     });
     if(kpiOutput) {
       //kpiOutput.status = module.status;
       _.each(module.outputs, function(o) {
-        o.kpiId = kpiOutput.kpiId;
+        o.alias = kpiOutput.alias;
         o.kpiName = kpiOutput.kpiName;
         o.kpiBad = kpiOutput.kpiBad;
         o.kpiExcellent = kpiOutput.kpiExcellent;
@@ -166,17 +154,6 @@ angular.module( 'idss-dashboard.as-is', [
           $scope.kpiMapOutputs.push(o);
         }
 
-      //    var existingOutput  = _.find(kpiOutput.outputs, function(kO) {return kO.id === o.id;});
-      //    if(existingOutput) {
-      //      console.log('output exists - update value');
-      // //     // update value, look for type
-      //    } else {
-      //      console.log('output did not exist - create new output object');
-      // //     // push value, look for type
-      // //     if()
-      // //     $scope.kpiMapOutputs.push(o);
-      //    }
-        
       });
 
       kpiOutput.outputs = module.outputs;
@@ -196,7 +173,7 @@ angular.module( 'idss-dashboard.as-is', [
 
     socket.emit('startModel', {
       variantId: asIsVariant._id, 
-      kpiId: kpiOutput.kpiId, 
+      kpiId: kpiOutput.alias, // modules use kpiId instead of alias
       moduleId: kpiOutput.moduleId,
       status: kpiOutput.status
     });
@@ -207,7 +184,7 @@ angular.module( 'idss-dashboard.as-is', [
     kpiOutput.status = 'unprocessed';
     kpiOutput.loading = false;
 
-    ModuleService.updateModuleOutputStatus(asIsVariant._id, kpiOutput.moduleId, kpiOutput.kpiId, kpiOutput.status);
+    ModuleService.updateModuleOutputStatus(asIsVariant._id, kpiOutput.moduleId, kpiOutput.alias, kpiOutput.status);
 
     // send message to model?
   };
@@ -249,12 +226,12 @@ angular.module( 'idss-dashboard.as-is', [
     });
 
     kpiModal.result.then(function (configuredKpi) {
-      // TODO: change all alias to kpiId
-      configuredKpi.alias = configuredKpi.kpiId;
       // update kpi in variant
+      kpi.status = 'success';
       VariantService.updateKpi(asIsVariant, configuredKpi);
       console.log(configuredKpi.outputs);
       kpi.outputs = configuredKpi.outputs;
+      kpi.loading = false;
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
     });

@@ -45,7 +45,7 @@ angular.module('idss-dashboard')
             .then(function (res) {
                 var variant = res.data;
                 var label = 'Variant ' + variant.name + ' was successfully created';
-                NotificationService.createErrorFlash(label);
+                NotificationService.createSuccessFlash(label);
                 ProcessService.addLog({
                     label:label
                 });
@@ -92,7 +92,7 @@ angular.module('idss-dashboard')
             .then(function (res) {
                 var variant = res.data;
                 var label = 'Variant ' + variant.name + ' was successfully deleted';
-                NotificationService.createErrorFlash(label);
+                NotificationService.createSuccessFlash(label);
                 ProcessService.addLog({
                     label:label
                 });
@@ -214,6 +214,7 @@ angular.module('idss-dashboard')
         createVariant: createVariant,
         getVariants: getVariants,
         deleteVariant: deleteVariant,
+        saveVariant: saveVariant,
         addKpi: addKpi,
         updateKpi: updateKpi,
         removeKpi: removeKpi

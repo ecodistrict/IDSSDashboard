@@ -56,6 +56,37 @@ angular.module('idss-dashboard')
             });
     };
 
+    // input needs to be from as-is variant
+    var getBadKpiValue = function(inputSpec) {
+        var bad = null;
+        if(inputSpec.kpiScores && inputSpec.kpiScores.inputs) {
+            // this is a quantitative KPI
+            if(inputSpec.kpiScores.inputs.kpiScoreBad){
+                bad = inputSpec.kpiScores.inputs.kpiScoreBad.value;
+            } else {
+                // this is a qualitative KPI
+                bad = 1;
+            }
+        }
+        return bad;
+    };
+
+    // input needs to be from as-is variant
+    var getExcellentKpiValue = function(inputSpec) {
+        var excellent = null;
+        if(inputSpec.kpiScores && inputSpec.kpiScores.inputs) {
+            // this is a quantitative KPI
+            if(inputSpec.kpiScores.inputs.kpiScoreExcellent) {
+                excellent = inputSpec.kpiScores.inputs.kpiScoreExcellent.value;
+            } else {
+                // this is a qualitative KPI
+                excellent = 10;
+            }
+        }
+        return excellent;
+
+    };
+
     var generateQualitativeKpiOutput = function(inputSpecification) {
 
         var kpiValue = null, outputs = false;
@@ -78,11 +109,62 @@ angular.module('idss-dashboard')
 
         return outputs;
     };
+
+    // this is generated for the to be situation but could be used as manual output generation when module fails
+    var generateQuantitativeKpiOutput = function(inputSpecification) {
+
+        console.log(inputSpecification);
+
+        var kpiValue = null, outputs = false;
+
+        kpiValue = inputSpecification.value;
+
+        if(kpiValue) {
+            outputs = [{
+              "type": "kpi",
+              "value": kpiValue,
+              "info": "Kpi result"
+            }];
+        }
+
+        return outputs;
+    };
+
+    var generateToBeInput = function(asIsKpi, toBeKpi) {
+        var bad;
+        var excellent;
+        // qualitative can be copied straight from the reference on server when saving
+        if(!toBeKpi.qualitative) {
+            bad = getBadKpiValue(asIsKpi.inputSpecification);
+            excellent = getExcellentKpiValue(asIsKpi.inputSpecification);
+            toBeKpi.inputSpecification = {
+                "kpiValueInputGroup": {
+                    type: 'inputGroup',
+                    order: 0,
+                    label: 'Select you ambition value for this KPI',
+                    info: 'Select a value between ' +  bad + asIsKpi.unit + '(bad) and ' + excellent + asIsKpi.unit + ' (excellent)',
+                    inputs: {
+                        "kpiValue": {
+                            type: 'number',
+                            label: 'Ambition in ' + asIsKpi.unit,
+                            min: bad < excellent ? bad : excellent,
+                            unit: asIsKpi.unit,
+                            max: excellent > bad ? excellent : bad
+                        }
+                    }
+                }
+            };
+        }
+    };
    
     return {
         loadKpis: loadKpis,
         createKpi: createKpi,
         deleteKpi: deleteKpi,
-        generateQualitativeKpiOutput: generateQualitativeKpiOutput
+        getBadKpiValue: getBadKpiValue,
+        getExcellentKpiValue: getExcellentKpiValue,
+        generateQualitativeKpiOutput: generateQualitativeKpiOutput,
+        generateQuantitativeKpiOutput: generateQuantitativeKpiOutput,
+        generateToBeInput: generateToBeInput
     };
 }]);

@@ -16,7 +16,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
                 console.log(scope);
 
-                scope.outputId = 'm_' + scope.kpi.kpiId + '_aggregated_kpi'; // generate a unique id
+                scope.outputId = 'm_' + scope.kpi.alias + '_aggregated_kpi'; // generate a unique id
                 scope.noDataMessage = "No overall KPI is given for this result";
                 scope.tooltipFunction = function(){
                     return function(key, x, y, e, graph) {
@@ -80,6 +80,8 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
             };
 
             scope.$watchCollection('kpi.outputs', function(newOutputs, oldOutputs) {
+
+                console.log(newOutputs, oldOutputs);
                 // ignore first run, when undefined
                 if(newOutputs && newOutputs.length) {
                     elementWidth = 0; 
@@ -142,6 +144,14 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                 }
 
             };
+
+            if(scope.kpi.outputs) {
+                _.each(scope.kpi.outputs, function(output) {
+                    if(output.type === 'kpi') {
+                        render(output);
+                    }
+                });
+            }
 
         }
     };

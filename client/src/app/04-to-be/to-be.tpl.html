@@ -2,17 +2,15 @@
     <div class="row">
         <div class="col-xs-12">
             <h2>To be - go through KPIs again to set ambitions</h2>
-            <div ng-repeat="kpi in toBeVariant.kpiList" id="{{'used-kpi-' + kpi.alias}}" class="panel panel-success kpi-item" ng-click="configureKpi(kpi)">
+            <div ng-repeat="kpi in toBeVariant.kpiList" id="{{'used-kpi-' + kpi.alias}}" class="panel panel-success kpi-item" ng-click="setScore(kpi)">
               <div class="panel-heading">
                 <h3 class="panel-title">{{kpi.name}} <span ng-hide="kpiIsConfigured(kpi)" class="glyphicon glyphicon-exclamation-sign"></span></h3>
               </div>
               <div class="panel-body">
                 {{kpi.description}}
+                <kpi-value-output kpi="kpi"></kpi-value-output>
               </div>
             </div>
-            <button class="btn btn-primary btn-xs pull-right" ng-show="asIsVariant.kpiList.length">
-                <span class="glyphicon glyphicon-floppy-disk"></span> Save this KPI set
-            </button>
         </div>
     </div>
     <div class="row">

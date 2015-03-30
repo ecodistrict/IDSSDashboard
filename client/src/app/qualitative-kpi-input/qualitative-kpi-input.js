@@ -5,8 +5,6 @@ angular.module( 'idss-dashboard.qualitative-kpi-input', [])
     // work on a reference
     $scope.kpi = angular.copy(kpi);
 
-    console.log($scope.kpi);
-    
     $scope.cancel = function () {
       $modalInstance.dismiss('cancel');
     };
