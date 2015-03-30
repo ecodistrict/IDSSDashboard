@@ -12,7 +12,7 @@ angular.module( 'idss-dashboard.qualitative-kpi-input', [])
     };
 
     $scope.ok = function() {
-      $scope.kpi.outputs = KpiService.generateQualitativeKpiOutput($scope.kpi.inputSpecification);
+      $scope.kpi.outputs = KpiService.generateQualitativeKpiOutput($scope.kpi.inputSpecification.kpiScores.inputs);
       $modalInstance.close($scope.kpi);
     };
 

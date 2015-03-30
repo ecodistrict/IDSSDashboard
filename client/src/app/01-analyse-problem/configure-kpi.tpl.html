@@ -4,18 +4,22 @@
 </div>
 <div class="modal-body">
     <button class="btn btn-primary btn-xs pull-right" ng-click="editQualitativeKpi()" ng-show="kpi.qualitative && !editKpiMode">
-        <span class="glyphicon glyphicon-floppy-disk"></span> Edit
+        <span class="glyphicon glyphicon-floppy-disk"></span> Edit KPI values
     </button>
     <button class="btn btn-primary btn-xs pull-right" ng-click="saveQualitativeKpi()" ng-show="kpi.qualitative && editKpiMode">
-        <span class="glyphicon glyphicon-floppy-disk"></span> Preview
+        <span class="glyphicon glyphicon-floppy-disk"></span> Done edit KPI values
     </button>
     <h3 ng-show="!kpi.qualitative">Input and configuration</h3>
     <h3 ng-show="kpi.qualitative">Qualitative KPI configuration</h3>
+
+    <div class="alert alert-danger" ng-show="validationError" role="alert">
+      {{validationError}}
+    </div>
     
     <div class="form-group" ng-show="kpi.qualitative && editKpiMode">
         <div class="btn-group">
-            <button type="button" ng-class="{active: !kpi.inputSpecification.kpiScore2}" class="btn btn-default" ng-click="setNumberOfQualitativeOptions(3)">3 options</button>
-            <button type="button" ng-class="{active: kpi.inputSpecification.kpiScore2}" class="btn btn-default" ng-click="setNumberOfQualitativeOptions(10)">10 options</button>
+            <button type="button" ng-class="{active: !moreOptions()}" class="btn btn-default" ng-click="setNumberOfQualitativeOptions(3)">3 options</button>
+            <button type="button" ng-class="{active: moreOptions()}" class="btn btn-default" ng-click="setNumberOfQualitativeOptions(10)">More options</button>
         </div>
     </div>
     <kpi-input inputs="kpi.inputSpecification"></kpi-input>

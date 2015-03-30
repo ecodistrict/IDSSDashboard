@@ -4,10 +4,12 @@
 </div>
 <div class="modal-body">
 	<h3>Info</h3>
-	<p ng-if="kpi.description">{{ kpi.description}}</p>
+	<p>Type: {{ (kpi.qualitative ? 'Qualitative': 'Quantitative') }}</p>
+	<p ng-if="kpi.description">Description: {{ kpi.description}}</p>
 	<p ng-if="!kpi.description">There is no description for this KPI</p>
 	<h3>Relevant modules</h3>
-	<div ng-show="relevantModules.length === 0">There are no modules registered for this KPI</div>
+	<div ng-show="kpi.qualitative">Qualitative KPIs does not have connected modules</div>
+	<div ng-show="relevantModules.length === 0 && !kpi.qualitative">There are no modules registered for this KPI</div>
 	<div ng-repeat="module in relevantModules">
 		{{module.name}}
 	</div>		

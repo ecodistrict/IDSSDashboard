@@ -40,15 +40,14 @@ angular.module( 'idss-dashboard.as-is', [
   $scope.kpiOutputs = []; // TODO: there are different type of outputs; kpi value, map outputs, charts, lists. In different tabs. New structure of outputs needed? 
   $scope.kpiMapOutputs = [];
 
-  // TODO: cahnge to new structure (object)!!
   var getBad = function(inputSpec) {
-    if(inputSpec.kpiScores && inputSpec.kpiScores.inputs) {
+    if(inputSpec.kpiScores && inputSpec.kpiScores.inputs && inputSpec.kpiScores.inputs.kpiScoreBad) {
       return inputSpec.kpiScores.inputs.kpiScoreBad.value;
     }
   };
 
   var getExcellent = function(inputSpec) {
-    if(inputSpec.kpiScores && inputSpec.kpiScores.inputs) {
+    if(inputSpec.kpiScores && inputSpec.kpiScores.inputs && inputSpec.kpiScores.inputs.kpiScoreExcellent) {
       return inputSpec.kpiScores.inputs.kpiScoreExcellent.value;
     }
   };
@@ -113,7 +112,7 @@ angular.module( 'idss-dashboard.as-is', [
       });
 
     } else {
-      kpiOutput.outputs = KpiService.generateQualitativeKpiOutput(kpi.inputSpecification);
+      kpiOutput.outputs = KpiService.generateQualitativeKpiOutput(kpi.inputSpecification.kpiScores.inputs);
       kpiOutput.kpiBad = 1;
       kpiOutput.kpiExcellent = 10;
       kpiOutput.kpiUnit = 'score';
