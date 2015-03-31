@@ -200,6 +200,8 @@ angular.module('idss-dashboard')
                     }
                 }
             };
+        } else {
+            toBeKpi.inputSpecification = asIsKpi.settings;
         }
     };
 
@@ -326,9 +328,16 @@ angular.module('idss-dashboard')
                 kpi.loading = false;
 
               } else {
-                // try to fetch a module output of a module has been selected
-                // if manual has been set this is prioritized, a kpi must be recalculated to override this
-                if(kpi.selectedModule.id && !kpi.manual) {
+                if(currentVariant.type === 'to-be') {
+                    kpi.moduleName = kpi.selectedModule.name || 'Ambition';
+                    if(kpi.inputSpecification.kpiValueInputGroup) {
+                        kpi.outputs = generateQuantitativeKpiOutput(kpi.inputSpecification.kpiValueInputGroup.inputs.kpiValue);
+                    }
+                    kpi.status = kpi.outputs ? 'success' : 'unprocessed';
+                    kpi.loading = false;
+                } else if(kpi.selectedModule.id && !kpi.manual) {
+                    // try to fetch a module output if a module has been selected
+                    // if manual has been set this is prioritized, a kpi must be recalculated to override this
                   kpi.moduleName = kpi.selectedModule.name;
                   kpi.moduleId = kpi.selectedModule.id;
                   ModuleService.getModuleOutput(currentVariant._id, kpi.selectedModule.id, kpi.alias).then(function(output) {

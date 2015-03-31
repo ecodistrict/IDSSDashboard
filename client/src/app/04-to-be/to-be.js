@@ -45,13 +45,12 @@ angular.module( 'idss-dashboard.to-be', [])
             toBeVariant.description = "The TO BE state defines the KPI ambitions for a connected user";
             // to be input looks different so it has to be converted
             _.each(toBeVariant.kpiList, function(toBeKpi) {
-                var asIsKpi = toBeKpi;
-                toBeKpi = angular.copy(asIsKpi);
-                KpiService.generateToBeInput(asIsKpi, toBeKpi);
+                KpiService.generateToBeInput(angular.copy(toBeKpi), toBeKpi);
             });
             VariantService.createVariant(toBeVariant).then(function(newVariant) {
-              $scope.toBeVariant = KpiService.initOutputs(newVariant, asIsVariant);
-              variants.push(newVariant);
+              toBeVariant = newVariant;
+              $scope.toBeVariant = KpiService.initOutputs(toBeVariant, asIsVariant);
+              variants.push(toBeVariant);
             });
         } else if(asIsVariant.kpiList.length !== toBeVariant.kpiList.length) {
             VariantService.addOrRemoveKpis(asIsVariant, toBeVariant);

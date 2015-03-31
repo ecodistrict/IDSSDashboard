@@ -159,11 +159,15 @@ angular.module( 'idss-dashboard.as-is', [
         configuredKpi.manual = true;
         configuredKpi.status = 'success';
         configuredKpi.loading = false;
+        // fix this, the copy vs the original - both need new data
+        kpi.manual = true;
+        kpi.status = 'success';
+        kpi.loading = false;
         // update kpi in variant
         VariantService.updateKpi(currentVariant, configuredKpi);
         // trigger update to kpi in scope
         kpi.outputs = configuredKpi.outputs;
-        kpi = configuredKpi;
+        
       }, function () {
         console.log('Modal dismissed at: ' + new Date());
       });

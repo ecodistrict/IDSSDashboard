@@ -40,7 +40,7 @@ angular.module( 'idss-dashboard.develop-variants', [
 
   $scope.addVariant = function() {
     var variant = {
-        name: 'Title',
+        name: 'Alternative',
         type: 'variant',
         description: 'Description',
         kpiList: []
