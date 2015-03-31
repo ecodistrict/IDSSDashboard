@@ -35,21 +35,6 @@ angular.module( 'idss-dashboard.to-be', [])
     var toBeVariant = _.find(variants, function(v) {return v.type === 'to-be';});
     var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
 
-    var initOutputs = function(variant) {
-        _.each(variant.kpiList, function(kpi) {
-            var asIsKpi = _.find(asIsVariant.kpiList, function(k) { return k.alias === kpi.alias;});
-            if(kpi.qualitative) {
-                kpi.outputs = KpiService.generateQualitativeKpiOutput(kpi.inputSpecification.kpiScores.inputs);
-            } else {
-                kpi.outputs = KpiService.generateQuantitativeKpiOutput(kpi.inputSpecification.kpiValueInputGroup.inputs.kpiValue);
-            }
-            kpi.kpiBad = KpiService.getBadKpiValue(asIsKpi.inputSpecification);
-            kpi.kpiExcellent = KpiService.getExcellentKpiValue(asIsKpi.inputSpecification);
-            kpi.kpiUnit = kpi.unit || 'score';
-        });
-        $scope.toBeVariant = variant;
-    };
-
     if(asIsVariant) {
         // if first time - create the to be variant
         if(!toBeVariant) {
@@ -65,16 +50,17 @@ angular.module( 'idss-dashboard.to-be', [])
                 KpiService.generateToBeInput(asIsKpi, toBeKpi);
             });
             VariantService.createVariant(toBeVariant).then(function(newVariant) {
-              initOutputs(newVariant);
+              $scope.toBeVariant = KpiService.initOutputs(newVariant, asIsVariant);
+              variants.push(newVariant);
             });
         } else if(asIsVariant.kpiList.length !== toBeVariant.kpiList.length) {
-            VariantService.addOrRemoveKpis();
+            VariantService.addOrRemoveKpis(asIsVariant, toBeVariant);
             VariantService.saveVariant(toBeVariant).then(function(savedVariant) {
-              initOutputs(savedVariant);
+              $scope.toBeVariant = KpiService.initOutputs(savedVariant, asIsVariant);
             });
 
         } else {
-            initOutputs(toBeVariant);
+            $scope.toBeVariant = KpiService.initOutputs(toBeVariant, asIsVariant);
         }
     }
 

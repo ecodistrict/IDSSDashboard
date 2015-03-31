@@ -1,24 +1,12 @@
-<div class="container">
-    <div class="row">
-        <form role="form">
-          <div class="form-group">
-            <button class="btn btn-primary" ui-sref="collect-data"><span class="glyphicon glyphicon-chevron-left"></span> Collect data overview</button>
-          </div>
-        </form>
-    </div>
-    <div class="row">
-        <h1 ng-show="kpi">Input data for kpi <i>"{{kpi.name}}"</i></h1>
-        <h1 ng-show="!kpi">No kpi was found</i></h1>
-    </div>
-    <div class="row">
-        <kpi-input inputs="module.inputSpecification" kpialias="kpi.alias" moduleid="module.moduleId" variantid="asIsVariant._id" process="currentProcess"></kpi-input>
-    </div>
-    <div class="row">
-        <form role="form">
-          <div class="form-group">
-            <button class="btn btn-primary pull-right" ui-sref="collect-data"> Next kpi <span class="glyphicon glyphicon-chevron-right"></span></button>
-            <button class="btn btn-primary pull-left" ui-sref="collect-data"><span class="glyphicon glyphicon-chevron-left"></span> Previous kpi</button>
-          </div>
-        </form>
-    </div>
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()" data-dismiss="modalInstance" aria-hidden="true">&times;</button>
+    <h3 class="kpi-title">KPI: {{kpi.name}}</h3>
+    <p>Input required by module {{kpi.moduleName}}</p>
 </div>
+<div class="modal-body">
+    <kpi-input inputs="module.inputSpecification" kpialias="kpi.alias" moduleid="module.moduleId" variantid="variant._id" process="currentProcess"></kpi-input>
+</div>
+<div class="modal-footer">
+    <a class="btn btn-sm btn-warning" ng-click="cancel()">Cancel</a>
+    <a id="save-kpi-config" class="btn btn-primary btn-sm" ng-click="ok()">Ok</a>
+</div>  

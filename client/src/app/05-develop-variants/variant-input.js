@@ -44,77 +44,14 @@ angular.module( 'idss-dashboard.develop-variants.variant-input', [])
   $scope.currentVariantName = currentVariant.name;
   $scope.kpiMapOutputs = [];
 
-  var initOutputs = function(variant) {
-    _.each(variant.kpiList, function(kpi) {
-      var asIsKpi = _.find(asIsVariant.kpiList, function(k) { return k.alias === kpi.alias;});
-      kpi.asIsKpi = asIsKpi;
-      kpi.kpiBad = KpiService.getBadKpiValue(asIsKpi.inputSpecification);
-      kpi.kpiExcellent = KpiService.getExcellentKpiValue(asIsKpi.inputSpecification);
-      kpi.kpiUnit = kpi.unit || 'score';
-      kpi.kpiName = kpi.name;
-      kpi.status = 'loading';
-      kpi.outputs = null; // manual output can exist (saved or cached), to avoid extra rendering wait for init of outputs below
-      kpi.loading = true;
-      // this adds properties to children outputs
-      var prepareKpiData = function(o) {
-          o.alias = kpi.alias;
-          o.kpiName = kpi.name;
-          o.kpiBad = kpi.kpiBad;
-          o.kpiExcellent = kpi.kpiExcellent;
-          o.kpiUnit = kpi.kpiUnit;
-          o.moduleId = kpi.selectedModule.id;
-      };
-      if(kpi.qualitative) {
-        kpi.moduleName = 'Qualitative KPI';
-        // returns null if score was not given to this kpi
-        kpi.outputs = KpiService.generateQualitativeKpiOutput(kpi.inputSpecification.kpiScores.inputs);
-        kpi.status = kpi.outputs ? 'success' : 'unprocessed';
-        kpi.loading = false;
-
-      } else {
-        // try to fetch a module output of a module has been selected
-        // if manual has been set this is prioritized, a kpi must be recalculated to override this
-        if(kpi.selectedModule.id && !kpi.manual) {
-          kpi.moduleName = kpi.selectedModule.name;
-          kpi.moduleId = kpi.selectedModule.id;
-          ModuleService.getModuleOutput(variant._id, kpi.selectedModule.id, kpi.alias).then(function(output) {
-              kpi.status =  output.status; 
-              if(kpi.status === 'initializing' || kpi.status === 'processing') {
-                kpi.loading = true;
-              } else {
-                kpi.loading = false;
-              }
-
-              // set the kpi values on children outputs
-              _.each(output.outputs, function(o) {
-                prepareKpiData(o);
-                if(o.type === 'geojson') {
-                  $scope.kpiMapOutputs.push(o);
-                } 
-              });
-
-              kpi.outputs = output.outputs; // listen on this to trigger rendering
-          });
-        } else {
-          kpi.moduleName = kpi.selectedModule.name || 'Manual input (no module selected)';
-          // try to set any manual given values, null if not found
-          kpi.outputs = KpiService.generateQuantitativeKpiOutput(kpi.inputSpecification.kpiValueInputGroup.inputs.kpiValue);
-          kpi.status = kpi.outputs ? 'success' : 'unprocessed';
-          kpi.loading = false;
-        }
-      }
-    });
-    $scope.currentVariant = variant;
-  };
-
   // TODO: check if new kpis are added
   if(asIsVariant.kpiList.length !== currentVariant.kpiList.length) {
     VariantService.addOrRemoveKpis(asIsVariant, currentVariant);
     VariantService.saveVariant(currentVariant).then(function(savedVariant) {
-      initOutputs(savedVariant);
+      $scope.currentVariant = KpiService.initOutputs(savedVariant, asIsVariant);
     });
   } else {
-    initOutputs(currentVariant);
+    $scope.currentVariant = KpiService.initOutputs(currentVariant, asIsVariant);
   }
 
   $scope.getStatus = function(kpi) {
@@ -204,13 +141,15 @@ angular.module( 'idss-dashboard.develop-variants.variant-input', [])
 
   $scope.setScore = function(kpi) {
 
-    var kpiModal, templateUrl, controller;
+    var kpiModal, templateUrl, controller, asIsKpi;
 
     if(kpi.qualitative) {
       templateUrl = 'qualitative-kpi-input/qualitative-kpi-input.tpl.html';
       controller = 'QualitativeKpiInputCtrl';
     } else {
-      KpiService.generateManualInput(kpi.asIsKpi, kpi);
+      console.log(asIsVariant, kpi);
+      asIsKpi = _.find(asIsVariant.kpiList, function(k) { return k.alias === kpi.alias;});
+      KpiService.generateManualInput(asIsKpi, kpi);
       templateUrl = 'quantitative-kpi-input/quantitative-kpi-input.tpl.html';
       controller = 'QuantitativeKpiInputCtrl';
     }

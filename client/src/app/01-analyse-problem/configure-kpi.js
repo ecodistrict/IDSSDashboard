@@ -34,7 +34,7 @@ angular.module( 'idss-dashboard.analyse-problem.configure-kpi', [])
 
     $scope.editQualitativeKpi = function() {
         $scope.editKpiMode = true;
-        var inputSpec = angular.copy($scope.kpi.inputSpecification);
+        var inputSpec = angular.copy($scope.kpi.settings);
         var scoreInputs = inputSpec["kpiScores"].inputs;
         for(var spec in scoreInputs) {
             if (scoreInputs.hasOwnProperty(spec)) {
@@ -44,7 +44,7 @@ angular.module( 'idss-dashboard.analyse-problem.configure-kpi', [])
             }
         }
         // only add kpi scores to input to clean the interface
-        $scope.kpi.inputSpecification = {
+        $scope.kpi.settings = {
             "kpiScores": {
                 type: 'inputGroup', // TODO: set this on kpi service!
                 label: 'Give KPI score values', // TODO: set this on kpi service!
@@ -54,16 +54,21 @@ angular.module( 'idss-dashboard.analyse-problem.configure-kpi', [])
         };
     };
 
+    // just checking size of q inputs for gui button
     $scope.moreOptions = function() {
-        var inputs = $scope.kpi.inputSpecification,
-            size = _.size(inputs["kpiScores"].inputs);
-        return size > 3;
+        if(kpi.qualitative) {
+            var inputs = $scope.kpi.settings,
+                size = _.size(inputs["kpiScores"].inputs);
+            return size > 3;
+        } else {
+            return false;
+        }
     };
 
     // this recreates the input spec again after editing
     // TODO: get this from kpi service, this is now duplicated in add kpi and below in set num kpi options
     $scope.saveQualitativeKpi = function() {
-        var inputSpec = angular.copy($scope.kpi.inputSpecification);
+        var inputSpec = angular.copy($scope.kpi.settings);
         var scoreInputs = inputSpec["kpiScores"].inputs;
         var isValid = true;
         for(var spec in scoreInputs) {
@@ -94,7 +99,7 @@ angular.module( 'idss-dashboard.analyse-problem.configure-kpi', [])
                 }
             }
       
-            $scope.kpi.inputSpecification = {
+            $scope.kpi.settings = {
                 "priorityLabel": {
                     type: 'inputGroup',
                     order: 0,
@@ -133,7 +138,7 @@ angular.module( 'idss-dashboard.analyse-problem.configure-kpi', [])
     // TODO: this function should be refactored with iterative declaration!
     $scope.setNumberOfQualitativeOptions = function(num) {
 
-        var currentSpec = $scope.kpi.inputSpecification,
+        var currentSpec = $scope.kpi.settings,
             scoreText = "",
             currentScore;
 
@@ -228,7 +233,7 @@ angular.module( 'idss-dashboard.analyse-problem.configure-kpi', [])
         
         } 
 
-        $scope.kpi.inputSpecification = {
+        $scope.kpi.settings = {
             "kpiScores": {
                 type: 'inputGroup', // TODO: set this on kpi service!
                 label: 'Give KPI score values', // TODO: set this on kpi service!

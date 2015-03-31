@@ -18,11 +18,11 @@
     
     <div class="form-group" ng-show="kpi.qualitative && editKpiMode">
         <div class="btn-group">
-            <button type="button" ng-class="{active: !moreOptions()}" class="btn btn-default" ng-click="setNumberOfQualitativeOptions(3)">3 options</button>
-            <button type="button" ng-class="{active: moreOptions()}" class="btn btn-default" ng-click="setNumberOfQualitativeOptions(10)">More options</button>
+            <button type="button" ng-class="{active: !moreOptions(kpi)}" class="btn btn-default" ng-click="setNumberOfQualitativeOptions(3)">3 options</button>
+            <button type="button" ng-class="{active: moreOptions(kpi)}" class="btn btn-default" ng-click="setNumberOfQualitativeOptions(10)">More options</button>
         </div>
     </div>
-    <kpi-input inputs="kpi.inputSpecification"></kpi-input>
+    <kpi-input inputs="kpi.settings"></kpi-input>
     <div class="well" ng-show="!kpi.qualitative">
         <h3>Select module</h3>
         <select ng-model="kpi.selectedModule.id" ng-options="module.moduleId as module.name for module in relevantModules">

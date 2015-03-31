@@ -33,14 +33,47 @@ angular.module( 'idss-dashboard.collect-data', [
   });
 }])
 
-.controller( 'CollectDataCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', 'variants', function CollectDataCtrl( $scope, KpiService, ProcessService, $modal, variants ) {
+.controller( 'CollectDataCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', 'variants', 'ModuleService', function CollectDataCtrl( $scope, KpiService, ProcessService, $modal, variants, ModuleService ) {
 
-  $scope.asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
+  var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
+  _.each(asIsVariant.kpiList, function(kpi) {
+    kpi.moduleId = kpi.selectedModule.id; 
+    kpi.moduleName = kpi.selectedModule.name;
+  });
+  $scope.currentVariant = asIsVariant;
 
   $scope.moduleInputIsOk = function(module) {
     // create API call?
-    return false;
+    return true;
   };
+
+  $scope.setModuleInput = function(kpi) {
+    if(kpi.selectedModule.id) {
+    
+      moduleInputModal = $modal.open({
+          templateUrl: '02-collect-data/module-input.tpl.html',
+          controller: 'ModuleInputController',
+          resolve: {
+            kpi: function() {
+              return kpi;
+            },
+            currentVariant: function() {
+              return $scope.currentVariant;
+            }
+          }
+        });
+
+        moduleInputModal.result.then(function (moduleInput) {
+
+          ModuleService.saveModuleInput(moduleInput.variantId, moduleInput);
+                  
+        }, function () {
+          console.log('Modal dismissed at: ' + new Date());
+        });
+
+      }
+
+    };
 
 }]);
 

@@ -241,6 +241,21 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     });
   });
 
+  dashboardWebClientSocket.on('mcmsmv', function(module) {
+    
+    var method = 'mcmsmv';
+    console.log('From dashboard client: ' + method + ' data: ' + module);
+    var requestObj = {
+      "type": "request",
+      "method": method,
+      "kpiId": module.kpiId,
+      "inputs": module.variants,
+      "userId": module.userId
+    };
+    sendModuleRequest(requestObj);
+          
+  });
+
   imbFrameworkSocket.onNormalEvent = function(eventDefinition, eventPayload) {
     var offset = 0;
     var length = eventPayload.readInt32LE(offset);
@@ -272,6 +287,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
           io.to(success.userId).emit(message.method, message);
         }
       });
+      
     } else if(message.method === 'modelResult') {
       dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
       variantRepository.addModuleResult(message, function(err, model) {
@@ -282,6 +298,9 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
           io.to(model.userId).emit(message.method, message);
         }
       });
+    } else if(message.method === 'mcmsmv') {
+      dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
+      io.to(message.userId).emit(message.method, message);
     }
   };
 

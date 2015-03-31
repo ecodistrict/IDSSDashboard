@@ -133,13 +133,14 @@ angular.module('idss-dashboard')
             return k.alias === kpiToUpdate.alias;
         });
         // these are the kpi settings changes 
+        kpi.settings = kpiToUpdate.settings;
         kpi.inputSpecification = kpiToUpdate.inputSpecification;
         kpi.manual = kpiToUpdate.manual;
         console.log(kpi);
         // if the selected module is changed delete all module data in variant
         // TODO: NOTIFY USER!!! 
         console.log('update kpi');
-        // qualitative kpi changes from as-is, to-be and alternatives dont have selected module, only inputSpecification should be updated
+        // qualitative kpi changes from as-is, to-be and alternatives dont have selected module, only inputSpecification and settings should be updated
         if(kpiToUpdate.selectedModule) {
             if(kpi.selectedModule.id !== kpiToUpdate.selectedModule.id) {
                 console.log('update selected module');

@@ -1,3 +1,17 @@
 <div class="container">
-  <h2>[not implemented]</h2>  
+
+  <div class="row">
+    <h3>Assess alternatives</h3>
+  </div>
+  <div class="row">
+    <div ng-show="msg" class="alert alert-danger" role="alert">{{msg}}</div>
+    <button class="btn btn-info" ng-click="sendToMCMSMV()"><span class="glyphicon glyphicon-stats"></span> Send data to MCMSMV module (status: {{sendData.status}}) <span ng-show="sendData.loading" class="glyphicon glyphicon-refresh spin"></span></button>
+  </div>
+  <div class="row">
+        <form role="form">
+          <div class="form-group">
+            <button class="btn btn-primary pull-left" ui-sref="develop-variants"><span class="glyphicon glyphicon-chevron-left"></span> Previous</button>
+          </div>
+        </form>
+    </div>
 </div>
