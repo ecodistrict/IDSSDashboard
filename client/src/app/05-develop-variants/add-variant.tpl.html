@@ -1,0 +1,65 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()" data-dismiss="modalInstance" aria-hidden="true">&times;</button>
+    <h3 class="kpi-title">Create new alternative</h3>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <form role="form">
+          <div class="form-group">
+            <label for="alternative-title">Alternative title</label>
+            <input id="alternative-title" type="text" class="form-control" placeholder="Variant name" ng-model="variant.name" /> 
+          </div>
+        </form>
+    </div>
+    <div class="row">
+        <form role="form">
+          <div class="form-group">
+            <label for="alternative-description">Alternative description</label>
+            <textarea id="alternative-description" class="form-control" rows="3" type="text" ng-model="variant.description"></textarea> 
+          </div>
+        </form>
+    </div>
+</div>  
+<div class="modal-footer">
+    <a class="btn btn-sm btn-warning" ng-click="cancel()">Cancel</a>
+    <a id="save-kpi-config" class="btn btn-primary btn-sm" ng-click="ok()">Ok</a>
+</div>  
+<!-- <div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()" data-dismiss="modalInstance" aria-hidden="true">&times;</button>
+    <h3 class="kpi-title">{{variant.name}} 
+        <span ng-show="!variant.editName" ng-click="variant.editName = !variant.editName" class="glyphicon glyphicon-pencil"></span> 
+        <span ng-show="variant.editName" ng-click="variant.editName = !variant.editName" class="glyphicon glyphicon-ok"></span> 
+    </h3>
+    <input type="text" class="form-control" placeholder="Variant name" ng-show="variant.editName" ng-model="variant.name" /> 
+    <p>{{variant.description}}
+      <span ng-show="!variant.editDescription" ng-click="variant.editDescription = !variant.editDescription" class="glyphicon glyphicon-pencil"></span>
+      <span ng-show="variant.editDescription" ng-click="variant.editDescription = !variant.editDescription" class="glyphicon glyphicon-ok"></span>
+    </p>
+    <textarea class="form-control" rows="3" type="text" ng-show="variant.editDescription" ng-model="variant.description"></textarea> 
+</div>
+<div class="modal-body">
+    <h4><i class="glyphicon glyphicon-tasks"></i>KPI list</h4>
+    <div ng-repeat="kpi in kpiOutputs" class="panel {{'panel-' + getStatus(kpi)}} module-item">
+        <div class="panel-heading" role="tab">
+          <h4 class="panel-title">
+            <a class="collapsed accordion-toggle" data-toggle="collapse" data-parent="#kpi-result-accordion" href="as-is#{{$index}}"><b>{{kpi.kpiName}}</b> delivered by <b>{{kpi.moduleName}}</b> <i>(status: {{kpi.status}})</i><span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
+            </a>
+            <a ng-show="!kpi.qualitative" class="btn btn-xs btn-default pull-right" ui-sref="variant-module-input({variantId: variant._id, kpiId: kpi.alias})"><i class="glyphicon glyphicon-signal"></i> Alternative data</a>
+            <button ng-show="kpi.qualitative" class="btn btn-xs btn-default pull-right" ng-click="setScore(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-signal"></i> Set score</button>
+            <button ng-show="!kpi.loading && !kpi.qualitative" class="btn btn-xs btn-default pull-right" ng-click="calculateKpi(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-cloud-upload"></i> Calculate</button>
+            <button ng-show="kpi.loading && !kpi.qualitative" class="btn btn-xs btn-danger pull-right" ng-click="stopCalculation(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-cloud-upload"></i> Stop</button>
+            
+          </h4>
+          <kpi-value-output kpi="kpi"></kpi-value-output>
+        </div>
+        <div id="{{$index}}" class="panel-collapse collapse" role="tabpanel">
+          <div class="panel-body" style="position:relative">
+            <kpi-output outputs="kpi.outputs" inputs="kpi.inputs"></kpi-output>
+          </div>
+        </div>
+    </div>
+</div>  
+<div class="modal-footer">
+    <a class="btn btn-sm btn-warning" ng-click="cancel()">Cancel</a>
+    <a id="save-kpi-config" class="btn btn-primary btn-sm" ng-click="ok()">Ok</a>
+</div>   -->
