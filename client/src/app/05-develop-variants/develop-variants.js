@@ -1,6 +1,6 @@
 angular.module( 'idss-dashboard.develop-variants', [
-  'idss-dashboard.develop-variants.use-alternatives',
-  'idss-dashboard.develop-variants.variant-overview'
+  'idss-dashboard.develop-variants.variant-input',
+  'idss-dashboard.develop-variants.add-variant'
 ])
 
 .config(['$stateProvider', function config( $stateProvider ) {
@@ -18,66 +18,53 @@ angular.module( 'idss-dashboard.develop-variants', [
     },
     data:{ 
       pageTitle: 'Develop variants',
-      authorizedRoles: ['facilitator']
+      authorizedRoles: ['Facilitator']
+    },
+    resolve:{
+      variants: ['VariantService', function(VariantService) {
+        var v = VariantService.getVariants();
+        if(v) {
+          return v;
+        } else {
+          return VariantService.loadVariants();
+        }
+      }]
     }
   });
 }])
 
-.controller( 'DevelopVariantsController', ['$scope', 'ProcessService', 'ContextService', '$modal', '$state', function DevelopVariantsController( $scope, ProcessService, ContextService, $modal, $state ) {
+.controller( 'DevelopVariantsController', ['$scope', 'ProcessService', 'ContextService', '$modal', '$state', 'variants', 'VariantService', function DevelopVariantsController( $scope, ProcessService, ContextService, $modal, $state, variants, VariantService ) {
 
-  $scope.currentProcess = ProcessService.getCurrentProcess();
-  $scope.selectedAlternative = null;
-  $scope.selectedContext = null;
-
-  $scope.moduleList = [];
-  console.log($scope.currentProcess);
-  _.each($scope.currentProcess.kpiList, function(kpi) {
-    if(kpi.selectedModule) {
-      $scope.moduleList.push(
-        kpi.selectedModule
-      );
-    }
-  });
-
-  ContextService.getContextVariables($scope.currentProcess).then(function(contexts) {
-    console.log(contexts);
-    $scope.selectableContextVariables = contexts;
-  });
-
-  $scope.useAlternative = function(module) {
-
-    var alternativeModal = $modal.open({
-      templateUrl: '05-develop-variants/use-alternatives.tpl.html',
-      controller: 'UseAlternativeCtrl',
-      resolve: {
-        module: function() {
-          return module;
-        }
-      }
-    });
-
-    alternativeModal.result.then(function (alternativeModule) {
-      $scope.selectedAlternative = alternativeModule.selectedAlternative;
-    }, function () {
-      console.log('Modal dismissed at: ' + new Date());
-    });
-
-  };
-
-  $scope.selectContext = function(context) {
-    $scope.selectedContext = context;
-  };
+  $scope.variants = variants;
+  var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
 
   $scope.addVariant = function() {
-    ProcessService.addVariant($scope.selectedAlternative, $scope.selectedContext);
-    $state.transitionTo('variant-overview');
+    var variant = {
+        name: 'Title',
+        type: 'variant',
+        description: 'Description',
+        kpiList: []
+    };
+
+    var variantModal = $modal.open({
+        templateUrl: '05-develop-variants/add-variant.tpl.html',
+        controller: 'AddVariantController',
+        resolve: {
+          variant: function() {
+            return variant;
+          }
+        }
+    });
+
+    variantModal.result.then(function (configuredVariant) {
+      VariantService.addOrRemoveKpis(asIsVariant, configuredVariant);
+      VariantService.createVariant(configuredVariant).then(function(createdVariant) {
+        $scope.variants.push(createdVariant);
+      });
+    }, function () {
+        console.log('Modal dismissed at: ' + new Date());
+    });
   };
-  
-  // develop variants, the modules will provide alternatives, or in worst case only a new set of input data  
-
-  // select alternatives, provide input for the modules and connect this alternative to a context
-
-  // this creates a variant and a new calculation
 
 }]);
 

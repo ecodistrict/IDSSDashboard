@@ -1,6 +1,6 @@
 angular.module('idss-dashboard')
 
-.factory('VariantService', ['$http', 'NotificationService', 'ProcessService', 'ModuleService', 'socket', function ($http, NotificationService, ProcessService, ModuleService, socket) {
+.factory('VariantService', ['$http', 'NotificationService', 'ProcessService', 'ModuleService', 'socket', 'KpiService', function ($http, NotificationService, ProcessService, ModuleService, socket, KpiService) {
 
     var variants = [];
 
@@ -134,6 +134,7 @@ angular.module('idss-dashboard')
         });
         // these are the kpi settings changes 
         kpi.inputSpecification = kpiToUpdate.inputSpecification;
+        kpi.manual = kpiToUpdate.manual;
         console.log(kpi);
         // if the selected module is changed delete all module data in variant
         // TODO: NOTIFY USER!!! 
@@ -209,6 +210,32 @@ angular.module('idss-dashboard')
             });  
     };
 
+    var addOrRemoveKpis = function(asIsVariant, otherVariant) {
+        // KPIs are added or removed
+        _.each(asIsVariant.kpiList, function(asIsKpi) {
+            var found = _.find(otherVariant.kpiList, function(toBeKpi) {return asIsKpi.alias === toBeKpi.alias;});
+            var newKpi;
+            if(found) {
+                found.keep = true;
+            } else {
+                // add the new kpi that was not added to this variant
+                newKpi = angular.copy(asIsKpi);
+                newKpi.keep = true;
+                if(otherVariant.type === 'to-be') {
+                    // to be requires another kind of input
+                    KpiService.generateToBeInput(asIsKpi, newKpi);
+                }
+                otherVariant.kpiList.push(newKpi);
+            }
+        });
+        // remove kpis that has been removed in as is
+        for(var i = otherVariant.kpiList.length-1; i >= 0; i--) {
+            if(!otherVariant.kpiList[i].keep) {
+                otherVariant.kpiList[i].splice(1, i);
+            }
+        }
+    };
+
     return {
         loadVariants: loadVariants,
         createVariant: createVariant,
@@ -217,6 +244,7 @@ angular.module('idss-dashboard')
         saveVariant: saveVariant,
         addKpi: addKpi,
         updateKpi: updateKpi,
-        removeKpi: removeKpi
+        removeKpi: removeKpi,
+        addOrRemoveKpis: addOrRemoveKpis
     };
 }]);

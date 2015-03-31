@@ -1,6 +1,4 @@
-angular.module( 'idss-dashboard.to-be', [
-  'idss-dashboard.to-be.ambitions-kpi'
-])
+angular.module( 'idss-dashboard.to-be', [])
 
 .config(['$stateProvider', function config( $stateProvider ) {
   $stateProvider.state( 'to-be', {
@@ -67,30 +65,14 @@ angular.module( 'idss-dashboard.to-be', [
                 KpiService.generateToBeInput(asIsKpi, toBeKpi);
             });
             VariantService.createVariant(toBeVariant).then(function(newVariant) {
-                initOutputs(newVariant);
+              initOutputs(newVariant);
             });
         } else if(asIsVariant.kpiList.length !== toBeVariant.kpiList.length) {
-            // KPIs are added or removed
-            _.each(asIsVariant.kpiList, function(asIsKpi) {
-                var found = _.find(toBeVariant.kpiList, function(toBeKpi) {return asIsKpi.alias === toBeKpi.alias;});
-                var toBeKpi;
-                if(found) {
-                    found.keep = true;
-                } else {
-                    // add the new kpi that was not added to this variant
-                    toBeKpi = angular.copy(asIsKpi);
-                    toBeKpi.keep = true;
-                    KpiService.generateToBeInput(asIsKpi, toBeKpi);
-                    toBeVariant.kpiList.push(toBeKpi);
-                }
+            VariantService.addOrRemoveKpis();
+            VariantService.saveVariant(toBeVariant).then(function(savedVariant) {
+              initOutputs(savedVariant);
             });
-            // remove kpis that has been removed in as is
-            for(var i = toBeVariant.kpiList.length-1; i >= 0; i--) {
-                if(!toBeVariant.kpiList[i].keep) {
-                    toBeVariant.kpiList[i].splice(1, i);
-                }
-            }
-            VariantService.saveVariant(toBeVariant);
+
         } else {
             initOutputs(toBeVariant);
         }

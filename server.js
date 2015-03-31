@@ -229,9 +229,9 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
             var requestObj = {
               "type": "request",
               "method": method,
-              "moduleId": module.moduleId,
-              "variantId": module.variantId,
-              "kpiId": module.kpiId,
+              "moduleId": moduleInput.moduleId,
+              "variantId": moduleInput.variantId,
+              "kpiId": moduleInput.kpiId,
               "inputs": moduleInput.inputs
             };
             sendModuleRequest(requestObj);

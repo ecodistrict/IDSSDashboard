@@ -2,43 +2,19 @@
     <div class="row">
         <form role="form">
           <div class="form-group">
-            <button ng-show="selectedContext && selectedAlternative" ng-click="addVariant()" class="pull-right btn btn-success">Create variant <span class="glyphicon glyphicon-check"></span></button>
-            <button ng-show="!selectedContext || !selectedAlternative" class="pull-right btn btn-default">New variant</button>
-            
-            <button ng-show="selectedContext" class="pull-right btn btn-info">{{selectedContext.name}}</button>
-            <button ng-show="!selectedContext" class="pull-right btn btn-default">Select a context</button>
-
-            <button ng-show="selectedAlternative" class="pull-right btn btn-warning">{{selectedAlternative.name}}</button>
-            <button ng-show="!selectedAlternative" class="pull-right btn btn-default">Select an alternative</button>
+            <button ng-click="addVariant()" class="pull-right btn btn-success">Create new alternative <span class="glyphicon glyphicon-plus"></span></button>
           </div>
         </form>
     </div>
     <div class="row">
-        <div class="col-xs-6">
-          <h2>Select module alternatives</h2>
-          <div ng-repeat="module in moduleList" class="panel panel-primary module-item" ng-click="useAlternative(module)">
-            <div class="panel-heading">
-              <h3 class="panel-title">{{module.name}} <span ng-hide="moduleIndataIsOk(module)" class="glyphicon glyphicon-exclamation-sign"></span></h3>
-            </div>
-            <div class="panel-body">
-              Alternatives:
-              <div ng-repeat="alternative in module.alternatives">
-                {{alternative.name}}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-xs-6">
-            <h2>Select context</h2>
-            <div ng-repeat="variable in selectableContextVariables" class="panel panel-info context-item" ng-click="selectContext(variable)">
+        <div class="col-xs-12">
+          <h2>Alternatives</h2>
+            <div ng-repeat="variant in variants" id="{{variant._id}}" class="panel panel-success kpi-item" ui-sref="variant-input({variantId: variant._id})">
               <div class="panel-heading">
-                <h3 class="panel-title">{{variable.name}}</h3>
+                <h3 class="panel-title">{{variant.name}}</h3>
               </div>
               <div class="panel-body">
-                <div ng-show="variable.requiredBy.length">
-                    Required by: 
-                    <div ng-repeat="label in variable.requiredBy">{{label}}</div>
-                </div>
+                {{variant.description}}
               </div>
             </div>
         </div>
@@ -46,7 +22,8 @@
     <div class="row">
         <form role="form">
           <div class="form-group">
-            <button class="pull-right btn btn-primary" ui-sref="collect-data">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
+            <button class="btn btn-primary pull-left" ui-sref="to-be"><span class="glyphicon glyphicon-chevron-left"></span> Previous</button>
+            <button class="pull-right btn btn-primary" ui-sref="assess-variants">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
           </div>
         </form>
     </div>
