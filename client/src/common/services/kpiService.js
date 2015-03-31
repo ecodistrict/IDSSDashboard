@@ -156,6 +156,33 @@ angular.module('idss-dashboard')
             };
         }
     };
+
+    var generateManualInput = function(asIsKpi, moduleKpi) {
+        var bad;
+        var excellent;
+        // qualitative can be copied straight from the reference on server when saving
+        if(!moduleKpi.qualitative) {
+            bad = getBadKpiValue(asIsKpi.inputSpecification);
+            excellent = getExcellentKpiValue(asIsKpi.inputSpecification);
+            moduleKpi.inputSpecification = {
+                "kpiValueInputGroup": {
+                    type: 'inputGroup',
+                    order: 0,
+                    label: 'Select manual result for this module',
+                    info: 'Select a value between ' +  bad + asIsKpi.unit + '(bad) and ' + excellent + asIsKpi.unit + ' (excellent)',
+                    inputs: {
+                        "kpiValue": {
+                            type: 'number',
+                            label: 'Value in ' + asIsKpi.unit,
+                            min: bad < excellent ? bad : excellent,
+                            unit: asIsKpi.unit,
+                            max: excellent > bad ? excellent : bad
+                        }
+                    }
+                }
+            };
+        }
+    };
    
     return {
         loadKpis: loadKpis,
@@ -165,6 +192,7 @@ angular.module('idss-dashboard')
         getExcellentKpiValue: getExcellentKpiValue,
         generateQualitativeKpiOutput: generateQualitativeKpiOutput,
         generateQuantitativeKpiOutput: generateQuantitativeKpiOutput,
-        generateToBeInput: generateToBeInput
+        generateToBeInput: generateToBeInput,
+        generateManualInput: generateManualInput
     };
 }]);

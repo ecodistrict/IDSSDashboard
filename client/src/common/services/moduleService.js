@@ -58,9 +58,10 @@ angular.module('idss-dashboard')
         }
     };
 
-    var getModuleInput = function(variantId, moduleId, kpiId) {
+    var getModuleInput = function(variantId, moduleId, kpiId, asIsVariantId) {
+
         return $http
-            .get('variants/moduleinput/' + variantId + '/' + moduleId + '/' + kpiId)
+            .get('variants/moduleinput/' + variantId + '/' + moduleId + '/' + kpiId + '/' + asIsVariantId)
             .error(function(data, status) {
                 var label = 'Error when loading inputs';
                 NotificationService.createErrorFlash(label);

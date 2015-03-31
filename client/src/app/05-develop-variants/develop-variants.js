@@ -35,8 +35,8 @@ angular.module( 'idss-dashboard.develop-variants', [
 
 .controller( 'DevelopVariantsController', ['$scope', 'ProcessService', 'ContextService', '$modal', '$state', 'variants', 'VariantService', function DevelopVariantsController( $scope, ProcessService, ContextService, $modal, $state, variants, VariantService ) {
 
-  $scope.variants = variants;
   var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
+  $scope.variants = variants;
 
   $scope.addVariant = function() {
     var variant = {
@@ -63,6 +63,13 @@ angular.module( 'idss-dashboard.develop-variants', [
       });
     }, function () {
         console.log('Modal dismissed at: ' + new Date());
+    });
+  };
+
+  $scope.deleteVariant = function(variant) {
+    VariantService.deleteVariant(variant).then(function(deletedVariant) {
+      var index = _.indexOf(variants, variant);
+      variants.splice(1, index);
     });
   };
 

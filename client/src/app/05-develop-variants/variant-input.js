@@ -41,11 +41,13 @@ angular.module( 'idss-dashboard.develop-variants.variant-input', [])
 
   var currentVariant = _.find(variants, function(v) {return v._id === variantId;});
   var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
+  $scope.currentVariantName = currentVariant.name;
   $scope.kpiMapOutputs = [];
 
   var initOutputs = function(variant) {
     _.each(variant.kpiList, function(kpi) {
       var asIsKpi = _.find(asIsVariant.kpiList, function(k) { return k.alias === kpi.alias;});
+      kpi.asIsKpi = asIsKpi;
       kpi.kpiBad = KpiService.getBadKpiValue(asIsKpi.inputSpecification);
       kpi.kpiExcellent = KpiService.getExcellentKpiValue(asIsKpi.inputSpecification);
       kpi.kpiUnit = kpi.unit || 'score';
@@ -139,7 +141,6 @@ angular.module( 'idss-dashboard.develop-variants.variant-input', [])
       moduleId: kpi.moduleId,
       status: kpi.status
     });
-
   };
 
   // listen on any model that was started, for updating loading status
@@ -192,11 +193,11 @@ angular.module( 'idss-dashboard.develop-variants.variant-input', [])
 
   });
 
-  $scope.stopCalculation = function(kpiOutput) {
-    kpiOutput.status = 'unprocessed';
-    kpiOutput.loading = false;
+  $scope.stopCalculation = function(kpi) {
+    kpi.status = 'unprocessed';
+    kpi.loading = false;
 
-    ModuleService.updateModuleOutputStatus(asIsVariant._id, kpiOutput.moduleId, kpiOutput.alias, kpiOutput.status);
+    ModuleService.updateModuleOutputStatus(currentVariant._id, kpi.moduleId, kpi.alias, kpi.status);
 
     // send message to model?
   };
@@ -209,6 +210,7 @@ angular.module( 'idss-dashboard.develop-variants.variant-input', [])
       templateUrl = 'qualitative-kpi-input/qualitative-kpi-input.tpl.html';
       controller = 'QualitativeKpiInputCtrl';
     } else {
+      KpiService.generateManualInput(kpi.asIsKpi, kpi);
       templateUrl = 'quantitative-kpi-input/quantitative-kpi-input.tpl.html';
       controller = 'QuantitativeKpiInputCtrl';
     }
@@ -225,6 +227,8 @@ angular.module( 'idss-dashboard.develop-variants.variant-input', [])
 
       kpiModal.result.then(function (configuredKpi) {
         configuredKpi.manual = true;
+        configuredKpi.status = 'success';
+        configuredKpi.loading = false;
         // update kpi in variant
         VariantService.updateKpi(currentVariant, configuredKpi);
         // trigger update to kpi in scope
@@ -235,6 +239,30 @@ angular.module( 'idss-dashboard.develop-variants.variant-input', [])
 
     };
 
+  $scope.setModuleInput = function(kpi) {
+    
+    moduleInputModal = $modal.open({
+        templateUrl: '02-collect-data/module-input.tpl.html',
+        controller: 'ModuleInputController',
+        resolve: {
+          kpi: function() {
+            return kpi;
+          },
+          currentVariant: function() {
+            return currentVariant;
+          }
+        }
+      });
+
+      moduleInputModal.result.then(function (moduleInput) {
+
+        ModuleService.saveModuleInput(moduleInput.variantId, moduleInput);
+                
+      }, function () {
+        console.log('Modal dismissed at: ' + new Date());
+      });
+
+    };
 
 }]);
 

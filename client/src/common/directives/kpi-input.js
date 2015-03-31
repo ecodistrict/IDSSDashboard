@@ -45,18 +45,20 @@ angular.module('idss-dashboard').directive('kpiInput', ['$compile', 'ModuleServi
             };
 
             scope.saveInput = function(input) {
-                console.log(scope);
-                console.log(input);
-                var key = input.key;
-                var inputWrapper = {};
-                inputWrapper[key] = input;
-                if(scope.moduleid && scope.kpialias && scope.inputs) {
-                    ModuleService.saveModuleInput(scope.variantid, {
-                        moduleId: scope.moduleid, 
-                        kpiId: scope.kpialias,
-                        input: inputWrapper
-                    });
-                }
+                // TODO: delete this if not necessary, uncommented on trial
+
+                // console.log(scope);
+                // console.log(input);
+                // var key = input.key;
+                // var inputWrapper = {};
+                // inputWrapper[key] = input;
+                // if(scope.moduleid && scope.kpialias && scope.inputs) {
+                //     ModuleService.saveModuleInput(scope.variantid, {
+                //         moduleId: scope.moduleid, 
+                //         kpiId: scope.kpialias,
+                //         input: inputWrapper
+                //     });
+                // }
             };
 
             // since it's not easy to store a radio input on the form
