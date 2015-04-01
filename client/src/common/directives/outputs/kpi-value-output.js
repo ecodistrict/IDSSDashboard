@@ -7,6 +7,9 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
         },
         link: function ( scope, element, attrs ) {
 
+            var bad;
+            var excellent;
+
             var render = function(output) {
 
                 console.log(output);
@@ -14,9 +17,38 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
                 scope.outputId = 'm_' + scope.kpi.alias + '_aggregated_kpi'; // generate a unique id
                 scope.noDataMessage = "No overall KPI is given for this result";
-                scope.kpiValue = output.value;
+                bad = scope.kpi.bad;
+                excellent = scope.kpi.excellent;
 
-                var template = ['<div id="{{outputId}}">Value: {{kpiValue}}, Bad: {{kpi.bad}}, Excellent: {{kpi.excellent}}</div>'].join('');
+                console.log(output);
+
+                var kpiValues = {
+                    "title": "KPI value in blue",
+                    "subtitle": "Bad and excellent in grey",
+                    "measures": [Math.round(output.value)],
+                    "markers": [0]
+                };
+
+                if(bad && excellent) {
+                    kpiValues.ranges = [Math.min(bad, excellent), Math.max(bad, excellent)];
+                }
+
+                scope.kpiValue = kpiValues;
+                //scope.kpiValue = output.value;
+
+                //var template = ['<div id="{{outputId}}">Value: {{kpiValue}}, Bad: {{kpi.bad}}, Excellent: {{kpi.excellent}}</div>'].join('');
+                var template = ['<nvd3-bullet-chart ',
+                            'data="kpiValue" ',
+                            'id="{{outputId}}" ',
+                            'noData="{{noDataMessage}}" ',
+                            //'interactive="true" ',
+                            //'tooltips="true" ',
+                            //'tooltipcontent="tooltipFunction()" ',
+                            'margin="{left:140,top:30,bottom:30,right:10}" ',
+                            'width="600" ',
+                            'height="100"> ',
+                    '<svg></svg>',
+                '</nvd3-bullet-chart>'].join('');
 
                 element.html('').append( $compile( template )( scope ) );
 

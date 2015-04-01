@@ -36,7 +36,7 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
   //$scope.currentProcess = ProcessService.getCurrentProcess();
   $scope.kpiList = [];
 
-  KpiService.loadKpis().then(function(kpiList) {
+  KpiService.loadKpis().then(function(kpiList) {  
     $scope.kpiList = kpiList;
   });
 
@@ -117,18 +117,14 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
   // TODO: this is an indicator whether the KPI is ok or not 
   $scope.kpiIsConfigured = function(kpi) {
     var isConfigured = true;
-    if(!kpi.selectedModule || kpi.selectedModule.id === null) {
-      isConfigured = false;
-    }
-    _.each(kpi.inputs, function(input) {
-      if(input.id === 'kpi-scores') {
-        _.each(input.inputs, function(score) {
-          if(!score.value && score.value !== 0) {
-            isConfigured = false;
-          }
-        });
+    if(kpi.qualitative) {
+      
+    } else {
+      if(!KpiService.getBadKpiValue(kpi.settings) || !KpiService.getExcellentKpiValue(kpi.settings)) {
+        isConfigured = false;
       }
-    });
+    }
+    
     return isConfigured;
   };
 
