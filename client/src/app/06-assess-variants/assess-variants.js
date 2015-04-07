@@ -30,11 +30,13 @@ angular.module( 'idss-dashboard.assess-variants', [])
   });
 }])
 
-.controller( 'AssessVariantsController', ['$scope', 'LoginService', 'variants', 'ModuleService', 'socket', function AssessVariantsController( $scope, LoginService, variants, ModuleService, socket ) {
+.controller( 'AssessVariantsController', ['$scope', 'LoginService', 'variants', 'ModuleService', 'socket', 'KpiService', function AssessVariantsController( $scope, LoginService, variants, ModuleService, socket, KpiService ) {
 
   var currentUser;
+  var mcmsmv;
   LoginService.getCurrentUser().then(function(user) {
     currentUser = user;
+    mcmsmv = createMCMSMVData(variants);
   });
 
   $scope.sendData = {
@@ -42,9 +44,69 @@ angular.module( 'idss-dashboard.assess-variants', [])
     status: 'unprocessed'
   };
 
+  var createMCMSMVData = function(variantData) {
+
+    var stakeholderData = {
+      userId: currentUser._id,
+      variants: [],
+      kpiList: []
+    };
+
+    var mcmsmvData = {
+      stakeholders: [] 
+    };
+
+    var getKpiResult = function(kpi, cb) {
+      KpiService.getResultKpiValue(kpi, function(value) {
+        cb(value);
+        console.log('kpi value: ', value);
+      });
+    };
+
+    _.each(variantData, function(v) {
+      var kpiResults = [];
+      _.each(v.kpiList, function(k) {
+        // if as is variant, add settings to kpilist
+        var bad = 0, excellent = 10;
+        if(v.type === 'as-is') {
+          if(!k.qualitative) {
+            bad = k.settings.kpiScores.inputs.kpiScoreBad.value;
+            excellent = k.settings.kpiScores.inputs.kpiScoreExcellent.value;
+          }
+          console.log(k);
+          stakeholderData.kpiList.push({
+            kpiName: k.name,
+            kpiId: k.alias,
+            weight: k.settings.priorityLabel.inputs.priorityValue.value,
+            bad: bad,
+            excellent: excellent 
+          });
+        }
+        getKpiResult(k, function(value) {
+          kpiResults.push({
+            kpiValue: value,
+            kpiId: k.alias
+          });
+        });
+      });
+      stakeholderData.variants.push({
+        variantId: v._id,
+        type: v.type,
+        kpiList: kpiResults
+      });
+    });
+
+    mcmsmvData.stakeholders.push(stakeholderData);
+
+    return mcmsmvData;
+
+
+  };
+
   $scope.sendToMCMSMV = function() {
     var modules = ModuleService.getModulesFromKpiId('mcmsmv');
-    console.log(variants);
+
+    console.log(mcmsmv);
     if(modules.length > 0) {
 
       $scope.sendData.status = 'sending data';
@@ -55,9 +117,9 @@ angular.module( 'idss-dashboard.assess-variants', [])
         kpiId: 'mcmsmv',
         userId: currentUser._id
       });
-      $scope.msg = "";
+      $scope.msg = mcmsmv;
     } else {
-      $scope.msg = "Module not found";
+      $scope.msg = mcmsmv;
     }
   };
 

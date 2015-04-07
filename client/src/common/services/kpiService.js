@@ -87,6 +87,22 @@ angular.module('idss-dashboard')
 
     };
 
+    var getResultKpiValue = function(kpi, cb) {
+        if(kpi.qualitative) {
+            if(!kpi.outputs) {
+                kpi.outputs = generateQualitativeKpiOutput(kpi.inputSpecification);
+            }
+            if(kpi.outputs && kpi.outputs.length > 0) {
+                cb(kpi.outputs[0].value);
+            }
+        } else {
+            if(!kpi.outputs) {
+                console.log('quantitative outputs not exist');
+                console.log(kpi);
+            }
+        }
+    };
+
     var generateSettings = function(kpi) {
         var existingPrio;
         if(kpi.settings.priorityLabel) {
@@ -381,6 +397,7 @@ angular.module('idss-dashboard')
         deleteKpi: deleteKpi,
         getBadKpiValue: getBadKpiValue,
         getExcellentKpiValue: getExcellentKpiValue,
+        getResultKpiValue: getResultKpiValue,
         generateQualitativeKpiOutput: generateQualitativeKpiOutput,
         generateQuantitativeKpiOutput: generateQuantitativeKpiOutput,
         generateQualitativeKpiInput: generateQualitativeKpiInput,
