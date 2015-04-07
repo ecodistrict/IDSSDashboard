@@ -71,7 +71,7 @@ angular.module( 'idss-dashboard.develop-variants.variant-input', [])
     kpi.status = 'initializing';
     kpi.loading = true;
 
-    socket.emit('startModel', {
+    socket.emit('startModule', {
       variantId: currentVariant._id, 
       asIsVariantId: asIsVariant._id,
       kpiId: kpi.alias, // modules use kpiId instead of alias
@@ -81,7 +81,7 @@ angular.module( 'idss-dashboard.develop-variants.variant-input', [])
   };
 
   // listen on any model that was started, for updating loading status
-  socket.on('startModel', function(module) {
+  socket.on('startModule', function(module) {
       console.log('start model', module);
       
       var found = _.find(currentVariant.kpiList, function(kpi) {
@@ -147,7 +147,6 @@ angular.module( 'idss-dashboard.develop-variants.variant-input', [])
       templateUrl = 'qualitative-kpi-input/qualitative-kpi-input.tpl.html';
       controller = 'QualitativeKpiInputCtrl';
     } else {
-      console.log(asIsVariant, kpi);
       asIsKpi = _.find(asIsVariant.kpiList, function(k) { return k.alias === kpi.alias;});
       KpiService.generateManualInput(asIsKpi, kpi);
       templateUrl = 'quantitative-kpi-input/quantitative-kpi-input.tpl.html';

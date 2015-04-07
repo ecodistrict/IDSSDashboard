@@ -12,7 +12,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
             var render = function(output) {
 
-                console.log(output);
+                //console.log(output);
                 console.log(scope.kpi);
 
                 scope.outputId = 'm_' + scope.kpi.alias + '_aggregated_kpi'; // generate a unique id
@@ -20,7 +20,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                 bad = scope.kpi.bad;
                 excellent = scope.kpi.excellent;
 
-                console.log(output);
+                //console.log(output);
 
                 var kpiValues = {
                     "title": "KPI value in blue",
@@ -29,11 +29,12 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                     "markers": [0]
                 };
 
-                if(bad && excellent) {
+                if((bad || bad === 0) && (excellent || excellent === 0)) {
                     kpiValues.ranges = [Math.min(bad, excellent), Math.max(bad, excellent)];
                 }
 
                 scope.kpiValue = kpiValues;
+                console.log(kpiValues);
                 //scope.kpiValue = output.value;
 
                 //var template = ['<div id="{{outputId}}">Value: {{kpiValue}}, Bad: {{kpi.bad}}, Excellent: {{kpi.excellent}}</div>'].join('');

@@ -150,7 +150,7 @@ angular.module('idss-dashboard')
                 ModuleService.extendModuleData(kpi.selectedModule, true);
                 // send request for getting inputs from module and save that in dashboard database
                 kpi.variantId = variant._id;
-                socket.emit('selectModel', kpi);
+                socket.emit('selectModule', kpi);
             }
         }
         saveVariant(variant).then(function(savedVariant) {

@@ -105,7 +105,7 @@ angular.module('idss-dashboard')
     var getModuleOutput = function(variantId, moduleId, kpiId) {
 
         // first check cache
-        // TODO: when a new startModel returns a new output to server, let client know to clear the cache
+        // TODO: when a new startModule returns a new output to server, let client know to clear the cache
         // var deferred = $q.defer();
         // var cacheKey = variantId + moduleId + kpiId;
 
