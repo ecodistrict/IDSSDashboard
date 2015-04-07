@@ -151,6 +151,11 @@ angular.module('idss-dashboard')
                 // send request for getting inputs from module and save that in dashboard database
                 kpi.variantId = variant._id;
                 socket.emit('selectModule', kpi);
+            } else if(!kpi.selectedModule.id) {
+                // selected module was removed
+                kpi.selectedModule = {
+                    id: null
+                };
             }
         }
         saveVariant(variant).then(function(savedVariant) {
