@@ -132,16 +132,17 @@ app.all('/*', function(req, res) {
 });
 
 var imbConnection = new imb.TIMBConnection();
-imbConnection.connect('imb.lohman-solutions.com', 4000, 1234, 'dashboard', 'ecodistrict');
+imbConnection.connect('vps17642.public.cloudvps.com', 4000, 1234, 'dashboard', 'ecodistrict');
+//imbConnection.connect('192.168.23.1', 4000, 1234, 'dashboard', 'ecodistrict');
 
 var SUBSCRIBE_EVENT;
 var PUBLISH_EVENT;
 if(process.env.NODE_ENV === 'production') {
   SUBSCRIBE_EVENT = 'dashboard';
-  PUBLISH_EVENT = 'models';
+  PUBLISH_EVENT = 'modules';
 } else {
   SUBSCRIBE_EVENT = 'dashboardTEST';
-  PUBLISH_EVENT = 'modelsTEST';
+  PUBLISH_EVENT = 'modulesTEST';
 }
 var imbFrameworkSocket = imbConnection.subscribe(SUBSCRIBE_EVENT, true);
 
