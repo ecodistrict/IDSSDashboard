@@ -195,14 +195,14 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     sendModuleRequest(requestObj);
   });
 
-  dashboardWebClientSocket.on('selectModel', function(kpi) {
-    var method = 'selectModel';
+  dashboardWebClientSocket.on('selectModule', function(kpi) {
+    var method = 'selectModule';
     console.log('From dashboard client: ' + method + ', data: ' + kpi.selectedModule.id);
     if(kpi.selectedModule && kpi.selectedModule.id) {
       if(kpi.variantId) {
         var requestObj = { 
           "type": "request",
-          "method": "selectModel",
+          "method": "selectModule",
           "variantId": kpi.variantId,
           "moduleId": kpi.selectedModule.id,
           "kpiId": kpi.alias
@@ -216,7 +216,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     }
   });
 
-  dashboardWebClientSocket.on('startModel', function(module) {
+  dashboardWebClientSocket.on('startModule', function(module) {
     variantRepository.getModuleInputFramework(module, userRepository, processRepository, function(err, moduleInput) {
       if(err) {
         dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
@@ -225,7 +225,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
           if(err) {
             dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
           } else {
-            var method = 'startModel';
+            var method = 'startModule';
             console.log('From dashboard client: ' + method + ' data: ' + module);
             var requestObj = {
               "type": "request",
@@ -266,7 +266,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     console.log('From framework: ' + message.method);
     if(message.method === 'getModules') {
       dashboardWebClientSocket.emit(message.method, message);
-    } else if(message.method === 'selectModel') {
+    } else if(message.method === 'selectModule') {
       dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
       variantRepository.addModule(message, function(err, model) {
         if(err) {
@@ -279,7 +279,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
           //dashboardWebClientSocket.emit(message.method, model);
         }
       });
-    } else if(message.method === 'startModel') {
+    } else if(message.method === 'startModule') {
       dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
       variantRepository.saveModuleOutputStatus(message, function(err, success) {
         if(err) {
