@@ -61,11 +61,11 @@ angular.module( 'idss-dashboard', [
         } 
       });
 
-      socket.emit('getModels', {kpiList: []});
+      socket.emit('getModules', {kpiList: []});
 
       socket.emit('privateRoom', {userId: user._id});
     
-      socket.on('getModels', function(moduleData) {
+      socket.on('getModules', function(moduleData) {
         console.log(moduleData);
         ModuleService.addModule(moduleData);
       });

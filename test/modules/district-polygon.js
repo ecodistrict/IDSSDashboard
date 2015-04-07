@@ -33,7 +33,7 @@ var sendDashboard = function(requestObj) {
 
 // getModel response
 var moduleDefinition = {
-  "method": "getModels",
+  "method": "getModules",
   "type": "response",
   "name": "District polygon test module",
   "id": moduleId,
@@ -77,7 +77,7 @@ messageSub.onNormalEvent = function(eventDefinition, eventPayload) {
   var length = eventPayload.readInt32LE(offset);
   offset += 4;
   var message = JSON.parse(eventPayload.toString('utf8', offset, offset + length));
-  if(message.method === 'getModels') {
+  if(message.method === 'getModules') {
     sendDashboard(moduleDefinition);
   } else if(message.method === 'selectModel') {
     if(message.moduleId === moduleId) {

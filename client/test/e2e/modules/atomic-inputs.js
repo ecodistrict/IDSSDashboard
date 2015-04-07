@@ -28,7 +28,7 @@ var sendDashboard = function(requestObj) {
 
 // getModel response
 var moduleDefinition = {
-  "method": "getModels",
+  "method": "getModules",
   "type": "response",
   "name": "Atomic inputs",
   "moduleId": moduleId,
@@ -120,8 +120,8 @@ messageSub.onNormalEvent = function(eventDefinition, eventPayload) {
   var length = eventPayload.readInt32LE(offset);
   offset += 4;
   var message = JSON.parse(eventPayload.toString('utf8', offset, offset + length));
-  if(message.method === 'getModels') {
-    console.log('getModels');
+  if(message.method === 'getModules') {
+    console.log('getModules');
     sendDashboard(moduleDefinition);
   } else if(message.method === 'selectModel') {
     console.log('selectModel');

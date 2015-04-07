@@ -181,9 +181,9 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
 
   });
 
-  dashboardWebClientSocket.on('getModels', function(kpiList) {
+  dashboardWebClientSocket.on('getModules', function(kpiList) {
     console.log('From dashboard client: ', kpiList);
-    var method = 'getModels';
+    var method = 'getModules';
     var requestObj = {
       "type": "request",
       "method": method,
@@ -263,7 +263,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     var message = eventPayload.toString('utf8', offset, offset + length);
     message = JSON.parse(message);
     console.log('From framework: ' + message.method);
-    if(message.method === 'getModels') {
+    if(message.method === 'getModules') {
       dashboardWebClientSocket.emit(message.method, message);
     } else if(message.method === 'selectModel') {
       dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));

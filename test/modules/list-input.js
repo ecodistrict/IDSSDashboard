@@ -16,7 +16,7 @@ var moduleId = "list-input";
 var kpi = "list";
 
 var imbConnection = new imb.TIMBConnection();
-imbConnection.connect('imb.lohman-solutions.com', 4000, 1234, 'testModuleListInput', 'ecodistrict');
+imbConnection.connect('vps17642.public.cloudvps.com', 4000, 1234, 'testModuleListInput', 'ecodistrict');
 var messageSub = imbConnection.subscribe('modelsTEST', true);
 
 var sendDashboard = function(requestObj) {
@@ -33,7 +33,7 @@ var sendDashboard = function(requestObj) {
 
 // getModel response
 var moduleDefinition = {
-  "method": "getModels",
+  "method": "getModules",
   "type": "response",
   "name": "List input test module",
   "id": moduleId,
@@ -133,7 +133,7 @@ messageSub.onNormalEvent = function(eventDefinition, eventPayload) {
   offset += 4;
   var message = JSON.parse(eventPayload.toString('utf8', offset, offset + length));
   console.log(message);
-  if(message.method === 'getModels') {
+  if(message.method === 'getModules') {
     sendDashboard(moduleDefinition);
   } else if(message.method === 'selectModel') {
     if(message.moduleId === moduleId) {

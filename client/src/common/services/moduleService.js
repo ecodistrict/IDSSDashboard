@@ -2,7 +2,7 @@ angular.module('idss-dashboard')
 
 .factory('ModuleService', ['$http', 'NotificationService','ProcessService', '$q', function ($http, NotificationService, ProcessService, $q) {
 
-    var modules = []; // this holds all modules from a getModels request
+    var modules = []; // this holds all modules from a getModules request
 
     var moduleOutputs = {}; // this is a cache for module outputs
     /* stores objects like this 
