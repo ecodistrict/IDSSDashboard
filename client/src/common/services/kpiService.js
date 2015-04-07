@@ -377,7 +377,7 @@ angular.module('idss-dashboard')
                 } else {
                   kpi.moduleName = kpi.selectedModule.name || 'Manual input (no module selected)';
                   // try to set any manual given values, null if not found
-                  if(kpi.inputSpecification.kpiValueInputGroup) {
+                  if(kpi.inputSpecification && kpi.inputSpecification.kpiValueInputGroup) {
                       kpi.outputs = generateQuantitativeKpiOutput(kpi.inputSpecification.kpiValueInputGroup.inputs.kpiValue);
                   }
                   kpi.status = kpi.outputs ? 'success' : 'unprocessed';
