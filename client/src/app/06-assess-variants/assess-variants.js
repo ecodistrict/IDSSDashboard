@@ -76,6 +76,7 @@ angular.module( 'idss-dashboard.assess-variants', [])
           console.log(k);
           stakeholderData.kpiList.push({
             kpiName: k.name,
+            kpiDescription: k.description,
             kpiId: k.alias,
             weight: k.settings.priorityLabel.inputs.priorityValue.value,
             bad: bad,
@@ -91,6 +92,8 @@ angular.module( 'idss-dashboard.assess-variants', [])
       });
       stakeholderData.variants.push({
         variantId: v._id,
+        description: v.description,
+        name: v.name,
         type: v.type,
         kpiList: kpiResults
       });
