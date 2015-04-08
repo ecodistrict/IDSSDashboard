@@ -43,7 +43,7 @@ angular.module('idss-dashboard')
 
     var extendModuleData = function(module, basic) {
         var found = _.find(modules, function(m) {
-            return m.moduleId && (m.moduleId === module.moduleId);
+            return m.moduleId && (m.moduleId === module.id);
         });
         if(found) {
             if(basic) { // only selected module data
