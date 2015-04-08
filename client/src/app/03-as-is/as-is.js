@@ -68,9 +68,9 @@ angular.module( 'idss-dashboard.as-is', [
     });
   };
 
-  // listen on any model that was started, for updating loading status
+  // listen on any module that was started, for updating loading status
   socket.on('startModule', function(module) {
-      console.log('start model', module);
+      console.log('start module', module);
       
       var found = _.find(currentVariant.kpiList, function(kpi) {
         return kpi.moduleId === module.moduleId && kpi.alias === module.kpiId;
@@ -85,8 +85,8 @@ angular.module( 'idss-dashboard.as-is', [
       }
   });
 
-  socket.on('modelResult', function(module) {
-    console.log('model result', module);
+  socket.on('moduleResult', function(module) {
+    console.log('module result', module);
 
     var kpi = _.find(currentVariant.kpiList, function(k) {
       return k.alias === module.kpiId;
@@ -116,7 +116,7 @@ angular.module( 'idss-dashboard.as-is', [
       VariantService.updateKpi(currentVariant, kpi);
 
     } else {
-      console.log('Dashboard recieved model result but couldnt find the kpi');
+      console.log('Dashboard recieved module result but couldnt find the kpi');
     }
 
   });
@@ -127,7 +127,7 @@ angular.module( 'idss-dashboard.as-is', [
 
     ModuleService.updateModuleOutputStatus(currentVariant._id, kpi.moduleId, kpi.alias, kpi.status);
 
-    // send message to model?
+    // send message to module?
   };
 
   $scope.setScore = function(kpi) {
