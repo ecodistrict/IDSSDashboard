@@ -9,7 +9,8 @@ angular.module('idss-dashboard').directive('kpiOutput', ['$compile', '$timeout',
         scope: {
             outputs: '=',
             inputs: '=', 
-            kpiunit: '='
+            kpiunit: '=',
+            kpi: '='// refactor this scope, use KPI
         },
         link: function ( scope, element, attrs ) {
 

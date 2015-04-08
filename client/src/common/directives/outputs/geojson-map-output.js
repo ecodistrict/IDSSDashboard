@@ -157,7 +157,8 @@ angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService'
         restrict: 'E',
         scope: {
             outputs: '=',
-            trig: '='
+            trig: '=',
+            kpi: '='// use this instead, not both ways though
         },
         link: function(scope, element, attrs) {
 

@@ -3,7 +3,7 @@
         
         <h2>Collect Data</h2>
         <div ng-show="!currentVariant.kpiList.length">No KPIs are used in this process, <a ui-sref="manage-kpis">manage KPIs here</a></div>
-        <div ng-repeat="kpi in currentVariant.kpiList" class="panel panel-primary module-item" ng-click="setModuleInput(kpi)">
+        <div ng-repeat="kpi in currentVariant.kpiList" id="{{'collect-data-' + kpi.alias}}" class="panel panel-primary module-item" ng-click="setModuleInput(kpi)">
           <div class="panel-heading">
             <h3 class="panel-title">KPI: {{kpi.name}} <span ng-hide="moduleInputIsOk(kpi.selectedModule)" class="glyphicon glyphicon-exclamation-sign"></span></h3>
           </div>

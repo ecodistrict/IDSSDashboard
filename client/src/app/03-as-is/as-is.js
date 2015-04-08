@@ -40,7 +40,23 @@ angular.module( 'idss-dashboard.as-is', [
   var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
   var currentVariant = asIsVariant;
   $scope.kpiMapOutputs = [];
-  $scope.currentVariant = KpiService.initOutputs(currentVariant, asIsVariant);
+  $scope.currentVariant = KpiService.initOutputs(currentVariant, asIsVariant, $scope.kpiMapOutputs);
+
+  // remove this - send kpi to output directive instead
+  var setKpiDataToOutput = function(outputs, kpi) {
+      _.each(outputs, function(o) {
+        o.alias = kpi.alias;
+        o.kpiName = kpi.name;
+        o.kpiBad = kpi.bad;
+        o.kpiExcellent = kpi.excellent;
+        o.kpiUnit = kpi.unit;
+        o.moduleId = kpi.moduleId;
+        if(o.type === 'geojson') {
+          // TODO: update any existing map output, use id?
+          $scope.kpiMapOutputs.push(o);
+        }
+      });
+  };
 
   $scope.getStatus = function(kpi) {
     if(kpi.status === 'unprocessed') {
@@ -100,19 +116,7 @@ angular.module( 'idss-dashboard.as-is', [
 
       console.log(kpi);
 
-      // TODO: refactor this initOutputs above, bad and excellent is the issue
-      _.each(module.outputs, function(o) {
-        o.alias = kpi.alias;
-        o.kpiName = kpi.name;
-        o.kpiBad = kpi.bad;
-        o.kpiExcellent = kpi.excellent;
-        o.kpiUnit = kpi.unit;
-        o.moduleId = kpi.moduleId;
-        if(o.type === 'geojson') {
-          // TODO: update any existing map output, use id?
-          $scope.kpiMapOutputs.push(o);
-        }
-      });
+      setKpiDataToOutput(module.outputs, kpi);
 
       kpi.outputs = module.outputs;
       // for updating manual property only..

@@ -397,14 +397,15 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
 
                 initGeometryData(newInputValue);
 
-                ModuleService.saveModuleInput(scope.variantid, {
-                    moduleId: scope.moduleid, 
-                    kpiId: scope.kpialias,
-                    inputs: [{
-                        id: scope.input.id, // only id and value are updated on save module input
-                        value: newInputValue
-                    }]
-                });
+                // input is saved when click ok
+                // ModuleService.saveModuleInput(scope.variantid, {
+                //     moduleId: scope.moduleid, 
+                //     kpiId: scope.kpialias,
+                //     inputs: [{
+                //         id: scope.input.id, // only id and value are updated on save module input
+                //         value: newInputValue
+                //     }]
+                // });
 
             };
 
@@ -422,7 +423,7 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
                     '<div class="panel-footer clearfix">' +
                         '<div class="pull-right">' +
                             '<a ng-click="unselectAllFeatures()" class="btn btn-danger">Cancel</a>' +
-                            '<a ng-click="saveProperties()" class="btn btn-succes">Save</a>' +
+                            '<a ng-click="saveProperties()" class="btn btn-succes">Ok</a>' +
                         '</div>' +
                     '</div>' +
                 '</div>');

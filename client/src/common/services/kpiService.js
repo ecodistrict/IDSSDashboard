@@ -318,7 +318,7 @@ angular.module('idss-dashboard')
     };
 
     // set outputs on the kpi
-    var initOutputs = function(currentVariant, asIsVariant) {
+    var initOutputs = function(currentVariant, asIsVariant, kpiMapOutputs) {
         _.each(currentVariant.kpiList, function(kpi) {
           var asIsKpi = _.find(asIsVariant.kpiList, function(k) { return k.alias === kpi.alias;});
           if(asIsKpi) {
@@ -328,15 +328,7 @@ angular.module('idss-dashboard')
               kpi.status = 'loading';
               kpi.outputs = null; // manual output can exist (saved or cached), to avoid extra rendering wait for init of outputs below
               kpi.loading = true;
-              // this adds properties to children outputs
-              // var prepareKpiData = function(o) {
-              //     o.alias = kpi.alias;
-              //     o.kpiName = kpi.name;
-              //     o.kpiBad = kpi.kpiBad;
-              //     o.kpiExcellent = kpi.kpiExcellent;
-              //     o.kpiUnit = kpi.kpiUnit;
-              //     o.moduleId = kpi.selectedModule.id;
-              // };
+              
               if(kpi.qualitative) {
                 kpi.moduleName = 'Qualitative KPI';
                 // returns null if score was not given to this kpi
@@ -365,13 +357,18 @@ angular.module('idss-dashboard')
                         kpi.loading = false;
                       }
 
-                      // set the kpi values on children outputs
-                      // _.each(output.outputs, function(o) {
-                      //   prepareKpiData(o);
-                      //   if(o.type === 'geojson') {
-                      //     $scope.kpiMapOutputs.push(o);
-                      //   } 
-                      // });
+                      _.each(output.outputs, function(o) {
+                        o.alias = kpi.alias;
+                        o.kpiName = kpi.name;
+                        o.kpiBad = kpi.bad;
+                        o.kpiExcellent = kpi.excellent;
+                        o.kpiUnit = kpi.unit;
+                        o.moduleId = kpi.moduleId;
+                        if(o.type === 'geojson' && kpiMapOutputs) {
+                          // TODO: update any existing map output, use id?
+                          kpiMapOutputs.push(o);
+                        }
+                      });
 
                       kpi.outputs = output.outputs; // listen on this to trigger rendering
                   });
