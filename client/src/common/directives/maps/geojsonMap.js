@@ -62,6 +62,9 @@ angular.module('idss-dashboard').directive('geojsonMap', [ 'ProcessService', '$t
 
     return {
         restrict: 'E',
+        transclude: true,
+        replace: true,
+        template: '<div ng-transclude></div>',
         scope: {
             options: "=",
             data: "="

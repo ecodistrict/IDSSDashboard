@@ -155,6 +155,9 @@ angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService'
 
     return {
         restrict: 'E',
+        transclude: true,
+        replace: true,
+        template: '<div ng-transclude></div>',
         scope: {
             outputs: '=',
             trig: '=',
@@ -396,7 +399,7 @@ angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService'
 
             //initMap();
 
-            scope.watch('trig', function(newValue, oldValue) {
+            scope.$watch('trig', function(newValue, oldValue) {
                 //console.log('trig');
                 //element.html('').append('<p style="position:absolute;width:500px;height:500px;z-index:9999">TEst</p>');
                 if(newValue && newValue !== oldValue) {

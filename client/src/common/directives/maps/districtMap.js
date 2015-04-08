@@ -75,6 +75,7 @@ angular.module('idss-dashboard').directive('districtMap', ['$compile', 'ProcessS
         restrict: 'E',
         transclude: true,
         replace: true,
+        template: '<div ng-transclude></div>',
         scope: {
             district: "="
         },
@@ -84,12 +85,15 @@ angular.module('idss-dashboard').directive('districtMap', ['$compile', 'ProcessS
             // TODO: this is not a nice solution, maybe use http://buzzdecafe.github.io/2014/03/20/directive-after-dom/
             function initMap() {
 
-                $timeout(function() {
+                //$timeout(function() {
                     // default viewport (central europe)
                     var viewSettings = {
                         center: [1000000, 6600000],
                         zoom: 4
                     };  
+
+                    element.css('width', '100%');
+                    element.css('height', '100%');
 
                     var map = new ol.Map({
                         interactions: ol.interaction.defaults({mouseWheelZoom: false}),
@@ -167,12 +171,17 @@ angular.module('idss-dashboard').directive('districtMap', ['$compile', 'ProcessS
                     scope.saveDistrictPolygons = function() {
                         var geoJsonFormat = new ol.format.GeoJSON();
                         var features = featureOverlay.getFeatures().getArray();
-                        console.log(features);
+                        // this is some loggings and tries to make winding of polygon consistent, the polygon created should always be counter-clockwise
+                        // console.log(features[0]);
+                        // console.log(features[0].getGeometry().getCoordinates());
+                        // console.log(new ol.geom.Polygon(features[0].getGeometry().getCoordinates()));
                         var districtGeometry = geoJsonFormat.writeFeatures(features, {
                             featureProjection: 'EPSG:3857',
                             dataProjection: 'EPSG:3857'
                         });
-                        console.log(districtGeometry);
+                        
+
+                        //console.log(districtGeometry);
                         scope.district.geometry = districtGeometry;
                         ProcessService.saveCurrentProcess().then(function(process) {
                             console.log(process);
@@ -215,9 +224,9 @@ angular.module('idss-dashboard').directive('districtMap', ['$compile', 'ProcessS
                     var buttonPanel = angular.element([
                         '<div id="button-panel" class="btn-group">',
                             //'<button type="button" ng-class="interaction == \'navigate\' ? \'btn-primary\' : \'btn-default\'" ng-click="addInteraction(\'navigate\')" class="btn">Navigate</button>',
-                            '<button type="button" ng-show="interaction==\'draw\'" ng-click="saveDistrictPolygons()" class="btn btn-default">Save district</button>',
-                            '<button type="button" ng-show="interaction==\'draw\'" ng-click="clearDistrictPolygons()" class="btn btn-default">Clear</button>',
-                            '<button type="button" ng-show="interaction!=\'draw\'" ng-click="addInteraction(\'draw\')" class="btn btn-default">{{district.geometry ? \'Edit\' : \'Draw\'}} district boundary</button>',
+                            '<button id="save-district-polygon" type="button" ng-show="interaction==\'draw\'" ng-click="saveDistrictPolygons()" class="btn btn-default">Save district</button>',
+                            '<button id="clear-district-polygon" type="button" ng-show="interaction==\'draw\'" ng-click="clearDistrictPolygons()" class="btn btn-default">Clear</button>',
+                            '<button id="edit-district-polygon" type="button" ng-show="interaction!=\'draw\'" ng-click="addInteraction(\'draw\')" class="btn btn-default">{{district.geometry ? \'Edit\' : \'Draw\'}} district boundary</button>',
                         '</div>',
                         '<div id="layer-panel" class="btn-group dropup">',
                             '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">',
@@ -240,7 +249,7 @@ angular.module('idss-dashboard').directive('districtMap', ['$compile', 'ProcessS
                     addDistrictFeatures(scope.district.geometry);
 
                     
-                }, 200);
+                //}, 1000);
             }
 
             initMap();

@@ -152,6 +152,9 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
 
     return {
         restrict: 'E',
+        transclude: true,
+        replace: true,
+        template: '<div ng-transclude></div>',
         scope: {
             input: '=',
             variantid: '=', 
