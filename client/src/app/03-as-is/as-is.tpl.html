@@ -19,10 +19,10 @@
         <div ng-repeat="kpi in currentVariant.kpiList" class="panel {{'panel-' + getStatus(kpi)}} module-item">
             <div class="panel-heading" role="tab">
               <h4 class="panel-title">
-                <!-- <a class="collapsed accordion-toggle" data-toggle="collapse" data-parent="#kpi-result-accordion"> -->
+                <a class="collapsed accordion-toggle" data-toggle="collapse" data-target="#{{'acc-' + $index}}" data-parent="#kpi-result-accordion">
                 <b>{{kpi.name}}</b> delivered by <b>{{kpi.moduleName}}</b> <i>(status: {{kpi.status}})</i>
                 <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
-                <!-- </a> -->
+                </a>
                 <button class="btn btn-xs btn-warning pull-right" ng-click="setScore(kpi);$event.stopPropagation()">
                   <i class="glyphicon glyphicon-stats"></i> {{kpi.qualitative ? 'Set score' : 'Set manual'}}
                 </button>
@@ -34,10 +34,9 @@
               </h4>
               <kpi-value-output kpi="kpi"></kpi-value-output>
             </div>
-            <div id="{{$index}}" class="panel-collapse collapse" role="tabpanel">
+            <div id="{{'acc-' + $index}}" class="panel-collapse collapse" role="tabpanel">
               <div class="panel-body" style="position:relative">
-                Details are disabled in this version
-                <!-- <kpi-output outputs="kpi.outputs" inputs="kpi.inputs"></kpi-output> -->
+                <kpi-output outputs="kpi.outputs" inputs="kpi.inputs"></kpi-output>
               </div>
             </div>
         </div>

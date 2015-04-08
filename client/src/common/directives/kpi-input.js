@@ -36,8 +36,6 @@ angular.module('idss-dashboard').directive('kpiInput', ['$compile', 'ModuleServi
 
                 setTemplateUrl(scope.inputs);
 
-                console.log(scope.inputs);
-
                 var template = '<form class="form-horizontal" role="form"><div ng-repeat="input in inputs | object2Array | orderBy:\'order\'" ng-include="input.template"></div></form>';
 
                 element.html('').append( $compile( template )( scope ) );

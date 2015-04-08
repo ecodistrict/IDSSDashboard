@@ -85,6 +85,7 @@ angular.module( 'idss-dashboard.as-is', [
       }
   });
 
+  // set a new output on a kpi when output data returns
   socket.on('moduleResult', function(module) {
     console.log('module result', module);
 
@@ -97,19 +98,21 @@ angular.module( 'idss-dashboard.as-is', [
       // if status changed/exists, otherwise keep old status
       kpi.status = module.status || kpi.status;
 
-      // // TODO: refactor this to prepareKpiData above, bad and excellent is the issue
-      // _.each(module.outputs, function(o) {
-      //   o.alias = kpi.alias;
-      //   o.kpiName = kpi.kpiName;
-      //   o.kpiBad = kpi.kpiBad;
-      //   o.kpiExcellent = kpi.kpiExcellent;
-      //   o.kpiUnit = kpi.kpiUnit;
-      //   o.moduleId = kpi.moduleId;
-      //   if(o.type === 'geojson') {
-      //     // TODO: update any existing map output, use id?
-      //     $scope.kpiMapOutputs.push(o);
-      //   }
-      // });
+      console.log(kpi);
+
+      // TODO: refactor this initOutputs above, bad and excellent is the issue
+      _.each(module.outputs, function(o) {
+        o.alias = kpi.alias;
+        o.kpiName = kpi.name;
+        o.kpiBad = kpi.bad;
+        o.kpiExcellent = kpi.excellent;
+        o.kpiUnit = kpi.unit;
+        o.moduleId = kpi.moduleId;
+        if(o.type === 'geojson') {
+          // TODO: update any existing map output, use id?
+          $scope.kpiMapOutputs.push(o);
+        }
+      });
 
       kpi.outputs = module.outputs;
       // for updating manual property only..

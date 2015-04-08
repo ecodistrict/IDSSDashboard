@@ -317,6 +317,7 @@ angular.module('idss-dashboard')
         return outputs;
     };
 
+    // set outputs on the kpi
     var initOutputs = function(currentVariant, asIsVariant) {
         _.each(currentVariant.kpiList, function(kpi) {
           var asIsKpi = _.find(asIsVariant.kpiList, function(k) { return k.alias === kpi.alias;});

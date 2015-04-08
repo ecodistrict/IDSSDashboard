@@ -254,6 +254,8 @@ angular.module('idss-dashboard').directive('geojsonMapOutput', ['ProcessService'
                     };
 
                     var initGeometryData = function(data) {
+                        console.log(data);  
+
                         if(!data) {
                             return;
                         }
