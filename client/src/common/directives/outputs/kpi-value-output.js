@@ -19,6 +19,9 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                 scope.noDataMessage = "No overall KPI is given for this result";
                 bad = scope.kpi.bad;
                 excellent = scope.kpi.excellent;
+                if(!bad || !excellent) {
+                    scope.noDataMessage = "Excellent and/or bad values where not defined when configuring KPIs";
+                }
 
                 //console.log(output);
 
