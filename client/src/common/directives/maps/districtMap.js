@@ -73,6 +73,8 @@ angular.module('idss-dashboard').directive('districtMap', ['$compile', 'ProcessS
 
     return {
         restrict: 'E',
+        transclude: true,
+        replace: true,
         scope: {
             district: "="
         },

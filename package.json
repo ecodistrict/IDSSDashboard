@@ -29,6 +29,7 @@
     "bcrypt": "^0.8.0",
     "connect-mongo": "^0.4.1",
     "validator": "^3.22.0",
-    "shortid": "^2.0.1"
+    "shortid": "^2.0.1",
+    "proj4": "^2.3.5"
   }
 }
