@@ -233,7 +233,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
               "moduleId": moduleInput.moduleId,
               "variantId": moduleInput.variantId,
               "kpiId": moduleInput.kpiId,
-              "inputs": moduleInput.inputs
+              "inputs": moduleInput.inputSpecification
             };
             sendModuleRequest(requestObj);
           }
@@ -289,7 +289,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         }
       });
       
-    } else if(message.method === 'modelResult') {
+    } else if(message.method === 'moduleResult') {
       dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
       variantRepository.addModuleResult(message, function(err, model) {
         if(err) {
