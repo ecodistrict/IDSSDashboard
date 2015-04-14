@@ -25,7 +25,7 @@
                 <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
             </td>
             <td nowrap>
-                <button class="fileupload-submit-button" type="button" class="btn btn-success btn-xs" ng-click="uploadFile(item)" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                <button id="fileupload-submit-button" type="button" class="btn btn-success btn-xs" ng-click="uploadFile(item)" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
                     <span class="glyphicon glyphicon-upload"></span> Upload
                 </button>
                 <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">

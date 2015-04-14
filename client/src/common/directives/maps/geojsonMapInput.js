@@ -114,42 +114,6 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
         });
     };
 
-    // style output features depending on some property
-
-    // var getFeatureStyle = function(feature, property) {
-    //     var color = greenYellowRed(property);
-        
-    //     return new ol.style.Style({
-    //         stroke: new ol.style.Stroke({
-    //             color: 'rgba(' + color + ', 1)',
-    //             width: 1
-    //         }),
-    //         fill: new ol.style.Fill({
-    //             color: 'rgba(' + color + ', 0.5)'
-    //         })
-    //     });
-    // };
-
-    // use for colorizing output
-
-    // var greenYellowRed = function($number) {
-    //   //$number--; // working with 0-99 will be easier
-    //   $number = $number * 100;
-    //   if ($number < 50) {
-    //     // green to yellow
-    //     $r = Math.floor(255 * ($number / 50));
-    //     $g = 255;
-
-    //   } else {
-    //     // yellow to red
-    //     $r = 255;
-    //     $g = Math.floor(255 * ((50-$number%50) / 50));
-    //   }
-    //   $b = 0;
-
-    //   return $r + ',' + $g + ',' + $b;
-    // };
-
     return {
         restrict: 'E',
         transclude: true,
@@ -183,14 +147,28 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
 
                     var properties = f.getProperties();
 
-                    _.each(scope.userInput, function(input, i) {
+                    for(var input in scope.userInput) {
+                        if(scope.userInput.hasOwnProperty(input)) {
 
-                        console.log(properties);
-                        console.log(input);
+                            console.log(properties);
+                            console.log(input);
+                            console.log(scope.userInput[input]);
+
+                            // set to the properties set from feature or from default input
+                            scope.userInput[input].value = properties[input] || scope.input.inputs[input].value;
+                        }
+                    }
+
+                    console.log(scope.userInput);
+
+                    // _.each(scope.userInput, function(input, i) {
+
+                    //     console.log(properties);
+                    //     console.log(input);
                         
-                        input.value = properties[input.id] || scope.input.inputs[i].value; // set to default value
+                    //     input.value = properties[input.id] || scope.input.inputs[i].value; // set to default value
 
-                    });
+                    // });
 
                     f.setProperties(properties);
 
@@ -362,7 +340,7 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
                     //console.log(feature.getProperties());
                     toggleSelectedFeature(feature);
                 });
-                scope.$apply();
+                //scope.$apply();
             });
 
             scope.unselectAllFeatures = function() {
@@ -381,9 +359,15 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
                     
                     var properties = f.getProperties();
 
-                    _.each(scope.userInput, function(input) {
-                        properties[input.id] = input.value;
-                    });
+                    for(var input in scope.userInput) {
+                        if(scope.userInput.hasOwnProperty(input)) {
+                            properties[input] = scope.userInput[input].value;
+                        }
+                    }
+
+                    // _.each(scope.userInput, function(input) {
+                    //     properties[input.id] = input.value;
+                    // });
 
                     f.setProperties(properties);
                 });
