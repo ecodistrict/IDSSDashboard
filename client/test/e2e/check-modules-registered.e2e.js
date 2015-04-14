@@ -14,7 +14,7 @@ describe('modules are registered', function() {
 
     browser.driver.sleep(2000);
 
-    expect(page.modules.count()).toEqual(1);
+    expect(page.modules.count()).toEqual(2);
 
   });
 

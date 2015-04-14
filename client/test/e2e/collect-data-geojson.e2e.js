@@ -13,11 +13,12 @@ describe('upload geojson file', function() {
 
   it('collect data for geojson input', function() {
 
-    browser.driver.sleep(15000);
+    browser.driver.sleep(2000);
+    page.clickCollectDataGeoJsonTest();
+    browser.driver.sleep(2000);
 
     page.addFile(fullPath);
-
-    browser.driver.sleep(15000);
+    browser.driver.sleep(2000);
 
     page.clickUpload();
 

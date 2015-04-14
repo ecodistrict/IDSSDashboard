@@ -1,9 +1,19 @@
 var CollectDataAtomic = function () {
-  browser.get('/#/collect-data/module-input/atomic-test');
+  browser.get('/#/collect-data');
 };
 
 CollectDataAtomic.prototype = Object.create({},
   {
+    selectModuleInput: {
+      get: function() {
+        return element(by.id('collect-data-atomic-test'));
+      }
+    },
+    okButton: {
+      get: function() {
+        return element(by.id('save-module-input'));
+      }
+    },
     selectCheeseOption: {
       get: function() {
         return element(by.cssContainingText('option', 'Edammer'));
@@ -37,6 +47,16 @@ CollectDataAtomic.prototype = Object.create({},
     shoeSize1Input: {
       get: function() {
         return element(by.id('shoe-size-1'));
+      }
+    },
+    clickCollectDataAtomicTest: {
+      value: function() {
+        this.selectModuleInput.click();
+      }
+    },
+    clickSaveModuleInput: {
+      value: function() {
+        this.okButton.click();
       }
     },
     typeShoeSize1: {

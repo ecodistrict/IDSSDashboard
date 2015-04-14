@@ -3,16 +3,16 @@ var express = require('express');
     path = require('path'),
     app = module.exports = express();
 
-var port = 4569;
+var port = 4570;
 var httpServer = http.createServer(app);
 var imb = require('../../../../lib/imb.js');
 
-var moduleId = "atomic-inputs";
-var kpiId = "atomic-test";
+var moduleId = "mcmsmv";
+var kpiId = "mcmsmv";
 
 var imbConnection = new imb.TIMBConnection();
 imbConnection.connect('vps17642.public.cloudvps.com', 4000, 1234, 'atomicInputs', 'ecodistrict');
-var messageSub = imbConnection.subscribe('modulesTEST', true);
+var messageSub = imbConnection.subscribe('modelsTEST', true);
 
 var sendDashboard = function(requestObj) {
   var request = JSON.stringify(requestObj).toString();
@@ -26,20 +26,21 @@ var sendDashboard = function(requestObj) {
   message.normalEvent(imb.ekNormalEvent, eventPayload);
 };
 
-// getModule response
+// getModel response
 var moduleDefinition = {
   "method": "getModules",
   "type": "response",
-  "name": "Atomic inputs",
+  "name": "MCMSMV",
   "moduleId": moduleId,
-  "description": "This module tests the atomic inputs",
+  "description": "This module tests the MCMSMV functionality",
   "kpiList": [kpiId]
 };
 
-// selectModule response
+// selectModel response
 // the keys in inputSpecification has been made unique for testing purposes
+// this module does not have an input spec?
 var moduleInput = {
-    "method": "selectModule",
+    "method": "selectModel",
     "type": "response",
     "moduleId": moduleId,
     "kpiId": kpiId,
@@ -84,16 +85,17 @@ var moduleInput = {
     }
   };
 
-// startModule response
-var startModule = {
-  "method": "startModule",
+// startModel response
+var startModel = {
+  "method": "startModel",
   "type": "response",
   "moduleId": moduleId
 };
 
-// moduleResult test
-var moduleResult = {
-    "method": "moduleResult",
+// modelResult test
+// this module does not have a result?
+var modelResult = {
+    "method": "modelResult",
     "type": "result",
     "outputs": [{
       "type": "kpi",
@@ -123,29 +125,25 @@ messageSub.onNormalEvent = function(eventDefinition, eventPayload) {
   if(message.method === 'getModules') {
     console.log('getModules');
     sendDashboard(moduleDefinition);
-  } else if(message.method === 'selectModule') {
-    console.log('selectModule');
+  } else if(message.method === 'selectModel') {
+    console.log('selectModel');
     console.log(message);
     if(message.moduleId === moduleId) {
       moduleInput.variantId = message.variantId;
       sendDashboard(moduleInput); 
     }
-  } else if(message.method === 'startModule') {
-    if(message.moduleId === moduleId) {
-      // first send status that module started
-      startModule.status = 'processing'; 
-      startModule.kpiId = message.kpiId;
-      startModule.variantId = message.variantId;
-      sendDashboard(startModule);
-      // after calculating, send output
-      moduleResult.kpiId = message.kpiId;
-      moduleResult.variantId = message.variantId;
-      moduleResult.moduleId = moduleId;
-      console.log(moduleResult);
-      sendDashboard(moduleResult);
-      // also send new status
-      startModule.status = 'success';
-      sendDashboard(startModule);
+  } else if(message.method === 'mcmsmv') {
+    if(message.kpiId === kpiId) {
+      console.log(message);
+      // startModel response
+      var mcmsmv = {
+        method: 'mcmsmv',
+        type: 'response',
+        moduleId: moduleId,
+        status: 'success',
+        userId: message.userId
+      };
+      sendDashboard(mcmsmv);
     }
   }
 };

@@ -11,7 +11,9 @@ describe('insert data for atomic input', function() {
 
   it('should collect data for atomic input', function() {
 
-    browser.driver.sleep(1000);
+    browser.driver.sleep(500);
+    page.clickCollectDataAtomicTest();
+    browser.driver.sleep(200);
 
     page.typeName1('Andreas');
     browser.driver.sleep(100);
@@ -29,8 +31,14 @@ describe('insert data for atomic input', function() {
     page.name1Input.click();
     browser.driver.sleep(100);
 
+    page.clickSaveModuleInput();
+    browser.driver.sleep(500);
+
+
     browser.driver.navigate().refresh();
-    browser.driver.sleep(1000);
+    browser.driver.sleep(3000);
+    page.clickCollectDataAtomicTest();
+    browser.driver.sleep(200);
 
     expect(page.name1Input.getAttribute('value')).toEqual('Andreas');
     expect(page.name2Input.getAttribute('value')).toEqual('Rasmus');

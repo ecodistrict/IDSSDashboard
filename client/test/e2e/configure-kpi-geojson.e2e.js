@@ -18,7 +18,7 @@ describe('use kpis', function() {
 
     page.clickUsedGeoJsonKpi();
 
-    browser.driver.sleep(300);
+    browser.driver.sleep(1000);
 
     expect(page.kpiTitle.get(0).getText()).toEqual('Geojson test kpi');
 
@@ -28,9 +28,16 @@ describe('use kpis', function() {
 
     page.typePriorityValue(4);
 
-    page.clickSelectGeoJsonModuleOption();
+    browser.driver.sleep(1000);
+
+    //page.clickSelectGeoJsonModuleOption();
+
+    browser.driver.sleep(1000);
 
     page.clickSaveKpiConfigButton();
+
+    browser.driver.sleep(1000);
+
 
   });
 

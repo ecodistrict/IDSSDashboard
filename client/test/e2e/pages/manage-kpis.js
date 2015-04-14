@@ -89,6 +89,16 @@ ManageKpiPage.prototype = Object.create({},
         return element(by.id('delete-kpi-geojson-test-kpi'));
       }
     },
+    cancelUseKpiDialogButton: {
+      get: function() {
+        return element(by.id('cancel-use-kpi-dialog'));
+      }
+    },
+    clickCancelUseKpiDialogButton: {
+      value: function() {
+        this.cancelUseKpiDialogButton.click();
+      }
+    },
     connectedModules: {
       get: function() {
         return element.all(by.repeater('module in relevantModules'));

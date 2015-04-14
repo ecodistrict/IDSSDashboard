@@ -16,6 +16,8 @@ describe('use kpis', function() {
 
     page.clickSelectGeoJsonKpi();
 
+    browser.driver.sleep(2000);
+
     expect(page.connectedModules.count()).toEqual(1);
 
     page.clickUseGeoJsonKpiButton();

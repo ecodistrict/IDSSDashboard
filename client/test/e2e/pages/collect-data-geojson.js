@@ -1,9 +1,19 @@
 var CollectDataGeoJson = function () {
-  browser.get('/#/collect-data/module-input/geojson-test-kpi');
+  browser.get('/#/collect-data');
 };
 
 CollectDataGeoJson.prototype = Object.create({},
   {
+    selectModuleInput: {
+      get: function() {
+        return element(by.id('collect-data-geojson-test-kpi'));
+      }
+    },
+    clickCollectDataGeoJsonTest: {
+      value: function() {
+        this.selectModuleInput.click();
+      }
+    },
     fileInput: {
       get: function() {
         return element(by.css('input[type="file"]'));

@@ -1,22 +1,23 @@
 var express = require('express');
     http = require('http'),
     path = require('path'),
+    util = require('util'),
     app = module.exports = express();
 
-var port = 4569;
+var port = 4573;
 var httpServer = http.createServer(app);
 var imb = require('../../../../lib/imb.js');
 
-var moduleId = "atomic-inputs";
-var kpiId = "atomic-test";
+var moduleId = "district-inputs";
+var kpiId = "district-test";
 
 var imbConnection = new imb.TIMBConnection();
-imbConnection.connect('vps17642.public.cloudvps.com', 4000, 1234, 'atomicInputs', 'ecodistrict');
-var messageSub = imbConnection.subscribe('modulesTEST', true);
+imbConnection.connect('vps17642.public.cloudvps.com', 4000, 1234, 'districtInputs', 'ecodistrict');
+var messageSub = imbConnection.subscribe('modules', true);
 
 var sendDashboard = function(requestObj) {
   var request = JSON.stringify(requestObj).toString();
-  var message = imbConnection.publish('dashboardTEST', true);
+  var message = imbConnection.publish('dashboard', true);
   var messageByteLength = Buffer.byteLength(request);
   var eventPayload = new Buffer(4+messageByteLength);
   var offset = 0;
@@ -30,9 +31,9 @@ var sendDashboard = function(requestObj) {
 var moduleDefinition = {
   "method": "getModules",
   "type": "response",
-  "name": "Atomic inputs",
+  "name": "District inputs",
   "moduleId": moduleId,
-  "description": "This module tests the atomic inputs",
+  "description": "This module tests the district inputs",
   "kpiList": [kpiId]
 };
 
@@ -44,42 +45,9 @@ var moduleInput = {
     "moduleId": moduleId,
     "kpiId": kpiId,
     "inputSpecification": {
-      "name-1": { "type": "text", "label": "Name", "order": -1 },
-      "shoe-size-1": { "type": "number", "label": "Shoe size" },
-      "shoe-brand": { "type": "text", "label": "Shoe brand" },
-      "cheese-type": {
-        "label": "Cheese type",
-        "type": "select",
-        "value": "brie-cheese",
-        "options": [
-          {
-            "value": "alp-cheese",
-            "label": "Alpk\u00e4se"
-          },
-          {
-            "value": "edam-cheese",
-            "label": "Edammer"
-          },
-          {
-            "value": "brie-cheese",
-            "label": "Brie"
-          }
-        ]
-      },
-      "personal-data": {
-        "type": "inputGroup",
-        "label": "Personal data",
-        "inputs": {
-          "name-2": {
-            "type": "text",
-            "label": "Your name"
-          },
-          "shoe-size-2": {
-            "value": 42,
-            "type": "number",
-            "label": "Your shoe size"
-          }
-        }
+      "district": {
+        "type": "district-polygon",
+        "projection": "EPSG:4326"
       }
     }
   };
@@ -132,6 +100,9 @@ messageSub.onNormalEvent = function(eventDefinition, eventPayload) {
     }
   } else if(message.method === 'startModule') {
     if(message.moduleId === moduleId) {
+      console.log('startModule');
+      //console.log(message.inputs.district.value);
+      console.log(util.inspect(message.inputs.district.value, { showHidden: true, depth: null }));
       // first send status that module started
       startModule.status = 'processing'; 
       startModule.kpiId = message.kpiId;
