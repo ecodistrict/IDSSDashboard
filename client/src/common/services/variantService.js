@@ -137,7 +137,8 @@ angular.module('idss-dashboard')
         kpi.inputSpecification = kpiToUpdate.inputSpecification;
         kpi.manual = kpiToUpdate.manual;
         console.log(kpi);
-        // if the selected module is changed delete all module data in variant
+        // if the selected module is changed delete all module data in variant?
+        // now the inputs and outputs are still saved until user remove KPI form list of used kpis (removeKPI below)
         // TODO: NOTIFY USER!!! 
         console.log('update kpi');
         // qualitative kpi changes from as-is, to-be and alternatives dont have selected module, only inputSpecification and settings should be updated
