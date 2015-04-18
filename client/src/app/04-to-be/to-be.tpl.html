@@ -3,7 +3,7 @@
         <div class="col-xs-12">
             <h2>To be - go through KPIs again to set ambitions</h2>
             <div ng-repeat="kpi in toBeVariant.kpiList" id="{{'used-kpi-' + kpi.alias}}" class="panel panel-success kpi-item" ng-click="setScore(kpi)">
-              <div class="panel-heading">
+              <div class="panel-heading" id="{{'set-ambition-' + kpi.alias + '-button'}}">
                 <h3 class="panel-title">{{kpi.name}} <span ng-hide="kpiIsConfigured(kpi)" class="glyphicon glyphicon-exclamation-sign"></span></h3>
               </div>
               <div class="panel-body">
