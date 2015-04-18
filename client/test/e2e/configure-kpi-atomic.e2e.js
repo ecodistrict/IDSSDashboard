@@ -1,4 +1,4 @@
-var KpiPage = require('./pages/manage-kpis.js');
+var KpiPage = require('../../src/app/01-analyse-problem/manage-kpis.page.e2e.js');
 
 describe('use kpis', function() {
 
@@ -12,9 +12,7 @@ describe('use kpis', function() {
 
     expect(browser.getCurrentUrl()).toMatch('analyse-problem/manage-kpis');
 
-    browser.driver.sleep(1000);
-
-    expect(page.selectedKpis.count()).toEqual(2);    
+    browser.driver.sleep(500);
 
     page.clickUsedAtomicTestKpi();
 
@@ -31,14 +29,15 @@ describe('use kpis', function() {
     page.clickSelectAtomicTestModuleOption();
 
     page.clickSaveKpiConfigButton();
+    
+    browser.driver.sleep(1000);
 
-    // browser.driver.navigate().refresh();
-    browser.driver.sleep(3000);
-    // page.clickUsedAtomicTestKpi();
+    browser.driver.navigate().refresh();
+    page.clickUsedAtomicTestKpi();
 
-    // expect(page.kpiScoreBad.getAttribute('value')).toEqual('1000');
-    // expect(page.kpiScoreExcellent.getAttribute('value')).toEqual('1');
-    // expect(page.priorityValue.getAttribute('value')).toEqual('4');
+    expect(page.kpiScoreBad.getAttribute('value')).toEqual('1000');
+    expect(page.kpiScoreExcellent.getAttribute('value')).toEqual('1');
+    expect(page.priorityValue.getAttribute('value')).toEqual('4');
 
   });
 

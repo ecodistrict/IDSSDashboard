@@ -1,4 +1,4 @@
-var KpiPage = require('./pages/manage-kpis.js');
+var KpiPage = require('../../src/app/01-analyse-problem/manage-kpis.page.e2e.js');
 
 describe('manage kpis', function() {
 
@@ -26,7 +26,7 @@ describe('manage kpis', function() {
 
     browser.driver.sleep(1000);
 
-    expect(page.kpis.count()).toEqual(2);
+    expect(page.kpis.count()).toEqual(1);
 
     //page.clickSelectAtomicTestKpi();
 

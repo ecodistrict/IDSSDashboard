@@ -1,4 +1,4 @@
-var ModulesPage = require('./pages/modules.js');
+var ModulesPage = require('../../src/app/modules/modules.page.e2e.js');
 
 describe('modules are registered', function() {
 
@@ -12,9 +12,9 @@ describe('modules are registered', function() {
 
     expect(browser.getCurrentUrl()).toMatch('/modules');
 
-    browser.driver.sleep(2000);
+    browser.driver.sleep(1000);
 
-    expect(page.modules.count()).toEqual(2);
+    expect(page.modules.count()).toEqual(1);
 
   });
 

@@ -1,4 +1,4 @@
-var AnalyseProblemOverviewPage = require('./pages/analyse-problem-overview.js');
+var AnalyseProblemOverviewPage = require('../../src/app/01-analyse-problem/analyse-problem.page.e2e.js');
 
 describe('analyse problem overview', function() {
 

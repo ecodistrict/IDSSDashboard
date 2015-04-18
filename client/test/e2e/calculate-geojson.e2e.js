@@ -1,4 +1,4 @@
-var AsIsPage = require('./pages/as-is.js');
+var AsIsPage = require('../../src/app/03-as-is/as-is.page.e2e.js');
 
 describe('calculate geojson input', function() {
 

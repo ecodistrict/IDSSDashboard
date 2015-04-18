@@ -1,4 +1,4 @@
-var KpiPage = require('./pages/manage-kpis.js');
+var KpiPage = require('../../src/app/01-analyse-problem/manage-kpis.page.e2e.js');
 
 describe('use kpis', function() {
 

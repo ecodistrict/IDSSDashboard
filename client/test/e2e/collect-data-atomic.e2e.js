@@ -1,4 +1,4 @@
-var CollectDataPage = require('./pages/collect-data-atomic.js');
+var CollectDataPage = require('../../src/app/02-collect-data/collect-data-atomic.page.e2e.js');
 var path = require('path');
 
 describe('insert data for atomic input', function() {

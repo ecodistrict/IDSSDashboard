@@ -1,5 +1,5 @@
-var RegisterPage = require('./pages/register.js'),
-    LoginPage = require('./pages/login.js');
+var RegisterPage = require('../../src/app/register/register.page.e2e.js'),
+    LoginPage = require('../../src/app/login/login.page.e2e.js');
 
 describe('register test', function() {
 

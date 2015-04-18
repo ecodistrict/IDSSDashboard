@@ -1,4 +1,4 @@
-var CollectDataPage = require('./pages/collect-data-geojson.js');
+var CollectDataPage = require('../../src/app/02-collect-data/collect-data-geojson.page.e2e.js');
 var path = require('path');
 
 describe('upload geojson file', function() {

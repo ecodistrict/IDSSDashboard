@@ -1,4 +1,4 @@
-var KpiPage = require('./pages/manage-kpis.js');
+var KpiPage = require('../../src/app/01-analyse-problem/manage-kpis.page.e2e.js');
 
 describe('use kpis', function() {
 
@@ -24,7 +24,7 @@ describe('use kpis', function() {
 
     browser.driver.sleep(1000);
 
-    expect(page.selectedKpis.count()).toEqual(2);
+    expect(page.selectedKpis.count()).toEqual(1);
 
   });
 

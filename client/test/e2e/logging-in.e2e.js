@@ -1,4 +1,4 @@
-var LoginPage = require('./pages/login.js')
+var LoginPage = require('../../src/app/login/login.page.e2e.js')
 
 describe('login test', function() {
 
