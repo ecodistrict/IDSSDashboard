@@ -17,7 +17,7 @@ module.exports = function ( grunt ) {
         vendor_dir: 'vendor',
 
         app_files: {
-            javascript: [ 'src/app/**/*.js', 'src/common/**/*.js', '!src/app/**/*.spec.js', '!src/common/**/*.spec.js', 'src/assets/**/*.js' ],
+            javascript: [ 'src/app/**/*.js', 'src/common/**/*.js', '!src/app/**/*.spec.js', '!src/app/**/*.e2e.js', '!src/common/**/*.spec.js', 'src/assets/**/*.js' ],
 
             app_tpl: [ 'src/app/**/*.tpl.html' ],
             common_tpl: [ 'src/common/**/*.tpl.html' ],
