@@ -8,7 +8,9 @@ exports.config = {
         //quantitative KPI
         'test/e2e/add-kpi-atomic.e2e.js',
         'test/e2e/use-kpi-atomic.e2e.js',
-        'test/e2e/configure-kpi-atomic.e2e.js'
+        'test/e2e/configure-kpi-atomic.e2e.js',
+        'test/e2e/collect-data-atomic.e2e.js',
+        'test/e2e/calculate-atomic.e2e.js'
         // 'test/e2e/add-kpi-geojson.e2e.js',
         // 'test/e2e/use-kpi-geojson.e2e.js',
         // 'test/e2e/configure-kpi-geojson.e2e.js',

@@ -15,7 +15,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                 //console.log(output);
                 console.log(scope.kpi);
 
-                scope.outputId = 'm_' + scope.kpi.alias + '_aggregated_kpi'; // generate a unique id
+                scope.outputId = 'm-' + scope.kpi.alias + '-aggregated-kpi'; // generate a unique id
                 scope.noDataMessage = "No overall KPI is given for this result";
                 bad = scope.kpi.bad;
                 excellent = scope.kpi.excellent;
