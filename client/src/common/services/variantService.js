@@ -183,6 +183,7 @@ angular.module('idss-dashboard')
         }
     };
 
+    // TODO: remove this to module service!
     var removeInputData = function(variantId, kpiId) {
         return $http
             .delete('variants/moduleInput/' + variantId + '/' + kpiId)
@@ -200,6 +201,7 @@ angular.module('idss-dashboard')
             });  
     };
 
+    // TODO: remove this to module service!
     var removeOutputData = function(variantId, kpiId) {
         return $http
             .delete('variants/moduleOutput/' + variantId + '/' + kpiId)
