@@ -47,7 +47,10 @@ angular.module( 'idss-dashboard.assess-variants', [])
   var createMCMSMVData = function(variantData) {
 
     var stakeholderData = {
-      userId: currentUser._id,
+      user: {
+        id: currentUser._id,
+        name: currentUser.fname + ' ' + currentUser.lname
+      },
       variants: [],
       kpiList: []
     };
@@ -120,9 +123,10 @@ angular.module( 'idss-dashboard.assess-variants', [])
         kpiId: 'mcmsmv',
         userId: currentUser._id
       });
-      $scope.msg = mcmsmv;
+      $scope.msg = JSON.stringify(mcmsmv, undefined, 4);
+
     } else {
-      $scope.msg = mcmsmv;
+      $scope.msg = JSON.stringify(mcmsmv, undefined, 4);
     }
   };
 
