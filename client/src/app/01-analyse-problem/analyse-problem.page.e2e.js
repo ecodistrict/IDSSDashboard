@@ -33,6 +33,16 @@ AnalyseProblemOverview.prototype = Object.create({},
         value: function(input) {
             this.saveDistrictPolygonButton.click();
         }
+    },
+    nextButton: {
+      get: function() {
+        return element(by.id('next-button'));
+      }
+    },
+    clickNextButton: {
+      value: function() {
+        this.nextButton.click();
+      } 
     }
   }
 );
