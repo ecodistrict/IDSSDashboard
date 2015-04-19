@@ -114,7 +114,7 @@ angular.module('idss-dashboard')
         generatePriorityKpiInput(kpi.settings, existingPrio);
     };
 
-    var generateQualitativeKpiInput = function(kpi, scoreInputs) {
+    var generateQualitativeKpiInputSettings = function(kpi, scoreInputs) {
 
         // set given scores or default
         scoreInputs = scoreInputs || {
@@ -172,7 +172,7 @@ angular.module('idss-dashboard')
         };
     };
 
-    var generateQuantitativeKpiInput = function(kpi) {
+    var generateQuantitativeKpiInputSettings = function(kpi) {
         
         kpi.settings["kpiScores"] = {
                 order: 0,
@@ -400,8 +400,8 @@ angular.module('idss-dashboard')
         getResultKpiValue: getResultKpiValue,
         generateQualitativeKpiOutput: generateQualitativeKpiOutput,
         generateQuantitativeKpiOutput: generateQuantitativeKpiOutput,
-        generateQualitativeKpiInput: generateQualitativeKpiInput,
-        generateQuantitativeKpiInput: generateQuantitativeKpiInput,
+        generateQualitativeKpiInputSettings: generateQualitativeKpiInputSettings,
+        generateQuantitativeKpiInputSettings: generateQuantitativeKpiInputSettings,
         generateToBeInput: generateToBeInput,
         generateManualInput: generateManualInput,
         generateSettings: generateSettings,

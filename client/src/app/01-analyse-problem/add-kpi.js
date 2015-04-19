@@ -19,11 +19,11 @@ angular.module( 'idss-dashboard.analyse-problem.add-kpi', [])
       
       if(k.qualitative) {
 
-        KpiService.generateQualitativeKpiInput(k);
+        KpiService.generateQualitativeKpiInputSettings(k);
 
       } else {
 
-        KpiService.generateQuantitativeKpiInput(k);
+        KpiService.generateQuantitativeKpiInputSettings(k);
 
       }
     };
