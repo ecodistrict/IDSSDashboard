@@ -89,9 +89,9 @@ angular.module('idss-dashboard')
 
     var getResultKpiValue = function(kpi, cb) {
         if(kpi.qualitative) {
-            if(!kpi.outputs) {
+            //if(!kpi.outputs) {
                 kpi.outputs = generateQualitativeKpiOutput(kpi.inputSpecification);
-            }
+            //}
             if(kpi.outputs && kpi.outputs.length > 0) {
                 cb(kpi.outputs[0].value);
             }
@@ -99,6 +99,8 @@ angular.module('idss-dashboard')
             if(!kpi.outputs) {
                 console.log('quantitative outputs not exist');
                 console.log(kpi);
+            } else {
+                cb(_.find(kpi.outputs, function(o) {return o.type === 'kpi';}).value);
             }
         }
     };

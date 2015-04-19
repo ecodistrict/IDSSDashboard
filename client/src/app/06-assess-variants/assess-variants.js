@@ -62,7 +62,6 @@ angular.module( 'idss-dashboard.assess-variants', [])
     var getKpiResult = function(kpi, cb) {
       KpiService.getResultKpiValue(kpi, function(value) {
         cb(value);
-        console.log('kpi value: ', value);
       });
     };
 
@@ -76,7 +75,6 @@ angular.module( 'idss-dashboard.assess-variants', [])
             bad = k.settings.kpiScores.inputs.kpiScoreBad.value;
             excellent = k.settings.kpiScores.inputs.kpiScoreExcellent.value;
           }
-          console.log(k);
           stakeholderData.kpiList.push({
             kpiName: k.name,
             kpiDescription: k.description,
@@ -112,7 +110,6 @@ angular.module( 'idss-dashboard.assess-variants', [])
   $scope.sendToMCMSMV = function() {
     var modules = ModuleService.getModulesFromKpiId('mcmsmv');
 
-    console.log(mcmsmv);
     if(modules.length > 0) {
 
       $scope.sendData.status = 'sending data';
