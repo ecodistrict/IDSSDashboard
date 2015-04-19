@@ -11,8 +11,8 @@ var moduleId = "mcmsmv";
 var kpiId = "mcmsmv";
 
 var imbConnection = new imb.TIMBConnection();
-imbConnection.connect('vps17642.public.cloudvps.com', 4000, 1234, 'atomicInputs', 'ecodistrict');
-var messageSub = imbConnection.subscribe('modelsTEST', true);
+imbConnection.connect('vps17642.public.cloudvps.com', 4000, 1234, 'mcmsmv', 'ecodistrict');
+var messageSub = imbConnection.subscribe('modulesTEST', true);
 
 var sendDashboard = function(requestObj) {
   var request = JSON.stringify(requestObj).toString();
@@ -133,7 +133,7 @@ messageSub.onNormalEvent = function(eventDefinition, eventPayload) {
       sendDashboard(moduleInput); 
     }
   } else if(message.method === 'mcmsmv') {
-    if(message.kpiId === kpiId) {
+    //if(message.kpiId === kpiId) {
       console.log(message);
       // startModel response
       var mcmsmv = {
@@ -144,7 +144,7 @@ messageSub.onNormalEvent = function(eventDefinition, eventPayload) {
         userId: message.userId
       };
       sendDashboard(mcmsmv);
-    }
+    //}
   }
 };
 
