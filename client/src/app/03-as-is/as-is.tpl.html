@@ -23,7 +23,7 @@
                 <b>{{kpi.name}}</b> delivered by <b>{{kpi.moduleName}}</b> <i>(status: {{kpi.status}})</i>
                 <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
                 </a>
-                <button class="btn btn-xs btn-warning pull-right" ng-click="setScore(kpi);$event.stopPropagation()">
+                <button id="{{'set-' + kpi.alias + '-button'}}" class="btn btn-xs btn-warning pull-right" ng-click="setScore(kpi);$event.stopPropagation()">
                   <i class="glyphicon glyphicon-stats"></i> {{kpi.qualitative ? 'Set score' : 'Set manual'}}
                 </button>
                 <button id="{{'calculate-' + kpi.alias + '-button'}}" ng-show="!kpi.loading && !kpi.qualitative && kpi.moduleId" class="btn btn-xs btn-default pull-right" ng-click="calculateKpi(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-cloud-upload"></i> Calculate</button>

@@ -180,6 +180,16 @@ ManageKpiPage.prototype = Object.create({},
         this.useGeoJsonKpiButton.click();
       }
     },
+    clickSelectKpi: {
+      value: function(kpiId) {
+        element(by.id('select-kpi-' + kpiId)).click();
+      }
+    },
+    clickConfigureKpi: {
+      value: function(kpiId) {
+        element(by.id('used-kpi-' + kpiId)).click();
+      }
+    },
     clickSelectGeoJsonKpi: {
       value: function() {
         this.selectGeoJsonKpi.click();
