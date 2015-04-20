@@ -74,14 +74,14 @@ ManageKpiPage.prototype = Object.create({},
         return element(by.id('select-kpi-atomic-test'));
       }
     },
-    useGeoJsonKpiButton: {
+    selectQualitativeKpi: {
       get: function() {
-        return element(by.id('use-kpi-geojson-test-kpi'));
+        return element(by.id('select-kpi-qualitative-kpi'));
       }
     },
-    useAtomicTestKpiButton: {
+    useKpiButton: {
       get: function() {
-        return element(by.id('use-kpi-atomic-test'));
+        return element(by.id('use-kpi-button'));
       }
     },
     deleteGeoJsonKpiButton: {
@@ -118,6 +118,11 @@ ManageKpiPage.prototype = Object.create({},
     usedAtomicTestKpi: {
       get: function() {
         return element(by.id('used-kpi-atomic-test'));
+      }
+    },
+    usedQualitativeKpi: {
+      get: function() {
+        return element(by.id('used-kpi-qualitative-kpi'));
       }
     },
     kpiTitle: {
@@ -185,9 +190,9 @@ ManageKpiPage.prototype = Object.create({},
         this.usedGeoJsonKpi.click();
       }
     },
-    clickUseAtomicTestKpiButton: {
+    clickUseKpiButton: {
       value: function() {
-        this.useAtomicTestKpiButton.click();
+        this.useKpiButton.click();
       }
     },
     clickSelectAtomicTestKpi: {
@@ -198,6 +203,11 @@ ManageKpiPage.prototype = Object.create({},
     clickUsedAtomicTestKpi: {
       value: function() {
         this.usedAtomicTestKpi.click();
+      }
+    },
+    clickUsedQualitativeKpi: {
+      value: function() {
+        this.usedQualitativeKpi.click();
       }
     },
     typeKpiScoreExcellent: {
@@ -228,6 +238,21 @@ ManageKpiPage.prototype = Object.create({},
     clickSaveKpiConfigButton: {
       value: function() {
         this.saveKpiConfigButton.click();
+      }
+    },
+    qualitativeKpiButton: {
+      get: function() {
+        return element(by.id('qualitative-kpi-button'));
+      }
+    },
+    selectQualitativeKpiOption: {
+      value: function() {
+        this.qualitativeKpiButton.click();
+      }
+    },
+    clickSelectQualitativeKpiFromList: {
+      value: function() {
+        this.selectQualitativeKpi.click();
       }
     }
   }

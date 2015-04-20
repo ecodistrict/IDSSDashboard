@@ -14,7 +14,7 @@ describe('calculate atomic input', function() {
 
     page.clickCalculateAtomicTestKpiButton();
 
-    browser.driver.sleep(1000);
+    browser.driver.sleep(2000);
 
     expect(page.resultChartAtomicTestKpi.isDisplayed()).toBeTruthy();
     

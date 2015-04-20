@@ -12,7 +12,15 @@ exports.config = {
         'test/e2e/collect-data-atomic.e2e.js',
         'test/e2e/calculate-atomic.e2e.js',
         'test/e2e/set-ambition-atomic.e2e.js',
-        'test/e2e/develop-first-variant.e2e.js'
+        'test/e2e/develop-first-variant.e2e.js',
+        //qualitative KPI
+        'test/e2e/add-kpi-qualitative.e2e.js',
+        'test/e2e/use-kpi-qualitative.e2e.js',
+        'test/e2e/configure-kpi-qualitative.e2e.js'
+        // 'test/e2e/set-as-is-qualitative.e2e.js',
+        // 'test/e2e/set-ambition-qualitative.e2e.js',
+        // 'test/e2e/develop-second-variant.e2e.js'
+
         // 'test/e2e/add-kpi-geojson.e2e.js',
         // 'test/e2e/use-kpi-geojson.e2e.js',
         // 'test/e2e/configure-kpi-geojson.e2e.js',

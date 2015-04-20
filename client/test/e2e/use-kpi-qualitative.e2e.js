@@ -8,23 +8,19 @@ describe('use kpis', function() {
     page = new KpiPage();
   });
 
-  it('use atomic input test module', function() {
-
-    expect(browser.getCurrentUrl()).toMatch('analyse-problem/manage-kpis');
+  it('use qualitative Kpi', function() {
 
     browser.driver.sleep(1000);
 
-    page.clickSelectAtomicTestKpi();
+    page.clickSelectQualitativeKpiFromList();
 
     browser.driver.sleep(1000);
-
-    expect(page.connectedModules.count()).toEqual(1);
 
     page.clickUseKpiButton();
 
     browser.driver.sleep(1000);
 
-    expect(page.selectedKpis.count()).toEqual(1);
+    expect(page.selectedKpis.count()).toEqual(2);
 
   });
 
