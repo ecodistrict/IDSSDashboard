@@ -359,8 +359,13 @@ angular.module('idss-dashboard')
     var generateToBeInput = function(asIsKpi, toBeKpi) {
         var bad;
         var excellent;
+        var asIsKpiValue;
+
         // qualitative can be copied straight from the reference on server when saving
         if(!toBeKpi.qualitative) {
+            if(asIsKpi && asIsKpi.inputSpecification && asIsKpi.inputSpecification.kpiValueInputGroup) {
+                asIsKpiValue = asIsKpi.inputSpecification.kpiValueInputGroup.inputs.kpiValue.value;
+            }
             bad = getBadKpiValue(asIsKpi.settings);
             excellent = getExcellentKpiValue(asIsKpi.settings);
             toBeKpi.inputSpecification = {
@@ -375,13 +380,14 @@ angular.module('idss-dashboard')
                             label: 'Ambition in ' + asIsKpi.unit,
                             min: bad < excellent ? bad : excellent,
                             unit: asIsKpi.unit,
-                            max: excellent > bad ? excellent : bad
+                            max: excellent > bad ? excellent : bad,
+                            value: asIsKpiValue
                         }
                     }
                 }
             };
         } else {
-            toBeKpi.inputSpecification = asIsKpi.settings;
+            toBeKpi.inputSpecification = angular.copy(asIsKpi.inputSpecification);
         }
     };
 

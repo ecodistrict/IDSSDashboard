@@ -8,14 +8,14 @@ describe('develop variants', function() {
     page = new DevelopVariantPage();
   });
 
-  it('should create first variant', function() {
+  it('should create variants for Rotterdam case', function() {
 
     page.clickCreateVariantButton();
 
     browser.driver.sleep(100);
 
-    page.setVariantTitle('My first variant');
-    page.setVariantDescription('This is my first variant and this description text was generated in an automatic test');
+    page.setVariantTitle('Alternative 1');
+    page.setVariantDescription('The “Warande” park is restructured. A recreational lake is added. New plants and bushes improve the storage and drainage capacity');
 
     page.saveVariantButton.click();
 

@@ -8,7 +8,7 @@ describe('manage kpis', function() {
     page = new KpiPage();
   });
 
-  it('should register test kpi for atomic input test module', function() {
+  it('should register test kpis for rotterdam test case', function() {
 
     // KPI 1 - Quality of Life
 

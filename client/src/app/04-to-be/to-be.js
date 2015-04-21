@@ -96,6 +96,11 @@ angular.module( 'idss-dashboard.to-be', [])
 
   };
 
+  // TODO: this is an indicator whether the KPI is ok or not 
+  $scope.kpiIsConfigured = function(kpi) {
+    return kpi.inputSpecification;
+  };
+
 
 }]);
 
