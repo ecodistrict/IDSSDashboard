@@ -10,9 +10,23 @@ describe('use kpis', function() {
 
   it('configure atomic module', function() {
 
-    // KPI Water drainage
+    // KPI Quality of Life
 
     browser.driver.sleep(100);
+
+    page.clickConfigureKpi('quality-of-life');
+
+    browser.driver.sleep(500);
+
+    expect(page.kpiTitle.get(0).getText()).toEqual('Quality of Life');
+
+    // stick to default for now
+
+    page.clickSaveKpiConfigButton();
+
+    // KPI Water drainage
+
+    browser.driver.sleep(500);
 
     page.clickConfigureKpi('water-drainage');
 

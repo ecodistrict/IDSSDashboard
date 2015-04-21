@@ -57,31 +57,23 @@ angular.module('idss-dashboard')
     };
 
     // input needs to be from as-is variant
-    var getBadKpiValue = function(inputSpec) {
+    var getBadKpiValue = function(settings) {
         var bad = null;
-        if(inputSpec.kpiScores && inputSpec.kpiScores.inputs) {
-            // this is a quantitative KPI
-            if(inputSpec.kpiScores.inputs.kpiScoreBad){
-                bad = inputSpec.kpiScores.inputs.kpiScoreBad.value;
-            } else {
-                // this is a qualitative KPI
-                bad = 1;
-            }
+        if(settings.bad || settings.bad === 0) {
+            bad = settings.bad;
+        } else {
+            bad = 1; // qualitative KPI
         }
         return bad;
     };
 
     // input needs to be from as-is variant
-    var getExcellentKpiValue = function(inputSpec) {
+    var getExcellentKpiValue = function(settings) {
         var excellent = null;
-        if(inputSpec.kpiScores && inputSpec.kpiScores.inputs) {
-            // this is a quantitative KPI
-            if(inputSpec.kpiScores.inputs.kpiScoreExcellent) {
-                excellent = inputSpec.kpiScores.inputs.kpiScoreExcellent.value;
-            } else {
-                // this is a qualitative KPI
-                excellent = 10;
-            }
+        if(settings.excellent || settings.existing === 0) {
+            excellent = settings.excellent;
+        } else {
+            excellent = 10; // qualitative KPI
         }
         return excellent;
 
@@ -114,42 +106,206 @@ angular.module('idss-dashboard')
         generatePriorityKpiInput(kpi.settings, existingPrio);
     };
 
-    var generateQualitativeKpiInputSettings = function(kpi, scoreInputs) {
+    // This is the default configuration settings for qualitative KPI
+    // it is copied to as-is kpi when this kpi is used and during configuration it is used to generate input specification
+    var generateQualitativeKpiSettings = function(kpi) {
+        kpi.settings = [
+            {
+                label: "Score 10. Excellent",
+                value: "Excellent",
+                referenceValue: 10
+            },
+            {
+                label: "Score 9",
+                value: "",
+                referenceValue: 9
+            },
+            {
+                label: "Score 8",
+                value: "",
+                referenceValue: 8
+            },
+            {
+                label: "Score 7",
+                value: "",
+                referenceValue: 7
+            },
+            {
+                label: "Score 6. Sufficient",
+                value: "Sufficient",
+                referenceValue: 6
+            },
+            {
+                label: "Score 5",
+                value: "",
+                referenceValue: 5
+            },
+            {
+                label: "Score 4",
+                value: "",
+                referenceValue: 4
+            },
+            {
+                label: "Score 3",
+                value: "",
+                referenceValue: 3
+            },
+            {
+                label: "Score 2",
+                value: "",
+                referenceValue: 2
+            },
+            {
+                label: "Score 1. Bad",
+                value: "Bad",
+                referenceValue: 1
+            },
+            {
+                label: "Score 0. Not relevant",
+                value: "Not relevant",
+                referenceValue: 0
+            }
+        ];
+    };
 
-        // set given scores or default
-        scoreInputs = scoreInputs || {
-            "kpiScore1": {
-              label: "Bad",
-              type: 'radio',
-              name: kpi.alias,
-              order: 1,
-              referenceValue: 1
-            },
-            "kpiScore6": {
-              label: "Sufficient",
-              type: 'radio',
-              name: kpi.alias,
-              order: 6,
-              referenceValue: 6
-            },
-            "kpiScore10": {
-              label: "Excellent",
+    var generateQualitativeKpiInputSpecification = function(kpi) {
+        var settings = kpi.settings;
+
+        scoreInputs = {
+            "kpiScore0": {
+              label: '0: ' + settings[9].value,
               type: 'radio',
               name: kpi.alias,
               order: 10,
+              referenceValue: 0
+            },
+            "kpiScore1": {
+              label: '1: ' + settings[8].value,
+              type: 'radio',
+              name: kpi.alias,
+              order: 9,
+              referenceValue: 1
+            },
+            "kpiScore2": {
+              label: '2: ' + settings[8].value,
+              type: 'radio',
+              name: kpi.alias,
+              order: 8,
+              referenceValue: 2
+            },
+            "kpiScore3": {
+              label: '3: ' + settings[7].value,
+              type: 'radio',
+              name: kpi.alias,
+              order: 7,
+              referenceValue: 3
+            },
+            "kpiScore4": {
+              label: '4: ' + settings[6].value,
+              type: 'radio',
+              name: kpi.alias,
+              order: 6,
+              referenceValue: 4
+            },
+            "kpiScore5": {
+              label: '5: ' + settings[5].value,
+              type: 'radio',
+              name: kpi.alias,
+              order: 5,
+              referenceValue: 5
+            },
+            "kpiScore6": {
+              label: '6: ' + settings[4].value,
+              type: 'radio',
+              name: kpi.alias,
+              order: 4,
+              referenceValue: 6
+            },
+            "kpiScore7": {
+              label: '7: ' + settings[3].value,
+              type: 'radio',
+              name: kpi.alias,
+              order: 3,
+              referenceValue: 7
+            },
+            "kpiScore8": {
+              label: '8: ' + settings[2].value,
+              type: 'radio',
+              name: kpi.alias,
+              order: 2,
+              referenceValue: 8
+            },
+            "kpiScore9": {
+              label: '9: ' + settings[1].value,
+              type: 'radio',
+              name: kpi.alias,
+              order: 1,
+              referenceValue: 9
+            },
+            "kpiScore10": {
+              label: '10: ' + settings[0].value,
+              type: 'radio',
+              name: kpi.alias,
+              order: 0,
               referenceValue: 10
             }
         };
 
-        kpi.settings["kpiScores"] = {
+        kpi.inputSpecification = {
+            kpiScores: {
                 order: 0,
                 type: 'inputGroup',
-                label: 'This is a preview, edit the options by pressing "Edit KPI values" above',
+                label: 'Select a score',
                 info: 'Info',
                 inputs: scoreInputs
+            }
         };
-
     };
+
+    var generateQuantitativeKpiSettings = function(kpi) {
+
+        kpi.settings = {
+            bad: null,
+            excellent: null
+        };
+    };
+
+    // var generateQualitativeKpiInputSettings = function(kpi, scoreInputs) {
+
+    //     // set given scores or default
+    //     scoreInputs = scoreInputs || {
+    //         "kpiScore1": {
+    //           label: "Bad",
+    //           type: 'radio',
+    //           name: kpi.alias,
+    //           order: 1,
+    //           referenceValue: 1
+    //         },
+    //         "kpiScore6": {
+    //           label: "Sufficient",
+    //           type: 'radio',
+    //           name: kpi.alias,
+    //           order: 6,
+    //           referenceValue: 6
+    //         },
+    //         "kpiScore10": {
+    //           label: "Excellent",
+    //           type: 'radio',
+    //           name: kpi.alias,
+    //           order: 10,
+    //           referenceValue: 10
+    //         }
+    //     };
+
+    //     kpi.settings["kpiScores"] = {
+    //             order: 0,
+    //             type: 'inputGroup',
+    //             label: 'This is a preview, edit the options by pressing "Edit KPI values" above',
+    //             info: 'Info',
+    //             inputs: scoreInputs
+    //     };
+
+    // };
 
     var generatePriorityKpiInput = function(inputSpecification, priorityValue) {
 
@@ -172,9 +328,12 @@ angular.module('idss-dashboard')
         };
     };
 
-    var generateQuantitativeKpiInputSettings = function(kpi) {
+    var generateQuantitativeKpiInputSpecification = function(kpi) {
+
+        var settings = kpi.settings;
         
-        kpi.settings["kpiScores"] = {
+        kpi.inputSpecification = {
+            kpiScores: {
                 order: 0,
                 type: 'inputGroup',
                 label: 'Limits - define the scores',
@@ -183,14 +342,17 @@ angular.module('idss-dashboard')
                     "kpiScoreExcellent": {
                         label: 'Excellent',
                         type: 'number',
-                        unit: kpi.unit
+                        unit: kpi.unit,
+                        value: settings.excellent
                     },
                     "kpiScoreBad": {
                         label: 'Bad',
                         type: 'number',
-                        unit: kpi.unit
+                        unit: kpi.unit,
+                        value: settings.bad
                     }
                 }
+            }
         };
     };
 
@@ -255,14 +417,14 @@ angular.module('idss-dashboard')
 
     var copyQualitativeKpiInputFromSettings = function(copyToKpi, asIsKpi) {
         var scores, existingScore;
+        // check if value already is set on kpi
         if(copyToKpi.inputSpecification && copyToKpi.inputSpecification.kpiScores) {
             existingScore = copyToKpi.inputSpecification.kpiScores.inputs.kpiScore1.value;// all values are the same - the selected value
         }
         // TODO: find a nicer way to deep copy this..
         copyToKpi.inputSpecification = copyToKpi.inputSpecification || {};
-        copyToKpi.inputSpecification.kpiScores = angular.copy(asIsKpi.settings.kpiScores);
-        copyToKpi.inputSpecification.kpiScores.inputs = angular.copy(asIsKpi.settings.kpiScores.inputs);
-        copyToKpi.inputSpecification.kpiScores.label = "Select an option";
+        copyToKpi.inputSpecification.kpiScores = angular.copy(asIsKpi.inputSpecification.kpiScores);
+        copyToKpi.inputSpecification.kpiScores.inputs = angular.copy(asIsKpi.inputSpecification.kpiScores.inputs);
         scores = copyToKpi.inputSpecification.kpiScores.inputs;
         for(var i in scores) {
             if(scores.hasOwnProperty(i)) {
@@ -400,8 +562,11 @@ angular.module('idss-dashboard')
         getResultKpiValue: getResultKpiValue,
         generateQualitativeKpiOutput: generateQualitativeKpiOutput,
         generateQuantitativeKpiOutput: generateQuantitativeKpiOutput,
-        generateQualitativeKpiInputSettings: generateQualitativeKpiInputSettings,
-        generateQuantitativeKpiInputSettings: generateQuantitativeKpiInputSettings,
+        //generateQualitativeKpiInputSettings: generateQualitativeKpiInputSettings,
+        generateQualitativeKpiInputSpecification: generateQualitativeKpiInputSpecification,
+        generateQualitativeKpiSettings: generateQualitativeKpiSettings,
+        generateQuantitativeKpiInputSpecification: generateQuantitativeKpiInputSpecification,
+        generateQuantitativeKpiSettings: generateQuantitativeKpiSettings,
         generateToBeInput: generateToBeInput,
         generateManualInput: generateManualInput,
         generateSettings: generateSettings,

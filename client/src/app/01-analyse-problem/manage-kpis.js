@@ -116,16 +116,7 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
 
   // TODO: this is an indicator whether the KPI is ok or not 
   $scope.kpiIsConfigured = function(kpi) {
-    var isConfigured = true;
-    if(kpi.qualitative) {
-      
-    } else {
-      if(!KpiService.getBadKpiValue(kpi.settings) || !KpiService.getExcellentKpiValue(kpi.settings)) {
-        isConfigured = false;
-      }
-    }
-    
-    return isConfigured;
+    return kpi.inputSpecification;
   };
 
 }]);
