@@ -173,14 +173,14 @@ angular.module('idss-dashboard')
 
         scoreInputs = {
             "kpiScore0": {
-              label: '0: ' + settings[9].value,
+              label: '0: ' + settings[10].value,
               type: 'radio',
               name: kpi.alias,
               order: 10,
               referenceValue: 0
             },
             "kpiScore1": {
-              label: '1: ' + settings[8].value,
+              label: '1: ' + settings[9].value,
               type: 'radio',
               name: kpi.alias,
               order: 9,

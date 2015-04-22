@@ -98,7 +98,7 @@ describe('set kpi input', function() {
 
     // KPI ROI
 
-    page.clickSetKpiValue('return-of-investment');
+    page.clickSetKpiValue('return-on-investment');
 
     browser.driver.sleep(100);
 
@@ -108,7 +108,7 @@ describe('set kpi input', function() {
 
     browser.driver.sleep(100);
 
-    expect(element(by.id('m-return-of-investment-aggregated-kpi')).isDisplayed()).toBeTruthy();
+    expect(element(by.id('m-return-on-investment-aggregated-kpi')).isDisplayed()).toBeTruthy();
     
   });
 

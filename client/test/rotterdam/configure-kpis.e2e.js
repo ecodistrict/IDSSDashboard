@@ -34,7 +34,7 @@ describe('use kpis', function() {
 
     expect(page.kpiTitle.get(0).getText()).toEqual('Water drainage');
 
-    page.typeKpiScoreExcellent(30);
+    page.typeKpiScoreExcellent(3);
 
     page.typeKpiScoreBad(1);
 
@@ -50,7 +50,7 @@ describe('use kpis', function() {
 
     expect(page.kpiTitle.get(0).getText()).toEqual('Water storage');
 
-    page.typeKpiScoreExcellent(250);
+    page.typeKpiScoreExcellent(30);
 
     page.typeKpiScoreBad(0);
 
@@ -66,9 +66,9 @@ describe('use kpis', function() {
 
     expect(page.kpiTitle.get(0).getText()).toEqual('Water damage');
 
-    page.typeKpiScoreExcellent(250);
+    page.typeKpiScoreExcellent(75);
 
-    page.typeKpiScoreBad(0);
+    page.typeKpiScoreBad(10);
 
     page.clickSaveKpiConfigButton();
 
@@ -82,9 +82,9 @@ describe('use kpis', function() {
 
     expect(page.kpiTitle.get(0).getText()).toEqual('Real estate value');
 
-    page.typeKpiScoreExcellent(45);
+    page.typeKpiScoreExcellent(25);
 
-    page.typeKpiScoreBad(0);
+    page.typeKpiScoreBad(10);
 
     page.clickSaveKpiConfigButton();
 
@@ -98,9 +98,9 @@ describe('use kpis', function() {
 
     expect(page.kpiTitle.get(0).getText()).toEqual('Payback period');
 
-    page.typeKpiScoreExcellent(1);
+    page.typeKpiScoreExcellent(10);
 
-    page.typeKpiScoreBad(100);
+    page.typeKpiScoreBad(50);
 
     page.clickSaveKpiConfigButton();
 
@@ -108,15 +108,15 @@ describe('use kpis', function() {
 
     browser.driver.sleep(100);
 
-    page.clickConfigureKpi('return-of-investment');
+    page.clickConfigureKpi('return-on-investment');
 
     browser.driver.sleep(100);
 
-    expect(page.kpiTitle.get(0).getText()).toEqual('Return of investment');
+    expect(page.kpiTitle.get(0).getText()).toEqual('Return on investment');
 
     page.typeKpiScoreExcellent(1);
 
-    page.typeKpiScoreBad(100);
+    page.typeKpiScoreBad(-1);
 
     page.clickSaveKpiConfigButton();
 

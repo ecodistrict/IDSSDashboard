@@ -60,7 +60,7 @@ describe('use kpis', function() {
 
     browser.driver.sleep(400);
 
-    page.clickSelectKpi('return-of-investment');
+    page.clickSelectKpi('return-on-investment');
 
     browser.driver.sleep(400);
 
