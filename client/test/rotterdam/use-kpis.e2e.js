@@ -10,65 +10,65 @@ describe('use kpis', function() {
 
   it('should select all kpis for use case', function() {
 
-    browser.driver.sleep(200);
+    browser.driver.sleep(400);
 
     page.clickSelectKpi('quality-of-life');
 
-    browser.driver.sleep(200);
+    browser.driver.sleep(400);
 
     page.clickUseKpiButton();
 
-    browser.driver.sleep(200);
+    browser.driver.sleep(400);
 
     page.clickSelectKpi('water-drainage');
 
-    browser.driver.sleep(200);
+    browser.driver.sleep(400);
 
     page.clickUseKpiButton();
 
-    browser.driver.sleep(200);
+    browser.driver.sleep(400);
 
-    page.clickSelectKpi('water-storage');
+    // page.clickSelectKpi('water-storage');
 
-    browser.driver.sleep(200);
+    // browser.driver.sleep(400);
 
-    page.clickUseKpiButton();
+    // page.clickUseKpiButton();
 
-    browser.driver.sleep(200);
+    // browser.driver.sleep(400);
 
-    page.clickSelectKpi('water-damage');
+    // page.clickSelectKpi('water-damage');
 
-    browser.driver.sleep(200);
+    // browser.driver.sleep(400);
 
-    page.clickUseKpiButton();
+    // page.clickUseKpiButton();
 
-    browser.driver.sleep(200);
+    // browser.driver.sleep(400);
 
-    page.clickSelectKpi('real-estate-value');
+    // page.clickSelectKpi('real-estate-value');
 
-    browser.driver.sleep(200);
+    // browser.driver.sleep(400);
 
-    page.clickUseKpiButton();
+    // page.clickUseKpiButton();
 
-    browser.driver.sleep(200);
+    // browser.driver.sleep(400);
 
-    page.clickSelectKpi('payback-period');
+    // page.clickSelectKpi('payback-period');
 
-    browser.driver.sleep(200);
+    // browser.driver.sleep(400);
 
-    page.clickUseKpiButton();
+    // page.clickUseKpiButton();
 
-    browser.driver.sleep(200);
+    // browser.driver.sleep(400);
 
-    page.clickSelectKpi('return-of-investment');
+    // page.clickSelectKpi('return-of-investment');
 
-    browser.driver.sleep(200);
+    // browser.driver.sleep(400);
 
-    page.clickUseKpiButton();
+    // page.clickUseKpiButton();
 
-    browser.driver.sleep(200);
+    // browser.driver.sleep(400);
 
-    expect(page.selectedKpis.count()).toEqual(7);
+    // expect(page.selectedKpis.count()).toEqual(7);
 
   });
 

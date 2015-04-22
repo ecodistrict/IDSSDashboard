@@ -1,16 +1,31 @@
-var AsIsPage = require('../../src/app/03-as-is/as-is.page.e2e.js');
+var DevelopVariantPage = require('../../src/app/05-develop-variants/develop-variants.page.e2e.js');
 
-describe('set kpi input', function() {
+describe('develop variants', function() {
 
   var page;
 
   beforeEach(function() {
-    page = new AsIsPage();
+    page = new DevelopVariantPage();
   });
 
-  it('should set all as is values', function() {
+  it('should create alternative 2 for Rotterdam case', function() {
 
-    expect(page.kpiOutputs.count()).toEqual(2);
+    page.clickCreateVariantButton();
+
+    browser.driver.sleep(100);
+
+    page.setVariantTitle('Alternative 2');
+    page.setVariantDescription('The “Warande” park is restructured. A recreational lake is added. New plants and bushes improve the storage and drainage capacity');
+
+    page.saveVariantButton.click();
+
+    browser.driver.sleep(100);
+
+    expect(page.variants.count()).toEqual(4); // as-is and to-be is hidden 2+1
+
+    page.selectVariant(3);
+
+    browser.driver.sleep(100);
 
     // KPI Quality of Life
 
@@ -18,7 +33,7 @@ describe('set kpi input', function() {
 
     browser.driver.sleep(500);
 
-    page.selectQualitativeKpiValue(1);
+    page.selectQualitativeKpiValue(7);
 
     page.clickSaveKpiValue();
 
@@ -32,7 +47,7 @@ describe('set kpi input', function() {
 
     browser.driver.sleep(100);
 
-    page.setKpiValueInput(2);
+    page.setKpiValueInput(20);
 
     page.clickSaveKpiValue();
 
@@ -46,7 +61,7 @@ describe('set kpi input', function() {
 
     // browser.driver.sleep(100);
 
-    // page.setKpiValueInput(1);
+    // page.setKpiValueInput(200);
 
     // page.clickSaveKpiValue();
 
@@ -60,7 +75,7 @@ describe('set kpi input', function() {
 
     // browser.driver.sleep(100);
 
-    // page.setKpiValueInput(50);
+    // page.setKpiValueInput(5);
 
     // page.clickSaveKpiValue();
 
@@ -74,7 +89,7 @@ describe('set kpi input', function() {
 
     // browser.driver.sleep(100);
 
-    // page.setKpiValueInput(15);
+    // page.setKpiValueInput(2);
 
     // page.clickSaveKpiValue();
 
@@ -109,7 +124,7 @@ describe('set kpi input', function() {
     // browser.driver.sleep(100);
 
     // expect(element(by.id('m-return-of-investment-aggregated-kpi')).isDisplayed()).toBeTruthy();
-    
+
   });
 
 });

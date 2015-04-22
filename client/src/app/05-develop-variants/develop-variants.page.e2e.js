@@ -43,6 +43,41 @@ DevelopVariantsPage.prototype = Object.create({},
       get: function() {
         return element(by.id('save-variant-button'));
       }
+    },
+    selectVariant: {
+      value: function(index) {
+        this.variants.get(index).click();
+      }
+    },
+    clickSetKpiValue: {
+      value: function(kpiId) {
+        element(by.id('set-' + kpiId + '-button')).click();
+      }
+    },
+    kpiValueInput: {
+      get: function() {
+        return element(by.id('kpiValue')); // camel case because of auto generated ids
+      }
+    },
+    setKpiValueInput: {
+      value: function(input) {
+        this.kpiValueInput.clear().sendKeys(input);
+      }
+    },
+    saveKpiValueButton: {
+      get: function() {
+        return element(by.id('save-kpi-config'));
+      }
+    },
+    clickSaveKpiValue: {
+      value: function() {
+        this.saveKpiValueButton.click()
+      }
+    },
+    selectQualitativeKpiValue: {
+      value: function(referenceValue) {
+        return element(by.id('radio-' + referenceValue)).click();
+      }
     }
   }
 );
