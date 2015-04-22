@@ -24,7 +24,7 @@
         <div ng-repeat="kpi in currentVariant.kpiList" class="panel {{'panel-' + getStatus(kpi)}} module-item">
             <div class="panel-heading" role="tab">
               <h4 class="panel-title">
-                <a class="collapsed accordion-toggle" data-toggle="collapse" data-parent="#kpi-result-accordion"><b>{{kpi.kpiName}}</b> delivered by <b>{{kpi.moduleName}}</b> <i>(status: {{kpi.status}})</i><span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
+                <a class="collapsed accordion-toggle" data-toggle="collapse" data-parent="#kpi-result-accordion"><b>{{kpi.name}}</b> delivered by <b>{{kpi.moduleName}}</b> <i>(status: {{kpi.status}})</i><span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
                 </a>
                 <button id="{{'set-' + kpi.alias + '-button'}}" class="btn btn-xs btn-warning pull-right" ng-click="setScore(kpi);$event.stopPropagation()">
                   <i class="glyphicon glyphicon-stats"></i> {{kpi.qualitative ? 'Set score' : 'Set manual'}}

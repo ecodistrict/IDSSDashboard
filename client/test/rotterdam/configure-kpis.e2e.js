@@ -34,91 +34,91 @@ describe('use kpis', function() {
 
     expect(page.kpiTitle.get(0).getText()).toEqual('Water drainage');
 
-    page.typeKpiScoreExcellent(1);
+    page.typeKpiScoreExcellent(30);
 
-    page.typeKpiScoreBad(30);
+    page.typeKpiScoreBad(1);
 
     page.clickSaveKpiConfigButton();
 
     // KPI Water storage
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // page.clickConfigureKpi('water-storage');
+    page.clickConfigureKpi('water-storage');
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // expect(page.kpiTitle.get(0).getText()).toEqual('Water storage');
+    expect(page.kpiTitle.get(0).getText()).toEqual('Water storage');
 
-    // page.typeKpiScoreExcellent(250);
+    page.typeKpiScoreExcellent(250);
 
-    // page.typeKpiScoreBad(0);
+    page.typeKpiScoreBad(0);
 
-    // page.clickSaveKpiConfigButton();
+    page.clickSaveKpiConfigButton();
 
-    // // KPI Water damage
+    // KPI Water damage
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // page.clickConfigureKpi('water-damage');
+    page.clickConfigureKpi('water-damage');
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // expect(page.kpiTitle.get(0).getText()).toEqual('Water damage');
+    expect(page.kpiTitle.get(0).getText()).toEqual('Water damage');
 
-    // page.typeKpiScoreExcellent(250);
+    page.typeKpiScoreExcellent(250);
 
-    // page.typeKpiScoreBad(0);
+    page.typeKpiScoreBad(0);
 
-    // page.clickSaveKpiConfigButton();
+    page.clickSaveKpiConfigButton();
 
-    // // KPI Real estate value
+    // KPI Real estate value
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // page.clickConfigureKpi('real-estate-value');
+    page.clickConfigureKpi('real-estate-value');
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // expect(page.kpiTitle.get(0).getText()).toEqual('Real estate value');
+    expect(page.kpiTitle.get(0).getText()).toEqual('Real estate value');
 
-    // page.typeKpiScoreExcellent(45);
+    page.typeKpiScoreExcellent(45);
 
-    // page.typeKpiScoreBad(0);
+    page.typeKpiScoreBad(0);
 
-    // page.clickSaveKpiConfigButton();
+    page.clickSaveKpiConfigButton();
 
-    // // KPI Payback period
+    // KPI Payback period
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // page.clickConfigureKpi('payback-period');
+    page.clickConfigureKpi('payback-period');
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // expect(page.kpiTitle.get(0).getText()).toEqual('Payback period');
+    expect(page.kpiTitle.get(0).getText()).toEqual('Payback period');
 
-    // page.typeKpiScoreExcellent(1);
+    page.typeKpiScoreExcellent(1);
 
-    // page.typeKpiScoreBad(100);
+    page.typeKpiScoreBad(100);
 
-    // page.clickSaveKpiConfigButton();
+    page.clickSaveKpiConfigButton();
 
-    // // KPI Return of investment
+    // KPI Return of investment
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // page.clickConfigureKpi('return-of-investment');
+    page.clickConfigureKpi('return-of-investment');
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // expect(page.kpiTitle.get(0).getText()).toEqual('Return of investment');
+    expect(page.kpiTitle.get(0).getText()).toEqual('Return of investment');
 
-    // page.typeKpiScoreExcellent(1);
+    page.typeKpiScoreExcellent(1);
 
-    // page.typeKpiScoreBad(100);
+    page.typeKpiScoreBad(100);
 
-    // page.clickSaveKpiConfigButton();
+    page.clickSaveKpiConfigButton();
 
   });
 

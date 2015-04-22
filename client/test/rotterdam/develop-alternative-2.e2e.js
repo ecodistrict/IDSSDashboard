@@ -57,73 +57,73 @@ describe('develop variants', function() {
 
     // KPI Water storage
 
-    // page.clickSetKpiValue('water-storage');
+    page.clickSetKpiValue('water-storage');
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // page.setKpiValueInput(200);
+    page.setKpiValueInput(200);
 
-    // page.clickSaveKpiValue();
+    page.clickSaveKpiValue();
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // expect(element(by.id('m-water-storage-aggregated-kpi')).isDisplayed()).toBeTruthy();
+    expect(element(by.id('m-water-storage-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
-    // // KPI Water damage
+    // KPI Water damage
 
-    // page.clickSetKpiValue('water-damage');
+    page.clickSetKpiValue('water-damage');
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // page.setKpiValueInput(5);
+    page.setKpiValueInput(5);
 
-    // page.clickSaveKpiValue();
+    page.clickSaveKpiValue();
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // expect(element(by.id('m-water-damage-aggregated-kpi')).isDisplayed()).toBeTruthy();
+    expect(element(by.id('m-water-damage-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
-    // // KPI Real estate value
+    // KPI Real estate value
 
-    // page.clickSetKpiValue('real-estate-value');
+    page.clickSetKpiValue('real-estate-value');
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // page.setKpiValueInput(2);
+    page.setKpiValueInput(2);
 
-    // page.clickSaveKpiValue();
+    page.clickSaveKpiValue();
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // expect(element(by.id('m-real-estate-value-aggregated-kpi')).isDisplayed()).toBeTruthy();
+    expect(element(by.id('m-real-estate-value-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
-    // // KPI Payback period
+    // KPI Payback period
 
-    // page.clickSetKpiValue('payback-period');
+    page.clickSetKpiValue('payback-period');
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // page.setKpiValueInput(1);
+    page.setKpiValueInput(1);
 
-    // page.clickSaveKpiValue();
+    page.clickSaveKpiValue();
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // expect(element(by.id('m-payback-period-aggregated-kpi')).isDisplayed()).toBeTruthy();
+    expect(element(by.id('m-payback-period-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
-    // // KPI ROI
+    // KPI ROI
 
-    // page.clickSetKpiValue('return-of-investment');
+    page.clickSetKpiValue('return-of-investment');
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // page.setKpiValueInput(1);
+    page.setKpiValueInput(1);
 
-    // page.clickSaveKpiValue();
+    page.clickSaveKpiValue();
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // expect(element(by.id('m-return-of-investment-aggregated-kpi')).isDisplayed()).toBeTruthy();
+    expect(element(by.id('m-return-of-investment-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
   });
 

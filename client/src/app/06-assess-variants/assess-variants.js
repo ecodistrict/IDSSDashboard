@@ -69,17 +69,16 @@ angular.module( 'idss-dashboard.assess-variants', [])
       var kpiResults = [];
       _.each(v.kpiList, function(k) {
         // if as is variant, add settings to kpilist
-        var bad = 0, excellent = 10;
+        var bad = 1, excellent = 10;
         if(v.type === 'as-is') {
           if(!k.qualitative) {
-            bad = k.settings.kpiScores.inputs.kpiScoreBad.value;
-            excellent = k.settings.kpiScores.inputs.kpiScoreExcellent.value;
+            bad = k.settings.bad;
+            excellent = k.settings.excellent;
           }
           stakeholderData.kpiList.push({
             kpiName: k.name,
             kpiDescription: k.description,
             kpiId: k.alias,
-            weight: k.settings.priorityLabel.inputs.priorityValue.value,
             bad: bad,
             excellent: excellent 
           });
