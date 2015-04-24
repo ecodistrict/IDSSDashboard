@@ -12,7 +12,7 @@ describe('use kpis', function() {
 
     // KPI Quality of Life
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     page.clickConfigureKpi('quality-of-life');
 
@@ -30,7 +30,7 @@ describe('use kpis', function() {
 
     page.clickConfigureKpi('water-drainage');
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     expect(page.kpiTitle.get(0).getText()).toEqual('Water drainage');
 
@@ -42,11 +42,11 @@ describe('use kpis', function() {
 
     // KPI Water storage
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     page.clickConfigureKpi('water-storage');
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     expect(page.kpiTitle.get(0).getText()).toEqual('Water storage');
 
@@ -58,11 +58,11 @@ describe('use kpis', function() {
 
     // KPI Water damage
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     page.clickConfigureKpi('water-damage');
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     expect(page.kpiTitle.get(0).getText()).toEqual('Water damage');
 
@@ -74,11 +74,11 @@ describe('use kpis', function() {
 
     // KPI Real estate value
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     page.clickConfigureKpi('real-estate-value');
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     expect(page.kpiTitle.get(0).getText()).toEqual('Real estate value');
 
@@ -90,11 +90,11 @@ describe('use kpis', function() {
 
     // KPI Payback period
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     page.clickConfigureKpi('payback-period');
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     expect(page.kpiTitle.get(0).getText()).toEqual('Payback period');
 
@@ -106,11 +106,11 @@ describe('use kpis', function() {
 
     // KPI Return of investment
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     page.clickConfigureKpi('return-on-investment');
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     expect(page.kpiTitle.get(0).getText()).toEqual('Return on investment');
 

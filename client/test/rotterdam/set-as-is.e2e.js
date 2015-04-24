@@ -22,7 +22,7 @@ describe('set kpi input', function() {
 
     page.clickSaveKpiValue();
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     expect(element(by.id('m-quality-of-life-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
@@ -30,13 +30,13 @@ describe('set kpi input', function() {
 
     page.clickSetKpiValue('water-drainage');
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     page.setKpiValueInput(2);
 
     page.clickSaveKpiValue();
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     expect(element(by.id('m-water-drainage-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
@@ -44,13 +44,13 @@ describe('set kpi input', function() {
 
     page.clickSetKpiValue('water-storage');
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     page.setKpiValueInput(1);
 
     page.clickSaveKpiValue();
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     expect(element(by.id('m-water-storage-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
@@ -58,13 +58,13 @@ describe('set kpi input', function() {
 
     page.clickSetKpiValue('water-damage');
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     page.setKpiValueInput(50);
 
     page.clickSaveKpiValue();
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     expect(element(by.id('m-water-damage-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
@@ -72,13 +72,13 @@ describe('set kpi input', function() {
 
     page.clickSetKpiValue('real-estate-value');
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     page.setKpiValueInput(15);
 
     page.clickSaveKpiValue();
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     expect(element(by.id('m-real-estate-value-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
@@ -86,13 +86,13 @@ describe('set kpi input', function() {
 
     page.clickSetKpiValue('payback-period');
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     page.setKpiValueInput(1);
 
     page.clickSaveKpiValue();
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     expect(element(by.id('m-payback-period-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
@@ -100,13 +100,13 @@ describe('set kpi input', function() {
 
     page.clickSetKpiValue('return-on-investment');
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     page.setKpiValueInput(1);
 
     page.clickSaveKpiValue();
 
-    browser.driver.sleep(100);
+    browser.driver.sleep(200);
 
     expect(element(by.id('m-return-on-investment-aggregated-kpi')).isDisplayed()).toBeTruthy();
     
