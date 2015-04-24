@@ -1,16 +1,18 @@
-var AsIsPage = require('../../src/app/03-as-is/as-is.page.e2e.js');
+var DevelopVariantPage = require('../../src/app/05-develop-variants/develop-variants.page.e2e.js');
 
-describe('set kpi input', function() {
+describe('havensteder develop variants', function() {
 
   var page;
 
   beforeEach(function() {
-    page = new AsIsPage();
+    page = new DevelopVariantPage();
   });
 
-  it('should set all as is values', function() {
+  it('should adjust variants for this stakeholder', function() {
 
-    expect(page.kpiOutputs.count()).toEqual(2);
+    page.selectVariant(3);
+
+    browser.driver.sleep(200);
 
     // KPI Quality of Life
 
@@ -18,7 +20,7 @@ describe('set kpi input', function() {
 
     browser.driver.sleep(500);
 
-    page.selectQualitativeKpiValue(1);
+    page.selectQualitativeKpiValue(4);
 
     page.clickSaveKpiValue();
 
@@ -32,7 +34,7 @@ describe('set kpi input', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(2);
+    page.setKpiValueInput(8);
 
     page.clickSaveKpiValue();
 
@@ -46,7 +48,7 @@ describe('set kpi input', function() {
 
     // browser.driver.sleep(200);
 
-    // page.setKpiValueInput(1);
+    // page.setKpiValueInput(100);
 
     // page.clickSaveKpiValue();
 
@@ -74,7 +76,7 @@ describe('set kpi input', function() {
 
     // browser.driver.sleep(200);
 
-    // page.setKpiValueInput(15);
+    // page.setKpiValueInput(0.75);
 
     // page.clickSaveKpiValue();
 
@@ -109,7 +111,7 @@ describe('set kpi input', function() {
     // browser.driver.sleep(200);
 
     // expect(element(by.id('m-return-on-investment-aggregated-kpi')).isDisplayed()).toBeTruthy();
-    
+
   });
 
 });

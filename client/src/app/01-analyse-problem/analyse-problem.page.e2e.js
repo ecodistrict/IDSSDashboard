@@ -63,6 +63,26 @@ AnalyseProblemOverview.prototype = Object.create({},
       value: function() {
         this.nextButton.click();
       } 
+    },
+    addStakeholderButton: {
+      get: function() {
+        return element(by.id('add-stakeholder-button'));
+      }
+    },
+    stakeholderNameInput: {
+      get: function() {
+        return element(by.id('process-stakeholder'));
+      }
+    },
+    inputStakeholderName: {
+      value: function(input) {
+        this.stakeholderNameInput.clear().sendKeys(input);
+      }
+    },
+    switchToStakeholder: {
+      value: function(input) {
+        element(by.id('switch-to-' + input)).click();
+      }
     }
   }
 );

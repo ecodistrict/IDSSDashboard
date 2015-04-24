@@ -228,11 +228,12 @@ angular.module('idss-dashboard')
         });
         // remove variants that has been removed from facilitator
         for(var i = stakeholderVariants.length-1; i >= 0; i--) {
-            if(!stakeholderVariants[i].keep) {
+            console.log('this is a stakeholder variant: ', stakeholderVariants[i]);
+            if(stakeholderVariants[i] && !stakeholderVariants[i].keep) {
                 console.log('stakeholder variant that was not found in facilitator variant, and should be removed:');
                 console.log(stakeholderVariants[i]);
                 deleteVariant(stakeholderVariants[i]);
-                stakeholderVariants.splice(1, i);
+                //stakeholderVariants.splice(1, i);
             }
         }
     };

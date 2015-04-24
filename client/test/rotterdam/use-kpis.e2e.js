@@ -28,47 +28,47 @@ describe('use kpis', function() {
 
     browser.driver.sleep(400);
 
-    page.clickSelectKpi('water-storage');
+    // page.clickSelectKpi('water-storage');
 
-    browser.driver.sleep(400);
+    // browser.driver.sleep(400);
 
-    page.clickUseKpiButton();
+    // page.clickUseKpiButton();
 
-    browser.driver.sleep(400);
+    // browser.driver.sleep(400);
 
-    page.clickSelectKpi('water-damage');
+    // page.clickSelectKpi('water-damage');
 
-    browser.driver.sleep(400);
+    // browser.driver.sleep(400);
 
-    page.clickUseKpiButton();
+    // page.clickUseKpiButton();
 
-    browser.driver.sleep(400);
+    // browser.driver.sleep(400);
 
-    page.clickSelectKpi('real-estate-value');
+    // page.clickSelectKpi('real-estate-value');
 
-    browser.driver.sleep(400);
+    // browser.driver.sleep(400);
 
-    page.clickUseKpiButton();
+    // page.clickUseKpiButton();
 
-    browser.driver.sleep(400);
+    // browser.driver.sleep(400);
 
-    page.clickSelectKpi('payback-period');
+    // page.clickSelectKpi('payback-period');
 
-    browser.driver.sleep(400);
+    // browser.driver.sleep(400);
 
-    page.clickUseKpiButton();
+    // page.clickUseKpiButton();
 
-    browser.driver.sleep(400);
+    // browser.driver.sleep(400);
 
-    page.clickSelectKpi('return-on-investment');
+    // page.clickSelectKpi('return-on-investment');
 
-    browser.driver.sleep(400);
+    // browser.driver.sleep(400);
 
-    page.clickUseKpiButton();
+    // page.clickUseKpiButton();
 
-    browser.driver.sleep(400);
+    // browser.driver.sleep(400);
 
-    expect(page.selectedKpis.count()).toEqual(7);
+    // expect(page.selectedKpis.count()).toEqual(7);
 
   });
 

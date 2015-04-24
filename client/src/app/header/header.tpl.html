@@ -50,7 +50,7 @@
                         <li><a ui-sref="to-be-details">Details</a></li> -->
                     </ul>
                 </li>
-                <li ng-show="currentUser.role == 'Facilitator'" class="dropdown">
+                <li class="dropdown">
                     <a class="dropdown-toggle">Develop alternatives <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a ui-sref="develop-variants">Overview</a></li>
@@ -70,10 +70,11 @@
           
             <ul ng-show="isAuthenticated" class="nav navbar-nav navbar-right">
                 <li class="dropdown">
-                    <a class="dropdown-toggle"><span class="glyphicon glyphicon-user"></span> {{ currentUser.fname }} {{ currentUser.fname }} <b class="caret"></b></a>
+                    <a id="logout-dropdown" class="dropdown-toggle"><span class="glyphicon glyphicon-user"></span> {{ currentUser.fname }} <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <!-- <li><a ui-sref="current-user"><span class="glyphicon glyphicon-user"></span> {{ currentUser.name }}</a></li> -->
                         <li><a ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+                        <li><a id="switch-to-facilitator" ng-show="currentUser.role == 'Stakeholder'" ng-click="loginAsFacilitator()"><span class="glyphicon glyphicon-wrench"></span> Switch to Facilitator</a></li>
                     </ul>
                 </li>
             </ul>

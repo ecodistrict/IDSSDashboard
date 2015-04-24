@@ -1,6 +1,6 @@
 var ToBePage = require('../../src/app/04-to-be/to-be.page.e2e.js');
 
-describe('set to be situation', function() {
+describe('havensteder set to be situation', function() {
 
   var page;
 

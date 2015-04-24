@@ -26,7 +26,7 @@ angular.module( 'idss-dashboard.analyse-problem', [
   });
 }])
 
-.controller( 'AnalyseProblemCtrl', ['$scope', 'ProcessService', 'LoginService', 'VariantService', function AnalyseProblemCtrl( $scope, ProcessService, LoginService, VariantService ) {
+.controller( 'AnalyseProblemCtrl', ['$scope', 'ProcessService', 'LoginService', 'VariantService', '$state', function AnalyseProblemCtrl( $scope, ProcessService, LoginService, VariantService, $state ) {
 
   $scope.currentProcess = ProcessService.getCurrentProcess();
   var currentUser;
@@ -51,7 +51,7 @@ angular.module( 'idss-dashboard.analyse-problem', [
         facilitatorId: currentUser._id,
         activeProcessId: currentUser.activeProcessId,
         role: 'Stakeholder',
-        email: name + '@iddsdashboard.com'
+        email: name + '@idssdashboard.com'
       };
       LoginService.createLogin(registrant).then(function(stakeholder) {
         console.log(stakeholder);
@@ -70,6 +70,7 @@ angular.module( 'idss-dashboard.analyse-problem', [
           LoginService.login({username: stakeholder.email, password: 'testing'}).then(function(user) {
             VariantService.loadVariants().then(function(stakeholderVariants) {
               VariantService.addOrRemoveVariants(facilitatorVariants, stakeholderVariants);
+              $state.transitionTo('analyse-problem');
             });
           });
         } else {

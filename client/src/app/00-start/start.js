@@ -17,7 +17,7 @@ angular.module( 'idss-dashboard.start', [
     },
     data:{ 
       pageTitle: 'Start',
-      authorizedRoles: ['Facilitator']
+      authorizedRoles: ['Facilitator', 'Stakeholder']
     }
   });
 }])

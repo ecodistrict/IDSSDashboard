@@ -18,7 +18,7 @@ describe('set kpi input', function() {
 
     browser.driver.sleep(500);
 
-    page.selectQualitativeKpiValue(1);
+    page.selectQualitativeKpiValue(6);
 
     page.clickSaveKpiValue();
 
@@ -46,7 +46,7 @@ describe('set kpi input', function() {
 
     // browser.driver.sleep(200);
 
-    // page.setKpiValueInput(1);
+    // page.setKpiValueInput(2);
 
     // page.clickSaveKpiValue();
 
@@ -60,7 +60,7 @@ describe('set kpi input', function() {
 
     // browser.driver.sleep(200);
 
-    // page.setKpiValueInput(50);
+    // page.setKpiValueInput(51);
 
     // page.clickSaveKpiValue();
 
@@ -74,7 +74,7 @@ describe('set kpi input', function() {
 
     // browser.driver.sleep(200);
 
-    // page.setKpiValueInput(15);
+    // page.setKpiValueInput(16);
 
     // page.clickSaveKpiValue();
 
