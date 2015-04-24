@@ -35,6 +35,7 @@ angular.module('idss-dashboard')
             .get('users/logout')
             .then(function (res) {
                 Session.destroy();
+                return true;
                 //$rootScope.$broadcast('event:auth-loginRequired');
             });
     };
@@ -86,6 +87,18 @@ angular.module('idss-dashboard')
             });
     };
 
+    // TODO: remove from this service..
+    var getStakeholders = function() {
+        return $http
+            .get('users/stakeholders').error(function(err) {
+                NotificationService.createErrorFlash(err.message);
+            })
+            .then(function (res) {
+                var stakeholders = res.data;
+                return stakeholders;
+            });
+    };
+
     return {
         login: login,
         logout: logout,
@@ -93,7 +106,8 @@ angular.module('idss-dashboard')
         isAuthorized: isAuthorized,
         getCurrentUser: getCurrentUser,
         createLogin: createLogin,
-        forgotPassword: forgotPassword
+        forgotPassword: forgotPassword,
+        getStakeholders: getStakeholders // move this to separate service?
     };
 }])
 

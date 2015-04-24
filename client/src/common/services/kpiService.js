@@ -16,19 +16,11 @@ angular.module('idss-dashboard')
             .error(function(data, status) {
                 var label = 'Error when creating KPI';
                 NotificationService.createErrorFlash(label);
-                ProcessService.addLog({
-                    err: data, 
-                    label:label,
-                    status: status
-                });
             })
             .then(function (res) {
                 var kpi = res.data;
                 var label = 'KPI ' + kpi.name + ' was successfully created';
                 NotificationService.createSuccessFlash(label);
-                ProcessService.addLog({
-                    label:label
-                });
                 return kpi;
             });
     };
@@ -39,19 +31,11 @@ angular.module('idss-dashboard')
             .error(function(data, status) {
                 var label = 'Error when deleting KPI';
                 NotificationService.createErrorFlash(label);
-                ProcessService.addLog({
-                    err: err, 
-                    label:label,
-                    status: status
-                });
             })
             .then(function (res) {
                 var kpi = res.data;
                 var label = 'KPI ' + kpi.name + ' was successfully deleted';
                 NotificationService.createSuccessFlash(label);
-                ProcessService.addLog({
-                    label:label
-                });
                 return kpi;
             });
     };

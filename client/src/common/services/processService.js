@@ -31,11 +31,6 @@ angular.module('idss-dashboard')
             .error(function(status, err) {
                 var label = 'Error when loading active process';
                 NotificationService.createErrorStatus(label);
-                addLog({
-                    label: label,
-                    err: err,
-                    status: status
-                });
             })
             .then(function (res) {
                 var process = res.data;
@@ -53,19 +48,11 @@ angular.module('idss-dashboard')
             .error(function(status, err) {
                 var label = 'Error when saving process';
                 NotificationService.createErrorStatus(label);
-                addLog({
-                    label: label,
-                    err: err,
-                    status: status
-                });
             })
             .then(function (res) {
                 var savedProcess = res.data;
                 var label = 'Process was saved';
                 NotificationService.createSuccessStatus(label);
-                addLog({
-                    label: label
-                });
                 currentProcess.dateModified = savedProcess.dateModified; // current reference needs to be reused
                 return currentProcess;
             });
@@ -77,19 +64,11 @@ angular.module('idss-dashboard')
             .error(function(status, err) {
                 var label = 'Error when creating process';
                 NotificationService.createErrorStatus(label);
-                addLog({
-                    label: label,
-                    err: err,
-                    status: status
-                });
             })
             .then(function (res) {
                 var process = res.data;
                 var label = 'Process was created';
                 NotificationService.createSuccessStatus(label);
-                addLog({
-                    label: label
-                });
                 updateProcess(process);
                 return currentProcess;
             });
@@ -101,19 +80,11 @@ angular.module('idss-dashboard')
             .error(function(status, data) {
                 var label = 'Error when deleting process';
                 NotificationService.createErrorFlash(label);
-                addLog({
-                    err: err, 
-                    label:label,
-                    status: status
-                });
             })
             .then(function (res) {
                 var process = res.data;
                 var label = 'Process ' + process.title + ' was successfully deleted';
                 NotificationService.createSuccessFlash(label);
-                addLog({
-                    label:label
-                });
                 return process; // TODO: reset process!
             });
     };
@@ -141,40 +112,6 @@ angular.module('idss-dashboard')
         }
     };
 
-    // Move to variant! 
-    // var addInputsToModule = function(module) {
-    //     _.each(currentProcess.kpiList, function(kpi) {
-    //         if(kpi.selectedModule.id === module.id) {
-    //             kpi.selectedModule.inputs = module.inputs;
-    //         }
-    //     }); 
-    // };
-
-    // var addOutputsToModule = function(module) {
-    //     console.log(module);
-    //     _.each(currentProcess.kpiList, function(kpi) {
-    //         if(kpi.selectedModule.id === module.id) {
-    //             kpi.selectedModule.outputs = module.outputs;
-    //             kpi.selectedModule.isProcessing = false;
-    //         }
-    //     }); 
-    // };
-
-    var addLog = function(log) {
-        log.date = Date.now();
-        if(currentProcess.logs.length === 10) {
-            currentProcess.logs.shift(currentProcess.logs);
-        }
-        currentProcess.logs.push(log);
-        // if the current process last saved date needs to update
-        // TODO: move the logging out of process??
-        if(log.updateLastSaved) {
-            // this is not optimal, sending the process to server just to update last saved date
-            // (this is probably because something outside the process was saved but for the user it is the "process" that was saved)
-            saveCurrentProcess();
-        }
-    };
-
     // the AS IS is also a variant type
     var getAsIsVariant = function() {
         // TODO
@@ -187,7 +124,6 @@ angular.module('idss-dashboard')
         createNewProcess: createNewProcess,
         getIsModified: getIsModified,
         updateProcess: updateProcess,
-        addLog: addLog,
         addVariant: addVariant,
         removeVariant: removeVariant,
         getAsIsVariant: getAsIsVariant,

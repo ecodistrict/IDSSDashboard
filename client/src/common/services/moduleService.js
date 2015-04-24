@@ -65,11 +65,6 @@ angular.module('idss-dashboard')
             .error(function(data, status) {
                 var label = 'Error when loading inputs';
                 NotificationService.createErrorFlash(label);
-                ProcessService.addLog({
-                    err: data, 
-                    label:label,
-                    status: status
-                });
             })
             .then(function (res) {
                 var module = res.data;
@@ -85,19 +80,11 @@ angular.module('idss-dashboard')
             .error(function(data, status) {
                 var label = 'Error when saving inputs';
                 NotificationService.createErrorFlash(label);
-                ProcessService.addLog({
-                    err: data, 
-                    label:label,
-                    status: status
-                });
             })
             .then(function (res) {
                 var module = res.data;
                 var label = 'Input data was successfully saved';
                 NotificationService.createSuccessFlash(label);
-                ProcessService.addLog({
-                    label:label
-                });
                 return module;
             });
     };
@@ -119,11 +106,6 @@ angular.module('idss-dashboard')
             .error(function(data, status) {
                 var label = 'Error when loading outputs';
                 NotificationService.createErrorFlash(label);
-                ProcessService.addLog({
-                    err: data, 
-                    label:label,
-                    status: status
-                });
             })
             .then(function (res) {
                 var outputs = res.data;
@@ -151,19 +133,11 @@ angular.module('idss-dashboard')
             .error(function(data, status) {
                 var label = 'Error when saving inputs';
                 NotificationService.createErrorFlash(label);
-                ProcessService.addLog({
-                    err: data, 
-                    label:label,
-                    status: status
-                });
             })
             .then(function (res) {
                 var module = res.data;
                 var label = 'Data was successfully saved';
                 NotificationService.createSuccessFlash(label);
-                ProcessService.addLog({
-                    label:label
-                });
                 return module;
             });
     };

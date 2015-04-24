@@ -107,7 +107,6 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
     kpiModal.result.then(function (configuredKpi) {
       // add the kpi settings and module spec to as is variant
       VariantService.updateKpi($scope.asIsVariant, configuredKpi);
-      ProcessService.addLog({label: 'Configured KPI ' + kpi.name});
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
     });

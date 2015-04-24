@@ -15,7 +15,7 @@ angular.module( 'idss-dashboard.to-be', [])
     },
     data:{ 
       pageTitle: 'To be',
-      authorizedRoles: ['Facilitator']
+      authorizedRoles: ['Facilitator', 'Stakeholder']
     },
     resolve:{
       variants: ['VariantService', function(VariantService) {

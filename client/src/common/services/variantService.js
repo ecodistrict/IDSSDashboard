@@ -18,11 +18,6 @@ angular.module('idss-dashboard')
             .error(function(status, data) {
                 var label = 'Error when loading variants';
                 NotificationService.createErrorFlash(label);
-                ProcessService.addLog({
-                    err: err, 
-                    label:label,
-                    status: status
-                });
             })
             .then(function (res) {
                 variants = res.data;
@@ -36,19 +31,11 @@ angular.module('idss-dashboard')
             .error(function(status, data) {
                 var label = 'Error when creating variant';
                 NotificationService.createErrorFlash(label);
-                ProcessService.addLog({
-                    err: err, 
-                    label:label,
-                    status: status
-                });
             })
             .then(function (res) {
                 var variant = res.data;
                 var label = 'Variant ' + variant.name + ' was successfully created';
                 NotificationService.createSuccessFlash(label);
-                ProcessService.addLog({
-                    label:label
-                });
                 return variant;
             });
     };
@@ -59,20 +46,11 @@ angular.module('idss-dashboard')
             .error(function(status, err) {
                 var label = 'Error when saving variant';
                 NotificationService.createErrorStatus(label);
-                ProcessService.addLog({
-                    label: label,
-                    err: err,
-                    status: status
-                });
             })
             .then(function (res) {
                 var savedVariant = res.data;
                 var label = 'Variant was saved';
                 // NotificationService.createSuccessStatus(label);
-                ProcessService.addLog({
-                    label: label,
-                    updateLastSaved: true
-                });
                 return savedVariant;
             });
     };
@@ -83,19 +61,11 @@ angular.module('idss-dashboard')
             .error(function(status, data) {
                 var label = 'Error when deleting variant';
                 NotificationService.createErrorFlash(label);
-                ProcessService.addLog({
-                    err: err, 
-                    label:label,
-                    status: status
-                });
             })
             .then(function (res) {
                 var variant = res.data;
                 var label = 'Variant ' + variant.name + ' was successfully deleted';
                 NotificationService.createSuccessFlash(label);
-                ProcessService.addLog({
-                    label:label
-                });
                 return variant;
             });
     };
@@ -121,10 +91,6 @@ angular.module('idss-dashboard')
         } else {
             label = 'Error: As Is was not loaded properly';
             NotificationService.createErrorFlash(label);
-            ProcessService.addLog({
-                label:label,
-                status: status
-            });
         }
     };
 
@@ -190,11 +156,6 @@ angular.module('idss-dashboard')
             .error(function(status, data) {
                 var label = 'Error when deleting module input';
                 NotificationService.createErrorFlash(label);
-                ProcessService.addLog({
-                    err: data, 
-                    label:label,
-                    status: status
-                });
             })
             .then(function (res) {
                 console.log(res);
@@ -208,11 +169,6 @@ angular.module('idss-dashboard')
             .error(function(status, data) {
                 var label = 'Error when deleting module output';
                 NotificationService.createErrorFlash(label);
-                ProcessService.addLog({
-                    err: data, 
-                    label:label,
-                    status: status
-                });
             })
             .then(function (res) {
                 console.log(res);
@@ -240,7 +196,43 @@ angular.module('idss-dashboard')
         // remove kpis that has been removed in as is
         for(var i = otherVariant.kpiList.length-1; i >= 0; i--) {
             if(!otherVariant.kpiList[i].keep) {
-                otherVariant.kpiList[i].splice(1, i);
+                otherVariant.kpiList.splice(1, i);
+            }
+        }
+    };
+
+    var addOrRemoveVariants = function(facilitatorVariants, stakeholderVariants) {
+        // Variants are added or removed
+        _.each(facilitatorVariants, function(fVariant) {
+            console.log('facilitator has variant: ');
+            console.log(fVariant);
+            var sVariant = _.find(stakeholderVariants, function(sVariant) {return sVariant.connectedVariantId === fVariant._id;});
+            var newVariant;
+            if(sVariant) {
+                console.log('that was found in stakeholderVariants');
+                sVariant.keep = true;
+                // if name or description has been changed
+                sVariant.name = fVariant.name;
+                sVariant.description = fVariant.description;
+                addOrRemoveKpis(fVariant, sVariant);
+                saveVariant(sVariant);
+            } else {
+                console.log('that was NOT found in stakeholderVariants');
+                newVariant = angular.copy(fVariant);
+                newVariant.keep = true;
+                delete newVariant._id;
+                newVariant.connectedVariantId = fVariant._id;
+                stakeholderVariants.push(newVariant);
+                createVariant(newVariant);
+            }
+        });
+        // remove variants that has been removed from facilitator
+        for(var i = stakeholderVariants.length-1; i >= 0; i--) {
+            if(!stakeholderVariants[i].keep) {
+                console.log('stakeholder variant that was not found in facilitator variant, and should be removed:');
+                console.log(stakeholderVariants[i]);
+                deleteVariant(stakeholderVariants[i]);
+                stakeholderVariants.splice(1, i);
             }
         }
     };
@@ -254,6 +246,7 @@ angular.module('idss-dashboard')
         addKpi: addKpi,
         updateKpi: updateKpi,
         removeKpi: removeKpi,
-        addOrRemoveKpis: addOrRemoveKpis
+        addOrRemoveKpis: addOrRemoveKpis,
+        addOrRemoveVariants: addOrRemoveVariants
     };
 }]);

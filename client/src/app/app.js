@@ -86,9 +86,6 @@ angular.module( 'idss-dashboard', [
         var label = messageObject.message;
         console.log(label);
         NotificationService.createInfoFlash(label);
-        ProcessService.addLog({
-          label:label
-        });
       });
     
       // register event to check auth on page change
