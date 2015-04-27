@@ -32,9 +32,12 @@ angular.module( 'idss-dashboard.analyse-problem', [
   var currentUser;
   LoginService.getCurrentUser().then(function(user) {
     currentUser = user;
-    LoginService.getStakeholders().then(function(stakeholders) {
-      $scope.stakeholders = stakeholders;
-    });
+    $scope.facilitator = user.role === 'Facilitator';
+    if($scope.facilitator) {
+      LoginService.getStakeholders().then(function(stakeholders) {
+        $scope.stakeholders = stakeholders;
+      });
+    }
   });
 
   $scope.updateProcess = function(logMessage){
