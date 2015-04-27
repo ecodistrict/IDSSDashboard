@@ -15,7 +15,7 @@ angular.module( 'idss-dashboard.assess-variants', [])
     },
     data:{ 
       pageTitle: 'Assess alternatives',
-      authorizedRoles: ['Facilitator']
+      authorizedRoles: ['Facilitator', 'Stakeholder']
     },
     resolve:{
       variants: ['VariantService', function(VariantService) {
@@ -87,7 +87,8 @@ angular.module( 'idss-dashboard.assess-variants', [])
         getKpiResult(k, function(value) {
           kpiResults.push({
             kpiValue: value,
-            kpiId: k.alias
+            kpiId: k.alias,
+            disabled: k.disabled
           });
         });
       });

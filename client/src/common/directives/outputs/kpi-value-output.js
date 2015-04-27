@@ -12,9 +12,6 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
             var render = function(output) {
 
-                //console.log(output);
-                console.log(scope.kpi);
-
                 scope.outputId = 'm-' + scope.kpi.alias + '-aggregated-kpi'; // generate a unique id
                 scope.noDataMessage = "No overall KPI is given for this result";
                 bad = scope.kpi.bad;
@@ -22,8 +19,6 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                 if(!bad || !excellent) {
                     scope.noDataMessage = "Excellent and/or bad values where not defined when configuring KPIs";
                 }
-
-                //console.log(output);
 
                 var kpiValues = {
                     "title": "KPI value in blue",
@@ -37,9 +32,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                 }
 
                 scope.kpiValue = kpiValues;
-                console.log(kpiValues);
-                //scope.kpiValue = output.value;
-
+                
                 //var template = ['<div id="{{outputId}}">Value: {{kpiValue}}, Bad: {{kpi.bad}}, Excellent: {{kpi.excellent}}</div>'].join('');
                 var template = ['<nvd3-bullet-chart ',
                             'data="kpiValue" ',

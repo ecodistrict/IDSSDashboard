@@ -15,8 +15,6 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
 
           scope.render = function(mcmsmvData) {
 
-            console.log(mcmsmvData);
-
             if(!mcmsmvData) {
               return;
             }
@@ -45,7 +43,8 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
                       kpiName: metadata[kpi.kpiId].kpiName,
                       bad: metadata[kpi.kpiId].bad,
                       excellent: metadata[kpi.kpiId].excellent,
-                      value: kpi.kpiValue,
+                      value: kpi.disabled ? 0 : kpi.kpiValue, // override kpivalue to zero if disabled (it can be set or undefined)
+                      disabled: kpi.disabled,
                       kpiIndex: metadata[kpi.kpiId].index,
                       unit: metadata[kpi.kpiId].unit,
                       count: kpiCounter
@@ -55,8 +54,6 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
                 });
             });
 
-            console.log(data);
-            
             element.append([
               // '<div class="col-xs-12">',
               // ' <div id="calc-year-chart"></div>',
@@ -298,7 +295,6 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
     .group(kpiGroup)
     .colors(d3.scale.category10())
     .label(function (d){
-      console.log(d);
        return d.key + ' ' + d.value;
     })
     // .title(function(d) {return d.kpiName;})
@@ -351,7 +347,7 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
               return '<a href="#/variant-input/' + d.variantId + '">' + d.kpiName + '</a>';
             },
             function(d) {
-              return d.value + ' ' + d.unit;
+              return d.disabled ? 'n/a' : d.value + ' ' + d.unit;
             },
             function(d) {
               return d.bad + ' ' + d.unit;
@@ -379,7 +375,7 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
               return '<a href="#/variant-input/' + d.variantId + '">' + d.variantName + '</a>';
             },
             function(d) {
-              return d.value + ' ' + d.unit;
+              return d.disabled ? 'n/a' : d.value + ' ' + d.unit;
             },
             function(d) {
               return d.bad + ' ' + d.unit;
