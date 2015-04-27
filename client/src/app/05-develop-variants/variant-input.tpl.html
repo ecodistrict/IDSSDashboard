@@ -41,7 +41,8 @@
                   <i class="glyphicon glyphicon-pencil"></i> Set input
                 </button>
               </h4>
-              <kpi-value-output kpi="kpi"></kpi-value-output>
+              <kpi-value-output ng-if="!kpi.disabled" kpi="kpi"></kpi-value-output>
+              <p ng-if="kpi.disabled" style="margin-top:10px" class="well">KPI <b>{{kpi.name}}</b> is not applicable for this alternative</p>
             </div>
             <div id="{{$index}}" class="panel-collapse collapse" role="tabpanel">
               <div class="panel-body" style="position:relative">
