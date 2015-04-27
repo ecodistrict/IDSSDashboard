@@ -1,6 +1,8 @@
-angular.module( 'idss-dashboard.header', [])
+angular.module( 'idss-dashboard.header', [
+    'idss-dashboard.header.reenterpassword'
+])
 
-.controller( 'HeaderCtrl', ['$scope', '$location', 'LoginService', '$state', '$rootScope', 'ProcessService', function HeaderCtrl( $scope, $location, LoginService, $state, $rootScope, ProcessService ) {
+.controller( 'HeaderCtrl', ['$scope', '$location', 'LoginService', '$state', '$rootScope', 'ProcessService', '$modal', function HeaderCtrl( $scope, $location, LoginService, $state, $rootScope, ProcessService, $modal ) {
 
     $scope.logout = function() {
 
@@ -27,16 +29,39 @@ angular.module( 'idss-dashboard.header', [])
 
     $scope.loginAsFacilitator = function() {
 
-        LoginService.logout().then(function(loggedOut) {
-            if(loggedOut === true) {
-                // get the facilitator name from facilitator id, promt for password
-                LoginService.login({username: 'testuser@test.test', password: 'testing'}).then(function(user) {
-                    $state.transitionTo('analyse-problem');
-                });
-            } else {
-                console.log('TODO: handle this, user was not logged out');
-            }
+        var passwordModal = $modal.open({
+              templateUrl: 'header/reenter-password.tpl.html',
+              controller: 'ReenterPasswordCtrl',
+              resolve: {
+                username: function() {
+                  return $scope.currentUser.email;
+                }
+              }
+            });
+
+        passwordModal.result.then(function (credentials) {
+
+            LoginService.logout().then(function(loggedOut) {
+                if(loggedOut === true) {
+                    // get the facilitator name from facilitator id, promt for password
+                    LoginService.login(credentials).then(function(user) {
+                        $state.transitionTo('analyse-problem');
+                    });
+                } else {
+                    console.log('TODO: handle this, user was not logged out');
+                }
+            });
+              
+        }, function () {
+            console.log('Modal dismissed at: ' + new Date());
         });
+
+        
+
+        
+
+            
+
     };
 
 }]);

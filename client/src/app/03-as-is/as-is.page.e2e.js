@@ -39,6 +39,11 @@ AsIsPage.prototype = Object.create({},
         element(by.id('set-' + kpiId + '-button')).click();
       }
     },
+    clickDisableKpi: {
+      value: function(kpiId) {
+        element(by.id('disable-' + kpiId + '-button')).click();
+      }
+    },
     resultChart: {
       get: function(kpiId) {
         element(by.id('m-' + kpiId + '-aggregated-kpi'));

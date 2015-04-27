@@ -54,6 +54,11 @@ DevelopVariantsPage.prototype = Object.create({},
         element(by.id('set-' + kpiId + '-button')).click();
       }
     },
+    clickDisableKpi: {
+      value: function(kpiId) {
+        element(by.id('disable-' + kpiId + '-button')).click();
+      }
+    },
     kpiValueInput: {
       get: function() {
         return element(by.id('kpiValue')); // camel case because of auto generated ids

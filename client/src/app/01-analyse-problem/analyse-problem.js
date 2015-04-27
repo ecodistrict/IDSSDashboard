@@ -67,7 +67,7 @@ angular.module( 'idss-dashboard.analyse-problem', [
     VariantService.loadVariants().then(function(facilitatorVariants) {
       LoginService.logout().then(function(loggedOut) {
         if(loggedOut === true) {
-          LoginService.login({username: stakeholder.email, password: 'testing'}).then(function(user) {
+          LoginService.login({username: stakeholder.email, password: 'stakeholder'}).then(function(user) {
             VariantService.loadVariants().then(function(stakeholderVariants) {
               VariantService.addOrRemoveVariants(facilitatorVariants, stakeholderVariants);
               $state.transitionTo('analyse-problem');

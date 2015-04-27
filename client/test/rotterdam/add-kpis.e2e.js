@@ -10,13 +10,27 @@ describe('manage kpis', function() {
 
   it('should register test kpis for rotterdam test case', function() {
 
-    // KPI 1 - Quality of Life
+    // KPI 1 - Quality of Life (Rubroek)
 
     page.clickAddKpiButton();
 
     browser.driver.sleep(100);
 
-    page.typeKpiName('Quality of Life');
+    page.typeKpiName('Quality of Life - Rubroek');
+
+    page.typeKpiDescription('This KPI is qualitative for how it is to live in the district');
+
+    page.selectQualitativeKpiOption();
+
+    page.clickSaveKpiButton();
+
+    // KPI 1b - Quality of Life (residents)
+
+    page.clickAddKpiButton();
+
+    browser.driver.sleep(100);
+
+    page.typeKpiName('Quality of Life - residents');
 
     page.typeKpiDescription('This KPI is qualitative for how it is to live in the district');
 
@@ -108,7 +122,7 @@ describe('manage kpis', function() {
 
     page.clickSaveKpiButton();
 
-    expect(page.kpis.count()).toEqual(7);
+    expect(page.kpis.count()).toEqual(8);
 
 
 

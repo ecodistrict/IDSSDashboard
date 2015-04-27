@@ -5,7 +5,7 @@
             <div class="register-wall">
                 <p id="success-message" ng-show="registrant.password" class="well">
                     Your account was successfully created! <br>
-                    Your password is: <b>{{registrant.password}}</b><br>
+                    Your password is: <b id="returned-password">{{registrant.password}}</b><br>
                     <a ui-sref="login">Go to login</a>
                 </p>
                 <!-- <span ng-show="registrant.exists">

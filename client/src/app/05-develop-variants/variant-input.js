@@ -202,5 +202,10 @@ angular.module( 'idss-dashboard.develop-variants.variant-input', [])
 
     };
 
+  $scope.disable = function(kpi, state) {
+    kpi.disabled = state;
+    VariantService.updateKpi(currentVariant, kpi);
+  };
+
 }]);
 

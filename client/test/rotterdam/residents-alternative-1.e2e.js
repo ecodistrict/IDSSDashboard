@@ -17,31 +17,10 @@ describe('havensteder develop variants', function() {
 
     // KPI Quality of Life
 
-    page.clickSetKpiValue('quality-of-life---rubroek');
-
-    browser.driver.sleep(500);
-
-    page.selectQualitativeKpiValue(8);
-
-    page.clickSaveKpiValue();
-
+    page.clickDisableKpi('quality-of-life---rubroek');
     browser.driver.sleep(200);
-
-    expect(element(by.id('m-quality-of-life---rubroek-aggregated-kpi')).isDisplayed()).toBeTruthy();
-
-    // KPI Quality of Life
-
-    page.clickSetKpiValue('quality-of-life---residents');
-
-    browser.driver.sleep(500);
-
-    page.selectQualitativeKpiValue(8);
-
-    page.clickSaveKpiValue();
-
+    page.clickDisableKpi('quality-of-life---residents');
     browser.driver.sleep(200);
-
-    expect(element(by.id('m-quality-of-life---residents-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
     // KPI Water drainage
 

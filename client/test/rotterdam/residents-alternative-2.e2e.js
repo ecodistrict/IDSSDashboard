@@ -10,8 +10,7 @@ describe('havensteder develop variants', function() {
 
   it('should adjust variants for this stakeholder', function() {
 
-
-    page.selectVariant(2);
+    page.selectVariant(3);
 
     browser.driver.sleep(200);
 
@@ -21,7 +20,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(500);
 
-    page.selectQualitativeKpiValue(8);
+    page.selectQualitativeKpiValue(4);
 
     page.clickSaveKpiValue();
 
@@ -35,7 +34,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(500);
 
-    page.selectQualitativeKpiValue(8);
+    page.selectQualitativeKpiValue(4);
 
     page.clickSaveKpiValue();
 

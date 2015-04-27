@@ -29,7 +29,7 @@ describe('develop variants', function() {
 
     // KPI Quality of Life
 
-    page.clickSetKpiValue('quality-of-life');
+    page.clickSetKpiValue('quality-of-life---rubroek');
 
     browser.driver.sleep(500);
 
@@ -39,7 +39,21 @@ describe('develop variants', function() {
 
     browser.driver.sleep(200);
 
-    expect(element(by.id('m-quality-of-life-aggregated-kpi')).isDisplayed()).toBeTruthy();
+    expect(element(by.id('m-quality-of-life---rubroek-aggregated-kpi')).isDisplayed()).toBeTruthy();
+
+    // KPI Quality of Life
+
+    page.clickSetKpiValue('quality-of-life---residents');
+
+    browser.driver.sleep(500);
+
+    page.selectQualitativeKpiValue(7);
+
+    page.clickSaveKpiValue();
+
+    browser.driver.sleep(200);
+
+    expect(element(by.id('m-quality-of-life---residents-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
     // KPI Water drainage
 

@@ -14,11 +14,25 @@ describe('use kpis', function() {
 
     browser.driver.sleep(200);
 
-    page.clickConfigureKpi('quality-of-life');
+    page.clickConfigureKpi('quality-of-life---rubroek');
 
     browser.driver.sleep(500);
 
-    expect(page.kpiTitle.get(0).getText()).toEqual('Quality of Life');
+    expect(page.kpiTitle.get(0).getText()).toEqual('Quality of Life - Rubroek');
+
+    // stick to default for now
+
+    page.clickSaveKpiConfigButton();
+
+    // KPI Quality of Life
+
+    browser.driver.sleep(200);
+
+    page.clickConfigureKpi('quality-of-life---residents');
+
+    browser.driver.sleep(500);
+
+    expect(page.kpiTitle.get(0).getText()).toEqual('Quality of Life - residents');
 
     // stick to default for now
 

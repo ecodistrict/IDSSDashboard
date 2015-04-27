@@ -12,7 +12,15 @@ describe('use kpis', function() {
 
     browser.driver.sleep(400);
 
-    page.clickSelectKpi('quality-of-life');
+    page.clickSelectKpi('quality-of-life---rubroek');
+
+    browser.driver.sleep(400);
+
+    page.clickUseKpiButton();
+
+    browser.driver.sleep(400);
+
+    page.clickSelectKpi('quality-of-life---residents');
 
     browser.driver.sleep(400);
 
@@ -68,7 +76,7 @@ describe('use kpis', function() {
 
     browser.driver.sleep(400);
 
-    expect(page.selectedKpis.count()).toEqual(7);
+    expect(page.selectedKpis.count()).toEqual(8);
 
   });
 

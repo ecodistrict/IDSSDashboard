@@ -1,19 +1,16 @@
-var DevelopVariantPage = require('../../src/app/05-develop-variants/develop-variants.page.e2e.js');
+var AsIsPage = require('../../src/app/03-as-is/as-is.page.e2e.js');
 
-describe('havensteder develop variants', function() {
+describe('set kpi input', function() {
 
   var page;
 
   beforeEach(function() {
-    page = new DevelopVariantPage();
+    page = new AsIsPage();
   });
 
-  it('should adjust variants for this stakeholder', function() {
+  it('should set all as is values', function() {
 
-
-    page.selectVariant(2);
-
-    browser.driver.sleep(200);
+    expect(page.kpiOutputs.count()).toEqual(8);
 
     // KPI Quality of Life
 
@@ -21,7 +18,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(500);
 
-    page.selectQualitativeKpiValue(8);
+    page.selectQualitativeKpiValue(6);
 
     page.clickSaveKpiValue();
 
@@ -35,7 +32,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(500);
 
-    page.selectQualitativeKpiValue(8);
+    page.selectQualitativeKpiValue(6);
 
     page.clickSaveKpiValue();
 
@@ -49,7 +46,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(9);
+    page.setKpiValueInput(2);
 
     page.clickSaveKpiValue();
 
@@ -63,7 +60,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(100);
+    page.setKpiValueInput(0);
 
     page.clickSaveKpiValue();
 
@@ -77,7 +74,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(50);
+    page.setKpiValueInput(1);
 
     page.clickSaveKpiValue();
 
@@ -91,7 +88,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(0.75);
+    page.setKpiValueInput(16);
 
     page.clickSaveKpiValue();
 
@@ -101,32 +98,14 @@ describe('havensteder develop variants', function() {
 
     // KPI Payback period
 
-    page.clickSetKpiValue('payback-period');
-
+    page.clickDisableKpi('payback-period');
     browser.driver.sleep(200);
-
-    page.setKpiValueInput(1);
-
-    page.clickSaveKpiValue();
-
-    browser.driver.sleep(200);
-
-    expect(element(by.id('m-payback-period-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
     // KPI ROI
 
-    page.clickSetKpiValue('return-on-investment');
-
+    page.clickDisableKpi('return-on-investment');
     browser.driver.sleep(200);
-
-    page.setKpiValueInput(1);
-
-    page.clickSaveKpiValue();
-
-    browser.driver.sleep(200);
-
-    expect(element(by.id('m-return-on-investment-aggregated-kpi')).isDisplayed()).toBeTruthy();
-
+    
   });
 
 });
