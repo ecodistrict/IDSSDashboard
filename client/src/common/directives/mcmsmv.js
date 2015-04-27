@@ -290,8 +290,8 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
   //             });
   // });
 
-  kpiChart.width(200)
-    .height(100)
+  kpiChart.width(500)
+    .height(300)
     //.minWidth(0)
     .margins({top: 5, left: 10, right: 10, bottom: 20})
     .dimension(kpi)
