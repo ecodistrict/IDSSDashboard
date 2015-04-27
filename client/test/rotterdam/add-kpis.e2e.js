@@ -40,75 +40,77 @@ describe('manage kpis', function() {
 
     // KPI 3 - Water storage
 
-    // page.clickAddKpiButton();
+    page.clickAddKpiButton();
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // page.typeKpiName('Water storage');
+    page.typeKpiName('Water storage');
 
-    // page.typeKpiDescription('This KPI is for water storage capacity in m3');
+    page.typeKpiDescription('This KPI is for water storage capacity in m3');
 
-    // page.typeKpiUnit('m3');
+    page.typeKpiUnit('m3');
 
-    // page.clickSaveKpiButton();
+    page.clickSaveKpiButton();
 
-    // // KPI 4 - Water damage
+    // KPI 4 - Water damage
 
-    // page.clickAddKpiButton();
+    page.clickAddKpiButton();
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // page.typeKpiName('Water damage');
+    page.typeKpiName('Water damage');
 
-    // page.typeKpiDescription('This KPI is for water damage in euro');
+    page.typeKpiDescription('This KPI is for water damage in euro');
 
-    // page.typeKpiUnit('keuro/year');
+    page.typeKpiUnit('keuro/year');
 
-    // page.clickSaveKpiButton();
+    page.clickSaveKpiButton();
 
-    // // KPI 5 - Real estate value
+    // KPI 5 - Real estate value
 
-    // page.clickAddKpiButton();
+    page.clickAddKpiButton();
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // page.typeKpiName('Real estate value');
+    page.typeKpiName('Real estate value');
 
-    // page.typeKpiDescription('This KPI is for real estate value in euro');
+    page.typeKpiDescription('This KPI is for real estate value in euro');
 
-    // page.typeKpiUnit('Meuro/year');
+    page.typeKpiUnit('Meuro/year');
 
-    // page.clickSaveKpiButton();
+    page.clickSaveKpiButton();
 
-    // // KPI 6 - Payback period
+    // KPI 6 - Payback period
 
-    // page.clickAddKpiButton();
+    page.clickAddKpiButton();
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // page.typeKpiName('Payback period');
+    page.typeKpiName('Payback period');
 
-    // page.typeKpiDescription('This KPI is for payback period in years');
+    page.typeKpiDescription('This KPI is for payback period in years');
 
-    // page.typeKpiUnit('years');
+    page.typeKpiUnit('years');
 
-    // page.clickSaveKpiButton();
+    page.clickSaveKpiButton();
 
-    // // KPI 7 - ROI
+    // KPI 7 - ROI
 
-    // page.clickAddKpiButton();
+    page.clickAddKpiButton();
 
-    // browser.driver.sleep(100);
+    browser.driver.sleep(100);
 
-    // page.typeKpiName('Return on investment');
+    page.typeKpiName('Return on investment');
 
-    // page.typeKpiDescription('This KPI is for return on investment ratio');
+    page.typeKpiDescription('This KPI is for return on investment ratio');
 
-    // page.typeKpiUnit('ratio');
+    page.typeKpiUnit('ratio');
 
-    // page.clickSaveKpiButton();
+    page.clickSaveKpiButton();
 
-    // expect(page.kpis.count()).toEqual(7);
+    expect(page.kpis.count()).toEqual(7);
+
+
 
   });
 

@@ -10,7 +10,7 @@ describe('havensteder set to be situation', function() {
 
   it('should be able to set to be values', function() {
 
-    expect(page.kpiAmbitions.count()).toEqual(2);
+    expect(page.kpiAmbitions.count()).toEqual(7);
 
     // do nothing for now
     

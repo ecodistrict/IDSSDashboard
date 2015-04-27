@@ -10,7 +10,7 @@ describe('set kpi input', function() {
 
   it('should set all as is values', function() {
 
-    expect(page.kpiOutputs.count()).toEqual(2);
+    expect(page.kpiOutputs.count()).toEqual(7);
 
     // KPI Quality of Life
 
@@ -42,73 +42,73 @@ describe('set kpi input', function() {
 
     // KPI Water storage
 
-    // page.clickSetKpiValue('water-storage');
+    page.clickSetKpiValue('water-storage');
 
-    // browser.driver.sleep(200);
+    browser.driver.sleep(200);
 
-    // page.setKpiValueInput(2);
+    page.setKpiValueInput(2);
 
-    // page.clickSaveKpiValue();
+    page.clickSaveKpiValue();
 
-    // browser.driver.sleep(200);
+    browser.driver.sleep(200);
 
-    // expect(element(by.id('m-water-storage-aggregated-kpi')).isDisplayed()).toBeTruthy();
+    expect(element(by.id('m-water-storage-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
-    // // KPI Water damage
+    // KPI Water damage
 
-    // page.clickSetKpiValue('water-damage');
+    page.clickSetKpiValue('water-damage');
 
-    // browser.driver.sleep(200);
+    browser.driver.sleep(200);
 
-    // page.setKpiValueInput(51);
+    page.setKpiValueInput(51);
 
-    // page.clickSaveKpiValue();
+    page.clickSaveKpiValue();
 
-    // browser.driver.sleep(200);
+    browser.driver.sleep(200);
 
-    // expect(element(by.id('m-water-damage-aggregated-kpi')).isDisplayed()).toBeTruthy();
+    expect(element(by.id('m-water-damage-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
-    // // KPI Real estate value
+    // KPI Real estate value
 
-    // page.clickSetKpiValue('real-estate-value');
+    page.clickSetKpiValue('real-estate-value');
 
-    // browser.driver.sleep(200);
+    browser.driver.sleep(200);
 
-    // page.setKpiValueInput(16);
+    page.setKpiValueInput(16);
 
-    // page.clickSaveKpiValue();
+    page.clickSaveKpiValue();
 
-    // browser.driver.sleep(200);
+    browser.driver.sleep(200);
 
-    // expect(element(by.id('m-real-estate-value-aggregated-kpi')).isDisplayed()).toBeTruthy();
+    expect(element(by.id('m-real-estate-value-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
-    // // KPI Payback period
+    // KPI Payback period
 
-    // page.clickSetKpiValue('payback-period');
+    page.clickSetKpiValue('payback-period');
 
-    // browser.driver.sleep(200);
+    browser.driver.sleep(200);
 
-    // page.setKpiValueInput(1);
+    page.setKpiValueInput(1);
 
-    // page.clickSaveKpiValue();
+    page.clickSaveKpiValue();
 
-    // browser.driver.sleep(200);
+    browser.driver.sleep(200);
 
-    // expect(element(by.id('m-payback-period-aggregated-kpi')).isDisplayed()).toBeTruthy();
+    expect(element(by.id('m-payback-period-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
-    // // KPI ROI
+    // KPI ROI
 
-    // page.clickSetKpiValue('return-on-investment');
+    page.clickSetKpiValue('return-on-investment');
 
-    // browser.driver.sleep(200);
+    browser.driver.sleep(200);
 
-    // page.setKpiValueInput(1);
+    page.setKpiValueInput(1);
 
-    // page.clickSaveKpiValue();
+    page.clickSaveKpiValue();
 
-    // browser.driver.sleep(200);
+    browser.driver.sleep(200);
 
-    // expect(element(by.id('m-return-on-investment-aggregated-kpi')).isDisplayed()).toBeTruthy();
+    expect(element(by.id('m-return-on-investment-aggregated-kpi')).isDisplayed()).toBeTruthy();
     
   });
 
