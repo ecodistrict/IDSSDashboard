@@ -36,7 +36,7 @@ angular.module( 'idss-dashboard.assess-variants', [])
   var mcmsmv;
   LoginService.getCurrentUser().then(function(user) {
     currentUser = user;
-    mcmsmv = createMCMSMVData(variants);
+    mcmsmv = $scope.mcmsmv = createMCMSMVData(variants);
   });
 
   $scope.sendData = {
@@ -80,6 +80,7 @@ angular.module( 'idss-dashboard.assess-variants', [])
             kpiDescription: k.description,
             kpiId: k.alias,
             bad: bad,
+            unit: k.unit,
             excellent: excellent 
           });
         }

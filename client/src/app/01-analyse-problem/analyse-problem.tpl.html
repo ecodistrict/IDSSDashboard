@@ -34,7 +34,7 @@
         </form>
     </div>
     <div class="row">
-        <p id="{{'switch-to-' + stakeholder.fname}}" ng-repeat="stakeholder in stakeholders">{{stakeholder.fname}} <button ng-click="loginStakeholder(stakeholder)" class="btn btn-primary">Switch stakeholder</button></p>
+        <p ng-repeat="stakeholder in stakeholders">{{stakeholder.fname}} <button id="{{'switch-to-' + stakeholder.fname}}" ng-click="loginStakeholder(stakeholder)" class="btn btn-primary">Switch stakeholder</button></p>
     </div>
     <div class="row">
         <form role="form">
