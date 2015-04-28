@@ -1,13 +1,279 @@
+div.dc-chart {
+    float: left;
+}
+
+.dc-chart rect.bar {
+    stroke: none;
+    cursor: pointer;
+}
+
+.dc-chart rect.bar:hover {
+    fill-opacity: .5;
+}
+
+.dc-chart rect.stack1 {
+    stroke: none;
+    fill: red;
+}
+
+.dc-chart rect.stack2 {
+    stroke: none;
+    fill: green;
+}
+
+.dc-chart rect.deselected {
+    stroke: none;
+    fill: #ccc;
+}
+
+.dc-chart .pie-slice {
+    fill: white;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.dc-chart .pie-slice :hover {
+    fill-opacity: .8;
+}
+
+.dc-chart .selected path {
+    stroke-width: 3;
+    stroke: #ccc;
+    fill-opacity: 1;
+}
+
+.dc-chart .deselected path {
+    stroke: none;
+    fill-opacity: .5;
+    fill: #ccc;
+}
+
+.dc-chart .axis path, .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.dc-chart .axis text {
+    font: 10px sans-serif;
+}
+
+.dc-chart .grid-line {
+    fill: none;
+    stroke: #ccc;
+    opacity: .5;
+    shape-rendering: crispEdges;
+}
+
+.dc-chart .grid-line line {
+    fill: none;
+    stroke: #ccc;
+    opacity: .5;
+    shape-rendering: crispEdges;
+}
+
+.dc-chart .brush rect.background {
+    z-index: -999;
+}
+
+.dc-chart .brush rect.extent {
+    fill: steelblue;
+    fill-opacity: .125;
+}
+
+.dc-chart .brush .resize path {
+    fill: #eee;
+    stroke: #666;
+}
+
+.dc-chart path.line {
+    fill: none;
+    stroke-width: 1.5px;
+}
+
+.dc-chart circle.dot {
+    stroke: none;
+}
+
+.dc-chart g.dc-tooltip path {
+    fill: none;
+    stroke: grey;
+    stroke-opacity: .8;
+}
+
+.dc-chart path.area {
+    fill-opacity: .3;
+    stroke: none;
+}
+
+.dc-chart .node {
+    font-size: 0.7em;
+    cursor: pointer;
+}
+
+.dc-chart .node :hover {
+    fill-opacity: .8;
+}
+
+.dc-chart .selected circle {
+    stroke-width: 3;
+    stroke: #ccc;
+    fill-opacity: 1;
+}
+
+.dc-chart .deselected circle {
+    stroke: none;
+    fill-opacity: .5;
+    fill: #ccc;
+}
+
+.dc-chart .bubble {
+    stroke: none;
+    fill-opacity: 0.6;
+}
+
+.dc-data-count {
+    float: right;
+    margin-top: 15px;
+    margin-right: 15px;
+}
+
+.dc-data-count .filter-count {
+    color: #3182bd;
+    font-weight: bold;
+}
+
+.dc-data-count .total-count {
+    color: #3182bd;
+    font-weight: bold;
+}
+
+.dc-data-table {
+}
+
+.dc-chart g.state {
+    cursor: pointer;
+}
+
+.dc-chart g.state :hover {
+    fill-opacity: .8;
+}
+
+.dc-chart g.state path {
+    stroke: white;
+}
+
+.dc-chart g.selected path {
+}
+
+.dc-chart g.deselected path {
+    fill: grey;
+}
+
+.dc-chart g.selected text {
+}
+
+.dc-chart g.deselected text {
+    display: none;
+}
+
+.dc-chart g.county path {
+    stroke: white;
+    fill: none;
+}
+
+.dc-chart g.debug rect {
+    fill: blue;
+    fill-opacity: .2;
+}
+
+.dc-chart g.row rect {
+    fill-opacity: 0.8;
+    cursor: pointer;
+}
+
+.dc-chart g.row rect:hover {
+    fill-opacity: 0.6;
+}
+
+.dc-chart g.row text {
+    fill: white;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.dc-legend {
+    font-size: 11px;
+}
+
+.dc-legend-item {
+    cursor: pointer;
+}
+
+.dc-chart g.axis text {
+    /* Makes it so the user can't accidentally click and select text that is meant as a label only */
+    -webkit-user-select: none; /* Chrome/Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10 */
+    -o-user-select: none;
+    user-select: none;
+    pointer-events: none;
+}
+
+.dc-chart path.highlight {
+    stroke-width: 3;
+    fill-opacity: 1;
+    stroke-opacity: 1;
+}
+
+.dc-chart .highlight {
+    fill-opacity: 1;
+    stroke-opacity: 1;
+}
+
+.dc-chart .fadeout {
+    fill-opacity: 0.2;
+    stroke-opacity: 0.2;
+}
+
+.dc-chart path.dc-symbol {
+    fill-opacity: 0.5;
+    stroke-opacity: 0.5;
+}
+
+.dc-hard .number-display {
+    float: none;
+}
 
 /********************
- * HTML CSS
+ * SVG CSS
  */
 
 
-.chartWrap {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
+svg {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /* Trying to get SVG to act like a greedy block in all browsers */
+  display: block;
+  width:100%;
+  height:100%;
+}
+
+/********************
+  Default CSS for an svg element nvd3 used
+*/
+svg.nvd3-svg {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    display: block;
 }
 
 /********************
@@ -18,9 +284,9 @@
   -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
   box-shadow: 0 5px 10px rgba(0,0,0,.2);
 
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  border-radius: 6px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
 }
 
 /********************
@@ -53,13 +319,13 @@
     putting a "with-transitions" class on the container div.
 */
 .nvtooltip.with-transitions, .with-transitions .nvtooltip {
-  transition: opacity 250ms linear;
-  -moz-transition: opacity 250ms linear;
-  -webkit-transition: opacity 250ms linear;
+  transition: opacity 50ms linear;
+  -moz-transition: opacity 50ms linear;
+  -webkit-transition: opacity 50ms linear;
 
-  transition-delay: 250ms;
-  -moz-transition-delay: 250ms;
-  -webkit-transition-delay: 250ms;
+  transition-delay: 200ms;
+  -moz-transition-delay: 200ms;
+  -webkit-transition-delay: 200ms;
 }
 
 .nvtooltip.x-nvtooltip,
@@ -79,7 +345,7 @@
 
   -webkit-border-radius: 5px 5px 0 0;
   -moz-border-radius: 5px 5px 0 0;
-  border-radius: 5px 5px 0 0;
+  border-radius: 1px 5px 0 0;
 }
 
 .nvtooltip p {
@@ -131,46 +397,22 @@
   text-align: center;
 }
 
-
 .nvtooltip-pending-removal {
   position: absolute;
   pointer-events: none;
 }
 
-
-/********************
- * SVG CSS
- */
-
-
-svg {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  /* Trying to get SVG to act like a greedy block in all browsers */
-  display: block;
-  width:100%;
-  height:100%;
-}
-
-
-svg text {
+.nvd3 text {
   font: normal 12px Arial;
 }
 
-svg .title {
+.nvd3 .title {
  font: bold 14px Arial;
 }
 
 .nvd3 .nv-background {
   fill: white;
   fill-opacity: 0;
-  /*
-  pointer-events: none;
-  */
 }
 
 .nvd3.nv-noData {
@@ -189,7 +431,6 @@ svg .title {
 }
 
 
-
 /**********
 *  Legend
 */
@@ -198,15 +439,23 @@ svg .title {
   cursor: pointer;
 }
 
-.nvd3 .nv-legend .disabled circle {
+.nvd3 .nv-legend .nv-disabled circle {
   fill-opacity: 0;
 }
-
 
 
 /**********
 *  Axes
 */
+
+.axis {
+  opacity: 1;
+}
+
+.axis.nv-disabled {
+  opacity: 0;
+}
+
 .nvd3 .nv-axis {
   pointer-events:none;
 }
@@ -248,7 +497,6 @@ svg .title {
 }
 
 
-
 /**********
 *  Brush
 */
@@ -257,7 +505,6 @@ svg .title {
   fill: #eee;
   stroke: #666;
 }
-
 
 
 /**********
@@ -333,6 +580,11 @@ svg .title {
 
 }
 
+.nvd3.nv-pie .nv-pie-title {
+    font-size: 24px;
+    fill: rgba(19, 196, 249, 0.59);
+}
+
 .nvd3.nv-pie .nv-slice text {
   stroke: #000;
   stroke-width: 0;
@@ -362,18 +614,6 @@ svg .title {
 .nvd3 .nv-groups path.nv-line {
   fill: none;
   stroke-width: 1.5px;
-  /*
-  stroke-linecap: round;
-  shape-rendering: geometricPrecision;
-
-  transition: stroke-width 250ms linear;
-  -moz-transition: stroke-width 250ms linear;
-  -webkit-transition: stroke-width 250ms linear;
-
-  transition-delay: 250ms
-  -moz-transition-delay: 250ms;
-  -webkit-transition-delay: 250ms;
-  */
 }
 
 .nvd3 .nv-groups path.nv-line.nv-thin-line {
@@ -383,31 +623,11 @@ svg .title {
 
 .nvd3 .nv-groups path.nv-area {
   stroke: none;
-  /*
-  stroke-linecap: round;
-  shape-rendering: geometricPrecision;
-
-  stroke-width: 2.5px;
-  transition: stroke-width 250ms linear;
-  -moz-transition: stroke-width 250ms linear;
-  -webkit-transition: stroke-width 250ms linear;
-
-  transition-delay: 250ms
-  -moz-transition-delay: 250ms;
-  -webkit-transition-delay: 250ms;
-  */
 }
 
 .nvd3 .nv-line.hover path {
   stroke-width: 6px;
 }
-
-/*
-.nvd3.scatter .groups .point {
-  fill-opacity: 0.1;
-  stroke-opacity: 0.1;
-}
-  */
 
 .nvd3.nv-line .nvd3.nv-scatter .nv-groups .nv-point {
   fill-opacity: 0;
@@ -458,15 +678,8 @@ svg .title {
 }
 
 
-
 /**********
 *  Scatter
-*/
-
-/* **Attempting to remove this for useVoronoi(false), need to see if it's required anywhere
-.nvd3 .nv-groups .nv-point {
-  pointer-events: none;
-}
 */
 
 .nvd3 .nv-groups .nv-point.hover {
@@ -478,12 +691,6 @@ svg .title {
   fill-opacity: 1;
 }
 
-/*
-.nv-group.hover .nv-point {
-  fill-opacity: 1;
-}
-*/
-
 
 /**********
 *  Stacked Area
@@ -491,50 +698,21 @@ svg .title {
 
 .nvd3.nv-stackedarea path.nv-area {
   fill-opacity: .7;
-  /*
-  stroke-opacity: .65;
-  fill-opacity: 1;
-  */
   stroke-opacity: 0;
-
   transition: fill-opacity 250ms linear, stroke-opacity 250ms linear;
   -moz-transition: fill-opacity 250ms linear, stroke-opacity 250ms linear;
   -webkit-transition: fill-opacity 250ms linear, stroke-opacity 250ms linear;
-
-  /*
-  transition-delay: 500ms;
-  -moz-transition-delay: 500ms;
-  -webkit-transition-delay: 500ms;
-  */
-
 }
 
 .nvd3.nv-stackedarea path.nv-area.hover {
   fill-opacity: .9;
-  /*
-  stroke-opacity: .85;
-  */
 }
-/*
-.d3stackedarea .groups path {
-  stroke-opacity: 0;
-}
-  */
-
 
 
 .nvd3.nv-stackedarea .nv-groups .nv-point {
   stroke-opacity: 0;
   fill-opacity: 0;
 }
-
-/*
-.nvd3.nv-stackedarea .nv-groups .nv-point.hover {
-  stroke-width: 20px;
-  stroke-opacity: .75;
-  fill-opacity: 1;
-}*/
-
 
 
 /**********
@@ -576,7 +754,6 @@ svg .title {
 }
 
 
-
 /**********
 * Sparkline
 */
@@ -606,9 +783,6 @@ svg .title {
 
 .nvd3.nv-sparklineplus .nv-xValue,
 .nvd3.nv-sparklineplus .nv-yValue {
-  /*
-  stroke: #666;
-  */
   stroke-width: 0;
   font-size: .9em;
   font-weight: normal;
@@ -629,10 +803,6 @@ svg .title {
 }
 
 .nvd3.nv-sparklineplus .nv-currentValue {
-  /*
-  stroke: #444;
-  fill: #000;
-  */
   font-weight: bold;
   font-size: 1.1em;
 }
@@ -642,19 +812,19 @@ svg .title {
 */
 
 .nvd3.nv-ohlcBar .nv-ticks .nv-tick {
-  stroke-width: 2px;
+  stroke-width: 1px;
 }
 
 .nvd3.nv-ohlcBar .nv-ticks .nv-tick.hover {
-  stroke-width: 4px;
+  stroke-width: 2px;
 }
 
 .nvd3.nv-ohlcBar .nv-ticks .nv-tick.positive {
- stroke: #2ca02c;
+    stroke: #2ca02c;
 }
 
 .nvd3.nv-ohlcBar .nv-ticks .nv-tick.negative {
- stroke: #d62728;
+    stroke: #d62728;
 }
 
 .nvd3.nv-historicalStockChart .nv-axis .nv-axislabel {
@@ -668,9 +838,6 @@ svg .title {
 }
 
 .nvd3 .nv-brush .extent {
-  /*
-  cursor: ew-resize !important;
-  */
   fill-opacity: 0 !important;
 }
 
@@ -682,63 +849,19 @@ svg .title {
 }
 
 
-
-/**********
-* Indented Tree
-*/
-
-
-/**
- * TODO: the following 3 selectors are based on classes used in the example.  I should either make them standard and leave them here, or move to a CSS file not included in the library
- */
-.nvd3.nv-indentedtree .name {
-  margin-left: 5px;
-}
-
-.nvd3.nv-indentedtree .clickable {
-  color: #08C;
-  cursor: pointer;
-}
-
-.nvd3.nv-indentedtree span.clickable:hover {
-  color: #005580;
-  text-decoration: underline;
-}
-
-
-.nvd3.nv-indentedtree .nv-childrenCount {
-  display: inline-block;
-  margin-left: 5px;
-}
-
-.nvd3.nv-indentedtree .nv-treeicon {
-  cursor: pointer;
-  /*
-  cursor: n-resize;
-  */
-}
-
-.nvd3.nv-indentedtree .nv-treeicon.nv-folded {
-  cursor: pointer;
-  /*
-  cursor: s-resize;
-  */
-}
-
 /**********
 * Parallel Coordinates
 */
 
 .nvd3 .background path {
   fill: none;
-  stroke: #ccc;
+  stroke: #EEE;
   stroke-opacity: .4;
   shape-rendering: crispEdges;
 }
 
 .nvd3 .foreground path {
   fill: none;
-  stroke: steelblue;
   stroke-opacity: .7;
 }
 
