@@ -73,6 +73,7 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
                 '<thead>',
                 '    <tr>',
                 '      <th>KPI name</th>',
+                '      <th>Stakeholder</th>',
                 '      <th>KPI value</th>',
                 '      <th>Bad</th>',
                 '      <th>Excellent</th>',
@@ -86,6 +87,7 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
                 '<thead>',
                 '    <tr>',
                 '      <th>Alternative</th>',
+                '      <th>Stakeholder</th>',
                 '      <th>KPI value</th>',
                 '      <th>Bad</th>',
                 '      <th>Excellent</th>',
@@ -366,6 +368,9 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
               return '<a href="#/variant-input/' + d.variantId + '">' + d.kpiName + '</a>';
             },
             function(d) {
+              return d.stakeholder;
+            },
+            function(d) {
               return d.disabled ? 'n/a' : d.value + ' ' + d.unit;
             },
             function(d) {
@@ -392,6 +397,9 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
         .columns([
             function(d) {
               return '<a href="#/variant-input/' + d.variantId + '">' + d.variantName + '</a>';
+            },
+            function(d) {
+              return d.stakeholder;
             },
             function(d) {
               return d.disabled ? 'n/a' : d.value + ' ' + d.unit;
