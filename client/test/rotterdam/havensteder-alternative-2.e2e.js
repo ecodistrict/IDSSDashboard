@@ -22,7 +22,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(500);
 
-    page.selectQualitativeKpiValue(4);
+    page.selectQualitativeKpiValue(8);
 
     page.clickSaveKpiValue();
 
@@ -36,7 +36,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(500);
 
-    page.selectQualitativeKpiValue(4);
+    page.selectQualitativeKpiValue(7);
 
     page.clickSaveKpiValue();
 
@@ -50,7 +50,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(9);
+    page.setKpiValueInput(2);
 
     page.clickSaveKpiValue();
 
@@ -64,7 +64,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(100);
+    page.setKpiValueInput(0);
 
     page.clickSaveKpiValue();
 
@@ -78,7 +78,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(50);
+    page.setKpiValueInput(25);
 
     page.clickSaveKpiValue();
 
@@ -92,7 +92,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(0.75);
+    page.setKpiValueInput(20);
 
     page.clickSaveKpiValue();
 
@@ -102,31 +102,37 @@ describe('havensteder develop variants', function() {
 
     // KPI Payback period
 
-    page.clickSetKpiValue('payback-period');
-
+    page.clickDisableKpi('payback-period');
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(1);
+    // page.clickSetKpiValue('payback-period');
 
-    page.clickSaveKpiValue();
+    // browser.driver.sleep(200);
 
+    // page.setKpiValueInput(1);
+
+    // page.clickSaveKpiValue();
+
+    // browser.driver.sleep(200);
+
+    // expect(element(by.id('m-payback-period-aggregated-kpi')).isDisplayed()).toBeTruthy();
+
+    // // KPI ROI
+
+    page.clickDisableKpi('return-on-investment');
     browser.driver.sleep(200);
 
-    expect(element(by.id('m-payback-period-aggregated-kpi')).isDisplayed()).toBeTruthy();
+    // page.clickSetKpiValue('return-on-investment');
 
-    // KPI ROI
+    // browser.driver.sleep(200);
 
-    page.clickSetKpiValue('return-on-investment');
+    // page.setKpiValueInput(1);
 
-    browser.driver.sleep(200);
+    // page.clickSaveKpiValue();
 
-    page.setKpiValueInput(1);
+    // browser.driver.sleep(200);
 
-    page.clickSaveKpiValue();
-
-    browser.driver.sleep(200);
-
-    expect(element(by.id('m-return-on-investment-aggregated-kpi')).isDisplayed()).toBeTruthy();
+    // expect(element(by.id('m-return-on-investment-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
   });
 

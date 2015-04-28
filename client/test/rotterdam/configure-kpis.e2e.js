@@ -48,7 +48,7 @@ describe('use kpis', function() {
 
     expect(page.kpiTitle.get(0).getText()).toEqual('Water drainage');
 
-    page.typeKpiScoreExcellent(3);
+    page.typeKpiScoreExcellent(30);
 
     page.typeKpiScoreBad(1);
 
@@ -64,7 +64,7 @@ describe('use kpis', function() {
 
     expect(page.kpiTitle.get(0).getText()).toEqual('Water storage');
 
-    page.typeKpiScoreExcellent(30);
+    page.typeKpiScoreExcellent(250);
 
     page.typeKpiScoreBad(0);
 
@@ -80,9 +80,9 @@ describe('use kpis', function() {
 
     expect(page.kpiTitle.get(0).getText()).toEqual('Water damage');
 
-    page.typeKpiScoreExcellent(75);
+    page.typeKpiScoreExcellent(0);
 
-    page.typeKpiScoreBad(10);
+    page.typeKpiScoreBad(200);
 
     page.clickSaveKpiConfigButton();
 
@@ -96,9 +96,9 @@ describe('use kpis', function() {
 
     expect(page.kpiTitle.get(0).getText()).toEqual('Real estate value');
 
-    page.typeKpiScoreExcellent(25);
+    page.typeKpiScoreExcellent(45);
 
-    page.typeKpiScoreBad(10);
+    page.typeKpiScoreBad(0);
 
     page.clickSaveKpiConfigButton();
 

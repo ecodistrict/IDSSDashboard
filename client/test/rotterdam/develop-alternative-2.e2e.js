@@ -14,7 +14,7 @@ describe('develop variants', function() {
 
     browser.driver.sleep(200);
 
-    page.setVariantTitle('Alternative 2');
+    page.setVariantTitle('Park renewal');
     page.setVariantDescription('The “Warande” park is restructured. A recreational lake is added. New plants and bushes improve the storage and drainage capacity');
 
     page.saveVariantButton.click();

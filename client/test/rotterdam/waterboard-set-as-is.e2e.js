@@ -46,7 +46,7 @@ describe('set kpi input', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(2);
+    page.setKpiValueInput(10);
 
     page.clickSaveKpiValue();
 
@@ -60,7 +60,7 @@ describe('set kpi input', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(0);
+    page.setKpiValueInput(100);
 
     page.clickSaveKpiValue();
 
@@ -74,7 +74,7 @@ describe('set kpi input', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(1);
+    page.setKpiValueInput(101);
 
     page.clickSaveKpiValue();
 
@@ -84,17 +84,8 @@ describe('set kpi input', function() {
 
     // KPI Real estate value
 
-    page.clickSetKpiValue('real-estate-value');
-
+    page.clickDisableKpi('real-estate-value');
     browser.driver.sleep(200);
-
-    page.setKpiValueInput(16);
-
-    page.clickSaveKpiValue();
-
-    browser.driver.sleep(200);
-
-    expect(element(by.id('m-real-estate-value-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
     // KPI Payback period
 

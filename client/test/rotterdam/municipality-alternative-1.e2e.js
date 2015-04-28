@@ -17,10 +17,31 @@ describe('havensteder develop variants', function() {
 
     // KPI Quality of Life
 
-    page.clickDisableKpi('quality-of-life---rubroek');
+    page.clickSetKpiValue('quality-of-life---rubroek');
+
+    browser.driver.sleep(500);
+
+    page.selectQualitativeKpiValue(7);
+
+    page.clickSaveKpiValue();
+
     browser.driver.sleep(200);
-    page.clickDisableKpi('quality-of-life---residents');
+
+    expect(element(by.id('m-quality-of-life---rubroek-aggregated-kpi')).isDisplayed()).toBeTruthy();
+
+    // KPI Quality of Life
+
+    page.clickSetKpiValue('quality-of-life---residents');
+
+    browser.driver.sleep(500);
+
+    page.selectQualitativeKpiValue(8);
+
+    page.clickSaveKpiValue();
+
     browser.driver.sleep(200);
+
+    expect(element(by.id('m-quality-of-life---residents-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
     // KPI Water drainage
 
@@ -28,7 +49,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(9);
+    page.setKpiValueInput(10);
 
     page.clickSaveKpiValue();
 
@@ -80,31 +101,13 @@ describe('havensteder develop variants', function() {
 
     // KPI Payback period
 
-    page.clickSetKpiValue('payback-period');
-
+    page.clickDisableKpi('payback-period');
     browser.driver.sleep(200);
-
-    page.setKpiValueInput(1);
-
-    page.clickSaveKpiValue();
-
-    browser.driver.sleep(200);
-
-    expect(element(by.id('m-payback-period-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
     // KPI ROI
 
-    page.clickSetKpiValue('return-on-investment');
-
+    page.clickDisableKpi('return-on-investment');
     browser.driver.sleep(200);
-
-    page.setKpiValueInput(1);
-
-    page.clickSaveKpiValue();
-
-    browser.driver.sleep(200);
-
-    expect(element(by.id('m-return-on-investment-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
   });
 

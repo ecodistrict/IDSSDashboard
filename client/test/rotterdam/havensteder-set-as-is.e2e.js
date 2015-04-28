@@ -60,7 +60,7 @@ describe('set kpi input', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(2);
+    page.setKpiValueInput(0);
 
     page.clickSaveKpiValue();
 
@@ -74,7 +74,7 @@ describe('set kpi input', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(51);
+    page.setKpiValueInput(50);
 
     page.clickSaveKpiValue();
 
@@ -88,7 +88,7 @@ describe('set kpi input', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(16);
+    page.setKpiValueInput(15);
 
     page.clickSaveKpiValue();
 
@@ -98,31 +98,38 @@ describe('set kpi input', function() {
 
     // KPI Payback period
 
-    page.clickSetKpiValue('payback-period');
-
+    page.clickDisableKpi('payback-period');
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(1);
+    // page.clickSetKpiValue('payback-period');
 
-    page.clickSaveKpiValue();
+    // browser.driver.sleep(200);
 
-    browser.driver.sleep(200);
+    // page.setKpiValueInput(1);
 
-    expect(element(by.id('m-payback-period-aggregated-kpi')).isDisplayed()).toBeTruthy();
+    // page.clickSaveKpiValue();
+
+    // browser.driver.sleep(200);
+
+    // expect(element(by.id('m-payback-period-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
     // KPI ROI
 
-    page.clickSetKpiValue('return-on-investment');
-
+    page.clickDisableKpi('return-on-investment');
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(1);
 
-    page.clickSaveKpiValue();
+    // page.clickSetKpiValue('return-on-investment');
 
-    browser.driver.sleep(200);
+    // browser.driver.sleep(200);
 
-    expect(element(by.id('m-return-on-investment-aggregated-kpi')).isDisplayed()).toBeTruthy();
+    // page.setKpiValueInput(1);
+
+    // page.clickSaveKpiValue();
+
+    // browser.driver.sleep(200);
+
+    // expect(element(by.id('m-return-on-investment-aggregated-kpi')).isDisplayed()).toBeTruthy();
     
   });
 

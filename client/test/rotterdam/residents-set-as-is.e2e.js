@@ -88,7 +88,7 @@ describe('set kpi input', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(16);
+    page.setKpiValueInput(15);
 
     page.clickSaveKpiValue();
 

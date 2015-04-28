@@ -15,12 +15,33 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(200);
 
+    //// KPI Quality of Life
+
+    page.clickSetKpiValue('quality-of-life---rubroek');
+
+    browser.driver.sleep(500);
+
+    page.selectQualitativeKpiValue(7);
+
+    page.clickSaveKpiValue();
+
+    browser.driver.sleep(200);
+
+    expect(element(by.id('m-quality-of-life---rubroek-aggregated-kpi')).isDisplayed()).toBeTruthy();
+
     // KPI Quality of Life
 
-    page.clickDisableKpi('quality-of-life---rubroek');
+    page.clickSetKpiValue('quality-of-life---residents');
+
+    browser.driver.sleep(500);
+
+    page.selectQualitativeKpiValue(8);
+
+    page.clickSaveKpiValue();
+
     browser.driver.sleep(200);
-    page.clickDisableKpi('quality-of-life---residents');
-    browser.driver.sleep(200);
+
+    expect(element(by.id('m-quality-of-life---residents-aggregated-kpi')).isDisplayed()).toBeTruthy();
 
     // KPI Water drainage
 
@@ -28,7 +49,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(9);
+    page.setKpiValueInput(2);
 
     page.clickSaveKpiValue();
 
@@ -42,7 +63,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(100);
+    page.setKpiValueInput(25);
 
     page.clickSaveKpiValue();
 
@@ -56,7 +77,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(50);
+    page.setKpiValueInput(10);
 
     page.clickSaveKpiValue();
 
@@ -70,7 +91,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(0.75);
+    page.setKpiValueInput(35);
 
     page.clickSaveKpiValue();
 
@@ -84,7 +105,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(1);
+    page.setKpiValueInput(25);
 
     page.clickSaveKpiValue();
 
@@ -98,7 +119,7 @@ describe('havensteder develop variants', function() {
 
     browser.driver.sleep(200);
 
-    page.setKpiValueInput(1);
+    page.setKpiValueInput(0.2);
 
     page.clickSaveKpiValue();
 

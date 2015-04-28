@@ -14,7 +14,7 @@ describe('develop variants', function() {
 
     browser.driver.sleep(200);
 
-    page.setVariantTitle('Alternative 1');
+    page.setVariantTitle('Slinger renewal');
     page.setVariantDescription('The “Slinger” is sold to a private investor. The “Slinger” is renewed. The “Slinger” is rented to new residents. The private investor invests in green roofs, slowed-down drainage and water-proofing the ground floor');
 
     page.saveVariantButton.click();
