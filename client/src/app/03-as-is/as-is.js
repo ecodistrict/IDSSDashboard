@@ -18,7 +18,7 @@ angular.module( 'idss-dashboard.as-is', [
     },
     data:{ 
       pageTitle: 'As is',
-      authorizedRoles: ['Facilitator']
+      authorizedRoles: ['Facilitator', 'Stakeholder']
     },
     resolve:{
       variants: ['VariantService', function(VariantService) {
@@ -210,6 +210,10 @@ angular.module( 'idss-dashboard.as-is', [
     $scope.trig = true;
   };
 
+  $scope.disable = function(kpi, state) {
+    kpi.disabled = state;
+    VariantService.updateKpi(currentVariant, kpi);
+  };
 
 }]);
 

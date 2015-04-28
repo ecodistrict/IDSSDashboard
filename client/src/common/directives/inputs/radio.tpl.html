@@ -2,7 +2,7 @@
     <div class="col-sm-offset-7 col-sm-4">
       <div class="checkbox">
         <label>
-            <input ng-model="input.value" ng-click="setRadioInput(input)" name="{{input.name}}" value="{{input.referenceValue}}" type="radio"> {{input.label}}
+            <input id="{{'radio-' + input.referenceValue}}" ng-model="input.value" ng-click="setRadioInput(input)" name="{{input.name}}" value="{{input.referenceValue}}" type="radio"> {{input.label}}
         </label>
       </div>
     </div>

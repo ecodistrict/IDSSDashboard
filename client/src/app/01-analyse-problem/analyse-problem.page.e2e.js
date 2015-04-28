@@ -4,6 +4,16 @@ var AnalyseProblemOverview = function () {
 
 AnalyseProblemOverview.prototype = Object.create({},
   {
+    // districtMap: {
+    //   get: function() {
+    //     return element(by.id('district-map'));
+    //   }
+    // },
+    // clickDistrictMap: {
+    //   value: function(toRight, toBottom, doubleClick) {
+    //     this.districtMap.
+    //   }
+    // },
     processTitle: {
       get: function() {
         return element(by.id('process-title'));
@@ -12,6 +22,16 @@ AnalyseProblemOverview.prototype = Object.create({},
     inputProcessTitle: {
         value: function(input) {
             this.processTitle.clear().sendKeys(input);
+        }
+    },
+    processDescription: {
+      get: function() {
+        return element(by.id('process-description'));
+      }
+    },
+    inputProcessDescription: {
+        value: function(input) {
+            this.processDescription.clear().sendKeys(input);
         }
     },
     editDistrictPolygonButton: {
@@ -43,6 +63,26 @@ AnalyseProblemOverview.prototype = Object.create({},
       value: function() {
         this.nextButton.click();
       } 
+    },
+    addStakeholderButton: {
+      get: function() {
+        return element(by.id('add-stakeholder-button'));
+      }
+    },
+    stakeholderNameInput: {
+      get: function() {
+        return element(by.id('process-stakeholder'));
+      }
+    },
+    inputStakeholderName: {
+      value: function(input) {
+        this.stakeholderNameInput.clear().sendKeys(input);
+      }
+    },
+    switchToStakeholder: {
+      value: function(input) {
+        element(by.id('switch-to-' + input)).click();
+      }
     }
   }
 );

@@ -3,35 +3,40 @@
         <h1>Process overview</h1>
     </div>
     <div class="row">
-        <form role="form">
+        <form ng-if="facilitator" role="form">
           <div class="form-group">
             <label for="process-title">Please give a title to this decision process (ex: your high level ambition):</label>
             <input type="text" ng-model="currentProcess.title" ng-model-options="{ updateOn: 'blur' }"
            ng-keyup="cancel($event)" ng-change="updateProcess('Changed title to ' + currentProcess.title)" class="form-control" id="process-title" placeholder="Process title">
           </div>
         </form>
+        <h2 ng-if="!facilitator">{{currentProcess.title}}</h2>
     </div>
     <div class="row">
-        <label>Please define the area of your project: </label>
-        <div id="district-map"></div>
-        <district-map district="currentProcess.district"></district-map>
+        <label ng-if="facilitator">Please define the area of your project: </label>
+        <district-map id="district-map" district="currentProcess.district"></district-map>
     </div>
     <div class="row">
-        <form role="form">
+        <form ng-if="facilitator" role="form">
           <div class="form-group">
             <label for="process-description">Please add a description text of your project (optional):</label>
             <textarea class="form-control" ng-model="currentProcess.description" ng-model-options="{ updateOn: 'blur' }"
            ng-keyup="cancel($event)" ng-change="updateProcess('Changed process description')" id="process-description" rows="3">This project is aimed at…</textarea>
           </div>
         </form>
+         <p>{{currentProcess.description}}</p>
     </div>
     <div class="row">
-        <form role="form">
+        <form ng-if="facilitator" class="form">
           <div class="form-group">
             <label for="process-stakeholder">Please name the stakeholders of this project:</label>
-            <input type="text" id="process-stakeholder" class="form-control" autocomplete="result" placeholder="Not implemented"/>
+            <input type="text" id="process-stakeholder" ng-model="stakeholderName" class="form-control" autocomplete="result" placeholder="Stakeholder name"/>
           </div>
+          <button type="submit" id="add-stakeholder-button" ng-show="stakeholderName" ng-click="addStakeholder(stakeholderName)" class="btn btn-default">Add stakeholder</button>
         </form>
+    </div>
+    <div class="row" ng-if="facilitator">
+        <p ng-repeat="stakeholder in stakeholders">{{stakeholder.fname}} <button id="{{'switch-to-' + stakeholder.fname}}" ng-click="loginStakeholder(stakeholder)" class="btn btn-primary">Switch stakeholder</button></p>
     </div>
     <div class="row">
         <form role="form">

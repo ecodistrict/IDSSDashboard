@@ -15,7 +15,7 @@ angular.module( 'idss-dashboard.assess-variants', [])
     },
     data:{ 
       pageTitle: 'Assess alternatives',
-      authorizedRoles: ['Facilitator']
+      authorizedRoles: ['Facilitator', 'Stakeholder']
     },
     resolve:{
       variants: ['VariantService', function(VariantService) {
@@ -30,13 +30,26 @@ angular.module( 'idss-dashboard.assess-variants', [])
   });
 }])
 
-.controller( 'AssessVariantsController', ['$scope', 'LoginService', 'variants', 'ModuleService', 'socket', 'KpiService', function AssessVariantsController( $scope, LoginService, variants, ModuleService, socket, KpiService ) {
+.controller( 'AssessVariantsController', ['$scope', 'LoginService', 'variants', 'ModuleService', 'socket', 'KpiService', 'VariantService', function AssessVariantsController( $scope, LoginService, variants, ModuleService, socket, KpiService, VariantService ) {
 
   var currentUser;
-  var mcmsmv;
+  var mcmsmvData = {
+    stakeholders: [] 
+  };
   LoginService.getCurrentUser().then(function(user) {
     currentUser = user;
-    mcmsmv = createMCMSMVData(variants);
+    if(user.role === 'Facilitator') {
+      VariantService.loadVariantsByProcessId().then(function(variantData) {
+        _.each(variantData.users, function(user) {
+          var userVariants = _.filter(variantData.variants, function(v) {return user._id === v.userId;});
+          createMCMSMVData(userVariants, user);
+        });
+        $scope.mcmsmv = mcmsmvData;
+      });
+    } else {
+      createMCMSMVData(variants);
+      $scope.mcmsmv = mcmsmvData;
+    }
   });
 
   $scope.sendData = {
@@ -44,19 +57,15 @@ angular.module( 'idss-dashboard.assess-variants', [])
     status: 'unprocessed'
   };
 
-  var createMCMSMVData = function(variantData) {
+  var createMCMSMVData = function(variantData, user) {
 
     var stakeholderData = {
       user: {
-        id: currentUser._id,
-        name: currentUser.fname + ' ' + currentUser.lname
+        id: user._id || currentUser._id,
+        name: user.fname ? user.fname : currentUser.fname 
       },
       variants: [],
       kpiList: []
-    };
-
-    var mcmsmvData = {
-      stakeholders: [] 
     };
 
     var getKpiResult = function(kpi, cb) {
@@ -69,25 +78,26 @@ angular.module( 'idss-dashboard.assess-variants', [])
       var kpiResults = [];
       _.each(v.kpiList, function(k) {
         // if as is variant, add settings to kpilist
-        var bad = 0, excellent = 10;
+        var bad = 1, excellent = 10;
         if(v.type === 'as-is') {
           if(!k.qualitative) {
-            bad = k.settings.kpiScores.inputs.kpiScoreBad.value;
-            excellent = k.settings.kpiScores.inputs.kpiScoreExcellent.value;
+            bad = k.settings.bad;
+            excellent = k.settings.excellent;
           }
           stakeholderData.kpiList.push({
             kpiName: k.name,
             kpiDescription: k.description,
             kpiId: k.alias,
-            weight: k.settings.priorityLabel.inputs.priorityValue.value,
             bad: bad,
+            unit: k.unit,
             excellent: excellent 
           });
         }
         getKpiResult(k, function(value) {
           kpiResults.push({
             kpiValue: value,
-            kpiId: k.alias
+            kpiId: k.alias,
+            disabled: k.disabled
           });
         });
       });
@@ -104,7 +114,6 @@ angular.module( 'idss-dashboard.assess-variants', [])
 
     return mcmsmvData;
 
-
   };
 
   $scope.sendToMCMSMV = function() {
@@ -120,10 +129,10 @@ angular.module( 'idss-dashboard.assess-variants', [])
         kpiId: 'mcmsmv',
         userId: currentUser._id
       });
-      $scope.msg = JSON.stringify(mcmsmv, undefined, 4);
+      $scope.msg = JSON.stringify(mcmsmvData, undefined, 4);
 
     } else {
-      $scope.msg = JSON.stringify(mcmsmv, undefined, 4);
+      $scope.msg = JSON.stringify(mcmsmvData, undefined, 4);
     }
   };
 

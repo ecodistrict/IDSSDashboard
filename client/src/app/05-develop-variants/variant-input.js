@@ -15,7 +15,7 @@ angular.module( 'idss-dashboard.develop-variants.variant-input', [])
     },
     data:{ 
       pageTitle: 'Variant input',
-      authorizedRoles: ['Facilitator']
+      authorizedRoles: ['Facilitator', 'Stakeholder']
     },
     resolve:{
       variants: ['VariantService', function(VariantService) {
@@ -201,6 +201,11 @@ angular.module( 'idss-dashboard.develop-variants.variant-input', [])
       });
 
     };
+
+  $scope.disable = function(kpi, state) {
+    kpi.disabled = state;
+    VariantService.updateKpi(currentVariant, kpi);
+  };
 
 }]);
 

@@ -107,7 +107,6 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
     kpiModal.result.then(function (configuredKpi) {
       // add the kpi settings and module spec to as is variant
       VariantService.updateKpi($scope.asIsVariant, configuredKpi);
-      ProcessService.addLog({label: 'Configured KPI ' + kpi.name});
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
     });
@@ -116,16 +115,7 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
 
   // TODO: this is an indicator whether the KPI is ok or not 
   $scope.kpiIsConfigured = function(kpi) {
-    var isConfigured = true;
-    if(kpi.qualitative) {
-      
-    } else {
-      if(!KpiService.getBadKpiValue(kpi.settings) || !KpiService.getExcellentKpiValue(kpi.settings)) {
-        isConfigured = false;
-      }
-    }
-    
-    return isConfigured;
+    return kpi.inputSpecification;
   };
 
 }]);

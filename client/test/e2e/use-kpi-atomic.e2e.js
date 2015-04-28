@@ -12,15 +12,15 @@ describe('use kpis', function() {
 
     expect(browser.getCurrentUrl()).toMatch('analyse-problem/manage-kpis');
 
-    browser.driver.sleep(2000);
+    browser.driver.sleep(1000);
 
     page.clickSelectAtomicTestKpi();
 
     browser.driver.sleep(1000);
 
-    //expect(page.connectedModules.count()).toEqual(1);
+    expect(page.connectedModules.count()).toEqual(1);
 
-    page.clickUseAtomicTestKpiButton();
+    page.clickUseKpiButton();
 
     browser.driver.sleep(1000);
 

@@ -16,7 +16,7 @@ module.exports = function(config) {
         'vendor/angular-ui-router/release/angular-ui-router.js',
         'vendor/angular-file-upload/angular-file-upload.js',
         'vendor/d3/d3.js',
-        'vendor/nvd3/nv.d3.js',
+        'vendor/nvd3/build/nv.d3.js',
         'vendor/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.js',
         'vendor/angular-flash/dist/angular-flash.js',
         'build/templates-app.js',

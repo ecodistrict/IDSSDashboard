@@ -14,16 +14,20 @@ angular.module( 'idss-dashboard.analyse-problem.add-kpi', [])
         // this is used to set unique name to input radio group, the alias is ultimately set on server but they don't necessary need to be the same
         k.alias = k.name.toLowerCase().split(' ').join('-');
 
-        KpiService.generateSettings(k);
+        // TODO: this generates priority settings, this is removed for now - priority should be remade
+        //KpiService.generateSettings(k);
 
       
       if(k.qualitative) {
 
-        KpiService.generateQualitativeKpiInput(k);
+        // TODO: refactor out this one..
+        //KpiService.generateQualitativeKpiInputSettings(k);
+        // the new one:
+        KpiService.generateQualitativeKpiSettings(k);
 
       } else {
 
-        KpiService.generateQuantitativeKpiInput(k);
+        KpiService.generateQuantitativeKpiSettings(k);
 
       }
     };

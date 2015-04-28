@@ -15,7 +15,7 @@ angular.module( 'idss-dashboard.to-be', [])
     },
     data:{ 
       pageTitle: 'To be',
-      authorizedRoles: ['Facilitator']
+      authorizedRoles: ['Facilitator', 'Stakeholder']
     },
     resolve:{
       variants: ['VariantService', function(VariantService) {
@@ -94,6 +94,11 @@ angular.module( 'idss-dashboard.to-be', [])
         console.log('Modal dismissed at: ' + new Date());
       });
 
+  };
+
+  // TODO: this is an indicator whether the KPI is ok or not 
+  $scope.kpiIsConfigured = function(kpi) {
+    return kpi.inputSpecification;
   };
 
 

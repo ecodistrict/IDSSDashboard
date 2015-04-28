@@ -37,12 +37,16 @@ module.exports = function ( grunt ) {
                 '<%= vendor_dir %>/angular-ui-router/release/angular-ui-router.js',
                 '<%= vendor_dir %>/angular-file-upload/angular-file-upload.js',
                 '<%= vendor_dir %>/d3/d3.js',
-                '<%= vendor_dir %>/nvd3/nv.d3.js',
+                '<%= vendor_dir %>/nvd3/build/nv.d3.js',
+                '<%= vendor_dir %>/crossfilter/crossfilter.js',
+                '<%= vendor_dir %>/dcjs/dc.js',
                 '<%= vendor_dir %>/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.js',
                 '<%= vendor_dir %>/angular-flash/dist/angular-flash.js'
             ],
             stylesheets: [
-                '<%= vendor_dir %>/nvd3/nv.d3.css'
+                '<%= vendor_dir %>/dcjs/dc.css',
+                '<%= vendor_dir %>/nvd3/build/nv.d3.css'
+
             ],  
             assets: [
                 '<%= vendor_dir %>/bootstrap/dist/fonts/glyphicons-halflings-regular.eot',
@@ -273,7 +277,7 @@ module.exports = function ( grunt ) {
         protractor: {
           options: {
             keepAlive: true,
-            configFile: "protractor.conf.js"
+            configFile: "protractor.rotterdam.conf.js"
           },
           run: {}
         }

@@ -17,19 +17,19 @@ angular.module( 'idss-dashboard.start', [
     },
     data:{ 
       pageTitle: 'Start',
-      authorizedRoles: ['Facilitator']
+      authorizedRoles: ['Facilitator', 'Stakeholder']
     }
   });
 }])
 
 .controller( 'StartCtrl', ['$scope', 'ProcessService', '$state', function StartCtrl( $scope, ProcessService, $state ) {
   
-  console.log('start ctrl');
-
   $scope.startNewProcess = function() {
-    ProcessService.createNewProcess().then(function() {
-      $state.transitionTo('analyse-problem');
-    });
+    // ProcessService.createNewProcess().then(function() {
+    //   $state.transitionTo('analyse-problem');
+    // });
+    $state.transitionTo('analyse-problem');
+    
   };
 
 }]);

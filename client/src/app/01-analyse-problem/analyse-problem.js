@@ -21,24 +21,67 @@ angular.module( 'idss-dashboard.analyse-problem', [
     },
     data:{ 
       pageTitle: 'Analyse problem',
-      authorizedRoles: ['Facilitator']
+      authorizedRoles: ['Facilitator', 'Stakeholder']
     }
   });
 }])
 
-.controller( 'AnalyseProblemCtrl', ['$scope', 'ProcessService', function AnalyseProblemCtrl( $scope, ProcessService ) {
+.controller( 'AnalyseProblemCtrl', ['$scope', 'ProcessService', 'LoginService', 'VariantService', '$state', function AnalyseProblemCtrl( $scope, ProcessService, LoginService, VariantService, $state ) {
 
   $scope.currentProcess = ProcessService.getCurrentProcess();
+  var currentUser;
+  LoginService.getCurrentUser().then(function(user) {
+    currentUser = user;
+    $scope.facilitator = user.role === 'Facilitator';
+    if($scope.facilitator) {
+      LoginService.getStakeholders().then(function(stakeholders) {
+        $scope.stakeholders = stakeholders;
+      });
+    }
+  });
 
   $scope.updateProcess = function(logMessage){
-    ProcessService.addLog({label: logMessage});
     ProcessService.saveCurrentProcess().then(function(process) {
       console.log(process);
     });
   };
 
-  // autocomplete stakeholder
-  $scope.result = "";
+  $scope.addStakeholder = function(name) {
+    if(currentUser) {
+      var registrant = {
+        firstName: name,
+        lastName: name,
+        facilitatorId: currentUser._id,
+        activeProcessId: currentUser.activeProcessId,
+        role: 'Stakeholder',
+        email: name + '@idssdashboard.com'
+      };
+      LoginService.createLogin(registrant).then(function(stakeholder) {
+        console.log(stakeholder);
+        LoginService.getStakeholders().then(function(stakeholders) {
+          $scope.stakeholders = stakeholders;
+        });
+      });
+    }
+  };
+
+  $scope.loginStakeholder = function(stakeholder) {
+    // get current users (facilitators) variants
+    VariantService.loadVariants().then(function(facilitatorVariants) {
+      LoginService.logout().then(function(loggedOut) {
+        if(loggedOut === true) {
+          LoginService.login({username: stakeholder.email, password: 'stakeholder'}).then(function(user) {
+            VariantService.loadVariants().then(function(stakeholderVariants) {
+              VariantService.addOrRemoveVariants(facilitatorVariants, stakeholderVariants);
+              $state.transitionTo('analyse-problem');
+            });
+          });
+        } else {
+          console.log('TODO: handle this, user was not logged out');
+        }
+      });
+    });
+  };
 
 }]);
 

@@ -67,7 +67,7 @@ angular.module('idss-dashboard').directive('kpiOutput', ['$compile', '$timeout',
                     //     }
                     // });
                     render();
-                    console.log(newOutputs);
+                    //console.log(newOutputs);
                     // hack to let getWidth function to recalculate width, this should not be necessary but will do for now
                     
                 }

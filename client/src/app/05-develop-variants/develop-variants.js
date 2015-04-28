@@ -18,7 +18,7 @@ angular.module( 'idss-dashboard.develop-variants', [
     },
     data:{ 
       pageTitle: 'Develop variants',
-      authorizedRoles: ['Facilitator']
+      authorizedRoles: ['Facilitator', 'Stakeholder']
     },
     resolve:{
       variants: ['VariantService', function(VariantService) {
