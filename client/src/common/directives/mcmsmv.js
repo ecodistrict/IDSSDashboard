@@ -36,6 +36,13 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
               var metadata = getMetadata(stakeholder.kpiList);
                 _.each(stakeholder.variants, function(variant) {
                   _.each(variant.kpiList, function(kpi) {
+                    // a value needs to be set
+                    var kpiValue = kpi.kpiValue || 0;
+                    // if disable the value should be zero
+                    if(kpi.disabled) {
+                      kpiValue = 0;
+                    }
+                    console.log(kpiValue);
                     data.push({
                       stakeholder: stakeholder.user.name,
                       variantId: variant.variantId,
@@ -43,7 +50,7 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
                       kpiName: metadata[kpi.kpiId].kpiName,
                       bad: metadata[kpi.kpiId].bad,
                       excellent: metadata[kpi.kpiId].excellent,
-                      value: kpi.disabled ? 0 : kpi.kpiValue, // override kpivalue to zero if disabled (it can be set or undefined)
+                      value: kpiValue,
                       disabled: kpi.disabled,
                       kpiIndex: metadata[kpi.kpiId].index,
                       unit: metadata[kpi.kpiId].unit,
@@ -59,13 +66,13 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
               // ' <div id="calc-year-chart"></div>',
               // '</div>',
               '<div class="col-xs-3">',
-              ' <div id="stakeholder-chart"><strong>Stakeholders</strong></div>',
+              ' <div id="stakeholder-chart"><strong>Stakeholder filter</strong></div>',
               '</div>',
               '<div class="col-xs-3">',
-              ' <div id="alternatives-chart"><strong>Alternatives</strong></div>',
+              ' <div id="alternatives-chart"><strong>Alternative filter</strong></div>',
               '</div>',
               '<div class="col-xs-6">',
-              ' <div id="kpi-chart"><strong>KPIs</strong></div>',
+              ' <div id="kpi-chart"><strong>KPI filter</strong></div>',
               '</div>',
               '<div class="col-xs-12">',
               '<strong>KPI List</strong>',
@@ -300,7 +307,7 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
   //             });
   // });
 
-  kpiChart.width(500)
+  kpiChart.width(600)
     .height(300)
     //.minWidth(0)
     .margins({top: 5, left: 10, right: 10, bottom: 20})

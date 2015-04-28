@@ -29,7 +29,7 @@
     <div class="row">
         <form ng-if="facilitator" class="form">
           <div class="form-group">
-            <label for="process-stakeholder">Please name the stakeholders of this project:</label>
+            <label for="process-stakeholder">Please name the stakeholders of this process:</label>
             <input type="text" id="process-stakeholder" ng-model="stakeholderName" class="form-control" autocomplete="result" placeholder="Stakeholder name"/>
           </div>
           <button type="submit" id="add-stakeholder-button" ng-show="stakeholderName" ng-click="addStakeholder(stakeholderName)" class="btn btn-default">Add stakeholder</button>

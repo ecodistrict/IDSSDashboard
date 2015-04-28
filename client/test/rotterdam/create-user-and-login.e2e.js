@@ -7,7 +7,7 @@ describe('register test', function() {
         lpage,
         firstName = 'Andreas',
         lastName = 'Rudenå',
-        email = 'andreas.rudena@strusoft.com';
+        email = 'test@test.com';
 
     beforeEach(function() {
         lpage = new LoginPage();
