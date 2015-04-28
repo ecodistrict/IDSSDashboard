@@ -45,7 +45,7 @@ angular.module( 'idss-dashboard.header', [
                 if(loggedOut === true) {
                     // get the facilitator name from facilitator id, promt for password
                     LoginService.login(credentials).then(function(user) {
-                        $state.transitionTo('analyse-problem');
+                        authService.loginConfirmed();
                     });
                 } else {
                     console.log('TODO: handle this, user was not logged out');

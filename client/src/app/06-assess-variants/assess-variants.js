@@ -30,13 +30,26 @@ angular.module( 'idss-dashboard.assess-variants', [])
   });
 }])
 
-.controller( 'AssessVariantsController', ['$scope', 'LoginService', 'variants', 'ModuleService', 'socket', 'KpiService', function AssessVariantsController( $scope, LoginService, variants, ModuleService, socket, KpiService ) {
+.controller( 'AssessVariantsController', ['$scope', 'LoginService', 'variants', 'ModuleService', 'socket', 'KpiService', 'VariantService', function AssessVariantsController( $scope, LoginService, variants, ModuleService, socket, KpiService, VariantService ) {
 
   var currentUser;
-  var mcmsmv;
+  var mcmsmvData = {
+    stakeholders: [] 
+  };
   LoginService.getCurrentUser().then(function(user) {
     currentUser = user;
-    mcmsmv = $scope.mcmsmv = createMCMSMVData(variants);
+    if(user.role === 'Facilitator') {
+      VariantService.loadVariantsByProcessId().then(function(variantData) {
+        _.each(variantData.users, function(user) {
+          var userVariants = _.filter(variantData.variants, function(v) {return user._id === v.userId;});
+          createMCMSMVData(userVariants, user);
+        });
+        $scope.mcmsmv = mcmsmvData;
+      });
+    } else {
+      createMCMSMVData(variants);
+      $scope.mcmsmv = mcmsmvData;
+    }
   });
 
   $scope.sendData = {
@@ -44,19 +57,15 @@ angular.module( 'idss-dashboard.assess-variants', [])
     status: 'unprocessed'
   };
 
-  var createMCMSMVData = function(variantData) {
+  var createMCMSMVData = function(variantData, user) {
 
     var stakeholderData = {
       user: {
-        id: currentUser._id,
-        name: currentUser.fname + ' ' + currentUser.lname
+        id: user._id || currentUser._id,
+        name: user.fname ? user.fname : currentUser.fname 
       },
       variants: [],
       kpiList: []
-    };
-
-    var mcmsmvData = {
-      stakeholders: [] 
     };
 
     var getKpiResult = function(kpi, cb) {
@@ -105,7 +114,6 @@ angular.module( 'idss-dashboard.assess-variants', [])
 
     return mcmsmvData;
 
-
   };
 
   $scope.sendToMCMSMV = function() {
@@ -121,10 +129,10 @@ angular.module( 'idss-dashboard.assess-variants', [])
         kpiId: 'mcmsmv',
         userId: currentUser._id
       });
-      $scope.msg = JSON.stringify(mcmsmv, undefined, 4);
+      $scope.msg = JSON.stringify(mcmsmvData, undefined, 4);
 
     } else {
-      $scope.msg = JSON.stringify(mcmsmv, undefined, 4);
+      $scope.msg = JSON.stringify(mcmsmvData, undefined, 4);
     }
   };
 

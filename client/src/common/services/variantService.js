@@ -25,6 +25,19 @@ angular.module('idss-dashboard')
             });
     };
 
+    var loadVariantsByProcessId = function () {
+        return $http
+            .get('variants/processid')
+            .error(function(status, data) {
+                var label = 'Error when loading variants';
+                NotificationService.createErrorFlash(label);
+            })
+            .then(function (res) {
+                variantData = res.data;
+                return variantData;
+            });
+    };
+
     var createVariant = function(variantToCreate) {
         return $http
             .post('variants', variantToCreate)
@@ -242,6 +255,7 @@ angular.module('idss-dashboard')
         loadVariants: loadVariants,
         createVariant: createVariant,
         getVariants: getVariants,
+        loadVariantsByProcessId: loadVariantsByProcessId,
         deleteVariant: deleteVariant,
         saveVariant: saveVariant,
         addKpi: addKpi,

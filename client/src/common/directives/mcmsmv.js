@@ -58,7 +58,10 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
               // '<div class="col-xs-12">',
               // ' <div id="calc-year-chart"></div>',
               // '</div>',
-              '<div class="col-xs-6">',
+              '<div class="col-xs-3">',
+              ' <div id="stakeholder-chart"><strong>Stakeholders</strong></div>',
+              '</div>',
+              '<div class="col-xs-3">',
               ' <div id="alternatives-chart"><strong>Alternatives</strong></div>',
               '</div>',
               '<div class="col-xs-6">',
@@ -94,6 +97,7 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
 
       //var yearChart = dc.barChart("#calc-year-chart");
       var kpiChart = dc.rowChart("#kpi-chart");
+      var stakeholderChart = dc.pieChart("#stakeholder-chart");
       var alternativesChart = dc.pieChart("#alternatives-chart");
       var kpiTable = dc.dataTable(".kpi-table");
       var kpiGroupTable = dc.dataTable(".kpi-group-table");
@@ -130,6 +134,13 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
       //     return d.name;
       // });
       // var calculationGroup = calculation.group();
+
+      var stakeholder = ndx.dimension(function (d) {
+        return d.stakeholder;
+      });
+      var stakeholderGroup = stakeholder.group().reduceSum(function(d) {
+        return d.value;
+      });
 
       var alternatives = ndx.dimension(function (d) {
         return d.variantName;
@@ -312,6 +323,14 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
   //   .dimension(calculation)
   //   .group(calculationGroup)
   //   .title(function(d){return Math.round(d.value) + ' kWh';});
+  stakeholderChart.width(300)
+    .height(300)
+    .radius(100)
+    // .minWidth(0)
+    // .minHeight(0)
+    .innerRadius(20)
+    .dimension(stakeholder)
+    .group(stakeholderGroup);
 
     alternativesChart.width(300)
     .height(300)
