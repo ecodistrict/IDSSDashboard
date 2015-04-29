@@ -125,7 +125,7 @@ angular.module( 'idss-dashboard.assess-variants', [])
       $scope.sendData.loading = true;
 
       socket.emit('mcmsmv', {
-        variants: mcmsmv,
+        variants: mcmsmvData,
         kpiId: 'mcmsmv',
         userId: currentUser._id
       });
