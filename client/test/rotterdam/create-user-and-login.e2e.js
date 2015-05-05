@@ -5,9 +5,9 @@ describe('register test', function() {
 
     var rpage,
         lpage,
-        firstName = 'Andreas',
-        lastName = 'Rudenå',
-        email = 'test@test.com';
+        firstName = 'test',
+        lastName = 'test',
+        email = 'test@test.test';
 
     beforeEach(function() {
         lpage = new LoginPage();
@@ -44,6 +44,7 @@ describe('register test', function() {
 
             protractor.testPassword = pass;
             protractor.testEmail = email;
+            protractor.testName = firstName;
             console.log('Facilitator password: ' + pass);
 
             lpage.clickLogin();

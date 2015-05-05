@@ -10,10 +10,10 @@ describe('add stakeholder 1', function() {
 
   it('should add a stakeholder and login', function() {
 
-  	page.inputStakeholderName('Waterboard');
+  	page.inputStakeholderName('Waterboard-' + protractor.testName);
   	page.addStakeholderButton.click();
   	browser.driver.sleep(200);
-  	page.switchToStakeholder('Waterboard');
+  	page.switchToStakeholder('Waterboard-' + protractor.testName);
 
   	browser.driver.sleep(1000);
 

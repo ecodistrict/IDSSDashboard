@@ -51,7 +51,7 @@ exports.config = {
         'test/rotterdam/investor-alternative-1.e2e.js',
         'test/rotterdam/investor-alternative-2.e2e.js'
     ],
-    baseUrl: 'http://localhost:3300',
+    baseUrl: 'http://localhost:3300',//'http://idssdashboard-env-mp3dbn2kwd.elasticbeanstalk.com',
     seleniumServerJar: '/usr/local/lib/node_modules/protractor/selenium/selenium-server-standalone-2.45.0.jar',
     chromeDriver: '/usr/local/lib/node_modules/protractor/selenium/chromedriver'
 }

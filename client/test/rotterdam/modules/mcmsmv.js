@@ -12,11 +12,11 @@ var kpiId = "mcmsmv";
 
 var imbConnection = new imb.TIMBConnection();
 imbConnection.connect('vps17642.public.cloudvps.com', 4000, 1234, 'mcmsmv', 'ecodistrict');
-var messageSub = imbConnection.subscribe('modulesTEST', true);
+var messageSub = imbConnection.subscribe('modules', true);
 
 var sendDashboard = function(requestObj) {
   var request = JSON.stringify(requestObj).toString();
-  var message = imbConnection.publish('dashboardTEST', true);
+  var message = imbConnection.publish('dashboard', true);
   var messageByteLength = Buffer.byteLength(request);
   var eventPayload = new Buffer(4+messageByteLength);
   var offset = 0;
