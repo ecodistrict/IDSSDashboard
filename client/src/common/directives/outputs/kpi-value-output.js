@@ -27,8 +27,6 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
                 var numTicks = excellent > 100000 ? 2 : excellent > 1000 ? 4 : 10;
 
-                console.log(width, height, ranges, markers, measures, bad, excellent);
-              
                 // Compute the new x-scale.
                 var x1 = d3.scale.linear()
                   .domain([bad, excellent])
@@ -270,7 +268,6 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
         link: function ( scope, element, attrs ) {
 
             var kpi = scope.kpi;
-            console.log(kpi);
 
             var render = function(output) {
 
@@ -291,7 +288,6 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                     .height(height)
                     .duration(1000)
                     .tickFormat(function(d) {
-                        console.log(d);
                         return d + ' ' + kpi.unit;
                     });
 
@@ -341,7 +337,6 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                     if(oldOutputs && oldOutputs.length === newOutputs.length) {
                         _.each(newOutputs, function(output, i) {
                             if(output !== oldOutputs[i]) {
-                                console.log(output.type);
                                 if(output.type === 'kpi') {
                                     render(output);
                                 }
