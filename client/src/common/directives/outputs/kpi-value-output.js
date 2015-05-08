@@ -25,6 +25,8 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                 var bad = ranges.call(this, d, i)[0];
                 var excellent = ranges.call(this, d, i)[1];
 
+                var numTicks = excellent > 100000 ? 2 : excellent > 1000 ? 4 : 10;
+
                 console.log(width, height, ranges, markers, measures, bad, excellent);
               
                 // Compute the new x-scale.
@@ -123,13 +125,10 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                   .attr("y1", height / 6)
                   .attr("y2", height * 5 / 6);
 
-              // Compute the tick format.
-              var format = tickFormat || x1.tickFormat(8);
-
               // Update the tick groups.
               var tick = g.selectAll("g.tick")
-                  .data(x1.ticks(8), function(d) {
-                    return this.textContent || format(d);
+                  .data(x1.ticks(numTicks), function(d) {
+                    return tickFormat(d);
                   });
 
               // Initialize the ticks with the old scale, x0.
@@ -146,7 +145,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                   .attr("text-anchor", "middle")
                   .attr("dy", "1em")
                   .attr("y", height * 7 / 6)
-                  .text(format);
+                  .text(tickFormat);
 
               // Transition the entering ticks to the new scale, x1.
               tickEnter.transition()
