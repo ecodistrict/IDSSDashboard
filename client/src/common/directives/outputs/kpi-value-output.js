@@ -87,6 +87,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                   .attr("class", function(d, i) { return "measure s" + i; })
                   .attr("width", w0)
                   .attr("height", height / 3)
+                  .attr("fill", color)
                   .attr("x", x0(0))
                   .attr("y", height / 3)
                 .transition()
@@ -279,7 +280,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                     return;
                 }
 
-                element.empty();
+                element.empty().attr('id', 'm-' + kpi.alias + '-aggregated-kpi');
 
                 var margin = {top: 5, right: 50, bottom: 20, left: 120},
                     width = 960 - margin.left - margin.right,
