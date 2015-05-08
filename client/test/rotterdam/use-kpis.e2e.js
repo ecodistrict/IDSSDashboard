@@ -36,43 +36,23 @@ describe('use kpis', function() {
 
     browser.driver.sleep(400);
 
-    page.clickSelectKpi('water-storage');
+    page.clickQuickUseKpi('water-storage');
 
     browser.driver.sleep(400);
 
-    page.clickUseKpiButton();
+    page.clickQuickUseKpi('water-damage');
 
     browser.driver.sleep(400);
 
-    page.clickSelectKpi('water-damage');
+    page.clickQuickUseKpi('real-estate-value');
 
     browser.driver.sleep(400);
 
-    page.clickUseKpiButton();
+    page.clickQuickUseKpi('payback-period');
 
     browser.driver.sleep(400);
 
-    page.clickSelectKpi('real-estate-value');
-
-    browser.driver.sleep(400);
-
-    page.clickUseKpiButton();
-
-    browser.driver.sleep(400);
-
-    page.clickSelectKpi('payback-period');
-
-    browser.driver.sleep(400);
-
-    page.clickUseKpiButton();
-
-    browser.driver.sleep(400);
-
-    page.clickSelectKpi('return-on-investment');
-
-    browser.driver.sleep(400);
-
-    page.clickUseKpiButton();
+    page.clickQuickUseKpi('return-on-investment');
 
     browser.driver.sleep(400);
 

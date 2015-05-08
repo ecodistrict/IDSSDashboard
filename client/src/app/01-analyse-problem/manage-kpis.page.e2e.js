@@ -185,6 +185,11 @@ ManageKpiPage.prototype = Object.create({},
         element(by.id('select-kpi-' + kpiId)).click();
       }
     },
+    clickQuickUseKpi: {
+      value: function(kpiId) {
+        element(by.id('quick-use-kpi-' + kpiId)).click();
+      }
+    },
     clickConfigureKpi: {
       value: function(kpiId) {
         element(by.id('used-kpi-' + kpiId)).click();

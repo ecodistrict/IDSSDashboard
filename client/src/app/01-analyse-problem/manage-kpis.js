@@ -62,6 +62,11 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
 
   };
 
+  $scope.useKpiQuick = function(useKpi) {
+    // add copy of this KPI to as is variant
+      VariantService.addKpi(angular.copy(useKpi));
+  };
+
   // Add KPI to KPI repository
   $scope.addKpi = function() {
 

@@ -4,14 +4,17 @@
             <h2>KPI database</h2>
             <div ng-repeat="kpi in kpiList" id="{{'select-kpi-' + kpi.alias}}" class="panel panel-default kpi-item" ng-click="useKpi(kpi)">
               <div class="panel-heading">
-                <h3 class="panel-title">{{kpi.name}} <button ng-show="kpi.canDelete" id="{{'delete-kpi-' + kpi.alias}}" class="btn btn-xs btn-danger pull-right" ng-click="deleteKpi(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-trash"></i> Delete</button></h3>
+                <h3 class="panel-title">{{kpi.name}} 
+                  <button ng-show="kpi.canDelete" id="{{'delete-kpi-' + kpi.alias}}" class="btn btn-xs btn-danger pull-right" ng-click="deleteKpi(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-trash"></i> Delete</button>
+                  <button id="{{'quick-use-kpi-' + kpi.alias}}" class="btn btn-xs btn-primary pull-right" ng-click="useKpiQuick(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-ok"></i> Use</button>
+                </h3>
               </div>
               <div class="panel-body">
                 {{kpi.description}}
               </div>
             </div>
             <button class="btn btn-primary btn-xs pull-right" ng-click="addKpi()">
-                <span id="add-kpi-button" class="glyphicon glyphicon-floppy-disk"></span> Add KPI
+                <span id="add-kpi-button" class="glyphicon glyphicon-plus"></span> Add KPI
             </button>
         </div>
         <div class="col-xs-6">
@@ -24,9 +27,9 @@
                 {{kpi.description}}
               </div>
             </div>
-            <button class="btn btn-primary btn-xs pull-right" ng-show="asIsVariant.kpiList.length">
+            <!-- <button class="btn btn-primary btn-xs pull-right" ng-show="asIsVariant.kpiList.length">
                 <span class="glyphicon glyphicon-floppy-disk"></span> Save this KPI set
-            </button>
+            </button> -->
         </div>
     </div>
     <div class="row">
