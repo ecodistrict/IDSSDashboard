@@ -1,5 +1,4 @@
 angular.module( 'idss-dashboard.develop-variants', [
-  'idss-dashboard.develop-variants.variant-input',
   'idss-dashboard.develop-variants.add-variant'
 ])
 

@@ -41,7 +41,7 @@
                         <li><a ui-sref="as-is-details">Details</a></li> -->
                     </ul>
                 </li>
-                <li class="dropdown">
+                <li class="dropdown" ng-class="{'active': highLightInMenu == 'to-be'}">
                     <a class="dropdown-toggle">To be <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a ui-sref="to-be">Set ambitions</a></li>
@@ -50,20 +50,22 @@
                         <li><a ui-sref="to-be-details">Details</a></li> -->
                     </ul>
                 </li>
-                <li><a ui-sref="develop-variants">Develop alternatives</a></li>
+                <li ng-class="{'active': highLightInMenu == 'develop-variants'}"><a ui-sref="develop-variants">Develop alternatives</a></li>
                 <!-- <li class="dropdown">
                     <a class="dropdown-toggle">Develop alternatives <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a ui-sref="develop-variants">Manage alternatives</a></li>
                     </ul>
                 </li> -->
-                <li><a ui-sref="assess-variants">Assess alternatives</a></li>
+                <li ng-class="{'active': highLightInMenu == 'assess-variants'}"><a ui-sref="assess-variants">Assess alternatives</a></li>
                 <!-- <li class="dropdown">
                     <a class="dropdown-toggle">Assess alternatives <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a ui-sref="assess-variants">Use MCMSMV module</a></li>
                     </ul>
                 </li> -->
+                <li ng-class="{'active': highLightInMenu == 'compare-variants'}"><a ui-sref="compare-variants">Compare alternatives</a></li>
+
             </ul>
 
             <ul ng-show="!isAuthenticated" class="nav navbar-nav navbar-right">

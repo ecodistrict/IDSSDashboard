@@ -2,7 +2,7 @@ angular.module( 'idss-dashboard.assess-variants', [])
 
 .config(['$stateProvider', function config( $stateProvider ) {
   $stateProvider.state( 'assess-variants', {
-    url: '/assess-variants',
+    url: '/assess-variants/:variantId',
     views: {
       "main": {
         controller: 'AssessVariantsController',
@@ -14,7 +14,7 @@ angular.module( 'idss-dashboard.assess-variants', [])
       }
     },
     data:{ 
-      pageTitle: 'Assess alternatives',
+      pageTitle: 'Assess variants',
       authorizedRoles: ['Facilitator', 'Stakeholder']
     },
     resolve:{
@@ -30,118 +30,190 @@ angular.module( 'idss-dashboard.assess-variants', [])
   });
 }])
 
-.controller( 'AssessVariantsController', ['$scope', 'LoginService', 'variants', 'ModuleService', 'socket', 'KpiService', 'VariantService', function AssessVariantsController( $scope, LoginService, variants, ModuleService, socket, KpiService, VariantService ) {
+.controller( 'AssessVariantsController', ['$scope', '$timeout', 'socket', '$stateParams', 'variants', 'ModuleService', 'VariantService', '$modal', 'KpiService', function AssessVariantsController( $scope, $timeout, socket, $stateParams, variants, ModuleService, VariantService, $modal, KpiService ) {
 
-  var currentUser;
-  var mcmsmvData = {
-    stakeholders: [] 
-  };
-  LoginService.getCurrentUser().then(function(user) {
-    currentUser = user;
-    if(user.role === 'Facilitator') {
-      VariantService.loadVariantsByProcessId().then(function(variantData) {
-        _.each(variantData.users, function(user) {
-          var userVariants = _.filter(variantData.variants, function(v) {return user._id === v.userId;});
-          createMCMSMVData(userVariants, user);
-        });
-        $scope.mcmsmv = mcmsmvData;
-      });
+  var variantId = $stateParams.variantId;
+
+  var currentVariant;
+  var asIsVariant;
+  $scope.otherVariants = [];
+  
+  _.each(variants, function(variant) {
+    if(variant._id === variantId) {
+      currentVariant = variant;
+      $scope.currentVariantName = currentVariant.name;
+    } else if(variant.type === 'as-is') {
+      asIsVariant = variant;
+    } else if(variant.type === 'to-be') {
+      toBeVariant = variant;
     } else {
-      createMCMSMVData(variants);
-      $scope.mcmsmv = mcmsmvData;
+      console.log(variant);
+      $scope.otherVariants.push(variant);
     }
   });
 
-  $scope.sendData = {
-    loading: false,
-    status: 'unprocessed'
-  };
-
-  var createMCMSMVData = function(variantData, user) {
-
-    var stakeholderData = {
-      user: {
-        id: user._id || currentUser._id,
-        name: user.fname ? user.fname : currentUser.fname 
-      },
-      variants: [],
-      kpiList: []
-    };
-
-    var getKpiResult = function(kpi, cb) {
-      KpiService.getResultKpiValue(kpi, function(value) {
-        cb(value);
-      });
-    };
-
-    _.each(variantData, function(v) {
-      var kpiResults = [];
-      _.each(v.kpiList, function(k) {
-        // if as is variant, add settings to kpilist
-        var bad = 1, excellent = 10;
-        if(v.type === 'as-is') {
-          if(!k.qualitative) {
-            bad = k.settings.bad;
-            excellent = k.settings.excellent;
-          }
-          stakeholderData.kpiList.push({
-            kpiName: k.name,
-            kpiDescription: k.description,
-            kpiId: k.alias,
-            bad: bad,
-            unit: k.unit,
-            excellent: excellent 
-          });
-        }
-        getKpiResult(k, function(value) {
-          kpiResults.push({
-            kpiValue: value,
-            kpiId: k.alias,
-            disabled: k.disabled
-          });
-        });
-      });
-      stakeholderData.variants.push({
-        variantId: v._id,
-        description: v.description,
-        name: v.name,
-        type: v.type,
-        kpiList: kpiResults
-      });
+  // TODO: check if new kpis are added
+  if(currentVariant && asIsVariant.kpiList.length !== currentVariant.kpiList.length) {
+    VariantService.addOrRemoveKpis(asIsVariant, currentVariant);
+    VariantService.saveVariant(currentVariant).then(function(savedVariant) {
+      $scope.currentVariant = KpiService.initOutputs(savedVariant, asIsVariant);
     });
+  } else if(currentVariant) {
+    $scope.currentVariant = KpiService.initOutputs(currentVariant, asIsVariant);
+  }
 
-    mcmsmvData.stakeholders.push(stakeholderData);
-
-    return mcmsmvData;
-
+  $scope.getStatus = function(kpi) {
+    if(kpi.status === 'unprocessed') {
+      return 'warning';
+    } else if(kpi.status === 'initializing') {
+      return 'primary';
+    } else if(kpi.status === 'processing') {
+      return 'info';
+    } else if(kpi.status === 'success') {
+      return 'success';
+    } 
   };
 
-  $scope.sendToMCMSMV = function() {
-    var modules = ModuleService.getModulesFromKpiId('mcmsmv');
+  // TODO: when pushing calculate button on kpi, set status to calculating and save outputs status without outputs from modules.. how?
+  $scope.calculateKpi = function(kpi) {
+    kpi.status = 'initializing';
+    kpi.loading = true;
 
-    if(modules.length > 0) {
+    socket.emit('startModule', {
+      variantId: currentVariant._id, 
+      asIsVariantId: asIsVariant._id,
+      kpiId: kpi.alias, // modules use kpiId instead of alias
+      moduleId: kpi.moduleId,
+      status: kpi.status
+    });
+  };
 
-      $scope.sendData.status = 'sending data';
-      $scope.sendData.loading = true;
-
-      socket.emit('mcmsmv', {
-        variants: mcmsmvData,
-        kpiId: 'mcmsmv',
-        userId: currentUser._id
+  // listen on any module that was started, for updating loading status
+  socket.on('startModule', function(module) {
+      console.log('start module', module);
+      
+      var found = _.find(currentVariant.kpiList, function(kpi) {
+        return kpi.moduleId === module.moduleId && kpi.alias === module.kpiId;
       });
-      $scope.msg = JSON.stringify(mcmsmvData, undefined, 4);
+      if(found) {
+        found.status = module.status;
+        if(found.status !== 'processing') {
+          found.loading = false;
+        }
+      } else {
+        console.log('This module is not used. Why would this happen?');
+      }
+  });
+
+  socket.on('moduleResult', function(module) {
+    console.log('module result', module);
+
+    var kpi = _.find(currentVariant.kpiList, function(k) {
+      return k.alias === module.kpiId;
+    });
+    if(kpi) {
+      kpi.manual = false;
+      kpi.status = module.status;
+      // TODO: refactor this to prepareKpiData above, bad and excellent is the issue
+      _.each(module.outputs, function(o) {
+        o.alias = kpi.alias;
+        o.kpiName = kpi.kpiName;
+        o.kpiBad = kpi.kpiBad;
+        o.kpiExcellent = kpi.kpiExcellent;
+        o.kpiUnit = kpi.kpiUnit;
+        o.moduleId = kpi.moduleId;
+        if(o.type === 'geojson') {
+          // TODO: update any existing map output, use id?
+          $scope.kpiMapOutputs.push(o);
+        }
+      });
+
+      kpi.outputs = module.outputs;
+      // for updating manual property
+      VariantService.updateKpi(currentVariant, kpi);
 
     } else {
-      $scope.msg = JSON.stringify(mcmsmvData, undefined, 4);
+      console.log('Dashboard recieved module result but couldnt find the kpi');
     }
+
+  });
+
+  $scope.stopCalculation = function(kpi) {
+    kpi.status = 'unprocessed';
+    kpi.loading = false;
+
+    ModuleService.updateModuleOutputStatus(currentVariant._id, kpi.moduleId, kpi.alias, kpi.status);
+
+    // send message to module?
   };
 
-  // listen on any model that was started, for updating loading status
-  socket.on('mcmsmv', function(module) {
-    console.log(module);
-    $scope.sendData.status = module.status;
-    $scope.sendData.loading = false;
-  });
+  $scope.setScore = function(kpi) {
+
+    var kpiModal, templateUrl, controller, asIsKpi;
+
+    if(kpi.qualitative) {
+      templateUrl = 'qualitative-kpi-input/qualitative-kpi-input.tpl.html';
+      controller = 'QualitativeKpiInputCtrl';
+    } else {
+      asIsKpi = _.find(asIsVariant.kpiList, function(k) { return k.alias === kpi.alias;});
+      KpiService.generateManualInput(asIsKpi, kpi);
+      templateUrl = 'quantitative-kpi-input/quantitative-kpi-input.tpl.html';
+      controller = 'QuantitativeKpiInputCtrl';
+    }
+
+    kpiModal = $modal.open({
+        templateUrl: templateUrl,
+        controller: controller,
+        resolve: {
+          kpi: function() {
+            return kpi;
+          }
+        }
+      });
+
+      kpiModal.result.then(function (configuredKpi) {
+        configuredKpi.manual = true;
+        configuredKpi.status = 'success';
+        configuredKpi.loading = false;
+        // update kpi in variant
+        VariantService.updateKpi(currentVariant, configuredKpi);
+        // trigger update to kpi in scope
+        kpi.outputs = configuredKpi.outputs;
+      }, function () {
+        console.log('Modal dismissed at: ' + new Date());
+      });
+
+    };
+
+  $scope.setModuleInput = function(kpi) {
+    
+    moduleInputModal = $modal.open({
+        templateUrl: '02-collect-data/module-input.tpl.html',
+        controller: 'ModuleInputController',
+        resolve: {
+          kpi: function() {
+            return kpi;
+          },
+          currentVariant: function() {
+            return currentVariant;
+          }
+        }
+      });
+
+      moduleInputModal.result.then(function (moduleInput) {
+
+        ModuleService.saveModuleInput(moduleInput.variantId, moduleInput);
+                
+      }, function () {
+        console.log('Modal dismissed at: ' + new Date());
+      });
+
+    };
+
+  $scope.disable = function(kpi, state) {
+    kpi.disabled = state;
+    VariantService.updateKpi(currentVariant, kpi);
+  };
 
 }]);
 

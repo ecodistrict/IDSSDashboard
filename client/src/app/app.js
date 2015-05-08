@@ -22,6 +22,7 @@ angular.module( 'idss-dashboard', [
   'idss-dashboard.to-be',
   'idss-dashboard.develop-variants',
   'idss-dashboard.assess-variants',
+  'idss-dashboard.compare-variants',
   'idss-dashboard.qualitative-kpi-input',
   'idss-dashboard.quantitative-kpi-input'
 ])
