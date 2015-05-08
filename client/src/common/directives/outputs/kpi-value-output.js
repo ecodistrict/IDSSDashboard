@@ -276,7 +276,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
                 var bad = kpi.bad, excellent = kpi.excellent, value = output.value;
 
-                if(!value) {
+                if(!value && value!==0) {
                     return;
                 }
 

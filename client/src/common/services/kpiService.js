@@ -46,7 +46,7 @@ angular.module('idss-dashboard')
         if(settings.bad || settings.bad === 0) {
             bad = settings.bad;
         } else {
-            bad = 1; // qualitative KPI
+            bad = 0; // qualitative KPI
         }
         return bad;
     };
@@ -441,7 +441,7 @@ angular.module('idss-dashboard')
                 }
             }
 
-            if(kpiValue) {
+            if(kpiValue || kpiValue === 0) {
                 outputs = [{
                   "type": "kpi",
                   "value": kpiValue,
