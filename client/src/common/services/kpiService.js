@@ -435,7 +435,7 @@ angular.module('idss-dashboard')
 
             for(var input in radioInputs) {
                 if(radioInputs.hasOwnProperty(input)) {
-                    if(radioInputs[input].value) {
+                    if(radioInputs[input].value || radioInputs[input].value === 0) {
                         kpiValue = radioInputs[input].value; // every value in a radio button is the same for now (the duplicated selected value), // TODO: change input spec for radio
                     }
                 }
