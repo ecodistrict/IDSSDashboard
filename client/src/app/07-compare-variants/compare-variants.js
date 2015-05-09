@@ -47,7 +47,7 @@ angular.module( 'idss-dashboard.compare-variants', [])
         $scope.mcmsmv = mcmsmvData;
       });
     } else {
-      createMCMSMVData(variants);
+      createMCMSMVData(variants, currentUser);
       $scope.mcmsmv = mcmsmvData;
     }
   });
