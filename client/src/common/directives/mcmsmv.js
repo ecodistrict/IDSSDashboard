@@ -198,14 +198,14 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
    
   stakeholderChart.width(width * 0.2)
     .height(300)
-    .radius(100)
+    .radius(width * 0.1)
     .innerRadius(20)
     .dimension(stakeholder)
     .group(stakeholderGroup);
 
     alternativesChart.width(width * 0.2)
     .height(300)
-    .radius(100)
+    .radius(width * 0.1)
     .innerRadius(20)
     .dimension(alternatives)
     .group(alternativesGroup);
