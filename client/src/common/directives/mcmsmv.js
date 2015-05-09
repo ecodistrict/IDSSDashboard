@@ -1,8 +1,8 @@
-angular.module('idss-dashboard').directive('mcmsmv', [function () {
+angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($window) {
 
       var d3 = window.d3;
 
-      var x, y, xAxis, yAxis, svg, width = 900, height = 400;
+      var x, y, xAxis, yAxis, svg, width;
 
       var margin = {top: 2, right: 2, bottom: 2, left: 2};
 
@@ -13,12 +13,36 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
         },
         link: function(scope, element, attrs) {
 
-          scope.render = function(mcmsmvData) {
+          // get the window
+            var w = angular.element($window);
+            // listen for the DOM ready to trigger the first render
+            w.ready(function() {
+              console.log(w.width());
+              width = w.width();
+              render(scope.data);
+            });
+            // listen on changes on window
+            w.bind('resize', function () {
+                scope.$apply();
+            });
+            // for rerender on windows resize
+            scope.getWindowWidth = function () {
+                return w.width();
+            };
+            // listen for changes in scope on window on resize
+            scope.$watch(scope.getWindowWidth, function (newWidth, oldWidth) {
+                if (newWidth !== oldWidth) {
+                  width = newWidth;
+                  render(scope.data);
+                }
+            });
 
-            if(!mcmsmvData) {
+          function render(mcmsmvData) {
+
+            if(!mcmsmvData && width) {
               return;
             }
-
+            
             element.empty();
 
             var data = [];
@@ -42,7 +66,6 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
                     if(kpi.disabled) {
                       kpiValue = 0;
                     }
-                    console.log(kpiValue);
                     data.push({
                       stakeholder: stakeholder.user.name,
                       variantId: variant.variantId,
@@ -66,13 +89,13 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
               // ' <div id="calc-year-chart"></div>',
               // '</div>',
               '<div class="col-xs-3">',
-              ' <div id="stakeholder-chart"><strong>Stakeholder filter</strong></div>',
+              ' <div id="stakeholder-chart" class="compare-filter"><strong>Stakeholder filter</strong></div>',
               '</div>',
               '<div class="col-xs-3">',
-              ' <div id="alternatives-chart"><strong>Alternative filter</strong></div>',
+              ' <div id="alternatives-chart" class="compare-filter"><strong>Alternative filter</strong></div>',
               '</div>',
               '<div class="col-xs-6">',
-              ' <div id="kpi-chart"><strong>KPI filter</strong></div>',
+              ' <div id="kpi-chart" class="compare-filter"><strong>KPI filter</strong></div>',
               '</div>',
               '<div class="col-xs-12">',
               '<strong>KPI List</strong>',
@@ -104,7 +127,6 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
               '</div>'
             ].join(''));
 
-      //var yearChart = dc.barChart("#calc-year-chart");
       var kpiChart = dc.rowChart("#kpi-chart");
       var stakeholderChart = dc.pieChart("#stakeholder-chart");
       var alternativesChart = dc.pieChart("#alternatives-chart");
@@ -158,159 +180,11 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
         return d.value;
       });
 
-      // var calculationByWeekGroup = byWeek.group();
 
-      // var calculationByDay = ndx.dimension(function(d) { return d3.time.day(d.date); });
-      // var calculationByDayGroup = calculationByDay.group();
-
-      // var calculationByProperty = ndx.dimension(function(d) { return d.type; });
-      // var calculationByPropertyGroup = calculationByProperty.group().reduceSum(function(d) {
-      //   return d.value;
-      // });
-
-      // var calculationGroups = [];
-
-      // _.each(calculationNames, function(calculationName) {
-      //   var group = calculationByDay.group().reduceSum(function(d) {
-      //     if(d.name === calculationName) {
-      //       return d.value; 
-      //     } else {
-      //       return false;
-      //     }
-      //   });
-      //   var chart = dc.lineChart(weekChart)
-      //       .group(group)
-      //       .elasticY(true)
-      //       .yAxisPadding(0)
-      //       .elasticX(true)
-      //       .renderArea(true)
-      //       .round(d3.time.hour.round)
-      //       .xUnits(d3.time.days)
-      //       .renderHorizontalGridLines(true)
-      //       .renderVerticalGridLines(true)
-      //       .brushOn(false)
-      //       .title(function (d) {
-      //           return formatDate(d.x) + '\n' + d.y + ' kWh';
-      //       });
-
-      //   calculationGroups.push(chart);
-      // });
-
-      // this draws every property in dataPosts in linechart
-      // _.each(dataPosts, function(post) {
-      //   var group = calculationByDay.group().reduceSum(function(d) {
-      //     if(d.type === post) {
-      //       return d.value; 
-      //     } else {
-      //       return false;
-      //     }
-      //   });
-      //   var chart = dc.lineChart(weekChart)
-      //       .group(group)
-      //       .elasticY(true)
-      //       .yAxisPadding(0)
-      //       .elasticX(true)
-      //       .renderArea(true)
-      //       .round(d3.time.hour.round)
-      //       .xUnits(d3.time.days)
-      //       .renderHorizontalGridLines(true)
-      //       .renderVerticalGridLines(true)
-      //       .brushOn(false);
-      //   calculationGroups.push(chart);
-      // });
-
-        // weekChart
-        //   .dimension(calculationByDay)
-        //   .group(calculationByDayGroup)
-        //   .elasticY(true)
-        //   .width(null) // (optional) define chart width, :default = 200
-        //   .height(null) // (optional) define chart height, :default = 200
-        //   .margins({top: 10, right: 20, bottom: 20, left: 40})
-        //   .transitionDuration(500) // (optional) define chart transition duration, :default = 500
-        //   .compose(calculationGroups)
-        //   .renderHorizontalGridLines(true)
-        //   .brushOn(false)
-        //   .x(d3.time.scale().domain([new Date(2001, 0, 1), new Date(2001, 11, 31)]))
-        //   .xAxis();
-
-        // yearChart.width(990)
-        // .height(100)
-        // .margins({top: 0, right: 50, bottom: 20, left: 40})
-        // .dimension(byWeek)
-        // .group(weekGroup)
-        // .centerBar(true)
-        // .gap(1)
-        // .x(d3.scale.linear().domain([0, 10]));
-        //.alwaysUseRounding(true);
-        //.xUnits(d3.time.months);
-          
-     
-    //   yearChart
-    //       .width(300) // (optional) define chart width, :default = 200
-    //       .height(64) // (optional) define chart height, :default = 200
-    //       .transitionDuration(500) // (optional) define chart transition duration, :default = 500
-    //       // (optional) define margins
-    //       .margins({top: 10, right: 20, bottom: 20, left: 40})
-    //       .dimension(byWeek) // set dimension
-    //       .group(weekGroup) // set group
-    //       // .title(function(d){return d.value;})
-    //       // .label(function (d, i){
-    //       //    return i + 1;
-    //       // })
-    //       // (optional) whether chart should rescale y axis to fit data, :default = false
-    //       .elasticY(false)
-    //       // (optional) when elasticY is on whether padding should be applied to y axis domain, :default=0
-    //       .yAxisPadding(0)
-    //       // (optional) whether chart should rescale x axis to fit data, :default = false
-    //       .elasticX(true)
-    //       // (optional) when elasticX is on whether padding should be applied to x axis domain, :default=0
-    //       //.xAxisPadding(500)
-    //       // define x scale
-    //       .x(d3.scale.linear().domain([1, 10]))
-    //       // (optional) set filter brush rounding
-    //       //.round(d3.time.weeks.round)
-    //       // define x axis units
-    //       //.xUnits()
-    //       // (optional) whether bar should be center to its x value, :default=false
-    //       .centerBar(true)
-    //       // (optional) set gap between bars manually in px, :default=2
-    //       //.barGap(1)
-    //       // (optional) render horizontal grid lines, :default=false
-    //       .renderHorizontalGridLines(true)
-    //       // (optional) render vertical grid lines, :default=false
-    //       .renderVerticalGridLines(true)
-    //       // (optional) add stacked group and custom value retriever
-    //       //.stack(monthlyMoveGroup, function(d){return d.value;})
-    //       // (optional) you can add multiple stacked group with or without custom value retriever
-    //       // if no custom retriever provided base chart's value retriever will be used
-    //       //.stack(monthlyMoveGroup)
-    //       // (optional) whether this chart should generate user interactive brush to allow range
-    //       // selection, :default=true.
-    //       //.brushOn(true)
-    //       /*.renderlet(function(chart){
-    //           chart.select("g.y").style("display", "none");
-    //           weekChart.filter(chart.filter());
-    //       });*/
-    // .colors(d3.scale.category10())
-    //       .yAxis().ticks(3);
-          // (optional) whether svg title element(tooltip) should be generated for each bar using
-          // the given function, :default=no
-          //.title(function(d) { return "Value: " + d.value; })
-          // (optional) whether chart should render titles, :default = false
-          //.renderTitle(true);
-
-          // row chart day of week
-
-  // yearChart.on('.renderlet(', function(chart){
-  //             dc.events.trigger(function(){
-  //                 weekChart.focus(chart.filter());
-  //             });
-  // });
-
-  kpiChart.width(600)
+  kpiChart.width(width * 0.4)
     .height(300)
     //.minWidth(0)
-    .margins({top: 5, left: 10, right: 10, bottom: 20})
+    //.margins({top: 5, left: 10, right: 10, bottom: 20})
     .dimension(kpi)
     .group(kpiGroup)
     .colors(d3.scale.category10())
@@ -322,47 +196,20 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
     .xAxis().ticks(4);
 
    
-
-  //   calcSelectChart.width(null)
-  //   .height(null)
-  //   .radius(null)
-  //   .minWidth(0)
-  //   .minHeight(0)
-  //   .innerRadius(20)
-  //   .dimension(calculation)
-  //   .group(calculationGroup)
-  //   .title(function(d){return Math.round(d.value) + ' kWh';});
-  stakeholderChart.width(300)
+  stakeholderChart.width(width * 0.2)
     .height(300)
     .radius(100)
-    // .minWidth(0)
-    // .minHeight(0)
     .innerRadius(20)
     .dimension(stakeholder)
     .group(stakeholderGroup);
 
-    alternativesChart.width(300)
+    alternativesChart.width(width * 0.2)
     .height(300)
     .radius(100)
-    // .minWidth(0)
-    // .minHeight(0)
     .innerRadius(20)
     .dimension(alternatives)
     .group(alternativesGroup);
     //.title(function(d){return d.value;});
-
-    // propertiesChart.width(null)
-    // .height(null)
-    // .minWidth(0)
-    // .margins({top: 5, left: 10, right: 10, bottom: 20})
-    // .dimension(calculationByProperty)
-    // .group(calculationByPropertyGroup)
-    // .label(function (d){
-    //    return d.key;
-    // })
-    // .title(function(d){return Math.round(d.value) + ' kWh';})
-    // .elasticX(true)
-    // .xAxis().ticks(3);
 
     kpiTable
          .dimension(kpi)
@@ -429,26 +276,22 @@ angular.module('idss-dashboard').directive('mcmsmv', [function () {
             table.selectAll('.dc-table-group').classed('info', true);
         });
 
-      dc.renderAll();
-          };
+        dc.renderAll();
+          }
 
           // watch for width change on parent element
-          // scope.$watch('containerElement.clientWidth', function(newWidth) {
-          //   console.log('changed width: ' + newWidth);
+          // scope.$watch('el[0].clientWidth', function(newWidth) {
+          //   console.log('changed width: ' + newWidth());
           //   width = newWidth - margin.left - margin.right;
-          //   return scope.render(scope.mcmsmv);
+          //   return scope.render(scope.data);
           // });
 
           // watch for width change on parent element
-          scope.$watch('data', function(newLayers, oldLayers) {
-            //console.log('changed layers:');
-            //console.log(newLayers);
-            if(newLayers !== oldLayers) {
-              return scope.render(scope.data);
+          scope.$watch('data', function(newData, oldData) {
+            if(newData !== oldData) {
+              return render(scope.data);
             }
           });
-
-          scope.render(scope.data);
 
         }
 
