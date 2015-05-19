@@ -120,10 +120,7 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
         replace: true,
         template: '<div ng-transclude></div>',
         scope: {
-            input: '=',
-            variantid: '=', 
-            kpialias: '=',
-            moduleid: '='
+            input: '='
         },
         link: function(scope, element, attrs) {
 
@@ -340,7 +337,6 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
                     //console.log(feature.getProperties());
                     toggleSelectedFeature(feature);
                 });
-                //scope.$apply();
             });
 
             scope.unselectAllFeatures = function() {
@@ -354,7 +350,6 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
 
                 var geoJsonFormat = new ol.format.GeoJSON();
                 
-                //console.log(scope.userInput); 
                 _.each(scope.selectedFeatures, function(f) {
                     
                     var properties = f.getProperties();
@@ -364,10 +359,6 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
                             properties[input] = scope.userInput[input].value;
                         }
                     }
-
-                    // _.each(scope.userInput, function(input) {
-                    //     properties[input.id] = input.value;
-                    // });
 
                     f.setProperties(properties);
                 });
@@ -380,20 +371,14 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
 
                 newInputValue.crs = {type: 'none'};
 
-                //console.log(newInputValue);
 
                 initGeometryData(newInputValue);
 
-                // input is saved when click ok
-                // ModuleService.saveModuleInput(scope.variantid, {
-                //     moduleId: scope.moduleid, 
-                //     kpiId: scope.kpialias,
-                //     inputs: [{
-                //         id: scope.input.id, // only id and value are updated on save module input
-                //         value: newInputValue
-                //     }]
-                // });
+                // the value of the input is being overridden by reference
 
+                scope.input.value = newInputValue;
+
+               
             };
 
             var selectMouseMove = new ol.interaction.Select({
