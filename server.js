@@ -196,8 +196,6 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         "kpiList": kpiList
       }
     }
-    dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'getModules was sent from dashboard client to dashboard server'}));
-
     sendModuleRequest(requestObj);
   });
 
