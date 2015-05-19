@@ -162,6 +162,10 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
 
   console.log(dashboardWebClientSocket.id);
 
+  dashboardWebClientSocket.on('error', function (err) { 
+    console.error(err.stack);
+  });
+
   dashboardWebClientSocket.on('privateRoom', function(data) {
     dashboardWebClientSocket.join(data.userId);
   });
@@ -192,6 +196,8 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         "kpiList": kpiList
       }
     }
+    dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'getModules was sent from dashboard client to dashboard server'}));
+
     sendModuleRequest(requestObj);
   });
 
