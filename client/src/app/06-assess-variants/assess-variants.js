@@ -71,7 +71,12 @@ angular.module( 'idss-dashboard.assess-variants', [])
       return 'info';
     } else if(kpi.status === 'success') {
       return 'success';
-    } 
+    } else if(kpi.status === 'failed') {
+      return 'danger';
+    } else {
+      // default
+      return 'info';
+    }
   };
 
   // TODO: when pushing calculate button on kpi, set status to calculating and save outputs status without outputs from modules.. how?
