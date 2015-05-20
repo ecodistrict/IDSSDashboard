@@ -248,6 +248,11 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
                 _.each(data.features, function(f) {
                     f.properties = f.properties || {};
                     f.properties.uid = f.properties.uid || uidCount;
+                    for(var p in f.properties) {
+                        if(!/^([A-Za-z0-9\-\_]+)$/.test(p)) {
+                            alert('property ' + p + ' is not valid. This data cannot be saved in the database.');
+                        } 
+                    }
                     uidCount++;
                 });
                 // console.log('features uid was set');
@@ -356,6 +361,7 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
 
                     for(var input in scope.userInput) {
                         if(scope.userInput.hasOwnProperty(input)) {
+                            console.log(input);
                             properties[input] = scope.userInput[input].value;
                         }
                     }
