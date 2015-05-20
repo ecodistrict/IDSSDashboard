@@ -152,20 +152,15 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
                             console.log(scope.userInput[input]);
 
                             // set to the properties set from feature or from default input
-                            scope.userInput[input].value = properties[input] || scope.input.inputs[input].value;
+                            if(properties[input] || properties[input] === 0) {
+                                scope.userInput[input].value = properties[input];
+                            } else {
+                                scope.userInput[input].value = scope.input.inputs[input].value;
+                            }
                         }
                     }
 
                     console.log(scope.userInput);
-
-                    // _.each(scope.userInput, function(input, i) {
-
-                    //     console.log(properties);
-                    //     console.log(input);
-                        
-                    //     input.value = properties[input.id] || scope.input.inputs[i].value; // set to default value
-
-                    // });
 
                     f.setProperties(properties);
 
