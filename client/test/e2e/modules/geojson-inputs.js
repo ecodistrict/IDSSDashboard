@@ -15,20 +15,46 @@ var imb = require('../../../../lib/imb.js');
 var moduleId = "geojson";
 var kpi = "geojson-test-kpi";
 
-var imbConnection = new imb.TIMBConnection();
-imbConnection.connect('vps17642.public.cloudvps.com', 4000, 1234, 'testModuleGeojsonInput', 'ecodistrict');
-var messageSub = imbConnection.subscribe('modulesTEST', true);
+var imbConnection = new imb.TIMBConnection(imb.imbDefaultHostname, imb.imbDefaultPort, 10, "GeoJsonInputTest", imb.imbDefaultPrefix, false);
+
+imbConnection.on("onUniqueClientID", function (aUniqueClientID, aHubID) {
+    console.log('private event name: ' + imbConnection.privateEventName);
+    console.log('monitor event name: ' + imbConnection.monitorEventName);
+});
+
+imbConnection.on("onDisconnect", function (obj) {
+    console.log("disonnected");
+});
+
+var messageSub = imbConnection.subscribe("modulesTEST");
+
+// add handlers for string events, creation of a stream and the end of a stream
+messageSub.onString = function (aEventEntry, aString) {
+    if (aString == 'string command')
+        console.log("OK received string " + aEventEntry.eventName + " " + aString);
+    else
+        console.log("## received string " + aEventEntry.eventName + " " + aString);
+}
+messageSub.onStreamCreate = function (aEventEntry, aStreamName) {
+    if (aStreamName == 'a stream name')
+        console.log('OK received stream create ' + aEventEntry.eventName + ' ' + aStreamName)
+    else
+        console.log('## received stream create ' + aEventEntry.eventName + ' ' + aStreamName);
+    return require('fs').createWriteStream('out.node.js.dmp');
+}
+messageSub.onStreamEnd = function (aEventEntry, aStream, aStreamName, aCancel) {
+    if (aStreamName == 'a stream name' && !aCancel)
+        console.log('OK received stream end ' + aEventEntry.eventName + ' ' + aStreamName + ' ' + aCancel)
+    else
+        console.log('## received stream end ' + aEventEntry.eventName + ' ' + aStreamName + ' ' + aCancel);
+}
+
+// send a string event
+messageSub.signalString('string command');
 
 var sendDashboard = function(requestObj) {
   var request = JSON.stringify(requestObj).toString();
-  var message = imbConnection.publish('dashboardTEST', true);
-  var messageByteLength = Buffer.byteLength(request);
-  var eventPayload = new Buffer(4+messageByteLength);
-  var offset = 0;
-  eventPayload.writeInt32LE(messageByteLength, offset);
-  offset += 4;
-  eventPayload.write(request, offset);
-  message.normalEvent(imb.ekNormalEvent, eventPayload);
+  messageSub.signalString(request);
 };
 
 // getModule response
