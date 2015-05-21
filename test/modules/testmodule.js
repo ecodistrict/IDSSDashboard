@@ -15,11 +15,6 @@ var imb = require('../../lib/imb.js');
 var moduleId = "dashboard-testmodule";
 var kpi = "dashboard-test";
 
-var sendDashboard = function(requestObj) {
-  var request = JSON.stringify(requestObj).toString();
-  messageSub.signalString(request);
-};
-
 // getModule response
 var moduleDefinition = {
   method: "getModules",
@@ -32,11 +27,11 @@ var moduleDefinition = {
 
 // selectModule response
 var moduleInput = {
-    method: "selectModule",
-    type: "response",
-    moduleId: moduleId,
-    kpiId: kpi,
-    inputSpecification: {
+    "method": "selectModule",
+    "type": "response",
+    "moduleId": moduleId,
+    "kpiId": kpi,
+    "inputSpecification": {
       "buildings": {
         "type": "geojson",
         "geometryObject": "polygon",
@@ -129,16 +124,16 @@ var frameworkSocket = imbConnection.subscribe("framework");
 frameworkSocket.onString = function(aEventEntry, aString) {
   
   console.log(aString);
-  var message = aString;
-  console.log(message);
+  var message = JSON.parse(aString);
+  console.log(message["method"]);
 
   if(message.method === 'getModules') {
     console.log('getModules');
-    frameworkSocket.signalString(moduleDefinition);
+    frameworkSocket.signalString(JSON.stringify(moduleDefinition).toString());
   } else if(message.method === 'selectModule') {
     if(message.moduleId === moduleId) {
       moduleInput.variantId = message.variantId;
-      sendDashboard(moduleInput); 
+      frameworkSocket.signalString(JSON.stringify(moduleInput).toString());
     }
   } else if(message.method === 'startModule') {
     if(message.moduleId === moduleId) {
@@ -146,11 +141,12 @@ frameworkSocket.onString = function(aEventEntry, aString) {
       startModule.status = 'processing'; 
       startModule.kpiId = message.kpiId;
       startModule.variantId = message.variantId;
-      sendDashboard(startModule);
+      frameworkSocket.signalString(JSON.stringify(startModule).toString());
       // after calculating, send output
       moduleResult.kpiId = message.kpiId;
       moduleResult.variantId = message.variantId;
       moduleResult.moduleId = moduleId;
+      moduleResult.status = "success";
       // some assumptions here!
 
       console.log(message);
@@ -177,10 +173,8 @@ frameworkSocket.onString = function(aEventEntry, aString) {
         displayProperties: [{property: "GEBHOOGTE", label: "GEB HOOGTE"}],
         value: message.inputs.buildings.value
       }];
-      sendDashboard(moduleResult);
-      // also send new status
-      startModule.status = 'success';
-      sendDashboard(startModule);
+      frameworkSocket.signalString(JSON.stringify(moduleResult).toString());
+      
     }
   }
 };

@@ -113,8 +113,8 @@ angular.module( 'idss-dashboard.as-is', [
       kpi.manual = false;
       // if status changed/exists, otherwise keep old status
       kpi.status = module.status || kpi.status;
-      if(found.status !== 'processing') {
-        found.loading = false;
+      if(kpi.status !== 'processing') {
+        kpi.loading = false;
       }
 
       console.log(kpi);

@@ -145,7 +145,7 @@ imbConnection.on("onDisconnect", function (obj) {
     console.log("disonnected");
 });
 
-var imbFrameworkSocket = imbConnection.subscribe("framework");
+var imbFrameworkSub = imbConnection.subscribe("dashboardTEST");
 
 io.sockets.on('connection', function(dashboardWebClientSocket) {
 
@@ -250,7 +250,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
           
   });
 
-  imbFrameworkSocket.onString = function (aEventEntry, aString) {
+  imbFrameworkSub.onString = function (aEventEntry, aString) {
     
     var message = JSON.parse(aString);
 
