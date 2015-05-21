@@ -133,40 +133,7 @@ app.all('/*', function(req, res) {
 
 // ****** IMB Connection ****** //
 
-// var imbConnection = new imb.TIMBConnection(imb.imbDefaultHostname, imb.imbDefaultPort, 10, "dashboard", imb.imbDefaultPrefix, false);
-
-// imbConnection.on("onUniqueClientID", function (aUniqueClientID, aHubID) {
-//     console.log('private event name: ' + imbConnection.privateEventName);
-//     console.log('monitor event name: ' + imbConnection.monitorEventName);
-// });
-
-// imbConnection.on("onDisconnect", function (obj) {
-//     console.log("disonnected");
-// });
-
-// // set different pub/sub events depending on running env
-// var SUBSCRIBE_EVENT;
-// var PUBLISH_EVENT;
-// if(process.env.NODE_ENV === 'production') {
-//   SUBSCRIBE_EVENT = 'dashboard';
-//   PUBLISH_EVENT = 'modules';
-// } else {
-//   SUBSCRIBE_EVENT = 'dashboardTEST';
-//   PUBLISH_EVENT = 'modulesTEST';
-// }
-
-// var imbFrameworkSocket = imbConnection.subscribe(SUBSCRIBE_EVENT, true);
-
-// imbFrameworkSocket.onString = function (aEventEntry, aString) {
-//     if (aString == 'string command')
-//         console.log("OK received string " + aEventEntry.eventName + " " + aString);
-//     else
-//         console.log("## received string " + aEventEntry.eventName + " " + aString);
-// }
-
-// imbFrameworkSocket.signalString('string command');
-
-var imbConnection = new imb.TIMBConnection(imb.imbDefaultHostname, imb.imbDefaultTLSPort, 10, "node.js client", imb.imbDefaultPrefix, false, 
+var imbConnection = new imb.TIMBConnection(imb.imbDefaultHostname, imb.imbDefaultTLSPort, 10, "dashboard", imb.imbDefaultPrefix, false, 
     "cert/client-eco-district.pfx", "&8dh48klosaxu90OKH", "cert/root-ca-imb.crt");
 
 imbConnection.on("onUniqueClientID", function (aUniqueClientID, aHubID) {
@@ -178,193 +145,160 @@ imbConnection.on("onDisconnect", function (obj) {
     console.log("disonnected");
 });
 
-var event = imbConnection.subscribe("test event");
+var imbFrameworkSocket = imbConnection.subscribe("framework");
 
-// add handlers for string events, creation of a stream and the end of a stream
-event.onString = function (aEventEntry, aString) {
-    if (aString == 'string command')
-        console.log("OK received string " + aEventEntry.eventName + " " + aString);
-    else
-        console.log("## received string " + aEventEntry.eventName + " " + aString);
-}
-// event.onStreamCreate = function (aEventEntry, aStreamName) {
-//     if (aStreamName == 'a stream name')
-//         console.log('OK received stream create ' + aEventEntry.eventName + ' ' + aStreamName)
-//     else
-//         console.log('## received stream create ' + aEventEntry.eventName + ' ' + aStreamName);
-//     return require('fs').createWriteStream('out.node.js.dmp');
-// }
-// event.onStreamEnd = function (aEventEntry, aStream, aStreamName, aCancel) {
-//     if (aStreamName == 'a stream name' && !aCancel)
-//         console.log('OK received stream end ' + aEventEntry.eventName + ' ' + aStreamName + ' ' + aCancel)
-//     else
-//         console.log('## received stream end ' + aEventEntry.eventName + ' ' + aStreamName + ' ' + aCancel);
-// }
+io.sockets.on('connection', function(dashboardWebClientSocket) {
 
-// send a string event
-event.signalString('string command');
+  console.log(dashboardWebClientSocket.id);
 
-// send a stream
-//event.signalStream('a stream name', require('fs').createReadStream('test.jpg')); // todo: use file name of existing file
+  dashboardWebClientSocket.on('error', function (err) { 
+    console.error(err.stack);
+  });
 
-console.log('sent events..')
+  dashboardWebClientSocket.on('privateRoom', function(data) {
+    dashboardWebClientSocket.join(data.userId);
+  });
 
-// var sendModuleRequest = function(requestObj) {
-//   var requestString = JSON.stringify(requestObj).toString();
-//   imbFrameworkSocket.signalString(requestString);
-// };
+  // get requests from client
+  dashboardWebClientSocket.on('message', function(method){
 
-// io.sockets.on('connection', function(dashboardWebClientSocket) {
+    switch(method) {
 
-//   console.log(dashboardWebClientSocket.id);
+      case 'test':
 
-//   dashboardWebClientSocket.on('error', function (err) { 
-//     console.error(err.stack);
-//   });
+        break;
 
-//   dashboardWebClientSocket.on('privateRoom', function(data) {
-//     dashboardWebClientSocket.join(data.userId);
-//   });
+      default:
 
-//   // get requests from client
-//   dashboardWebClientSocket.on('message', function(method){
+        console.log('client send was not handled');
+    }
 
-//     switch(method) {
+  });
 
-//       case 'test':
+  dashboardWebClientSocket.on('getModules', function(kpiList) {
+    console.log('From dashboard client: ', kpiList);
+    var method = 'getModules';
+    var requestObj = {
+      "type": "request",
+      "method": method,
+      "parameters": {
+        "kpiList": kpiList
+      }
+    }
+    imbFrameworkSocket.signalString(JSON.stringify(requestObj).toString());
+  });
 
-//         break;
+  dashboardWebClientSocket.on('selectModule', function(kpi) {
+    var method = 'selectModule';
+    console.log('From dashboard client: ' + method + ', data: ' + kpi.selectedModule.id);
+    if(kpi.selectedModule && kpi.selectedModule.id) {
+      if(kpi.variantId) {
+        var requestObj = { 
+          "type": "request",
+          "method": "selectModule",
+          "variantId": kpi.variantId,
+          "moduleId": kpi.selectedModule.id,
+          "kpiId": kpi.alias
+        };
+        imbFrameworkSocket.signalString(JSON.stringify(requestObj).toString());
+      } else {
+        console.log('no variant id for selecting module: ' + kpi.alias);
+      }
+    } else {
+      console.log('no model selected for kpi: ' + kpi.alias);
+    }
+  });
 
-//       default:
+  dashboardWebClientSocket.on('startModule', function(module) {
+    variantRepository.getModuleInputFramework(module, userRepository, processRepository, function(err, moduleInput) {
+      if(err) {
+        dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
+      } else {
+        variantRepository.saveModuleOutputStatus(module, function(err) {
+          if(err) {
+            dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
+          } else {
+            var method = 'startModule';
+            console.log('From dashboard client: ' + method + ' data: ' + module);
+            var requestObj = {
+              "type": "request",
+              "method": method,
+              "moduleId": moduleInput.moduleId,
+              "variantId": moduleInput.variantId,
+              "kpiId": moduleInput.kpiId,
+              "inputs": moduleInput.inputSpecification
+            };
+            imbFrameworkSocket.signalString(JSON.stringify(requestObj).toString());
+          }
+        });
+      }
+    });
+  });
 
-//         console.log('client send was not handled');
-//     }
-
-//   });
-
-//   dashboardWebClientSocket.on('getModules', function(kpiList) {
-//     console.log('From dashboard client: ', kpiList);
-//     var method = 'getModules';
-//     var requestObj = {
-//       "type": "request",
-//       "method": method,
-//       "parameters": {
-//         "kpiList": kpiList
-//       }
-//     }
-//     sendModuleRequest(requestObj);
-//   });
-
-//   dashboardWebClientSocket.on('selectModule', function(kpi) {
-//     var method = 'selectModule';
-//     console.log('From dashboard client: ' + method + ', data: ' + kpi.selectedModule.id);
-//     if(kpi.selectedModule && kpi.selectedModule.id) {
-//       if(kpi.variantId) {
-//         var requestObj = { 
-//           "type": "request",
-//           "method": "selectModule",
-//           "variantId": kpi.variantId,
-//           "moduleId": kpi.selectedModule.id,
-//           "kpiId": kpi.alias
-//         };
-//         sendModuleRequest(requestObj);
-//       } else {
-//         console.log('no variant id for selecting module: ' + kpi.alias);
-//       }
-//     } else {
-//       console.log('no model selected for kpi: ' + kpi.alias);
-//     }
-//   });
-
-//   dashboardWebClientSocket.on('startModule', function(module) {
-//     variantRepository.getModuleInputFramework(module, userRepository, processRepository, function(err, moduleInput) {
-//       if(err) {
-//         dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
-//       } else {
-//         variantRepository.saveModuleOutputStatus(module, function(err) {
-//           if(err) {
-//             dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
-//           } else {
-//             var method = 'startModule';
-//             console.log('From dashboard client: ' + method + ' data: ' + module);
-//             var requestObj = {
-//               "type": "request",
-//               "method": method,
-//               "moduleId": moduleInput.moduleId,
-//               "variantId": moduleInput.variantId,
-//               "kpiId": moduleInput.kpiId,
-//               "inputs": moduleInput.inputSpecification
-//             };
-//             sendModuleRequest(requestObj);
-//           }
-//         });
-//       }
-//     });
-//   });
-
-//   dashboardWebClientSocket.on('mcmsmv', function(module) {
+  dashboardWebClientSocket.on('mcmsmv', function(module) {
     
-//     var method = 'mcmsmv';
-//     console.log('From dashboard client: ' + method + ' data: ' + module);
-//     var requestObj = {
-//       "type": "request",
-//       "method": method,
-//       "kpiId": module.kpiId,
-//       "inputs": module.variants,
-//       "userId": module.userId
-//     };
-//     sendModuleRequest(requestObj);
+    var method = 'mcmsmv';
+    console.log('From dashboard client: ' + method + ' data: ' + module);
+    var requestObj = {
+      "type": "request",
+      "method": method,
+      "kpiId": module.kpiId,
+      "inputs": module.variants,
+      "userId": module.userId
+    };
+    imbFrameworkSocket.signalString(JSON.stringify(requestObj).toString());
           
-//   });
+  });
 
-//   //imbFrameworkSocket.onString = function (aEventEntry, aString) {
+  imbFrameworkSocket.onString = function (aEventEntry, aString) {
     
-//     //console.log(aEventEntry, aString);
-//     // console.log('From framework: ' + message.method);
-//     // if(message.method === 'getModules') {
-//     //   dashboardWebClientSocket.emit(message.method, message);
-//     // } else if(message.method === 'selectModule') {
-//     //   dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
-//     //   variantRepository.addModule(message, function(err, model) {
-//     //     if(err) {
-//     //       console.log(err.userId);
-//     //       io.to(err.userId).emit("frameworkError", JSON.stringify(err));
-//     //       //dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
-//     //     } else {
-//     //       console.log(model.userId);
-//     //       io.to(model.userId).emit(message.method, model);
-//     //       //dashboardWebClientSocket.emit(message.method, model);
-//     //     }
-//     //   });
-//     // } else if(message.method === 'startModule') {
-//     //   dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
-//     //   variantRepository.saveModuleOutputStatus(message, function(err, success) {
-//     //     if(err) {
-//     //       io.to(err.userId).emit("frameworkError", JSON.stringify(err));
-//     //     } else {
-//     //       io.to(success.userId).emit(message.method, message);
-//     //     }
-//     //   });
+    var message = JSON.parse(aString);
+
+    console.log('From framework: ' + message.method);
+    if(message.method === 'getModules') {
+      dashboardWebClientSocket.emit(message.method, message);
+    } else if(message.method === 'selectModule') {
+      dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
+      variantRepository.addModule(message, function(err, model) {
+        if(err) {
+          console.log(err.userId);
+          io.to(err.userId).emit("frameworkError", JSON.stringify(err));
+          //dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
+        } else {
+          console.log(model.userId);
+          io.to(model.userId).emit(message.method, model);
+          //dashboardWebClientSocket.emit(message.method, model);
+        }
+      });
+    } else if(message.method === 'startModule') {
+      dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
+      variantRepository.saveModuleOutputStatus(message, function(err, success) {
+        if(err) {
+          io.to(err.userId).emit("frameworkError", JSON.stringify(err));
+        } else {
+          io.to(success.userId).emit(message.method, message);
+        }
+      });
       
-//     // } else if(message.method === 'moduleResult') {
-//     //   dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
-//     //   variantRepository.addModuleResult(message, function(err, model) {
-//     //     if(err) {
-//     //       io.to(err.userId).emit("frameworkError", JSON.stringify(err));
-//     //     } else {
-//     //       //console.log(model);
-//     //       io.to(model.userId).emit(message.method, message);
-//     //     }
-//     //   });
-//     // } else if(message.method === 'mcmsmv') {
-//     //   dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
-//     //   io.to(message.userId).emit(message.method, message);
-//     // }
-//   //};
+    } else if(message.method === 'moduleResult') {
+      dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
+      variantRepository.addModuleResult(message, function(err, model) {
+        if(err) {
+          io.to(err.userId).emit("frameworkError", JSON.stringify(err));
+        } else {
+          //console.log(model);
+          io.to(model.userId).emit(message.method, message);
+        }
+      });
+    } else if(message.method === 'mcmsmv') {
+      dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
+      io.to(message.userId).emit(message.method, message);
+    }
+  };
 
   
 
-// });
+});
 
 httpServer.listen(port);
 console.log('Express started on port ' + port);
