@@ -68,7 +68,7 @@ angular.module( 'idss-dashboard.develop-variants', [
   $scope.deleteVariant = function(variant) {
     VariantService.deleteVariant(variant).then(function(deletedVariant) {
       var index = _.indexOf(variants, variant);
-      variants.splice(1, index);
+      variants.splice(index, 1);
     });
   };
 
