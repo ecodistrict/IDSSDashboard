@@ -209,11 +209,11 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     var method = 'selectModule';
     console.log('From dashboard client: ' + method + ', data: ' + kpi.selectedModule.id);
     if(kpi.selectedModule && kpi.selectedModule.id) {
-      if(kpi.variantId) {
+      if(kpi.processId) {
         var requestObj = { 
           "type": "request",
           "method": "selectModule",
-          "variantId": kpi.variantId,
+          "variantId": kpi.processId, // TODO: change this property name to processId
           "moduleId": kpi.selectedModule.id,
           "kpiId": kpi.alias
         };
@@ -277,15 +277,14 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         dashboardWebClientSocket.emit(message.method, message);
       } else if(message.method === 'selectModule') {
         dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
-        variantRepository.addModule(message, function(err, model) {
+        message.processId = message.variantId; // TODO: workaround, this will change after property name is changed to processId
+        processRepository.addInputSpecification(message, function(err, model) {
           if(err) {
             console.log(err.userId);
             io.to(err.userId).emit("frameworkError", JSON.stringify(err));
-            //dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
           } else {
             console.log(model.userId);
             io.to(model.userId).emit(message.method, model);
-            //dashboardWebClientSocket.emit(message.method, model);
           }
         });
       } else if(message.method === 'startModule') {
