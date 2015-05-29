@@ -47,7 +47,6 @@ angular.module( 'idss-dashboard.assess-variants', [])
     } else if(variant.type === 'to-be') {
       toBeVariant = variant;
     } else {
-      console.log(variant);
       $scope.otherVariants.push(variant);
     }
   });
@@ -117,24 +116,16 @@ angular.module( 'idss-dashboard.assess-variants', [])
       return k.alias === module.kpiId;
     });
     if(kpi) {
+      // this cancels/overrides any manual output
       kpi.manual = false;
-      kpi.status = module.status;
-      // TODO: refactor this to prepareKpiData above, bad and excellent is the issue
-      _.each(module.outputs, function(o) {
-        o.alias = kpi.alias;
-        o.kpiName = kpi.kpiName;
-        o.kpiBad = kpi.kpiBad;
-        o.kpiExcellent = kpi.kpiExcellent;
-        o.kpiUnit = kpi.kpiUnit;
-        o.moduleId = kpi.moduleId;
-        if(o.type === 'geojson') {
-          // TODO: update any existing map output, use id?
-          $scope.kpiMapOutputs.push(o);
-        }
-      });
+      // if status changed/exists, otherwise keep old status
+      kpi.status = module.status || kpi.status;
+      if(kpi.status !== 'processing') {
+        kpi.loading = false;
+      }
 
       kpi.outputs = module.outputs;
-      // for updating manual property
+      // for updating manual property only..
       VariantService.updateKpi(currentVariant, kpi);
 
     } else {
@@ -180,6 +171,10 @@ angular.module( 'idss-dashboard.assess-variants', [])
         configuredKpi.manual = true;
         configuredKpi.status = 'success';
         configuredKpi.loading = false;
+        // fix this, the copy vs the original - both need new data
+        kpi.manual = true;
+        kpi.status = 'success';
+        kpi.loading = false;
         // update kpi in variant
         VariantService.updateKpi(currentVariant, configuredKpi);
         // trigger update to kpi in scope
