@@ -1,6 +1,6 @@
 angular.module('idss-dashboard')
 
-.factory('ModuleService', ['$http', 'NotificationService','ProcessService', '$q', function ($http, NotificationService, ProcessService, $q) {
+.factory('ModuleService', ['$http', 'NotificationService', '$q', function ($http, NotificationService, $q) {
 
     var modules = []; // this holds all modules from a getModules request
 
@@ -118,6 +118,30 @@ angular.module('idss-dashboard')
 
     };
 
+    var deleteModuleInput = function(kpiId) {
+        return $http
+            .delete('variants/moduleInput/' + kpiId)
+            .error(function(status, data) {
+                var label = 'Error when deleting module input';
+                NotificationService.createErrorFlash(label);
+            })
+            .then(function (res) {
+                console.log(res);
+            });  
+    };
+
+    var deleteModuleOutput = function(kpiId) {
+        return $http
+            .delete('variants/moduleOutput/' + kpiId)
+            .error(function(status, data) {
+                var label = 'Error when deleting module output';
+                NotificationService.createErrorFlash(label);
+            })
+            .then(function (res) {
+                console.log(res);
+            });  
+    };
+
     var updateModuleOutputStatus = function(variantId, moduleId, kpiId, status, outputs) {
 
         var moduleOutput = {
@@ -150,6 +174,8 @@ angular.module('idss-dashboard')
         getModuleInput: getModuleInput,
         getModuleOutput: getModuleOutput,
         saveModuleInput: saveModuleInput,
-        updateModuleOutputStatus: updateModuleOutputStatus
+        deleteModuleInput: deleteModuleInput,
+        deleteModuleOutput: deleteModuleOutput,
+        updateModuleOutputStatus: updateModuleOutputStatus,
     };
 }]);

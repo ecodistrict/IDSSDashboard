@@ -1,6 +1,6 @@
 angular.module('idss-dashboard')
 
-.factory('ProcessService', ['$http', 'NotificationService', '$filter', function ($http, NotificationService, $filter) {
+.factory('ProcessService', ['$http', 'NotificationService', '$filter', '$q', 'KpiService', 'ModuleService', 'socket', function ($http, NotificationService, $filter, $q, KpiService, ModuleService, socket) {
 
     // this is used while process is loading to avoid errors in GUI
     var currentProcess = {
@@ -19,10 +19,8 @@ angular.module('idss-dashboard')
         currentProcess.dateModified = newProcessData.dateModified;
         currentProcess.district = newProcessData.district; // remove reference ATT!
         currentProcess.title = newProcessData.title;
-        currentProcess.kpiList = newProcessData.kpiList;
-        currentProcess.contextList = newProcessData.contextList;
+        currentProcess.kpiList = newProcessData.kpiList || [];
         currentProcess.description = newProcessData.description;
-        currentProcess.logs = newProcessData.logs;
     };
 
     var loadCurrentProcess = function() {
@@ -93,40 +91,85 @@ angular.module('idss-dashboard')
         return currentProcess;
     };
 
-    var getIsModified = function() {
-        return currentProcess.isModified;
-    };
-
-    var addVariant = function(alternative, context) {
-        currentProcess.variants = currentProcess.variants || [];
-        currentProcess.variants.push({
-            alternative: alternative,
-            context: context
-        });
-    };
-
-    var removeVariant = function(variant) {
-        var index = _.indexOf(currentProcess.variants, variant);
-        if(index) {
-            currentProcess.variants.splice(index, 1);
+    var addKpi = function(kpiToAdd) {
+        var label;
+        // only allow removing KPI on as-is variant
+        var alreadyAdded = _.find(currentProcess.kpiList, function(k) {return k.alias === kpiToAdd.alias;});
+        
+        if(!alreadyAdded) {
+            // add properties for instantiated kpi on variant
+            kpiToAdd.selectedModule = {id: null};
+            if(kpiToAdd.qualitative) {
+                kpiToAdd.qualitativeSettings = KpiService.generateQualitativeKpiSettings();
+                kpiToAdd.bad = 1;
+                kpiToAdd.excellent = 10;
+            } 
+            currentProcess.kpiList.unshift(kpiToAdd);
+            return saveCurrentProcess();
+        } else {
+            label = 'KPI is already added';
+            NotificationService.createInfoFlash(label);
+            var deferred = $q.defer();
+            deferred.resolve(false);
+            return deferred.promise;
         }
     };
 
-    // the AS IS is also a variant type
-    var getAsIsVariant = function() {
-        // TODO
+    var updateKpiSettings = function(kpiToUpdate) {
+        var kpi = _.find(currentProcess.kpiList, function(k) {
+            return k.alias === kpiToUpdate.alias;
+        });
+        // these are the kpi settings changes 
+        kpi.bad = kpiToUpdate.bad;
+        kpi.excellent = kpiToUpdate.excellent;
+        kpi.qualitativeSettings = kpiToUpdate.qualitativeSettings;
+        // if the selected module is changed delete all module data in variant?
+        // now the inputs and outputs are still saved until user remove KPI form list of used kpis (removeKPI below)
+        // TODO: NOTIFY USER!!! 
+        console.log('update kpi');
+        if(kpiToUpdate.selectedModule.id) {
+            // set the selected module
+            kpi.selectedModule = kpiToUpdate.selectedModule;
+            // extend new module with data from module list by id
+            ModuleService.extendModuleData(kpi.selectedModule, true);
+            // send request for getting inputs from module and save that in dashboard database
+            kpi.processId = currentProcess._id;
+            socket.emit('selectModule', kpi);
+        } else {
+            // selected module was removed or didn't exist
+            kpi.selectedModule = {
+                id: null,
+                name: null,
+                description: null
+            };
+        }
+        saveCurrentProcess().then(function() {
+            return currentProcess;
+        });
     };
 
+    var removeKpi = function(kpiToRemove) {
+        
+        var kpi = _.find(currentProcess.kpiList, function(k) {
+            return k.alias === kpiToRemove.alias;
+        });
+        if(kpi) {
+            var index = _.indexOf(currentProcess.kpiList, kpi);
+            currentProcess.kpiList.splice(index, 1);
+            return saveCurrentProcess();
+        }
+    };
+
+
     return {
-        saveCurrentProcess: saveCurrentProcess,
-        getCurrentProcess: getCurrentProcess,
-        loadCurrentProcess: loadCurrentProcess,
-        createNewProcess: createNewProcess,
-        getIsModified: getIsModified,
         updateProcess: updateProcess,
-        addVariant: addVariant,
-        removeVariant: removeVariant,
-        getAsIsVariant: getAsIsVariant,
-        deleteCurrentProcess: deleteCurrentProcess
+        loadCurrentProcess: loadCurrentProcess,
+        saveCurrentProcess: saveCurrentProcess,
+        createNewProcess: createNewProcess,
+        deleteCurrentProcess: deleteCurrentProcess,
+        getCurrentProcess: getCurrentProcess,
+        addKpi: addKpi,
+        updateKpiSettings: updateKpiSettings,
+        removeKpi: removeKpi
     };
 }]);

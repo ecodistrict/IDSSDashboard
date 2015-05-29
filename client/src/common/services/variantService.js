@@ -25,6 +25,19 @@ angular.module('idss-dashboard')
             });
     };
 
+    var loadVariant = function (variantId) {
+        return $http
+            .get('variants/' + variantId)
+            .error(function(status, data) {
+                var label = 'Error when loading variants';
+                NotificationService.createErrorFlash(label);
+            })
+            .then(function (res) {
+                variants = res.data;
+                return variants;
+            });
+    };
+
     var loadVariantsByProcessId = function () {
         return $http
             .get('variants/processid')
@@ -162,32 +175,6 @@ angular.module('idss-dashboard')
         }
     };
 
-    // TODO: remove this to module service!
-    var removeInputData = function(variantId, kpiId) {
-        return $http
-            .delete('variants/moduleInput/' + variantId + '/' + kpiId)
-            .error(function(status, data) {
-                var label = 'Error when deleting module input';
-                NotificationService.createErrorFlash(label);
-            })
-            .then(function (res) {
-                console.log(res);
-            });  
-    };
-
-    // TODO: remove this to module service!
-    var removeOutputData = function(variantId, kpiId) {
-        return $http
-            .delete('variants/moduleOutput/' + variantId + '/' + kpiId)
-            .error(function(status, data) {
-                var label = 'Error when deleting module output';
-                NotificationService.createErrorFlash(label);
-            })
-            .then(function (res) {
-                console.log(res);
-            });  
-    };
-
     var addOrRemoveKpis = function(asIsVariant, otherVariant) {
         // KPIs are added or removed
         _.each(asIsVariant.kpiList, function(asIsKpi) {
@@ -253,6 +240,7 @@ angular.module('idss-dashboard')
 
     return {
         loadVariants: loadVariants,
+        loadVariant: loadVariant,
         createVariant: createVariant,
         getVariants: getVariants,
         loadVariantsByProcessId: loadVariantsByProcessId,

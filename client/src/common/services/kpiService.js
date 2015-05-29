@@ -1,6 +1,6 @@
 angular.module('idss-dashboard')
 
-.factory('KpiService', ['$http', 'NotificationService', 'ProcessService', 'ModuleService', function ($http, NotificationService, ProcessService, ModuleService) {
+.factory('KpiService', ['$http', 'NotificationService', function ($http, NotificationService) {
 
     var loadKpis = function () {
         return $http
@@ -91,9 +91,8 @@ angular.module('idss-dashboard')
     };
 
     // This is the default configuration settings for qualitative KPI
-    // it is copied to as-is kpi when this kpi is used and during configuration it is used to generate input specification
-    var generateQualitativeKpiSettings = function(kpi) {
-        kpi.settings = [
+    var generateQualitativeKpiSettings = function() {
+        return [
             {
                 label: "Score 10. Excellent",
                 value: "Excellent",
@@ -152,99 +151,99 @@ angular.module('idss-dashboard')
         ];
     };
 
-    var generateQualitativeKpiInputSpecification = function(kpi) {
-        var settings = kpi.settings;
+    // var generateQualitativeKpiInputSpecification = function(kpi) {
+    //     var settings = kpi.settings;
 
-        scoreInputs = {
-            "kpiScore0": {
-              label: '0: ' + settings[10].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 10,
-              referenceValue: 0
-            },
-            "kpiScore1": {
-              label: '1: ' + settings[9].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 9,
-              referenceValue: 1
-            },
-            "kpiScore2": {
-              label: '2: ' + settings[8].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 8,
-              referenceValue: 2
-            },
-            "kpiScore3": {
-              label: '3: ' + settings[7].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 7,
-              referenceValue: 3
-            },
-            "kpiScore4": {
-              label: '4: ' + settings[6].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 6,
-              referenceValue: 4
-            },
-            "kpiScore5": {
-              label: '5: ' + settings[5].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 5,
-              referenceValue: 5
-            },
-            "kpiScore6": {
-              label: '6: ' + settings[4].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 4,
-              referenceValue: 6
-            },
-            "kpiScore7": {
-              label: '7: ' + settings[3].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 3,
-              referenceValue: 7
-            },
-            "kpiScore8": {
-              label: '8: ' + settings[2].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 2,
-              referenceValue: 8
-            },
-            "kpiScore9": {
-              label: '9: ' + settings[1].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 1,
-              referenceValue: 9
-            },
-            "kpiScore10": {
-              label: '10: ' + settings[0].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 0,
-              referenceValue: 10
-            }
-        };
+    //     var scoreInputs = {
+    //         "kpiScore0": {
+    //           label: '0: ' + settings[10].value,
+    //           type: 'radio',
+    //           name: kpi.alias,
+    //           order: 10,
+    //           referenceValue: 0
+    //         },
+    //         "kpiScore1": {
+    //           label: '1: ' + settings[9].value,
+    //           type: 'radio',
+    //           name: kpi.alias,
+    //           order: 9,
+    //           referenceValue: 1
+    //         },
+    //         "kpiScore2": {
+    //           label: '2: ' + settings[8].value,
+    //           type: 'radio',
+    //           name: kpi.alias,
+    //           order: 8,
+    //           referenceValue: 2
+    //         },
+    //         "kpiScore3": {
+    //           label: '3: ' + settings[7].value,
+    //           type: 'radio',
+    //           name: kpi.alias,
+    //           order: 7,
+    //           referenceValue: 3
+    //         },
+    //         "kpiScore4": {
+    //           label: '4: ' + settings[6].value,
+    //           type: 'radio',
+    //           name: kpi.alias,
+    //           order: 6,
+    //           referenceValue: 4
+    //         },
+    //         "kpiScore5": {
+    //           label: '5: ' + settings[5].value,
+    //           type: 'radio',
+    //           name: kpi.alias,
+    //           order: 5,
+    //           referenceValue: 5
+    //         },
+    //         "kpiScore6": {
+    //           label: '6: ' + settings[4].value,
+    //           type: 'radio',
+    //           name: kpi.alias,
+    //           order: 4,
+    //           referenceValue: 6
+    //         },
+    //         "kpiScore7": {
+    //           label: '7: ' + settings[3].value,
+    //           type: 'radio',
+    //           name: kpi.alias,
+    //           order: 3,
+    //           referenceValue: 7
+    //         },
+    //         "kpiScore8": {
+    //           label: '8: ' + settings[2].value,
+    //           type: 'radio',
+    //           name: kpi.alias,
+    //           order: 2,
+    //           referenceValue: 8
+    //         },
+    //         "kpiScore9": {
+    //           label: '9: ' + settings[1].value,
+    //           type: 'radio',
+    //           name: kpi.alias,
+    //           order: 1,
+    //           referenceValue: 9
+    //         },
+    //         "kpiScore10": {
+    //           label: '10: ' + settings[0].value,
+    //           type: 'radio',
+    //           name: kpi.alias,
+    //           order: 0,
+    //           referenceValue: 10
+    //         }
+    //     };
 
-        kpi.inputSpecification = {
-            kpiScores: {
-                order: 0,
-                type: 'inputGroup',
-                label: 'Select a score',
-                info: 'Info',
-                inputs: scoreInputs
-            }
-        };
-    };
+    //     kpi.inputSpecification = {
+    //         kpiScores: {
+    //             order: 0,
+    //             type: 'inputGroup',
+    //             label: 'Select a score',
+    //             info: 'Info',
+    //             inputs: scoreInputs
+    //         }
+    //     };
+    // };
 
     var generateQuantitativeKpiSettings = function(kpi) {
 
@@ -312,33 +311,33 @@ angular.module('idss-dashboard')
         };
     };
 
-    var generateQuantitativeKpiInputSpecification = function(kpi) {
+    // var generateQuantitativeKpiInputSpecification = function(kpi) {
 
-        var settings = kpi.settings;
+    //     var settings = kpi.settings;
         
-        kpi.inputSpecification = {
-            kpiScores: {
-                order: 0,
-                type: 'inputGroup',
-                label: 'Limits - define the scores',
-                info: 'Info about scores',
-                inputs: {
-                    "kpiScoreExcellent": {
-                        label: 'Excellent',
-                        type: 'number',
-                        unit: kpi.unit,
-                        value: settings.excellent
-                    },
-                    "kpiScoreBad": {
-                        label: 'Bad',
-                        type: 'number',
-                        unit: kpi.unit,
-                        value: settings.bad
-                    }
-                }
-            }
-        };
-    };
+    //     kpi.inputSpecification = {
+    //         kpiScores: {
+    //             order: 0,
+    //             type: 'inputGroup',
+    //             label: 'Limits - define the scores',
+    //             info: 'Info about scores',
+    //             inputs: {
+    //                 "kpiScoreExcellent": {
+    //                     label: 'Excellent',
+    //                     type: 'number',
+    //                     unit: kpi.unit,
+    //                     value: settings.excellent
+    //                 },
+    //                 "kpiScoreBad": {
+    //                     label: 'Bad',
+    //                     type: 'number',
+    //                     unit: kpi.unit,
+    //                     value: settings.bad
+    //                 }
+    //             }
+    //         }
+    //     };
+    // };
 
     var generateToBeInput = function(asIsKpi, toBeKpi) {
         var bad;
@@ -503,29 +502,29 @@ angular.module('idss-dashboard')
                     // if manual has been set this is prioritized, a kpi must be recalculated to override this
                   kpi.moduleName = kpi.selectedModule.name;
                   kpi.moduleId = kpi.selectedModule.id;
-                  ModuleService.getModuleOutput(currentVariant._id, kpi.selectedModule.id, kpi.alias).then(function(output) {
-                      kpi.status =  output.status; 
-                      if(kpi.status === 'initializing' || kpi.status === 'processing') {
-                        kpi.loading = true;
-                      } else {
-                        kpi.loading = false;
-                      }
+                  // ModuleService.getModuleOutput(currentVariant._id, kpi.selectedModule.id, kpi.alias).then(function(output) {
+                  //     kpi.status =  output.status; 
+                  //     if(kpi.status === 'initializing' || kpi.status === 'processing') {
+                  //       kpi.loading = true;
+                  //     } else {
+                  //       kpi.loading = false;
+                  //     }
 
-                      _.each(output.outputs, function(o) {
-                        o.alias = kpi.alias;
-                        o.kpiName = kpi.name;
-                        o.kpiBad = kpi.bad;
-                        o.kpiExcellent = kpi.excellent;
-                        o.kpiUnit = kpi.unit;
-                        o.moduleId = kpi.moduleId;
-                        if(o.type === 'geojson' && kpiMapOutputs) {
-                          // TODO: update any existing map output, use id?
-                          kpiMapOutputs.push(o);
-                        }
-                      });
+                  //     _.each(output.outputs, function(o) {
+                  //       o.alias = kpi.alias;
+                  //       o.kpiName = kpi.name;
+                  //       o.kpiBad = kpi.bad;
+                  //       o.kpiExcellent = kpi.excellent;
+                  //       o.kpiUnit = kpi.unit;
+                  //       o.moduleId = kpi.moduleId;
+                  //       if(o.type === 'geojson' && kpiMapOutputs) {
+                  //         // TODO: update any existing map output, use id?
+                  //         kpiMapOutputs.push(o);
+                  //       }
+                  //     });
 
-                      kpi.outputs = output.outputs; // listen on this to trigger rendering
-                  });
+                  //     kpi.outputs = output.outputs; // listen on this to trigger rendering
+                  // });
                 } else {
                   kpi.moduleName = kpi.selectedModule.name || 'Manual input (no module selected)';
                   // try to set any manual given values, null if not found
@@ -553,9 +552,9 @@ angular.module('idss-dashboard')
         generateQualitativeKpiOutput: generateQualitativeKpiOutput,
         generateQuantitativeKpiOutput: generateQuantitativeKpiOutput,
         //generateQualitativeKpiInputSettings: generateQualitativeKpiInputSettings,
-        generateQualitativeKpiInputSpecification: generateQualitativeKpiInputSpecification,
+        //generateQualitativeKpiInputSpecification: generateQualitativeKpiInputSpecification,
         generateQualitativeKpiSettings: generateQualitativeKpiSettings,
-        generateQuantitativeKpiInputSpecification: generateQuantitativeKpiInputSpecification,
+        //generateQuantitativeKpiInputSpecification: generateQuantitativeKpiInputSpecification,
         generateQuantitativeKpiSettings: generateQuantitativeKpiSettings,
         generateToBeInput: generateToBeInput,
         generateManualInput: generateManualInput,

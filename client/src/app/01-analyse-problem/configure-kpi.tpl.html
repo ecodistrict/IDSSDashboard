@@ -10,7 +10,7 @@
     </div>
 
     <div ng-show="kpi.qualitative">
-        <div ng-repeat="setting in kpi.settings" class="panel panel-default kpi-item">
+        <div ng-repeat="setting in kpi.qualitativeSettings" class="panel panel-default kpi-item">
             <div class="panel-heading">
                 {{setting.label}}
                 <button ng-show="!setting.edit" class="btn btn-xs btn-primary pull-right" ng-click="setting.edit = true">
@@ -34,7 +34,7 @@
                     <label for="kpi-score-bad" class="col-sm-7 control-label">Bad: </label>
                     <div class="col-sm-5">
                         <div class="input-group">
-                            <input id="kpi-score-bad" ng-model="kpi.settings.bad" class="form-control text-right" type="number">
+                            <input id="kpi-score-bad" ng-model="kpi.bad" class="form-control text-right" type="number">
                             <div ng-show="kpi.unit" class="input-group-addon">{{kpi.unit}}</div>
                         </div>
                     </div>
@@ -43,7 +43,7 @@
                     <label for="kpi-score-excellent" class="col-sm-7 control-label">Excellent: </label>
                     <div class="col-sm-5">
                         <div class="input-group">
-                            <input id="kpi-score-excellent" ng-model="kpi.settings.excellent" class="form-control text-right" type="number">
+                            <input id="kpi-score-excellent" ng-model="kpi.excellent" class="form-control text-right" type="number">
                             <div ng-show="kpi.unit" class="input-group-addon">{{kpi.unit}}</div>
                         </div>
                     </div>

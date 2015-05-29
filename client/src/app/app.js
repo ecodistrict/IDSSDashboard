@@ -24,7 +24,8 @@ angular.module( 'idss-dashboard', [
   'idss-dashboard.assess-variants',
   'idss-dashboard.compare-variants',
   'idss-dashboard.qualitative-kpi-input',
-  'idss-dashboard.quantitative-kpi-input'
+  'idss-dashboard.quantitative-kpi-input',
+  'idss-dashboard.kpi'
 ])
 
 .constant('AUTH_EVENTS', {

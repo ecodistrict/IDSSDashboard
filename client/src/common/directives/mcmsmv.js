@@ -71,6 +71,7 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
                       variantId: variant.variantId,
                       variantName: variant.name,
                       kpiName: metadata[kpi.kpiId].kpiName,
+                      kpiAlias: metadata[kpi.kpiId].kpiId,
                       bad: metadata[kpi.kpiId].bad,
                       excellent: metadata[kpi.kpiId].excellent,
                       value: kpiValue,
@@ -219,7 +220,7 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
          .size(100) 
         .columns([
             function(d) {
-              return '<a href="#/variant-input/' + d.variantId + '">' + d.kpiName + '</a>';
+              return '<a href="#/kpi/' + d.variantId + '/' + d.kpiAlias + '">' + d.kpiName + '</a>';
             },
             function(d) {
               return d.stakeholder;
@@ -250,7 +251,7 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
     //     // This code demonstrates generating the column header automatically based on the columns.
         .columns([
             function(d) {
-              return '<a href="#/variant-input/' + d.variantId + '">' + d.variantName + '</a>';
+              return '<a href="#/kpi/' + d.variantId + '/' + d.kpiAlias + '">' + d.variantName + '</a>';
             },
             function(d) {
               return d.stakeholder;

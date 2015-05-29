@@ -14,12 +14,12 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
       }
     },
     resolve:{
-      variants: ['VariantService', function(VariantService) {
-        var v = VariantService.getVariants();
-        if(v) {
-          return v;
+      process: ['ProcessService', function(ProcessService) {
+        var p = ProcessService.getCurrentProcess();
+        if(p._id) {
+          return p;
         } else {
-          return VariantService.loadVariants();
+          return ProcessService.loadCurrentProcess();
         }
       }]
     }, 
@@ -30,17 +30,17 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
   });
 }])
 
-.controller( 'ManageKpisCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', 'ModuleService', 'VariantService', 'variants', function ManageKpisCtrl( $scope, KpiService, ProcessService, $modal, ModuleService, VariantService, variants) {
+.controller( 'ManageKpisCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', 'ModuleService', 'VariantService', 'process', function ManageKpisCtrl( $scope, KpiService, ProcessService, $modal, ModuleService, VariantService, process) {
 
-  $scope.asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
-  //$scope.currentProcess = ProcessService.getCurrentProcess();
+  $scope.currentProcess = process;
+
+  // Kpi database  
   $scope.kpiList = [];
-
   KpiService.loadKpis().then(function(kpiList) {  
     $scope.kpiList = kpiList;
   });
 
-  // Use KPI in process (add to as is variant)
+  // Use KPI in process 
   $scope.useKpi = function(kpi) {
 
     var kpiModal = $modal.open({
@@ -55,7 +55,7 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
 
     kpiModal.result.then(function (useKpi) {
       // add copy of this KPI to as is variant
-      VariantService.addKpi(angular.copy(useKpi));
+      ProcessService.addKpi(angular.copy(useKpi));
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
     });
@@ -64,7 +64,7 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
 
   $scope.useKpiQuick = function(useKpi) {
     // add copy of this KPI to as is variant
-      VariantService.addKpi(angular.copy(useKpi));
+      ProcessService.addKpi(angular.copy(useKpi));
   };
 
   // Add KPI to KPI repository
@@ -76,7 +76,6 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
     });
 
     kpiModal.result.then(function (kpiToAdd) {
-      console.log(kpiToAdd);
       KpiService.createKpi(kpiToAdd).then(function(kpi) {
         $scope.kpiList.push(kpi);
       });
@@ -110,8 +109,8 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
     });
 
     kpiModal.result.then(function (configuredKpi) {
-      // add the kpi settings and module spec to as is variant
-      VariantService.updateKpi($scope.asIsVariant, configuredKpi);
+      // add the kpi settings and module spec kpi list in process
+      ProcessService.updateKpiSettings(configuredKpi);
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
     });
@@ -120,7 +119,7 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
 
   // TODO: this is an indicator whether the KPI is ok or not 
   $scope.kpiIsConfigured = function(kpi) {
-    return kpi.inputSpecification;
+    return (kpi.excellent || kpi.excellent === 0) && (kpi.bad || kpi.bad === 0);
   };
 
 }]);

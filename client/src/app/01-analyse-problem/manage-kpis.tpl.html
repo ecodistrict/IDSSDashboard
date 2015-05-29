@@ -19,7 +19,7 @@
         </div>
         <div class="col-xs-6">
             <h2>KPI set for this decision process</h2>
-            <div ng-repeat="kpi in asIsVariant.kpiList" id="{{'used-kpi-' + kpi.alias}}" class="panel panel-success kpi-item" ng-click="configureKpi(kpi)">
+            <div ng-repeat="kpi in currentProcess.kpiList" id="{{'used-kpi-' + kpi.alias}}" class="panel panel-success kpi-item" ng-click="configureKpi(kpi)">
               <div class="panel-heading">
                 <h3 class="panel-title">{{kpi.name}} <span ng-hide="kpiIsConfigured(kpi)" class="glyphicon glyphicon-exclamation-sign"></span></h3>
               </div>
@@ -27,7 +27,7 @@
                 {{kpi.description}}
               </div>
             </div>
-            <!-- <button class="btn btn-primary btn-xs pull-right" ng-show="asIsVariant.kpiList.length">
+            <!-- <button class="btn btn-primary btn-xs pull-right" ng-show="currentProcess.kpiList.length">
                 <span class="glyphicon glyphicon-floppy-disk"></span> Save this KPI set
             </button> -->
         </div>
@@ -36,7 +36,7 @@
         <form role="form">
           <div class="form-group">
             <button class="btn btn-primary pull-left" ui-sref="analyse-problem"><span class="glyphicon glyphicon-chevron-left"></span> Previous</button>
-            <button ng-show="asIsVariant.kpiList.length > 0" class="pull-right btn btn-primary" ui-sref="define-context">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
+            <button ng-show="currentProcess.kpiList.length > 0" class="pull-right btn btn-primary" ui-sref="define-context">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
           </div>
         </form>
     </div>

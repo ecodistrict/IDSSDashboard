@@ -17,12 +17,12 @@ angular.module( 'idss-dashboard.collect-data', [
       }
     },
     resolve:{
-      variants: ['VariantService', function(VariantService) {
-        var v = VariantService.getVariants();
-        if(v) {
-          return v;
+      currentProcess: ['ProcessService', function(ProcessService) {
+        var p = ProcessService.getCurrentProcess();
+        if(p._id) {
+          return p;
         } else {
-          return VariantService.loadVariants();
+          return ProcessService.loadCurrentProcess();
         }
       }]
     }, 
@@ -33,47 +33,12 @@ angular.module( 'idss-dashboard.collect-data', [
   });
 }])
 
-.controller( 'CollectDataCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', 'variants', 'ModuleService', function CollectDataCtrl( $scope, KpiService, ProcessService, $modal, variants, ModuleService ) {
+.controller( 'CollectDataCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', 'currentProcess', 'ModuleService', function CollectDataCtrl( $scope, KpiService, ProcessService, $modal, currentProcess, ModuleService ) {
 
-  var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
-  _.each(asIsVariant.kpiList, function(kpi) {
-    kpi.moduleId = kpi.selectedModule.id; 
-    kpi.moduleName = kpi.selectedModule.name;
-  });
-  $scope.currentVariant = asIsVariant;
+  $scope.currentProcess = currentProcess;
 
-  $scope.moduleInputIsOk = function(module) {
-    // create API call?
-    return true;
-  };
+  // TODO: create modal to upload files to process, this data is used for every module
 
-  $scope.setModuleInput = function(kpi) {
-    if(kpi.selectedModule.id) {
-    
-      moduleInputModal = $modal.open({
-          templateUrl: '02-collect-data/module-input.tpl.html',
-          controller: 'ModuleInputController',
-          resolve: {
-            kpi: function() {
-              return kpi;
-            },
-            currentVariant: function() {
-              return $scope.currentVariant;
-            }
-          }
-        });
-
-        moduleInputModal.result.then(function (moduleInput) {
-
-          ModuleService.saveModuleInput(moduleInput.variantId, moduleInput);
-                  
-        }, function () {
-          console.log('Modal dismissed at: ' + new Date());
-        });
-
-      }
-
-    };
 
 }]);
 
