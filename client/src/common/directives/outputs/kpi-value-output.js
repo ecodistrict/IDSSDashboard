@@ -269,13 +269,9 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
             var kpi = scope.kpi;
 
-            var render = function(output) {
+            var render = function() {
 
-                var bad = kpi.bad, excellent = kpi.excellent, value = output.value;
-
-                if(!value && value!==0) {
-                    return;
-                }
+                var bad = kpi.bad, excellent = kpi.excellent, value = kpi.value || 0;
 
                 element.empty().attr('id', 'm-' + kpi.alias + '-aggregated-kpi');
 
@@ -329,40 +325,15 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
             };
 
-            scope.$watchCollection('kpi.outputs', function(newOutputs, oldOutputs) {
-
+            scope.$watch('kpi.value', function(newValue, oldValue) {
                 // ignore first run, when undefined
-                if(newOutputs && newOutputs.length) {
-                    // if output changed
-                    if(oldOutputs && oldOutputs.length === newOutputs.length) {
-                        _.each(newOutputs, function(output, i) {
-                            if(output !== oldOutputs[i]) {
-                                if(output.type === 'kpi') {
-                                    render(output);
-                                }
-                            }
-                        });
-                    } else {
-                        // TODO: bad solution, fix this
-                        // if output was added
-                        _.each(newOutputs, function(output, i) {
-                            if(output.type === 'kpi') {
-                                render(output);
-                            }
-                        });
-
-                    }
+                if(newValue) {
+                    console.log('render kpi');
+                    render();
                 }
             });
 
-            if(scope.kpi.outputs) {
-                _.each(scope.kpi.outputs, function(output) {
-                    if(output.type === 'kpi') {
-                        render(output);
-                    }
-                });
-            }
-
+            render();
 
 
         }
