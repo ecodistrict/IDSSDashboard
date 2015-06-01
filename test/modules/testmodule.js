@@ -107,7 +107,7 @@ var moduleResult = {
     type: "result"
 };
 
-var imbConnection = new imb.TIMBConnection(imb.imbDefaultHostname, imb.imbDefaultTLSPort, 10, "dashboard-testmodule", imb.imbDefaultPrefix, false, 
+var imbConnection = new imb.TIMBConnection(imb.imbDefaultHostname, imb.imbDefaultTLSPort, 10, "dashboard testmodule", imb.imbDefaultPrefix, false, 
     "../../cert/client-eco-district.pfx", "&8dh48klosaxu90OKH", "../../cert/root-ca-imb.crt");
 
 imbConnection.on("onUniqueClientID", function (aUniqueClientID, aHubID) {
@@ -119,9 +119,17 @@ imbConnection.on("onDisconnect", function (obj) {
     console.log("disonnected");
 });
 
-var frameworkSocket = imbConnection.subscribe("framework");
+var frameworkPub = imbConnection.publish("dashboardTEST");
+var frameworkSub = imbConnection.subscribe("modulesTEST");
 
-frameworkSocket.onString = function(aEventEntry, aString) {
+frameworkPub.onString = function(aEventEntry, aString) {
+  console.log(aEventEntry, aString);
+};
+
+frameworkPub.signalString(JSON.stringify({method: 'getModules-test1'}).toString());
+frameworkPub.signalString(JSON.stringify({method: 'getModules-test2'}).toString());
+
+frameworkSub.onString = function(aEventEntry, aString) {
   
   console.log(aString);
   var message = JSON.parse(aString);
@@ -129,11 +137,12 @@ frameworkSocket.onString = function(aEventEntry, aString) {
 
   if(message.method === 'getModules') {
     console.log('getModules');
-    frameworkSocket.signalString(JSON.stringify(moduleDefinition).toString());
+    frameworkPub.signalString(JSON.stringify(moduleDefinition).toString());
   } else if(message.method === 'selectModule') {
+    console.log('selectModule');
     if(message.moduleId === moduleId) {
       moduleInput.variantId = message.variantId;
-      frameworkSocket.signalString(JSON.stringify(moduleInput).toString());
+      frameworkPub.signalString(JSON.stringify(moduleInput).toString());
     }
   } else if(message.method === 'startModule') {
     if(message.moduleId === moduleId) {
@@ -141,7 +150,7 @@ frameworkSocket.onString = function(aEventEntry, aString) {
       startModule.status = 'processing'; 
       startModule.kpiId = message.kpiId;
       startModule.variantId = message.variantId;
-      frameworkSocket.signalString(JSON.stringify(startModule).toString());
+      frameworkPub.signalString(JSON.stringify(startModule).toString());
       // after calculating, send output
       moduleResult.kpiId = message.kpiId;
       moduleResult.variantId = message.variantId;
@@ -173,7 +182,7 @@ frameworkSocket.onString = function(aEventEntry, aString) {
         displayProperties: [{property: "GEBHOOGTE", label: "GEB HOOGTE"}],
         value: message.inputs.buildings.value
       }];
-      frameworkSocket.signalString(JSON.stringify(moduleResult).toString());
+      frameworkPub.signalString(JSON.stringify(moduleResult).toString());
       
     }
   }
