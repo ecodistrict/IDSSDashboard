@@ -58,9 +58,10 @@ angular.module( 'idss-dashboard', [
 
       // load current process
       ProcessService.loadCurrentProcess().then(function(currentProcess) {
-        if(currentProcess) {
-          $scope.currentProcess = currentProcess;
-        } 
+        $scope.currentProcess = currentProcess;
+        VariantService.loadVariants().then(function(variants) {
+          $scope.variants = variants;
+        });
       });
 
       socket.emit('getModules', {kpiList: []});

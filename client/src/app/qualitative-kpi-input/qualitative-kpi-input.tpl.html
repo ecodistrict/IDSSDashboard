@@ -4,7 +4,9 @@
 </div>
 <div class="modal-body">
     <h3>Qualitative KPI score</h3>
-    <kpi-input inputs="kpi.inputSpecification"></kpi-input>
+    <div class="btn-group-vertical">
+        <label ng-repeat="input in kpi.qualitativeSettings" class="btn btn-primary" ng-model="kpi.value" id="{{'radio-' + input.referenceValue}}" btn-radio="{{input.referenceValue}}">{{input.label}}</label>
+    </div>
 </div>  
 <div class="modal-footer">
     <a class="btn btn-sm btn-warning" ng-click="cancel()">Cancel</a>

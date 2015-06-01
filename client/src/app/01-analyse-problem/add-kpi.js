@@ -4,23 +4,15 @@ angular.module( 'idss-dashboard.analyse-problem.add-kpi', [])
 
     $scope.kpi = {
       official: false,
-      qualitative: false,
-      excellent: null,
-      bad: null
+      qualitative: false
     };
 
     var generateInputs = function() {
         var k = $scope.kpi;
         // this is used to set unique name to input radio group, the alias is ultimately set on server but they don't necessary need to be the same
         k.alias = k.name.toLowerCase().split(' ').join('-');
+        k.unit = k.unit || 'score';
 
-        if(k.qualitative) {
-
-          kpi.qualitativeSettings = KpiService.generateQualitativeKpiSettings();
-          kpi.bad = 1;
-          kpi.excellent = 10;
-
-        } 
     };
 
     $scope.cancel = function () {
