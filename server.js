@@ -23,6 +23,7 @@ require('./lib/models/kpi');
 require('./lib/models/variant');
 require('./lib/models/input');
 require('./lib/models/output');
+require('./lib/models/kpiRecord');
 var User = mongoose.model('User'); // needed for passport below
 
 // *********** DB CONNECT ********* //
@@ -117,12 +118,14 @@ app.use(staticUrl, function(req, res, next) {
 var userRepository = require('./lib/user');
 var processRepository = require('./lib/process');
 var kpiRepository = require('./lib/kpi');
+var kpiRecordRepository = require('./lib/kpiRecord');
 var variantRepository = require('./lib/variant');
 var exportFile = require('./lib/export');
 var importFile = require('./lib/import');
 require('./lib/routes/user').addRoutes(app, userRepository, passport);
 require('./lib/routes/process').addRoutes(app, processRepository);
 require('./lib/routes/kpi').addRoutes(app, kpiRepository);
+require('./lib/routes/kpiRecord').addRoutes(app, kpiRecordRepository);
 require('./lib/routes/variant').addRoutes(app, variantRepository);
 require('./lib/routes/export').addRoutes(app, exportFile);
 require('./lib/routes/import').addRoutes(app, importFile);
