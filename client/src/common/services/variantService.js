@@ -3,6 +3,17 @@ angular.module('idss-dashboard')
 .factory('VariantService', ['$http', 'NotificationService', 'ProcessService', 'ModuleService', 'socket', 'KpiService', function ($http, NotificationService, ProcessService, ModuleService, socket, KpiService) {
 
     var variants = [];
+    // variants are bootstrapped
+    var loader = $http
+            .get('variants')
+            .error(function(status, data) {
+                var label = 'Error when loading variants';
+                NotificationService.createErrorFlash(label);
+            })
+            .then(function (res) {
+                variants = res.data;
+                return variants;
+            });
 
     var getVariants = function() {
         if(variants.length === 0) {
@@ -13,16 +24,7 @@ angular.module('idss-dashboard')
     };
 
     var loadVariants = function () {
-        return $http
-            .get('variants')
-            .error(function(status, data) {
-                var label = 'Error when loading variants';
-                NotificationService.createErrorFlash(label);
-            })
-            .then(function (res) {
-                variants = res.data;
-                return variants;
-            });
+        return loader;
     };
 
     var loadVariant = function (variantId) {

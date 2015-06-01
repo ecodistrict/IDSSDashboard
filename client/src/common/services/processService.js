@@ -6,10 +6,24 @@ angular.module('idss-dashboard')
     var currentProcess = {
         district: {},
         title: null,
-        contextList: [],
-        kpiList: [],
-        logs: []
+        kpiList: []
     };
+
+    // current process is bootstrapped
+    var loader = $http
+        .get('processes/active')
+        .error(function(status, err) {
+            var label = 'Error when loading active process';
+            NotificationService.createErrorStatus(label);
+        })
+        .then(function (res) {
+            var process = res.data;
+            if(process) {
+                updateProcess(res.data);
+            }
+            return currentProcess;
+        });
+
 
     // this function is used to set all properties of the process
     // used mostly when fetching a saved process from the server
@@ -24,19 +38,8 @@ angular.module('idss-dashboard')
     };
 
     var loadCurrentProcess = function() {
-        return $http
-            .get('processes/active')
-            .error(function(status, err) {
-                var label = 'Error when loading active process';
-                NotificationService.createErrorStatus(label);
-            })
-            .then(function (res) {
-                var process = res.data;
-                if(process) {
-                    updateProcess(res.data);
-                }
-                return currentProcess;
-            });
+
+        return loader;
 
     };
 
@@ -83,6 +86,11 @@ angular.module('idss-dashboard')
                 var process = res.data;
                 var label = 'Process ' + process.title + ' was successfully deleted';
                 NotificationService.createSuccessFlash(label);
+                currentProcess = {
+                    district: {},
+                    title: null,
+                    kpiList: []
+                };
                 return process; // TODO: reset process!
             });
     };
@@ -101,7 +109,7 @@ angular.module('idss-dashboard')
             kpiToAdd.selectedModule = {id: null};
             if(kpiToAdd.qualitative) {
                 kpiToAdd.qualitativeSettings = KpiService.generateQualitativeKpiSettings();
-                kpiToAdd.bad = 1;
+                kpiToAdd.bad = 0;
                 kpiToAdd.excellent = 10;
             } 
             currentProcess.kpiList.unshift(kpiToAdd);
