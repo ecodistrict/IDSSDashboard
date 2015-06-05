@@ -4,8 +4,8 @@
 </div>
 <div class="modal-body">
     <h3>Qualitative KPI score</h3>
-    <div class="btn-group-vertical">
-        <label ng-repeat="input in kpi.qualitativeSettings" class="btn btn-primary" ng-model="kpi.value" id="{{'radio-' + input.referenceValue}}" btn-radio="{{input.referenceValue}}">{{input.label}}</label>
+    <div class="btn-group-vertical btn-group-qualitative-kpi">
+        <label ng-repeat="input in kpi.qualitativeSettings" class="btn btn-primary btn-qualitative-kpi" ng-model="kpi.value" id="{{'radio-' + input.referenceValue}}" btn-radio="{{input.referenceValue}}">{{input.label}}</label>
     </div>
 </div>  
 <div class="modal-footer">

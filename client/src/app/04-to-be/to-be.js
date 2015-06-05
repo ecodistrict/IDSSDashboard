@@ -106,6 +106,7 @@ angular.module( 'idss-dashboard.to-be', [])
     kpiModal = $modal.open({
         templateUrl: templateUrl,
         controller: controller,
+        size: 'sm',
         resolve: {
           kpi: function() {
             return kpi;
