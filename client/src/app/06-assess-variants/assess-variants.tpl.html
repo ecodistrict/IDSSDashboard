@@ -17,33 +17,14 @@
   <div ng-if="currentVariant" class="tab-content">
     <div class="tab-pane fade in active" id="kpilist">
       <div class="panel-group" id="kpi-result-accordion" role="tablist" aria-multiselectable="true">
-        <div ng-repeat="kpi in currentVariant.kpiList" class="panel {{'panel-' + getStatus(kpi)}} module-item">
+        <div ng-repeat="kpi in currentProcess.kpiList" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="goToKpiPage(kpi)">
             <div class="panel-heading" role="tab">
               <h4 class="panel-title">
-                <a class="collapsed accordion-toggle" data-toggle="collapse" data-parent="#kpi-result-accordion"><b>{{kpi.name}}</b> delivered by <b>{{kpi.moduleName}}</b> <i>(status: {{kpi.status}})</i><span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
-                </a>
-                <button ng-show="!kpi.disabled" id="{{'disable-' + kpi.alias + '-button'}}" class="btn btn-xs btn-success pull-right" ng-click="disable(kpi, true);$event.stopPropagation()">
-                  <i class="glyphicon glyphicon-ok"></i> Enabled
-                </button>
-                <button ng-show="kpi.disabled" id="{{'enable-' + kpi.alias + '-button'}}" class="btn btn-xs btn-danger pull-right" ng-click="disable(kpi, false);$event.stopPropagation()">
-                  <i class="glyphicon glyphicon-minus"></i> Disabled
-                </button>
-                <button ng-show="!kpi.disabled" id="{{'set-' + kpi.alias + '-button'}}" class="btn btn-xs btn-warning pull-right" ng-click="setScore(kpi);$event.stopPropagation()">
-                  <i class="glyphicon glyphicon-stats"></i> {{kpi.qualitative ? 'Set score' : 'Set manual'}}
-                </button>
-                <button ng-show="!kpi.loading && !kpi.qualitative && kpi.moduleId && !kpi.disabled" class="btn btn-xs btn-default pull-right" ng-click="calculateKpi(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-cloud-upload"></i> Calculate</button>
-                <button ng-show="kpi.loading && !kpi.qualitative" class="btn btn-xs btn-danger pull-right" ng-click="stopCalculation(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-cloud-upload"></i> Stop</button>
-                <button ng-show="!kpi.qualitative && kpi.moduleId && !kpi.disabled" class="btn btn-xs btn-primary pull-right" ng-click="setModuleInput(kpi);$event.stopPropagation()">
-                  <i class="glyphicon glyphicon-pencil"></i> Set input
-                </button>
+                <b>{{kpi.name}}</b> <i>(status: {{kpi.status}})</i>
+                <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
               </h4>
               <kpi-value-output ng-if="!kpi.disabled" kpi="kpi"></kpi-value-output>
               <p ng-if="kpi.disabled" style="margin-top:10px" class="well">KPI <b>{{kpi.name}}</b> is not applicable for this alternative</p>
-            </div>
-            <div id="{{$index}}" class="panel-collapse collapse" role="tabpanel">
-              <div class="panel-body" style="position:relative">
-                <kpi-output outputs="kpi.outputs" inputs="kpi.inputs"></kpi-output>
-              </div>
             </div>
         </div>
       </div>

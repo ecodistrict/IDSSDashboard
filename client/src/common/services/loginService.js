@@ -99,6 +99,21 @@ angular.module('idss-dashboard')
             });
     };
 
+    var deleteStakeholder = function(stakeholder) {
+        return $http
+            .delete('users/stakeholders/' + stakeholder._id)
+            .error(function(status, data) {
+                var label = 'Error when deleting stakeholder';
+                NotificationService.createErrorFlash(label);
+            })
+            .then(function (res) {
+                var deletedStakeholder = res.data;
+                var label = 'Stakeholder ' + deletedStakeholder.name + ' was successfully deleted';
+                NotificationService.createSuccessFlash(label);
+                return deletedStakeholder; // TODO: reset process!
+            });
+    };
+
     return {
         login: login,
         logout: logout,
@@ -107,7 +122,8 @@ angular.module('idss-dashboard')
         getCurrentUser: getCurrentUser,
         createLogin: createLogin,
         forgotPassword: forgotPassword,
-        getStakeholders: getStakeholders // move this to separate service?
+        getStakeholders: getStakeholders, // move this to separate service?
+        deleteStakeholder: deleteStakeholder
     };
 }])
 

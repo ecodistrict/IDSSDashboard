@@ -9,11 +9,7 @@ angular.module('idss-dashboard').directive('kpiInput', ['$compile', 'ModuleServi
     return {
         restrict: 'E',
         scope: {
-            inputs: '=',
-            process: '=', // used by some inputs
-            kpialias: '=', 
-            variantid: '=',
-            moduleid: '=' 
+            kpi: '='
         },
         link: function ( scope, element, attrs ) {
 
@@ -34,29 +30,14 @@ angular.module('idss-dashboard').directive('kpiInput', ['$compile', 'ModuleServi
                     }
                 };
 
-                setTemplateUrl(scope.inputs);
+                setTemplateUrl(scope.kpi.inputSpecification);
+
+                scope.inputs = scope.kpi.inputSpecification;
 
                 var template = '<form class="form-horizontal" role="form"><div ng-repeat="input in inputs | object2Array | orderBy:\'order\'" ng-include="input.template"></div></form>';
 
                 element.html('').append( $compile( template )( scope ) );
 
-            };
-
-            scope.saveInput = function(input) {
-                // TODO: delete this if not necessary, uncommented on trial
-
-                // console.log(scope);
-                // console.log(input);
-                // var key = input.key;
-                // var inputWrapper = {};
-                // inputWrapper[key] = input;
-                // if(scope.moduleid && scope.kpialias && scope.inputs) {
-                //     ModuleService.saveModuleInput(scope.variantid, {
-                //         moduleId: scope.moduleid, 
-                //         kpiId: scope.kpialias,
-                //         input: inputWrapper
-                //     });
-                // }
             };
 
             // since it's not easy to store a radio input on the form
@@ -72,12 +53,9 @@ angular.module('idss-dashboard').directive('kpiInput', ['$compile', 'ModuleServi
                 console.log(scope.inputs);
             };
 
-            scope.$watch('inputs', function(newInputs, oldInputs) {
-                console.log(newInputs, oldInputs);
-                if(newInputs) {
-                    render();
-                }
-            });
+            if(scope.kpi) {
+                render();
+            }
         }
     };
 

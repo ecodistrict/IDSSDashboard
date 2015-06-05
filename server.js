@@ -21,7 +21,6 @@ require('./lib/models/user');
 require('./lib/models/process');
 require('./lib/models/kpi');
 require('./lib/models/variant');
-require('./lib/models/input');
 require('./lib/models/output');
 require('./lib/models/kpiRecord');
 var User = mongoose.model('User'); // needed for passport below
@@ -120,6 +119,7 @@ var processRepository = require('./lib/process');
 var kpiRepository = require('./lib/kpi');
 var kpiRecordRepository = require('./lib/kpiRecord');
 var variantRepository = require('./lib/variant');
+var moduleOutputRepository = require('./lib/moduleOutput');
 var exportFile = require('./lib/export');
 var importFile = require('./lib/import');
 require('./lib/routes/user').addRoutes(app, userRepository, passport);
@@ -127,6 +127,7 @@ require('./lib/routes/process').addRoutes(app, processRepository);
 require('./lib/routes/kpi').addRoutes(app, kpiRepository);
 require('./lib/routes/kpiRecord').addRoutes(app, kpiRecordRepository);
 require('./lib/routes/variant').addRoutes(app, variantRepository);
+require('./lib/routes/moduleOutput').addRoutes(app, moduleOutputRepository);
 require('./lib/routes/export').addRoutes(app, exportFile);
 require('./lib/routes/import').addRoutes(app, importFile);
 
@@ -210,19 +211,19 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
 
   dashboardWebClientSocket.on('selectModule', function(kpi) {
     var method = 'selectModule';
-    console.log('From dashboard client: ' + method + ', data: ' + kpi.selectedModule.id);
-    if(kpi.selectedModule && kpi.selectedModule.id) {
+    console.log('From dashboard client: ' + method + ', data: ' + kpi.selectedModuleId);
+    if(kpi.selectedModuleId) {
       if(kpi.processId) {
         var requestObj = { 
           "type": "request",
           "method": "selectModule",
           "variantId": kpi.processId, // TODO: change this property name to processId
-          "moduleId": kpi.selectedModule.id,
+          "moduleId": kpi.selectedModuleId,
           "kpiId": kpi.alias
         };
         imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
       } else {
-        console.log('no variant id for selecting module: ' + kpi.alias);
+        console.log('no process id for selecting module: ' + kpi.alias);
       }
     } else {
       console.log('no model selected for kpi: ' + kpi.alias);
@@ -230,11 +231,20 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
   });
 
   dashboardWebClientSocket.on('startModule', function(module) {
-    variantRepository.getModuleInputFramework(module, userRepository, processRepository, function(err, moduleInput) {
+    kpiRecordRepository.getModuleInputFramework(module, userRepository, processRepository, function(err, moduleInput) {
       if(err) {
         dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
       } else {
-        variantRepository.saveModuleOutputStatus(module, function(err) {
+
+        console.log('data from input');
+        console.log(moduleInput);
+
+        console.log('status to save');
+        console.log(module);
+
+        module.alias = module.kpiId;
+
+        kpiRecordRepository.saveKpiRecordStatus(module, function(err) {
           if(err) {
             dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
           } else {
@@ -243,10 +253,11 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
             var requestObj = {
               "type": "request",
               "method": method,
+              "userId": moduleInput.userId,
               "moduleId": moduleInput.moduleId,
               "variantId": moduleInput.variantId,
-              "kpiId": moduleInput.kpiId,
-              "inputs": moduleInput.inputSpecification
+              "kpiId": moduleInput.alias,
+              "inputs": moduleInput.inputs
             };
             imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
           }
@@ -283,17 +294,17 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         message.processId = message.variantId; // TODO: workaround, this will change after property name is changed to processId
         processRepository.addInputSpecification(message, function(err, model) {
           if(err) {
-            console.log(err.userId);
+            console.log(err);
             io.to(err.userId).emit("frameworkError", JSON.stringify(err));
           } else {
-            console.log(model.userId);
             io.to(model.userId).emit(message.method, model);
           }
         });
       } else if(message.method === 'startModule') {
         dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
-        variantRepository.saveModuleOutputStatus(message, function(err, success) {
+        kpiRecordRepository.saveKpiRecordStatus(message, function(err, success) {
           if(err) {
+            console.log(err);
             io.to(err.userId).emit("frameworkError", JSON.stringify(err));
           } else {
             io.to(success.userId).emit(message.method, message);
@@ -302,12 +313,19 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         
       } else if(message.method === 'moduleResult') {
         dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
-        variantRepository.addModuleResult(message, function(err, model) {
+        moduleOutputRepository.addModuleResult(message, function(err, model) {
           if(err) {
+            console.log(err);
             io.to(err.userId).emit("frameworkError", JSON.stringify(err));
           } else {
-            //console.log(model);
-            io.to(model.userId).emit(message.method, message);
+            kpiRecordRepository.saveKpiRecordFromModuleResult(message, function(err, kpiRecord) {
+              if(err) {
+                console.log(err);
+                io.to(err.userId).emit("frameworkError", JSON.stringify(err));
+              } else {
+                io.to(model.userId).emit(message.method, kpiRecord);
+              }
+            });
           }
         });
       } else if(message.method === 'mcmsmv') {

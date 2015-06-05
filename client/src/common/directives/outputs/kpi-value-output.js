@@ -271,6 +271,8 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
             var render = function() {
 
+              console.log(kpi);
+
                 var bad = kpi.bad, excellent = kpi.excellent, value = kpi.value || 0;
 
                 element.empty().attr('id', 'm-' + kpi.alias + '-aggregated-kpi');
@@ -326,11 +328,8 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
             };
 
             scope.$watch('kpi.value', function(newValue, oldValue) {
-                // ignore first run, when undefined
-                if(newValue) {
-                    console.log('render kpi');
-                    render();
-                }
+              newValue = newValue || 0;
+              render();
             });
 
             render();

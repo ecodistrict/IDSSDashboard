@@ -81,10 +81,12 @@ angular.module( 'idss-dashboard', [
 
       socket.on('frameworkError', function(err) {
         console.log('Error from server: ' + err);
+        messageObject = JSON.parse(err);
+        var label = messageObject.message;
+        NotificationService.createErrorFlash(label);
       });
 
       socket.on('frameworkActivity', function(messageObject) {
-        console.log(messageObject);
         messageObject = JSON.parse(messageObject);
         var label = messageObject.message;
         console.log(label);

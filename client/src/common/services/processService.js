@@ -123,34 +123,31 @@ angular.module('idss-dashboard')
         }
     };
 
-    var updateKpiSettings = function(kpiToUpdate) {
+    var updateKpiSettings = function(newKpiData) {
         var kpi = _.find(currentProcess.kpiList, function(k) {
-            return k.alias === kpiToUpdate.alias;
+            return k.alias === newKpiData.alias;
         });
         // these are the kpi settings changes 
-        kpi.bad = kpiToUpdate.bad;
-        kpi.excellent = kpiToUpdate.excellent;
-        kpi.qualitativeSettings = kpiToUpdate.qualitativeSettings;
-        // if the selected module is changed delete all module data in variant?
-        // now the inputs and outputs are still saved until user remove KPI form list of used kpis (removeKPI below)
-        // TODO: NOTIFY USER!!! 
-        console.log('update kpi');
-        if(kpiToUpdate.selectedModule.id) {
+        if(newKpiData.bad || newKpiData.bad === 0) {
+            kpi.bad = newKpiData.bad;
+        }
+        if(newKpiData.excellent || newKpiData.excellent === 0) {
+            kpi.excellent = newKpiData.excellent;
+        }
+        if(newKpiData.qualitativeSettings) {
+            kpi.qualitativeSettings = newKpiData.qualitativeSettings;
+        }
+        // TODO: if selected module is removed or changed, how to do with existing kpi records?
+        if(newKpiData.selectedModuleId) {
             // set the selected module
-            kpi.selectedModule = kpiToUpdate.selectedModule;
-            // extend new module with data from module list by id
-            ModuleService.extendModuleData(kpi.selectedModule, true);
+            kpi.selectedModuleId = newKpiData.selectedModuleId;
             // send request for getting inputs from module and save that in dashboard database
             kpi.processId = currentProcess._id;
             socket.emit('selectModule', kpi);
         } else {
-            // selected module was removed or didn't exist
-            kpi.selectedModule = {
-                id: null,
-                name: null,
-                description: null
-            };
+            kpi.selectedModuleId = null;
         }
+        
         saveCurrentProcess().then(function() {
             return currentProcess;
         });

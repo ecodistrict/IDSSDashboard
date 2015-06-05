@@ -20,7 +20,7 @@ angular.module( 'idss-dashboard.header', [
     $scope.deleteProcess = function() {
     	ProcessService.deleteCurrentProcess().then(function() {
     		// when loading a non existing process, a new process is created
-    		ProcessService.loadCurrentProcess().then(function(newProcess) {
+    		ProcessService.createNewProcess().then(function(newProcess) {
     			$scope.currentProcess = newProcess;
                 $state.transitionTo('start');
     		});

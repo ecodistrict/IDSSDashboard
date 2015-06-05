@@ -41,8 +41,7 @@ angular.module( 'idss-dashboard.develop-variants', [
     var variant = {
         name: 'Alternative',
         type: 'variant',
-        description: 'Description',
-        kpiList: []
+        description: 'Description'
     };
 
     var variantModal = $modal.open({
@@ -56,7 +55,6 @@ angular.module( 'idss-dashboard.develop-variants', [
     });
 
     variantModal.result.then(function (configuredVariant) {
-      VariantService.addOrRemoveKpis(asIsVariant, configuredVariant);
       VariantService.createVariant(configuredVariant).then(function(createdVariant) {
         $scope.variants.push(createdVariant);
       });

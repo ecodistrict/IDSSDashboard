@@ -2,14 +2,22 @@
     <div class="row">
         <div class="col-xs-12">
             <h2>To be - go through KPIs again to set ambitions</h2>
-            <div ng-repeat="kpi in toBeVariant.kpiList" id="{{'used-kpi-' + kpi.alias}}" class="panel panel-success kpi-item" ng-click="setScore(kpi)">
-              <div class="panel-heading" id="{{'set-ambition-' + kpi.alias + '-button'}}">
-                <h3 class="panel-title">{{kpi.name}} <span ng-hide="kpiIsConfigured(kpi)" class="glyphicon glyphicon-exclamation-sign"></span></h3>
+            <form class="form" role="form" ng-if="isFacilitator">
+              <div class="form-group">
+                <label>Select user</label>
+                <select class="form-control" ng-change="changeUser(currentUser)" ng-model="currentUser" ng-options="stakeholder as stakeholder.name for stakeholder in stakeholders">
+                </select>
               </div>
-              <div class="panel-body">
-                {{kpi.description}}
-                <kpi-value-output kpi="kpi"></kpi-value-output>
-              </div>
+            </form>
+            <div ng-repeat="kpi in currentProcess.kpiList" id="{{'used-kpi-' + kpi.alias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="setAmbition(kpi)">
+                <div class="panel-heading" id="{{'set-ambition-' + kpi.alias + '-button'}}">
+                  <h3 class="panel-title">
+                    <b>{{kpi.name}}</b> <span ng-hide="kpiIsConfigured(kpi)" class="glyphicon glyphicon-exclamation-sign"></span>
+                    <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
+                  </h3>
+                  <kpi-value-output ng-if="!kpi.disabled" kpi="kpi"></kpi-value-output>
+                  <p ng-if="kpi.disabled" style="margin-top:10px" class="well">KPI <b>{{kpi.name}}</b> is not applicable for the <i>To be</i> situation</p>
+                </div>
             </div>
         </div>
     </div>

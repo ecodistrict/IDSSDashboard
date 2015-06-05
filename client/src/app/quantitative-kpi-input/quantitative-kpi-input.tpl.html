@@ -4,7 +4,15 @@
 </div>
 <div class="modal-body">
     <h3>Insert KPI value</h3>
-    <kpi-input inputs="kpi.inputSpecification"></kpi-input>
+    <div class="form-group">
+      <label for="quantitative-input" class="col-sm-7 control-label">KPI Value <i ng-show="kpi.info" class="glyphicon glyphicon-question-sign" data-container="body" data-toggle="popover" data-placement="top" data-content="{{kpi.info}}" popover></i></label>
+      <div class="col-sm-5">
+        <div class="input-group">
+            <input ng-model="kpi.value" required id="quantitative-input" class="form-control text-right" type="number">
+            <div ng-show="kpi.unit" class="input-group-addon">{{kpi.unit}}</div>
+        </div>
+      </div>
+    </div>
 </div>  
 <div class="modal-footer">
     <a class="btn btn-sm btn-warning" ng-click="cancel()">Cancel</a>

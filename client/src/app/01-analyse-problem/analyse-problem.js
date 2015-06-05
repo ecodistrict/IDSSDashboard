@@ -51,18 +51,23 @@ angular.module( 'idss-dashboard.analyse-problem', [
       var registrant = {
         firstName: name,
         lastName: name,
+        name: name,
         facilitatorId: currentUser._id,
         activeProcessId: currentUser.activeProcessId,
         role: 'Stakeholder',
         email: name + '@idssdashboard.com'
       };
       LoginService.createLogin(registrant).then(function(stakeholder) {
-        console.log(stakeholder);
-        LoginService.getStakeholders().then(function(stakeholders) {
-          $scope.stakeholders = stakeholders;
-        });
+        $scope.stakeholders.push(stakeholder);
       });
     }
+  };
+
+  $scope.deleteStakeholder = function(stakeholder) {
+    LoginService.deleteStakeholder(stakeholder).then(function(deletedStakeholder) {
+      var index = _.indexOf($scope.stakeholders, stakeholder);
+      $scope.stakeholders.splice(index, 1);
+    });
   };
 
   $scope.loginStakeholder = function(stakeholder) {

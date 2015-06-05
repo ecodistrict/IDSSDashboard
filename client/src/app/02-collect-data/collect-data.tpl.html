@@ -9,9 +9,9 @@
           </div>
           <div class="panel-body">
             <div>
-               <p ng-show="kpi.selectedModule.name">Module used: {{kpi.selectedModule.name}}</p>
-               <p ng-show="!kpi.selectedModule.name && !kpi.qualitative">No module has been selected for this KPI. Select a module on <a ng-click="$event.stopPropagation()" ui-sref="manage-kpis">Select KPIs page</a> or set manual result values for "As is" and all alternatives created.</p>
-               <p ng-show="kpi.selectedModule.name && !kpi.qualitative">Module input has been removed from this page. The reason is that generic process data input will be made here. For now please add input in As is and alternatives respectively.</p>
+               <p ng-show="kpi.selectedModuleId">Module used: {{kpi.selectedModuleId}}</p>
+               <p ng-show="!kpi.selectedModuleId && !kpi.qualitative">No module has been selected for this KPI. Select a module on <a ng-click="$event.stopPropagation()" ui-sref="manage-kpis">Select KPIs page</a> or set manual result values for "As is" and all alternatives created.</p>
+               <p ng-show="kpi.selectedModuleId && !kpi.qualitative">Module input has been removed from this page. The reason is that generic process data input will be made here. For now please add input in As is and alternatives respectively.</p>
                <p ng-show="kpi.qualitative">This is a qualitative KPI, no modules are used. Insert values to this KPI directly under As is, To be and variants respectively.</p>
             </div>
           </div>

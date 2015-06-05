@@ -18,6 +18,11 @@ angular.module( 'idss-dashboard.compare-variants', [])
       authorizedRoles: ['Facilitator', 'Stakeholder']
     },
     resolve:{
+      currentProcess: ['ProcessService', function(ProcessService) {
+        return ProcessService.loadCurrentProcess().then(function(currentProcess) {
+          return currentProcess;
+        });
+      }],
       variants: ['VariantService', function(VariantService) {
         var v = VariantService.getVariants();
         if(v) {
@@ -30,7 +35,7 @@ angular.module( 'idss-dashboard.compare-variants', [])
   });
 }])
 
-.controller( 'CompareVariantsController', ['$scope', 'LoginService', 'variants', 'ModuleService', 'socket', 'KpiService', 'VariantService', function CompareVariantsController( $scope, LoginService, variants, ModuleService, socket, KpiService, VariantService ) {
+.controller( 'CompareVariantsController', ['$scope', 'LoginService', 'variants', 'currentProcess', 'ModuleService', 'socket', 'KpiService', 'VariantService', function CompareVariantsController( $scope, LoginService, variants, currentProcess, ModuleService, socket, KpiService, VariantService ) {
 
   var currentUser;
   var mcmsmvData = {
@@ -38,18 +43,13 @@ angular.module( 'idss-dashboard.compare-variants', [])
   };
   LoginService.getCurrentUser().then(function(user) {
     currentUser = user;
-    if(user.role === 'Facilitator') {
-      VariantService.loadVariantsByProcessId().then(function(variantData) {
-        _.each(variantData.users, function(user) {
-          var userVariants = _.filter(variantData.variants, function(v) {return user._id === v.userId;});
-          createMCMSMVData(userVariants, user);
-        });
-        $scope.mcmsmv = mcmsmvData;
+    KpiService.getAllKpiRecords().then(function(kpiRecords) {
+      _.each(kpiRecords.users, function(user) {
+        var userRecords = _.filter(kpiRecords.records, function(r) {return user._id === r.userId;});
+        createMCMSMVData(userRecords, user);
       });
-    } else {
-      createMCMSMVData(variants, currentUser);
       $scope.mcmsmv = mcmsmvData;
-    }
+    });
   });
 
   $scope.sendData = {
@@ -57,48 +57,38 @@ angular.module( 'idss-dashboard.compare-variants', [])
     status: 'unprocessed'
   };
 
-  var createMCMSMVData = function(variantData, user) {
+  var createMCMSMVData = function(kpiRecords, user) {
 
     var stakeholderData = {
       user: {
-        id: user._id || currentUser._id,
-        name: user.fname ? user.fname : currentUser.fname 
+        id: user._id,
+        name: user.fname 
       },
       variants: [],
       kpiList: []
     };
 
-    var getKpiResult = function(kpi, cb) {
-      KpiService.getResultKpiValue(kpi, function(value) {
-        cb(value);
+    // add the used kpis to the stakeholder
+    _.each(currentProcess.kpiList, function(k) {
+      stakeholderData.kpiList.push({
+        kpiName: k.name,
+        kpiDescription: k.description,
+        kpiId: k.alias,
+        bad: k.bad,
+        unit: k.unit,
+        excellent: k.excellent 
       });
-    };
+    });
 
-    _.each(variantData, function(v) {
-      var kpiResults = [];
-      _.each(v.kpiList, function(k) {
-        // if as is variant, add settings to kpilist
-        var bad = 1, excellent = 10;
-        if(v.type === 'as-is') {
-          if(!k.qualitative) {
-            bad = k.settings.bad;
-            excellent = k.settings.excellent;
-          }
-          stakeholderData.kpiList.push({
-            kpiName: k.name,
-            kpiDescription: k.description,
-            kpiId: k.alias,
-            bad: bad,
-            unit: k.unit,
-            excellent: excellent 
-          });
-        }
-        getKpiResult(k, function(value) {
-          kpiResults.push({
-            kpiValue: value,
-            kpiId: k.alias,
-            disabled: k.disabled
-          });
+    // add the variants and connect the kpi records by variantId and userId
+    _.each(variants, function(v) {
+      var relevantRecords = _.filter(kpiRecords, function(r) { return r.userId === user._id && r.variantId === v._id;});
+      var kpiData = [];
+      _.each(relevantRecords, function(r) {
+        kpiData.push({
+          kpiId: r.alias,
+          kpiValue: r.value,
+          disabled: r.disabled
         });
       });
       stakeholderData.variants.push({
@@ -106,7 +96,7 @@ angular.module( 'idss-dashboard.compare-variants', [])
         description: v.description,
         name: v.name,
         type: v.type,
-        kpiList: kpiResults
+        kpiList: kpiData
       });
     });
 
@@ -114,15 +104,52 @@ angular.module( 'idss-dashboard.compare-variants', [])
 
     return mcmsmvData;
 
+    // _.each(kpiRecords, function(r) {
+    //   var kpiResults = [];
+    //   _.each(r.kpiList, function(k) {
+    //     // if as is variant, add settings to kpilist
+    //     var bad = 1, excellent = 10;
+    //     if(v.type === 'as-is') {
+    //       if(!k.qualitative) {
+    //         bad = k.settings.bad;
+    //         excellent = k.settings.excellent;
+    //       }
+    //       stakeholderData.kpiList.push({
+    //         kpiName: k.name,
+    //         kpiDescription: k.description,
+    //         kpiId: k.alias,
+    //         bad: bad,
+    //         unit: k.unit,
+    //         excellent: excellent 
+    //       });
+    //     }
+    //     getKpiResult(k, function(value) {
+    //       kpiResults.push({
+    //         kpiValue: value,
+    //         kpiId: k.alias,
+    //         disabled: k.disabled
+    //       });
+    //     });
+    //   });
+    //   stakeholderData.variants.push({
+    //     variantId: v._id,
+    //     description: v.description,
+    //     name: v.name,
+    //     type: v.type,
+    //     kpiList: kpiResults
+    //   });
+    // });
+
+    // mcmsmvData.stakeholders.push(stakeholderData);
+
+    // return mcmsmvData;
+
   };
 
   $scope.sendToMCMSMV = function() {
     var modules = ModuleService.getModulesFromKpiId('mcmsmv');
 
     if(modules.length > 0) {
-
-      $scope.sendData.status = 'sending data';
-      $scope.sendData.loading = true;
 
       socket.emit('mcmsmv', {
         variants: mcmsmvData,
@@ -137,10 +164,9 @@ angular.module( 'idss-dashboard.compare-variants', [])
   };
 
   // listen on any model that was started, for updating loading status
+  // this is not used currently
   socket.on('mcmsmv', function(module) {
     console.log(module);
-    $scope.sendData.status = module.status;
-    $scope.sendData.loading = false;
   });
 
 }]);

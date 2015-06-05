@@ -4,7 +4,6 @@ angular.module( 'idss-dashboard.analyse-problem.configure-kpi', [])
 
     // work on a reference
     $scope.kpi = angular.copy(kpi);
-    $scope.kpi.selectedModule = angular.copy(kpi.selectedModule);
 
     $scope.relevantModules = [];
 

@@ -404,25 +404,6 @@ angular.module('idss-dashboard')
         }
     };
 
-    // var copyQualitativeKpiInputFromSettings = function(copyToKpi, asIsKpi) {
-    //     var scores, existingScore;
-    //     // check if value already is set on kpi
-    //     if(copyToKpi.inputSpecification && copyToKpi.inputSpecification.kpiScores) {
-    //         existingScore = copyToKpi.inputSpecification.kpiScores.inputs.kpiScore1.value;// all values are the same - the selected value
-    //     }
-    //     // TODO: find a nicer way to deep copy this..
-    //     copyToKpi.inputSpecification = copyToKpi.inputSpecification || {};
-    //     copyToKpi.inputSpecification.kpiScores = angular.copy(asIsKpi.inputSpecification.kpiScores);
-    //     copyToKpi.inputSpecification.kpiScores.inputs = angular.copy(asIsKpi.inputSpecification.kpiScores.inputs);
-    //     scores = copyToKpi.inputSpecification.kpiScores.inputs;
-    //     for(var i in scores) {
-    //         if(scores.hasOwnProperty(i)) {
-    //             scores[i] = angular.copy(scores[i]);
-    //             scores[i].value = existingScore;
-    //         }
-    //     }
-    // };
-
     var generateQualitativeKpiOutput = function(inputSpecification) {
 
         var radioInputs;
@@ -470,81 +451,12 @@ angular.module('idss-dashboard')
         return outputs;
     };
 
-    // set outputs on the kpi
-    // var initOutputs = function(currentVariant, asIsVariant, kpiMapOutputs) {
-    //     _.each(currentVariant.kpiList, function(kpi) {
-    //       var asIsKpi = _.find(asIsVariant.kpiList, function(k) { return k.alias === kpi.alias;});
-    //       if(asIsKpi) {
-    //           kpi.bad = getBadKpiValue(asIsKpi.settings);
-    //           kpi.excellent = getExcellentKpiValue(asIsKpi.settings);
-    //           kpi.unit = kpi.unit || 'score';
-    //           kpi.status = 'loading';
-    //           kpi.outputs = null; // manual output can exist (saved or cached), to avoid extra rendering wait for init of outputs below
-    //           kpi.loading = true;
-              
-    //           if(kpi.qualitative) {
-    //             kpi.moduleName = 'Qualitative KPI';
-    //             // returns null if score was not given to this kpi
-    //             kpi.outputs = generateQualitativeKpiOutput(kpi.inputSpecification);
-    //             kpi.status = kpi.outputs ? 'success' : 'unprocessed';
-    //             kpi.loading = false;
+    var getKpiRecord = function(variantId, kpiAlias, userId) {
 
-    //           } else {
-    //             if(currentVariant.type === 'to-be') {
-    //                 kpi.moduleName = kpi.selectedModule.name || 'Ambition';
-    //                 if(kpi.inputSpecification.kpiValueInputGroup) {
-    //                     kpi.outputs = generateQuantitativeKpiOutput(kpi.inputSpecification.kpiValueInputGroup.inputs.kpiValue);
-    //                 }
-    //                 kpi.status = kpi.outputs ? 'success' : 'unprocessed';
-    //                 kpi.loading = false;
-    //             } else if(kpi.selectedModule.id && !kpi.manual) {
-    //                 // try to fetch a module output if a module has been selected
-    //                 // if manual has been set this is prioritized, a kpi must be recalculated to override this
-    //               kpi.moduleName = kpi.selectedModule.name;
-    //               kpi.moduleId = kpi.selectedModule.id;
-    //               // ModuleService.getModuleOutput(currentVariant._id, kpi.selectedModule.id, kpi.alias).then(function(output) {
-    //               //     kpi.status =  output.status; 
-    //               //     if(kpi.status === 'initializing' || kpi.status === 'processing') {
-    //               //       kpi.loading = true;
-    //               //     } else {
-    //               //       kpi.loading = false;
-    //               //     }
+        var uri = userId ? 'kpirecords/' + variantId + '/' + kpiAlias + '/' + userId : 'kpirecords/' + variantId + '/' + kpiAlias + '/';
 
-    //               //     _.each(output.outputs, function(o) {
-    //               //       o.alias = kpi.alias;
-    //               //       o.kpiName = kpi.name;
-    //               //       o.kpiBad = kpi.bad;
-    //               //       o.kpiExcellent = kpi.excellent;
-    //               //       o.kpiUnit = kpi.unit;
-    //               //       o.moduleId = kpi.moduleId;
-    //               //       if(o.type === 'geojson' && kpiMapOutputs) {
-    //               //         // TODO: update any existing map output, use id?
-    //               //         kpiMapOutputs.push(o);
-    //               //       }
-    //               //     });
-
-    //               //     kpi.outputs = output.outputs; // listen on this to trigger rendering
-    //               // });
-    //             } else {
-    //               kpi.moduleName = kpi.selectedModule.name || 'Manual input (no module selected)';
-    //               // try to set any manual given values, null if not found
-    //               if(kpi.inputSpecification && kpi.inputSpecification.kpiValueInputGroup) {
-    //                   kpi.outputs = generateQuantitativeKpiOutput(kpi.inputSpecification.kpiValueInputGroup.inputs.kpiValue);
-    //               }
-    //               kpi.status = kpi.outputs ? 'success' : 'unprocessed';
-    //               kpi.loading = false;
-    //             }
-    //           }
-    //       } else {
-    //         console.warn('WARNING: As is version of KPI did not exist');
-    //       }
-    //     });
-    //     return currentVariant;
-    // };
-
-    var getKpiRecord = function(variantId, kpiAlias) {
         return $http
-            .get('kpirecords/' + variantId + '/' + kpiAlias)
+            .get(uri)
             .error(function(data, status) {
                 var label = 'Error when loading outputs';
                 NotificationService.createErrorFlash(label);
@@ -566,8 +478,6 @@ angular.module('idss-dashboard')
                     console.log(label);
                 } 
                 return records[0];
-                //moduleOutputs[cacheKey] = outputs;
-                //return moduleOutputs[cacheKey];
             });
     };
 
@@ -586,12 +496,32 @@ angular.module('idss-dashboard')
             });
     };
 
+    var removeExtendedData = function(kpi) {
+        delete kpi._id;
+        delete kpi.value;
+    };
+
+    var getAllKpiRecords = function() {
+        return $http
+            .get('kpirecords')
+            .error(function(data, status) {
+                var label = 'Error when loading records';
+                NotificationService.createErrorFlash(label);
+            })
+            .then(function (res) {
+                var records = res.data;
+                return records;
+            });
+    };
+
     return {
         loadKpis: loadKpis,
         createKpi: createKpi,
         deleteKpi: deleteKpi,
         getKpiRecord: getKpiRecord,
         updateKpiRecord: updateKpiRecord,
+        removeExtendedData: removeExtendedData,
+        getAllKpiRecords: getAllKpiRecords,
         //getBadKpiValue: getBadKpiValue,
         //getExcellentKpiValue: getExcellentKpiValue,
         //getResultKpiValue: getResultKpiValue,

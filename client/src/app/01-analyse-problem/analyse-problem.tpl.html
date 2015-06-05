@@ -35,8 +35,9 @@
           <button type="submit" id="add-stakeholder-button" ng-show="stakeholderName" ng-click="addStakeholder(stakeholderName)" class="btn btn-default">Add stakeholder</button>
         </form>
     </div>
-    <div class="row" ng-if="facilitator">
-        <p ng-repeat="stakeholder in stakeholders">{{stakeholder.fname}} <button id="{{'switch-to-' + stakeholder.fname}}" ng-click="loginStakeholder(stakeholder)" class="btn btn-primary">Switch stakeholder</button></p>
+    <div class="row well" ng-if="facilitator" ng-repeat="stakeholder in stakeholders">
+        <p>Name: {{stakeholder.name}}, Email: {{stakeholder.email}}, Password: {{stakeholder.rawPassword}}</p>
+        <button type="submit" id="delete-stakeholder-button" ng-click="deleteStakeholder(stakeholder)" class="btn btn-danger">Delete stakeholder</button>
     </div>
     <div class="row">
         <form role="form">
