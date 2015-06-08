@@ -54,14 +54,24 @@ DevelopVariantsPage.prototype = Object.create({},
         element(by.id('set-' + kpiId + '-button')).click();
       }
     },
+    clickSetKpi: {
+      value: function(kpiId) {
+        element(by.id('set-' + kpiId)).click();
+      }
+    },
     clickDisableKpi: {
       value: function(kpiId) {
         element(by.id('disable-' + kpiId + '-button')).click();
       }
     },
+    clickBackToKpiList: {
+      value: function(kpiId) {
+        element(by.id('back-to-kpi-list-button')).click();
+      }
+    },
     kpiValueInput: {
       get: function() {
-        return element(by.id('kpiValue')); // camel case because of auto generated ids
+        return element(by.id('quantitative-input')); 
       }
     },
     setKpiValueInput: {

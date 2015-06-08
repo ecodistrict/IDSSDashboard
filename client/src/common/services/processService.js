@@ -101,11 +101,10 @@ angular.module('idss-dashboard')
 
     var addKpi = function(kpiToAdd) {
         var label;
-        // only allow removing KPI on as-is variant
-        var alreadyAdded = _.find(currentProcess.kpiList, function(k) {return k.alias === kpiToAdd.alias;});
-        
+        var alreadyAdded = _.find(currentProcess.kpiList, function(k) {return k.kpiAlias === kpiToAdd.kpiAlias;});
         if(!alreadyAdded) {
-            // add properties for instantiated kpi on variant
+            // add properties for instantiated kpi on process
+            kpiToAdd.kpiAlias = kpiToAdd.alias;
             kpiToAdd.selectedModule = {id: null};
             if(kpiToAdd.qualitative) {
                 kpiToAdd.qualitativeSettings = KpiService.generateQualitativeKpiSettings();
@@ -125,7 +124,7 @@ angular.module('idss-dashboard')
 
     var updateKpiSettings = function(newKpiData) {
         var kpi = _.find(currentProcess.kpiList, function(k) {
-            return k.alias === newKpiData.alias;
+            return k.kpiAlias === newKpiData.kpiAlias;
         });
         // these are the kpi settings changes 
         if(newKpiData.bad || newKpiData.bad === 0) {
@@ -156,7 +155,7 @@ angular.module('idss-dashboard')
     var removeKpi = function(kpiToRemove) {
         
         var kpi = _.find(currentProcess.kpiList, function(k) {
-            return k.alias === kpiToRemove.alias;
+            return k.kpiAlias === kpiToRemove.kpiAlias;
         });
         if(kpi) {
             var index = _.indexOf(currentProcess.kpiList, kpi);

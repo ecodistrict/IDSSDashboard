@@ -231,7 +231,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
   });
 
   dashboardWebClientSocket.on('startModule', function(module) {
-    kpiRecordRepository.getModuleInputFramework(module, userRepository, processRepository, function(err, moduleInput) {
+    kpiRecordRepository.getModuleInputFramework(module, function(err, moduleInput) {
       if(err) {
         dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
       } else {
@@ -242,7 +242,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         console.log('status to save');
         console.log(module);
 
-        module.alias = module.kpiId;
+        module.alias = module.kpiAlias;
 
         kpiRecordRepository.saveKpiRecordStatus(module, function(err) {
           if(err) {
@@ -301,6 +301,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
           }
         });
       } else if(message.method === 'startModule') {
+        console.log('startmodule from modules');
         dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
         kpiRecordRepository.saveKpiRecordStatus(message, function(err, success) {
           if(err) {
@@ -312,6 +313,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         });
         
       } else if(message.method === 'moduleResult') {
+        console.log('moduleresult from modules');
         dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
         moduleOutputRepository.addModuleResult(message, function(err, model) {
           if(err) {

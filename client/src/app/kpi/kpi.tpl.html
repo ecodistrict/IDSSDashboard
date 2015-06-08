@@ -1,7 +1,7 @@
 <div class="container" id="kpi-page">
 
   <div class="row">
-    <button class="btn btn-primary" ng-click="goBack()"><span class="glyphicon glyphicon-chevron-left"></span> Back</button>
+    <button id="back-to-kpi-list-button" class="btn btn-primary" ng-click="goBack()"><span class="glyphicon glyphicon-chevron-left"></span> Back</button>
   </div>
 
   <div class="row">
@@ -16,7 +16,7 @@
           </p>
           <div id="button-container">
 
-            <button id="{{'calculate-' + kpi.alias + '-button'}}" ng-show="!kpi.loading && !kpi.qualitative && kpi.selectedModuleId && !kpi.disabled && kpi.inputs" class="btn btn-xs btn-default" ng-click="calculateKpi(kpi);$event.stopPropagation()">
+            <button id="{{'calculate-' + kpi.kpiAlias + '-button'}}" ng-show="!kpi.loading && !kpi.qualitative && kpi.selectedModuleId && !kpi.disabled && kpi.inputs" class="btn btn-xs btn-default" ng-click="calculateKpi(kpi);$event.stopPropagation()">
               <i class="glyphicon glyphicon-cloud-upload"></i> Calculate
             </button>
 
@@ -28,15 +28,15 @@
                 <i class="glyphicon glyphicon-pencil"></i> Module input
             </button>
 
-            <button ng-show="!kpi.disabled" id="{{'set-' + kpi.alias + '-button'}}" class="btn btn-xs btn-warning" ng-click="setScore(kpi);$event.stopPropagation()">
+            <button ng-show="!kpi.disabled" id="{{'set-' + kpi.kpiAlias + '-button'}}" class="btn btn-xs btn-warning" ng-click="setScore(kpi);$event.stopPropagation()">
               <i class="glyphicon glyphicon-stats"></i> {{kpi.qualitative ? 'Set score' : 'Set manual'}}
             </button>
 
-            <button ng-show="!kpi.disabled" id="{{'disable-' + kpi.alias + '-button'}}" class="btn btn-xs btn-success" ng-click="disable(kpi, true);$event.stopPropagation()">
+            <button ng-show="!kpi.disabled" id="{{'disable-' + kpi.kpiAlias + '-button'}}" class="btn btn-xs btn-success" ng-click="disable(kpi, true);$event.stopPropagation()">
               <i class="glyphicon glyphicon-ok"></i> Enabled
             </button>
 
-            <button ng-show="kpi.disabled" id="{{'enable-' + kpi.alias + '-button'}}" class="btn btn-xs btn-danger" ng-click="disable(kpi, false);$event.stopPropagation()">
+            <button ng-show="kpi.disabled" id="{{'enable-' + kpi.kpiAlias + '-button'}}" class="btn btn-xs btn-danger" ng-click="disable(kpi, false);$event.stopPropagation()">
               <i class="glyphicon glyphicon-minus"></i> Disabled
             </button>
 

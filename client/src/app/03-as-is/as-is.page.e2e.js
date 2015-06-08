@@ -6,7 +6,7 @@ AsIsPage.prototype = Object.create({},
   {
     kpiOutputs: {
       get: function() {
-        return element.all(by.repeater('kpi in currentVariant.kpiList'));
+        return element.all(by.repeater('kpi in currentProcess.kpiList'));
       }
     },
     calculateAtomicTestKpiButton: {
@@ -26,7 +26,7 @@ AsIsPage.prototype = Object.create({},
     },
     kpiValueInput: {
       get: function() {
-        return element(by.id('kpiValue')); // camel case because of auto generated ids
+        return element(by.id('quantitative-input'));
       }
     },
     setKpiValueInput: {
@@ -37,6 +37,16 @@ AsIsPage.prototype = Object.create({},
     clickSetKpiValue: {
       value: function(kpiId) {
         element(by.id('set-' + kpiId + '-button')).click();
+      }
+    },
+    clickSetKpi: {
+      value: function(kpiId) {
+        element(by.id('set-' + kpiId)).click();
+      }
+    },
+    clickBackToKpiList: {
+      value: function(kpiId) {
+        element(by.id('back-to-kpi-list-button')).click();
       }
     },
     clickDisableKpi: {

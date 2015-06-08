@@ -37,7 +37,7 @@ angular.module( 'idss-dashboard.kpi', [])
 
 .controller( 'KpiController', ['$scope', 'socket', '$stateParams', '$state', 'kpiRecord', 'currentProcess', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'ProcessService', 'variants', function KpiController( $scope, socket, $stateParams, $state, kpiRecord, currentProcess, ModuleService, $modal, KpiService, VariantService, ProcessService, variants ) {
 
-  var kpi = _.find(currentProcess.kpiList, function(k) {return k.alias === $stateParams.kpiAlias;});
+  var kpi = _.find(currentProcess.kpiList, function(k) {return k.kpiAlias === $stateParams.kpiAlias;});
   $stateParams.back = $stateParams.back || 'compare-variants';
   var backState = $stateParams.back.split('/')[0];
   var selectedModule;
@@ -81,10 +81,11 @@ angular.module( 'idss-dashboard.kpi', [])
     socket.emit('startModule', {
       variantId: currentVariant._id, 
       asIsVariantId: asIsVariant._id, // as is is needed if new alternative - if there is no input, take from as is
-      kpiId: kpi.alias, // modules use kpiId instead of alias
+      kpiAlias: kpi.kpiAlias, // modules use kpiId instead of kpiAlias
       moduleId: kpi.selectedModuleId,
       status: kpi.status,
-      userId: $scope.currentUser._id
+      userId: $scope.currentUser._id,
+      processId: currentProcess._id
     });
   };
 
@@ -127,7 +128,7 @@ angular.module( 'idss-dashboard.kpi', [])
     kpi.status = 'unprocessed';
     kpi.loading = false;
 
-    //ModuleService.updateModuleOutputStatus(kpi.variantId, kpi.moduleId, kpi.alias, kpi.status);
+    //ModuleService.updateModuleOutputStatus(kpi.variantId, kpi.moduleId, kpi.kpiAlias, kpi.status);
 
     // send message to module?
   };

@@ -62,7 +62,7 @@ angular.module( 'idss-dashboard.assess-variants', [])
       KpiService.removeExtendedData(kpi); // in case data is already extended 
       kpi.loading = true;
       kpi.status = 'initializing';
-      KpiService.getKpiRecord(currentVariant._id, kpi.alias).then(function(record) {
+      KpiService.getKpiRecord(currentVariant._id, kpi.kpiAlias).then(function(record) {
           angular.extend(kpi, record); 
           if(kpi.status === 'initializing' || kpi.status === 'processing') {
             kpi.loading = true;
@@ -87,7 +87,8 @@ angular.module( 'idss-dashboard.assess-variants', [])
   };
 
   $scope.goToKpiPage = function(kpi) {
-    $state.transitionTo('kpi', {variantId: currentVariant._id, kpiAlias: kpi.alias, back: 'assess-variants/' + currentVariant._id});
+    console.log(kpi);
+    $state.transitionTo('kpi', {variantId: currentVariant._id, kpiAlias: kpi.kpiAlias, back: 'assess-variants/' + currentVariant._id});
   };
 
 }]);

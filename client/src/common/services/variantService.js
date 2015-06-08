@@ -101,7 +101,7 @@ angular.module('idss-dashboard')
     // var addOrRemoveKpis = function(asIsVariant, otherVariant) {
     //     // KPIs are added or removed
     //     _.each(asIsVariant.kpiList, function(asIsKpi) {
-    //         var found = _.find(otherVariant.kpiList, function(toBeKpi) {return asIsKpi.alias === toBeKpi.alias;});
+    //         var found = _.find(otherVariant.kpiList, function(toBeKpi) {return asIsKpi.kpiAlias === toBeKpi.kpiAlias;});
     //         var newKpi;
     //         if(found) {
     //             found.keep = true;

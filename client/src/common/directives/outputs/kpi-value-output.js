@@ -19,7 +19,13 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
           // For each small multiple…
           function bullet(g) {
             g.each(function(d, i) {
-              
+
+              if(typeof d.ranges[0] === 'undefined') {
+                return false;
+              }
+
+              console.log(d);
+
                 var g = d3.select(this); // WTF?
 
                 var bad = ranges.call(this, d, i)[0];
@@ -77,6 +83,8 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                   .attr("width", getMaxWidth)
                   .attr("height", height);
 
+              if(typeof d.measures[0] !== 'undefined') {
+
               // Update the measure rects.
               var measure = g.selectAll("rect.measure")
                   .data(measures);
@@ -102,6 +110,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                   .attr("fill", color)
                   .attr("y", height / 3);
 
+
               // Update the marker lines.
               var marker = g.selectAll("line.marker")
                   .data(markers);
@@ -123,6 +132,9 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                   .attr("x2", x1)
                   .attr("y1", height / 6)
                   .attr("y2", height * 5 / 6);
+
+              }
+
 
               // Update the tick groups.
               var tick = g.selectAll("g.tick")
@@ -271,11 +283,9 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
             var render = function() {
 
-              console.log(kpi);
+                var bad = kpi.bad, excellent = kpi.excellent, value = kpi.value;
 
-                var bad = kpi.bad, excellent = kpi.excellent, value = kpi.value || 0;
-
-                element.empty().attr('id', 'm-' + kpi.alias + '-aggregated-kpi');
+                element.empty().attr('id', 'm-' + kpi.kpiAlias + '-aggregated-kpi');
 
                 var margin = {top: 5, right: 50, bottom: 20, left: 120},
                     width = 960 - margin.left - margin.right,
@@ -328,11 +338,12 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
             };
 
             scope.$watch('kpi.value', function(newValue, oldValue) {
-              newValue = newValue || 0;
-              render();
+              if(typeof newValue !== 'undefined') {
+                render();
+              }
             });
 
-            render();
+            //render();
 
 
         }

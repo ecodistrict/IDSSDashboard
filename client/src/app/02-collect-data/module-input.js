@@ -29,7 +29,7 @@ angular.module( 'idss-dashboard.collect-data.module-input', [])
     // get existing input and set the old values on the original input specifiction
     // the input specification is sent as input to the modules, as originally designed
     // for a coming version only inputs could be sent to modules and not the specification itselfp
-    ModuleService.getModuleInput(currentVariant._id, kpi.selectedModuleId, kpi.alias, asIsVariant._id).then(function(kpiRecord) {
+    ModuleService.getModuleInput(currentVariant._id, kpi.selectedModuleId, kpi.kpiAlias, asIsVariant._id).then(function(kpiRecord) {
       
       if(kpiRecord.inputs) {
         extendInputSpecification(kpi.inputSpecification, kpiRecord.inputs);
@@ -50,7 +50,7 @@ angular.module( 'idss-dashboard.collect-data.module-input', [])
     var moduleInput = null;
     if(kpi.selectedModuleId && kpi.inputSpecification) {
       moduleInput = {
-        kpiAlias: kpi.alias,
+        kpiAlias: kpi.kpiAlias,
         moduleId: kpi.selectedModuleId,
         variantId: kpi.variantId,
         inputs: kpi.inputSpecification

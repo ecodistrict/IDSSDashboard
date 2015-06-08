@@ -73,7 +73,7 @@ angular.module( 'idss-dashboard.compare-variants', [])
       stakeholderData.kpiList.push({
         kpiName: k.name,
         kpiDescription: k.description,
-        kpiId: k.alias,
+        kpiId: k.kpiAlias,
         bad: k.bad,
         unit: k.unit,
         excellent: k.excellent 
@@ -86,7 +86,7 @@ angular.module( 'idss-dashboard.compare-variants', [])
       var kpiData = [];
       _.each(relevantRecords, function(r) {
         kpiData.push({
-          kpiId: r.alias,
+          kpiId: r.kpiAlias,
           kpiValue: r.value,
           disabled: r.disabled
         });
@@ -103,46 +103,6 @@ angular.module( 'idss-dashboard.compare-variants', [])
     mcmsmvData.stakeholders.push(stakeholderData);
 
     return mcmsmvData;
-
-    // _.each(kpiRecords, function(r) {
-    //   var kpiResults = [];
-    //   _.each(r.kpiList, function(k) {
-    //     // if as is variant, add settings to kpilist
-    //     var bad = 1, excellent = 10;
-    //     if(v.type === 'as-is') {
-    //       if(!k.qualitative) {
-    //         bad = k.settings.bad;
-    //         excellent = k.settings.excellent;
-    //       }
-    //       stakeholderData.kpiList.push({
-    //         kpiName: k.name,
-    //         kpiDescription: k.description,
-    //         kpiId: k.alias,
-    //         bad: bad,
-    //         unit: k.unit,
-    //         excellent: excellent 
-    //       });
-    //     }
-    //     getKpiResult(k, function(value) {
-    //       kpiResults.push({
-    //         kpiValue: value,
-    //         kpiId: k.alias,
-    //         disabled: k.disabled
-    //       });
-    //     });
-    //   });
-    //   stakeholderData.variants.push({
-    //     variantId: v._id,
-    //     description: v.description,
-    //     name: v.name,
-    //     type: v.type,
-    //     kpiList: kpiResults
-    //   });
-    // });
-
-    // mcmsmvData.stakeholders.push(stakeholderData);
-
-    // return mcmsmvData;
 
   };
 

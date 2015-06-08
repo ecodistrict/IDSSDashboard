@@ -106,7 +106,7 @@ ManageKpiPage.prototype = Object.create({},
     },
     selectedKpis: {
       get: function() {
-        return element.all(by.repeater('kpi in asIsVariant.kpiList'));
+        return element.all(by.repeater('kpi in currentProcess.kpiList'));
       }
     },
     // this is the selected kpis (right side in gui)

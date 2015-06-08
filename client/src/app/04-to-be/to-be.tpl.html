@@ -9,8 +9,8 @@
                 </select>
               </div>
             </form>
-            <div ng-repeat="kpi in currentProcess.kpiList" id="{{'used-kpi-' + kpi.alias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="setAmbition(kpi)">
-                <div class="panel-heading" id="{{'set-ambition-' + kpi.alias + '-button'}}">
+            <div ng-repeat="kpi in currentProcess.kpiList" id="{{'used-kpi-' + kpi.kpiAlias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="setAmbition(kpi)">
+                <div class="panel-heading" id="{{'set-ambition-' + kpi.kpiAlias + '-button'}}">
                   <h3 class="panel-title">
                     <b>{{kpi.name}}</b> <span ng-hide="kpiIsConfigured(kpi)" class="glyphicon glyphicon-exclamation-sign"></span>
                     <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>

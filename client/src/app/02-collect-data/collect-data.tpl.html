@@ -3,7 +3,7 @@
         
         <h2>Collect Data</h2>
         <div ng-show="!currentProcess.kpiList.length">No KPIs are used in this process, <a ui-sref="manage-kpis">manage KPIs here</a></div>
-        <div ng-repeat="kpi in currentProcess.kpiList" id="{{'collect-data-' + kpi.alias}}" class="panel panel-primary module-item">
+        <div ng-repeat="kpi in currentProcess.kpiList" id="{{'collect-data-' + kpi.kpiAlias}}" class="panel panel-primary module-item">
           <div class="panel-heading">
             <h3 class="panel-title">KPI: {{kpi.name}}</h3>
           </div>

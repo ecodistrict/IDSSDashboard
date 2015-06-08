@@ -61,7 +61,7 @@ angular.module( 'idss-dashboard.to-be', [])
         KpiService.removeExtendedData(kpi); // in case data is already extended
         kpi.loading = true;
         kpi.status = 'initializing';
-        KpiService.getKpiRecord(toBeVariant._id, kpi.alias, userId).then(function(record) {
+        KpiService.getKpiRecord(toBeVariant._id, kpi.kpiAlias, userId).then(function(record) {
           angular.extend(kpi, record); 
           if(kpi.status === 'initializing' || kpi.status === 'processing') {
             kpi.loading = true;

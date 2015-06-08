@@ -10,7 +10,7 @@ angular.module( 'idss-dashboard.analyse-problem.add-kpi', [])
     var generateInputs = function() {
         var k = $scope.kpi;
         // this is used to set unique name to input radio group, the alias is ultimately set on server but they don't necessary need to be the same
-        k.alias = k.name.toLowerCase().split(' ').join('-');
+        k.kpiAlias = k.name.toLowerCase().split(' ').join('-');
         k.unit = k.unit || 'score';
 
     };

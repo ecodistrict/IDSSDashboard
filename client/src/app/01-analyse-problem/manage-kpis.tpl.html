@@ -19,7 +19,7 @@
         </div>
         <div class="col-xs-6">
             <h2>KPI set for this decision process</h2>
-            <div ng-repeat="kpi in currentProcess.kpiList" id="{{'used-kpi-' + kpi.alias}}" class="panel panel-success kpi-item" ng-click="configureKpi(kpi)">
+            <div ng-repeat="kpi in currentProcess.kpiList" id="{{'used-kpi-' + kpi.kpiAlias}}" class="panel panel-success kpi-item" ng-click="configureKpi(kpi)">
               <div class="panel-heading">
                 <h3 class="panel-title">{{kpi.name}} <span ng-hide="kpiIsConfigured(kpi)" class="glyphicon glyphicon-exclamation-sign"></span></h3>
               </div>
