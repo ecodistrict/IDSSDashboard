@@ -131,15 +131,12 @@ frameworkPub.signalString(JSON.stringify({method: 'getModules-test2'}).toString(
 
 frameworkSub.onString = function(aEventEntry, aString) {
   
-  console.log(aString);
   var message = JSON.parse(aString);
   console.log(message["method"]);
 
   if(message.method === 'getModules') {
-    console.log('getModules');
     frameworkPub.signalString(JSON.stringify(moduleDefinition).toString());
   } else if(message.method === 'selectModule') {
-    console.log('selectModule');
     if(message.moduleId === moduleId) {
       moduleInput.variantId = message.variantId;
       frameworkPub.signalString(JSON.stringify(moduleInput).toString());
@@ -150,32 +147,20 @@ frameworkSub.onString = function(aEventEntry, aString) {
       startModule.status = 'processing'; 
       startModule.kpiId = message.kpiId;
       startModule.variantId = message.variantId;
+      startModule.userId = message.userId;
       frameworkPub.signalString(JSON.stringify(startModule).toString());
       // after calculating, send output
       moduleResult.kpiId = message.kpiId;
       moduleResult.variantId = message.variantId;
       moduleResult.moduleId = moduleId;
+      moduleResult.userId = message.userId;
       moduleResult.status = "success";
       // some assumptions here!
 
-      console.log(message);
       moduleResult.outputs = [{
-        "type": "kpi",
-        "value": 7,
-        "info": "Mean value.."
-      },{
-        "type": "kpi-list",
-        "label": "Buildings and their heating systems",
-        "value": [
-          {
-            "kpiValue": 7,
-            "name": "Building 1"
-          },
-          {
-            "kpiValue": 8,
-            "name": "Building 2"
-          }
-        ]
+        type: "kpi",
+        value: 8,
+        info: "Mean value.."
       },{
         type: "geojson",
         kpiProperty: "GEBHOOGTE",
