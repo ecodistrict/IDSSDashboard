@@ -2,7 +2,7 @@ angular.module( 'idss-dashboard.kpi', [])
 
 .config(['$stateProvider', function config( $stateProvider ) {
   $stateProvider.state( 'kpi', {
-    url: '/kpi?variantId&kpiAlias&back&userId',
+    url: '/kpi?variantId&kpiAlias&back&userId&stakeholder',
     views: {
       "main": {
         controller: 'KpiController',
@@ -48,6 +48,7 @@ angular.module( 'idss-dashboard.kpi', [])
   if(kpi.status === 'initializing' || kpi.status === 'processing') {
     kpi.loading = true;
   }
+  $scope.stakeholderName = $stateParams.stakeholder || $scope.currentUser.name || $scope.currentUser.fname;
   // if selected module is already loaded in dashboard
   if(kpi.selectedModuleId) {
     selectedModule = ModuleService.getModule(kpi.selectedModuleId);
@@ -190,7 +191,7 @@ angular.module( 'idss-dashboard.kpi', [])
       moduleInputModal.result.then(function (moduleInput) {
         if(moduleInput) {
           kpi.inputs = moduleInput.inputs;
-          moduleInput.userId = $scope.currentUser._id;
+          moduleInput.userId = $scope.currentUser._id; // only facilitator should be able to do this
           moduleInput.status = 'unprocessed'; // input has changed
           kpi.status = 'unprocessed'; // update GUI
           ModuleService.saveModuleInput(moduleInput);

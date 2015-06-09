@@ -228,7 +228,7 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
          .size(100) 
         .columns([
             function(d) {
-              return '<a href="#/kpi?variantId=' + d.variantId + '&kpiAlias=' + d.kpiAlias + '&back=compare-variants&userId=' + d.userId + '">' + d.kpiName + '</a>';
+              return '<a href="#/kpi?variantId=' + d.variantId + '&kpiAlias=' + d.kpiAlias + '&back=compare-variants&userId=' + d.userId + '&stakeholder=' + d.stakeholder +'">' + d.kpiName + '</a>';
             },
             function(d) {
               return d.stakeholder;
@@ -259,7 +259,7 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
     //     // This code demonstrates generating the column header automatically based on the columns.
         .columns([
             function(d) {
-              return '<a href="#/kpi?variantId=' + d.variantId + '&kpiAlias=' + d.kpiAlias + '&back=compare-variants&userId=' + d.userId + '">' + d.variantName + '</a>';
+              return '<a href="#/kpi?variantId=' + d.variantId + '&kpiAlias=' + d.kpiAlias + '&back=compare-variants&userId=' + d.userId + '&stakeholder=' + d.stakeholder +'">' + d.variantName + '</a>';
             },
             function(d) {
               return d.stakeholder;
