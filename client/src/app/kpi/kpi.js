@@ -2,7 +2,7 @@ angular.module( 'idss-dashboard.kpi', [])
 
 .config(['$stateProvider', function config( $stateProvider ) {
   $stateProvider.state( 'kpi', {
-    url: '/kpi?variantId&kpiAlias&back',
+    url: '/kpi?variantId&kpiAlias&back&userId',
     views: {
       "main": {
         controller: 'KpiController',
@@ -24,7 +24,7 @@ angular.module( 'idss-dashboard.kpi', [])
         });
       }],
       kpiRecord: ['KpiService', '$stateParams', function(KpiService, $stateParams) {
-        return KpiService.getKpiRecord($stateParams.variantId, $stateParams.kpiAlias);
+        return KpiService.getKpiRecord($stateParams.variantId, $stateParams.kpiAlias, $stateParams.userId);
       }],
       variants: ['VariantService', function(VariantService) {
         return VariantService.loadVariants().then(function(variants) {
@@ -81,10 +81,10 @@ angular.module( 'idss-dashboard.kpi', [])
     socket.emit('startModule', {
       variantId: currentVariant._id, 
       asIsVariantId: asIsVariant._id, // as is is needed if new alternative - if there is no input, take from as is
-      kpiAlias: kpi.kpiAlias, // modules use kpiId instead of kpiAlias
-      moduleId: kpi.selectedModuleId,
+      kpiAlias: kpi.kpiAlias, 
+      moduleId: kpi.selectedModuleId, 
       status: kpi.status,
-      userId: $scope.currentUser._id,
+      userId: $scope.currentUser._id, // if stakeholder id is sent in params, load data from stakeholder
       processId: currentProcess._id
     });
   };

@@ -20,13 +20,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
           function bullet(g) {
             g.each(function(d, i) {
 
-              if(typeof d.ranges[0] === 'undefined') {
-                return false;
-              }
-
-              console.log(d);
-
-                var g = d3.select(this); // WTF?
+                var g = d3.select(this); 
 
                 var bad = ranges.call(this, d, i)[0];
                 var excellent = ranges.call(this, d, i)[1];
@@ -83,7 +77,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                   .attr("width", getMaxWidth)
                   .attr("height", height);
 
-              if(typeof d.measures[0] !== 'undefined') {
+             if(typeof d.measures[0] !== 'undefined') {
 
               // Update the measure rects.
               var measure = g.selectAll("rect.measure")
@@ -283,13 +277,20 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
             var render = function() {
 
-                var bad = kpi.bad, excellent = kpi.excellent, value = kpi.value;
+              var width = $('#main').children('.container').width();
+              var bad = kpi.bad, excellent = kpi.excellent, value = kpi.value;
+
+              if(!width || width === 0) {
+                return; // skip rendering if width is zero
+              }
+
+              var margin = {top: 5, right: 50, bottom: 20, left: 100};
+              width = width - margin.left - margin.right;
+              var height = 50 - margin.top - margin.bottom;
+
+                
 
                 element.empty().attr('id', 'm-' + kpi.kpiAlias + '-aggregated-kpi');
-
-                var margin = {top: 5, right: 50, bottom: 20, left: 120},
-                    width = 960 - margin.left - margin.right,
-                    height = 50 - margin.top - margin.bottom;
 
                 var chart = d3.bullet()
                     .width(width)
@@ -302,7 +303,6 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
                 var data = [{
                     title:"KPI value",
-                    subtitle:value + ' ' + kpi.unit,
                     ranges:[bad, excellent],
                     measures:[value],
                     markers:[value],
@@ -311,7 +311,8 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                     markerLabels:['Target Inventory']
                 }];
 
-                
+                data[0].subtitle = value || value === 0 ? value + ' ' + kpi.unit : 'No value is set';
+
                   var svg = d3.select(element[0]).selectAll("svg")
                       .data(data)
                     .enter().append("svg")

@@ -14,34 +14,41 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
         link: function(scope, element, attrs) {
 
           // get the window
-            var w = angular.element($window);
+            //var w = angular.element($window);
             // listen for the DOM ready to trigger the first render
-            w.ready(function() {
-              console.log(w.width());
-              width = w.width();
-              render(scope.data);
-            });
-            // listen on changes on window
-            w.bind('resize', function () {
-                scope.$apply();
-            });
-            // for rerender on windows resize
-            scope.getWindowWidth = function () {
-                return w.width();
-            };
-            // listen for changes in scope on window on resize
-            scope.$watch(scope.getWindowWidth, function (newWidth, oldWidth) {
-                if (newWidth !== oldWidth) {
-                  width = newWidth;
-                  render(scope.data);
-                }
-            });
+            // w.ready(function() {
+            //   console.log(w.width());
+            //   width = w.width();
+            //   render(scope.data);
+            // });
+            // // listen on changes on window
+            // w.bind('resize', function () {
+            //     scope.$apply();
+            // });
+            // // for rerender on windows resize
+            // scope.getWindowWidth = function () {
+            //     return w.width();
+            // };
+            // // listen for changes in scope on window on resize
+            // scope.$watch(scope.getWindowWidth, function (newWidth, oldWidth) {
+            //     if (newWidth !== oldWidth) {
+            //       width = newWidth;
+            //       render(scope.data);
+            //     }
+            // });
 
           function render(mcmsmvData) {
 
-            if(!mcmsmvData && width) {
+            // couldn't find a better way
+            var width = $('#mcmsmv-container').width();
+
+            console.log(element);
+
+            if(!mcmsmvData || !width) {
               return;
             }
+
+            console.log(width);
             
             element.empty();
 
@@ -68,6 +75,7 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
                     }
                     data.push({
                       stakeholder: stakeholder.user.name,
+                      userId: stakeholder.user.id,
                       variantId: variant.variantId,
                       variantName: variant.name,
                       kpiName: metadata[kpi.kpiId].kpiName,
@@ -204,7 +212,7 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
     .dimension(stakeholder)
     .group(stakeholderGroup);
 
-    alternativesChart.width(width * 0.2)
+  alternativesChart.width(width * 0.2)
     .height(300)
     .radius(width * 0.1)
     .innerRadius(20)
@@ -220,7 +228,7 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
          .size(100) 
         .columns([
             function(d) {
-              return '<a href="#/kpi?variantId=' + d.variantId + '&kpiAlias=' + d.kpiAlias + '&back=compare-variants">' + d.kpiName + '</a>';
+              return '<a href="#/kpi?variantId=' + d.variantId + '&kpiAlias=' + d.kpiAlias + '&back=compare-variants&userId=' + d.userId + '">' + d.kpiName + '</a>';
             },
             function(d) {
               return d.stakeholder;
@@ -251,7 +259,7 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
     //     // This code demonstrates generating the column header automatically based on the columns.
         .columns([
             function(d) {
-              return '<a href="#/kpi?variantId=' + d.variantId + '&kpiAlias=' + d.kpiAlias + '&back=compare-variants">' + d.variantName + '</a>';
+              return '<a href="#/kpi?variantId=' + d.variantId + '&kpiAlias=' + d.kpiAlias + '&back=compare-variants&userId=' + d.userId + '">' + d.variantName + '</a>';
             },
             function(d) {
               return d.stakeholder;
@@ -287,11 +295,8 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
           //   return scope.render(scope.data);
           // });
 
-          // watch for width change on parent element
           scope.$watch('data', function(newData, oldData) {
-            if(newData !== oldData) {
-              return render(scope.data);
-            }
+            render(scope.data);
           });
 
         }
