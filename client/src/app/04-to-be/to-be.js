@@ -48,7 +48,7 @@ angular.module( 'idss-dashboard.to-be', [])
     
     $scope.isFacilitator = currentUser.role === 'Facilitator';
     if($scope.isFacilitator) {
-      currentUser.name = 'Facilitator';
+      currentUser.name = 'Facilitator, representing the group';
       LoginService.getStakeholders().then(function(stakeholders) {
         // add facilitator
         stakeholders.push(currentUser);
