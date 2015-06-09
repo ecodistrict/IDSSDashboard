@@ -219,14 +219,14 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
           "method": "selectModule",
           "variantId": kpi.processId, // TODO: change this property name to processId
           "moduleId": kpi.selectedModuleId,
-          "kpiId": kpi.alias
+          "kpiId": kpi.kpiAlias
         };
         imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
       } else {
-        console.log('no process id for selecting module: ' + kpi.alias);
+        console.log('no process id for selecting module: ' + kpi.kpiAlias);
       }
     } else {
-      console.log('no model selected for kpi: ' + kpi.alias);
+      console.log('no model selected for kpi: ' + kpi.kpiAlias);
     }
   });
 
@@ -242,8 +242,6 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         console.log('status to save');
         console.log(module);
 
-        module.alias = module.kpiAlias;
-
         kpiRecordRepository.saveKpiRecordStatus(module, function(err) {
           if(err) {
             dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
@@ -256,7 +254,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
               "userId": moduleInput.userId,
               "moduleId": moduleInput.moduleId,
               "variantId": moduleInput.variantId,
-              "kpiId": moduleInput.alias,
+              "kpiId": moduleInput.kpiAlias,
               "inputs": moduleInput.inputs
             };
             imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
@@ -325,7 +323,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
                 console.log(err);
                 io.to(err.userId).emit("frameworkError", JSON.stringify(err));
               } else {
-                io.to(model.userId).emit(message.method, kpiRecord);
+                io.to(kpiRecord.userId).emit(message.method, kpiRecord);
               }
             });
           }

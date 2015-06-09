@@ -18,6 +18,11 @@ angular.module( 'idss-dashboard.kpi', [])
       authorizedRoles: ['Facilitator', 'Stakeholder']
     },
     resolve:{
+      currentUser: ['LoginService', function(LoginService) {
+        return LoginService.getCurrentUser().then(function(currentUser) {
+          return currentUser;
+        });
+      }],
       currentProcess: ['ProcessService', function(ProcessService) {
         return ProcessService.loadCurrentProcess().then(function(currentProcess) {
           return currentProcess;
@@ -35,9 +40,10 @@ angular.module( 'idss-dashboard.kpi', [])
   });
 }])
 
-.controller( 'KpiController', ['$scope', 'socket', '$stateParams', '$state', 'kpiRecord', 'currentProcess', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'ProcessService', 'variants', function KpiController( $scope, socket, $stateParams, $state, kpiRecord, currentProcess, ModuleService, $modal, KpiService, VariantService, ProcessService, variants ) {
+.controller( 'KpiController', ['$scope', 'socket', '$stateParams', '$state', 'kpiRecord', 'currentProcess', 'currentUser', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'ProcessService', 'variants', function KpiController( $scope, socket, $stateParams, $state, kpiRecord, currentProcess, currentUser, ModuleService, $modal, KpiService, VariantService, ProcessService, variants ) {
 
   var kpi = _.find(currentProcess.kpiList, function(k) {return k.kpiAlias === $stateParams.kpiAlias;});
+  $scope.currentUser = currentUser; // current user is loaded again.. otherwise the user is not yet loaded when reloading page.. 
   $stateParams.back = $stateParams.back || 'compare-variants';
   var backState = $stateParams.back.split('/')[0];
   var selectedModule;
@@ -128,6 +134,8 @@ angular.module( 'idss-dashboard.kpi', [])
   $scope.stopCalculation = function(kpi) {
     kpi.status = 'unprocessed';
     kpi.loading = false;
+
+    KpiService.updateKpiRecord(kpi); 
 
     //ModuleService.updateModuleOutputStatus(kpi.variantId, kpi.moduleId, kpi.kpiAlias, kpi.status);
 
