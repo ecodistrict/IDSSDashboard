@@ -338,12 +338,9 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
             };
 
             scope.$watch('kpi.value', function(newValue, oldValue) {
-              if(typeof newValue !== 'undefined') {
+              // it needs to render to reset if undefined
                 render();
-              }
             });
-
-            //render();
 
 
         }
