@@ -1,17 +1,16 @@
 exports.config = {
     specs: [
         //basic setup
-    	'test/e2e/create-new-account.e2e.js',
-    	'test/e2e/logging-in.e2e.js',
+    	'test/e2e/create-user-and-login.e2e.js',
         'test/e2e/check-modules-registered.e2e.js',
         'test/e2e/analyse-problem-overview.e2e.js',
         //quantitative KPI
-        'test/e2e/add-kpi-atomic.e2e.js',
-        'test/e2e/use-kpi-atomic.e2e.js',
-        'test/e2e/configure-kpi-atomic.e2e.js',
-        'test/e2e/collect-data-atomic.e2e.js',
-        'test/e2e/calculate-atomic.e2e.js',
-        'test/e2e/set-ambition-atomic.e2e.js',
+        'test/e2e/add-test-kpi.e2e.js',
+        'test/e2e/use-test-kpi.e2e.js',
+        'test/e2e/configure-test-kpi.e2e.js',
+        'test/e2e/collect-data.e2e.js',
+        'test/e2e/calculate.e2e.js',
+        'test/e2e/set-ambition.e2e.js',
         'test/e2e/develop-first-variant.e2e.js',
         //qualitative KPI
         'test/e2e/add-kpi-qualitative.e2e.js',
