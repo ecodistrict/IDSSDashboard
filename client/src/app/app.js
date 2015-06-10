@@ -74,9 +74,10 @@ angular.module( 'idss-dashboard', [
       });
 
       // should this be a global listener?
-      socket.on('selectModule', function(modelInput) {
-        console.log('module input spec was added to dashboard server: ' + modelInput);
-        //VariantService.addModuleInputs(modelInput);
+      socket.on('selectModule', function(moduleInput) {
+        console.log('module input spec was added to dashboard server: ', moduleInput);
+        // needs to be added so that dashboard does not needs to be reloaded
+        ProcessService.addModuleInputSpecification(moduleInput);
       });
 
       socket.on('frameworkError', function(err) {
