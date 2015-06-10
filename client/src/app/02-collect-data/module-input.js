@@ -1,8 +1,9 @@
 angular.module( 'idss-dashboard.collect-data.module-input', [])
 
-.controller( 'ModuleInputController', ['$scope', '$modalInstance', 'kpi', 'ModuleService', 'VariantService', 'currentVariant', 'asIsVariant', 'ProcessService', function ModuleInputController( $scope, $modalInstance, kpi, ModuleService, VariantService, currentVariant, asIsVariant, ProcessService ) {
+.controller( 'ModuleInputController', ['$scope', '$modalInstance', 'kpi', 'ModuleService', 'VariantService', 'currentVariant', 'asIsVariant', 'currentProcess', function ModuleInputController( $scope, $modalInstance, kpi, ModuleService, VariantService, currentVariant, asIsVariant, currentProcess ) {
 
   $scope.kpi = kpi;
+  $scope.process = currentProcess;
 
   var extendInputSpecification = function(inputSpecification, input) {
     for (var property in inputSpecification) {
@@ -18,8 +19,6 @@ angular.module( 'idss-dashboard.collect-data.module-input', [])
       }
     }
   };
-
-  console.log(kpi);
 
   if(kpi.selectedModuleId && kpi.inputSpecification) {
 

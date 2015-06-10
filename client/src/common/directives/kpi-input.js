@@ -9,7 +9,8 @@ angular.module('idss-dashboard').directive('kpiInput', ['$compile', 'ModuleServi
     return {
         restrict: 'E',
         scope: {
-            kpi: '='
+            inputs: '=',
+            process: '='
         },
         link: function ( scope, element, attrs ) {
 
@@ -30,9 +31,7 @@ angular.module('idss-dashboard').directive('kpiInput', ['$compile', 'ModuleServi
                     }
                 };
 
-                setTemplateUrl(scope.kpi.inputSpecification);
-
-                scope.inputs = scope.kpi.inputSpecification;
+                setTemplateUrl(scope.inputs);
 
                 var template = '<form class="form-horizontal" role="form"><div ng-repeat="input in inputs | object2Array | orderBy:\'order\'" ng-include="input.template"></div></form>';
 
@@ -53,7 +52,9 @@ angular.module('idss-dashboard').directive('kpiInput', ['$compile', 'ModuleServi
                 console.log(scope.inputs);
             };
 
-            if(scope.kpi) {
+            console.log(scope.inputs);
+
+            if(scope.inputs) {
                 render();
             }
         }

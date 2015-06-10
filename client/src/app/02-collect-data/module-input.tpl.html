@@ -5,7 +5,7 @@
 </div>
 <div class="modal-body">
 	<div class="panel info" ng-show="message">{{message}} <span ng-show="loading" class="glyphicon glyphicon-refresh spin"></span></div>
-    <kpi-input kpi="kpi"></kpi-input>
+    <kpi-input inputs="kpi.inputSpecification" process="process"></kpi-input>
 </div>
 <div class="modal-footer">
     <a class="btn btn-sm btn-warning" ng-click="cancel()">Cancel</a>

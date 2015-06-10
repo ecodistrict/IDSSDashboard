@@ -85,6 +85,11 @@ angular.module('idss-dashboard').directive('districtMap', ['$compile', 'ProcessS
             // TODO: this is not a nice solution, maybe use http://buzzdecafe.github.io/2014/03/20/directive-after-dom/
             function initMap() {
 
+                if(!scope.district) {
+                    console.log('District was not found');
+                    return;
+                }
+
                 //$timeout(function() {
                     // default viewport (central europe)
                     var viewSettings = {
@@ -243,9 +248,8 @@ angular.module('idss-dashboard').directive('districtMap', ['$compile', 'ProcessS
                         '</div>'].join(''));
                 
                     $compile(buttonPanel)(scope);
+                    element.prepend('<label>District area of the process: </label>');
                     $(map.getTarget()).find('.ol-viewport').append(buttonPanel);
-                    //element
-
                     addDistrictFeatures(scope.district.geometry);
 
                     

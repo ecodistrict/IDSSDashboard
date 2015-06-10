@@ -192,6 +192,9 @@ angular.module( 'idss-dashboard.kpi', [])
           },
           asIsVariant: function() {
             return asIsVariant;
+          },
+          currentProcess: function() {
+            return currentProcess;
           }
         }
       });
