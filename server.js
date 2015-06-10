@@ -236,12 +236,6 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
       } else {
 
-        console.log('data from input');
-        console.log(moduleInput);
-
-        console.log('status to save');
-        console.log(module);
-
         kpiRecordRepository.saveKpiRecordStatus(module, function(err) {
           if(err) {
             dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
