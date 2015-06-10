@@ -64,21 +64,6 @@ ManageKpiPage.prototype = Object.create({},
         this.cancelKpiButton.click();
       }
     },
-    selectGeoJsonKpi: {
-      get: function() {
-        return element(by.id('select-kpi-geojson-test-kpi'));
-      }
-    },
-    selectAtomicTestKpi: {
-      get: function() {
-        return element(by.id('select-kpi-atomic-test'));
-      }
-    },
-    selectQualitativeKpi: {
-      get: function() {
-        return element(by.id('select-kpi-qualitative-kpi'));
-      }
-    },
     useKpiButton: {
       get: function() {
         return element(by.id('use-kpi-button'));
@@ -109,22 +94,6 @@ ManageKpiPage.prototype = Object.create({},
         return element.all(by.repeater('kpi in currentProcess.kpiList'));
       }
     },
-    // this is the selected kpis (right side in gui)
-    usedGeoJsonKpi: {
-      get: function() {
-        return element(by.id('used-kpi-geojson-test-kpi'));
-      }
-    },
-    usedAtomicTestKpi: {
-      get: function() {
-        return element(by.id('used-kpi-atomic-test'));
-      }
-    },
-    usedQualitativeKpi: {
-      get: function() {
-        return element(by.id('used-kpi-qualitative-kpi'));
-      }
-    },
     kpiTitle: {
       get: function() {
         return element.all(by.css('.kpi-title'));
@@ -150,16 +119,6 @@ ManageKpiPage.prototype = Object.create({},
         return element(by.id('save-kpi-config'));
       }
     },
-    selectGeoJsonModuleOption: {
-      get: function() {
-        return element(by.cssContainingText('option', 'Geojson test module'));
-      }
-    },
-    selectAtomicTestModuleOption: {
-      get: function() {
-        return element(by.cssContainingText('option', 'Atomic inputs'));
-      }
-    },
     typeKpiName: {
       value: function(name) {
         this.kpiNameInput.sendKeys(name);
@@ -175,14 +134,14 @@ ManageKpiPage.prototype = Object.create({},
         this.kpiUnitInput.sendKeys(unit);
       }
     },
-    clickUseGeoJsonKpiButton: {
-      value: function() {
-        this.useGeoJsonKpiButton.click();
-      }
-    },
     clickSelectKpi: {
       value: function(kpiId) {
         element(by.id('select-kpi-' + kpiId)).click();
+      }
+    },
+    clickUseKpi: {
+      value: function(kpiId) {
+        element(by.id('used-kpi-' + kpiId)).click();
       }
     },
     clickQuickUseKpi: {
@@ -195,34 +154,9 @@ ManageKpiPage.prototype = Object.create({},
         element(by.id('used-kpi-' + kpiId)).click();
       }
     },
-    clickSelectGeoJsonKpi: {
-      value: function() {
-        this.selectGeoJsonKpi.click();
-      }
-    },
-    clickUsedGeoJsonKpi: {
-      value: function() {
-        this.usedGeoJsonKpi.click();
-      }
-    },
     clickUseKpiButton: {
       value: function() {
         this.useKpiButton.click();
-      }
-    },
-    clickSelectAtomicTestKpi: {
-      value: function() {
-        this.selectAtomicTestKpi.click();
-      }
-    },
-    clickUsedAtomicTestKpi: {
-      value: function() {
-        this.usedAtomicTestKpi.click();
-      }
-    },
-    clickUsedQualitativeKpi: {
-      value: function() {
-        this.usedQualitativeKpi.click();
       }
     },
     typeKpiScoreExcellent: {
@@ -240,14 +174,9 @@ ManageKpiPage.prototype = Object.create({},
         this.priorityValue.clear().sendKeys(val);
       }
     },
-    clickSelectGeoJsonModuleOption: {
-      value: function() {
-        this.selectGeoJsonModuleOption.click();
-      }
-    },
-    clickSelectAtomicTestModuleOption: {
-      value: function() {
-        this.selectAtomicTestModuleOption.click();
+    clickSelectModuleOption: {
+      value: function(moduleName) {
+        element(by.cssContainingText('option', moduleName)).click();
       }
     },
     clickSaveKpiConfigButton: {
@@ -263,11 +192,6 @@ ManageKpiPage.prototype = Object.create({},
     selectQualitativeKpiOption: {
       value: function() {
         this.qualitativeKpiButton.click();
-      }
-    },
-    clickSelectQualitativeKpiFromList: {
-      value: function() {
-        this.selectQualitativeKpi.click();
       }
     }
   }
