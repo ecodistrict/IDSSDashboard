@@ -164,6 +164,15 @@ angular.module('idss-dashboard')
         }
     };
 
+    var addModuleInputSpecification = function(moduleData) {
+        var kpi = _.find(currentProcess.kpiList, function(k) {
+            return k.kpiAlias === moduleData.kpiId; // form module; it is called kpiId
+        });
+        if(kpi && moduleData.inputSpecification) {
+            kpi.inputSpecification = moduleData.inputSpecification;
+        }
+    };
+
 
     return {
         updateProcess: updateProcess,
@@ -174,6 +183,7 @@ angular.module('idss-dashboard')
         getCurrentProcess: getCurrentProcess,
         addKpi: addKpi,
         updateKpiSettings: updateKpiSettings,
-        removeKpi: removeKpi
+        removeKpi: removeKpi,
+        addModuleInputSpecification: addModuleInputSpecification
     };
 }]);
