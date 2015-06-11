@@ -187,11 +187,47 @@ frameworkSub.onString = function(aEventEntry, aString) {
   } else if(message.method === 'startModule') {
     if(message.moduleId === moduleId) {
       // first send status that module started
-      startModule.status = 'processing'; 
-      startModule.kpiId = message.kpiId;
-      startModule.variantId = message.variantId;
-      startModule.userId = message.userId;
-      frameworkPub.signalString(JSON.stringify(startModule).toString());
+      // startModule.status = 'processing'; 
+      // startModule.kpiId = message.kpiId;
+      // startModule.variantId = message.variantId;
+      // startModule.userId = message.userId;
+      // frameworkPub.signalString(JSON.stringify(startModule).toString());
+
+      // input validation
+      if(!message.inputs) {
+        console.log('Input object is missing');
+      }
+      if(!message.inputs.buildings) {
+        console.log('Input specification for module is not set');
+      }
+      if(!message.inputs.buildings && !message.inputs.buildings.value) {
+        console.log('Input for buildings is not set');
+      }
+      if(!message.inputs.district.value) {
+        console.log('Input for district is not set');
+      }
+      if(!message.inputs["name-1"].value) {
+        console.log('Input for name 1 is not set');
+      }
+      if(!message.inputs["include"].value) {
+        console.log('Input for checkbox is not set');
+      }
+      if(!message.inputs["shoe-size-1"].value) {
+        console.log('Input for shoe type is not set');
+      }
+      if(!message.inputs["shoe-brand"].value) {
+        console.log('Input for shoe size is not set');
+      }
+      if(message.inputs["cheese-type"].value !== "alp-cheese") {
+        console.log('Input for cheese type is not changed');
+      }
+      if(!message.inputs["personal-data"].inputs["name-2"].value) {
+        console.log('Input for name 2 in input group is not set');
+      }
+      if(message.inputs["personal-data"].inputs["shoe-size-2"].value === 42) {
+        console.log('Input for shoe size 2 in input group is not changed');
+      }
+
       // after calculating, send output
       moduleResult.kpiId = message.kpiId;
       moduleResult.variantId = message.variantId;
@@ -202,7 +238,7 @@ frameworkSub.onString = function(aEventEntry, aString) {
 
       moduleResult.outputs = [{
         type: "kpi",
-        value: 800,
+        value: 50,
         info: "Mean value.."
       },{
         type: "geojson",
@@ -211,7 +247,7 @@ frameworkSub.onString = function(aEventEntry, aString) {
         value: message.inputs.buildings.value
       }];
       frameworkPub.signalString(JSON.stringify(moduleResult).toString());
-      
+
     }
   }
 };
