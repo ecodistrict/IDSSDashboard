@@ -13,6 +13,8 @@
         </div>
       </div>
     </div>
+    <p ng-if="!kpi.disabled">Bad: {{(kpi.bad || kpi.bad == 0) ? kpi.bad + ' '+ kpi.unit : 'not set' }}</p>
+    <p ng-if="!kpi.disabled">Excellent: {{(kpi.excellent || kpi.excellent == 0) ? kpi.excellent + ' ' + kpi.unit : 'not set' }}</p>
 </div>  
 <div class="modal-footer">
     <a class="btn btn-sm btn-warning" ng-click="cancel()">Cancel</a>
