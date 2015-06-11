@@ -355,6 +355,21 @@ angular.module('idss-dashboard')
             });
     };
 
+    var deleteKpiRecords = function(kpi) {
+        return $http
+            .delete('kpirecords/byKpiAlias/' + kpi.kpiAlias)
+            .error(function(data, status) {
+                var label = 'Error when deleting KPI records';
+                NotificationService.createErrorFlash(label);
+            })
+            .then(function (res) {
+                var kpi = res.data;
+                var label = 'KPI records was successfully deleted';
+                NotificationService.createSuccessFlash(label);
+                return kpi;
+            });
+    };
+
     return {
         loadKpis: loadKpis,
         createKpi: createKpi,
@@ -366,6 +381,7 @@ angular.module('idss-dashboard')
         generateQualitativeKpiOutput: generateQualitativeKpiOutput,
         generateQuantitativeKpiOutput: generateQuantitativeKpiOutput,
         generateQualitativeKpiSettings: generateQualitativeKpiSettings,
+        deleteKpiRecords: deleteKpiRecords,
         //generateQuantitativeKpiSettings: generateQuantitativeKpiSettings,
         //generateToBeInput: generateToBeInput,
         //generateManualInput: generateManualInput,
