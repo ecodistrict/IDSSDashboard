@@ -14,30 +14,27 @@ describe('use kpis', function() {
 
     browser.driver.sleep(500);
 
-    page.clickUseKpi('dashboard-test');
+    page.clickConfigureKpi('dashboard-test');
 
     browser.driver.sleep(300);
 
-    expect(page.kpiTitle.get(0).getText()).toEqual('Dashboard test');
+    expect(page.kpiTitle.get(0).getText()).toEqual('Dashboard Test');
 
     page.typeKpiScoreExcellent(1);
 
     page.typeKpiScoreBad(1000);
 
-    page.typePriorityValue(4);
-
-    page.clickSelectAtomicTestModuleOption();
+    page.clickSelectModuleOption('Dashboard Test');
 
     page.clickSaveKpiConfigButton();
     
     browser.driver.sleep(1000);
 
     browser.driver.navigate().refresh();
-    page.clickUsedAtomicTestKpi();
+    page.clickConfigureKpi('dashboard-test');
 
     expect(page.kpiScoreBad.getAttribute('value')).toEqual('1000');
     expect(page.kpiScoreExcellent.getAttribute('value')).toEqual('1');
-    expect(page.priorityValue.getAttribute('value')).toEqual('4');
 
   });
 

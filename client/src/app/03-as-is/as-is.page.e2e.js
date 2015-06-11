@@ -9,21 +9,6 @@ AsIsPage.prototype = Object.create({},
         return element.all(by.repeater('kpi in currentProcess.kpiList'));
       }
     },
-    calculateAtomicTestKpiButton: {
-        get: function(){
-            return element(by.id('calculate-atomic-test-button'));
-        }
-    },
-    resultChartAtomicTestKpi: {
-        get: function() {
-            return element(by.id('m-atomic-test-aggregated-kpi'));
-        }
-    },
-    clickCalculateAtomicTestKpiButton: {
-        value: function() {
-            this.calculateAtomicTestKpiButton.click();
-        }
-    },
     kpiValueInput: {
       get: function() {
         return element(by.id('quantitative-input'));
