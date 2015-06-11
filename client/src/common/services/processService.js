@@ -38,9 +38,14 @@ angular.module('idss-dashboard')
     };
 
     var loadCurrentProcess = function() {
-
-        return loader;
-
+        var deferred;
+        if(currentProcess._id) {
+            deferred = $q.defer();
+            deferred.resolve(currentProcess);
+            return deferred.promise;
+        } else {
+            return loader;
+        }
     };
 
     var saveCurrentProcess = function () {
@@ -101,7 +106,7 @@ angular.module('idss-dashboard')
 
     var addKpi = function(kpiToAdd) {
         var label;
-        var alreadyAdded = _.find(currentProcess.kpiList, function(k) {return k.kpiAlias === kpiToAdd.kpiAlias;});
+        var alreadyAdded = _.find(currentProcess.kpiList, function(k) {return k.kpiAlias === kpiToAdd.alias;});
         if(!alreadyAdded) {
             // add properties for instantiated kpi on process
             kpiToAdd.kpiAlias = kpiToAdd.alias;
@@ -160,6 +165,7 @@ angular.module('idss-dashboard')
         if(kpi) {
             var index = _.indexOf(currentProcess.kpiList, kpi);
             currentProcess.kpiList.splice(index, 1);
+            KpiService.deleteKpiRecords(kpi);
             return saveCurrentProcess();
         }
     };
