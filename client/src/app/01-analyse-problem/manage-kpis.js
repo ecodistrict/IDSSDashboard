@@ -99,6 +99,7 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
     var kpiModal = $modal.open({
       templateUrl: '01-analyse-problem/configure-kpi.tpl.html',
       controller: 'ConfigureKpiCtrl',
+      size: 'sm',
       resolve: {
         kpi: function() {
           return kpi;
