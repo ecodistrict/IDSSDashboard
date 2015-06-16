@@ -297,7 +297,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                     .height(height)
                     .duration(1000)
                     .tickFormat(function(d) {
-                        return d + ' ' + kpi.unit;
+                        return d;
                     });
 
 

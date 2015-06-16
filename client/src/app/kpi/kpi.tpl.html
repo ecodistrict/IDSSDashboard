@@ -43,8 +43,11 @@
           </div>
 
           <kpi-value-output ng-if="!kpi.disabled" kpi="kpi"></kpi-value-output>
-          <p ng-if="!kpi.disabled">Bad: {{(kpi.bad || kpi.bad == 0) ? kpi.bad + ' '+ kpi.unit : 'not set' }}</p>
-          <p ng-if="!kpi.disabled">Excellent: {{(kpi.excellent || kpi.excellent == 0) ? kpi.excellent + ' ' + kpi.unit : 'not set' }}</p>
+          <p ng-if="!kpi.disabled">
+            Current value: {{(kpi.value || kpi.value == 0) ? kpi.value + ' '+ kpi.unit : 'not set' }}<br>
+            Bad: {{(kpi.bad || kpi.bad == 0) ? kpi.bad + ' '+ kpi.unit : 'not set' }}<br>
+            Excellent: {{(kpi.excellent || kpi.excellent == 0) ? kpi.excellent + ' ' + kpi.unit : 'not set' }}
+          </p>
           <p ng-if="kpi.disabled" style="margin-top:10px" class="well">KPI <b>{{kpi.name}}</b> is not applicable for the <i>{{currentVariant.name}}</i> situation</p>
             
       </div>
