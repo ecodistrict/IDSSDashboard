@@ -245,10 +245,10 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
             var requestObj = {
               "type": "request",
               "method": method,
-              "userId": moduleInput.userId,
-              "moduleId": moduleInput.moduleId,
-              "variantId": moduleInput.variantId,
-              "kpiId": moduleInput.kpiAlias,
+              "userId": module.userId,
+              "moduleId": module.moduleId,
+              "variantId": module.variantId,
+              "kpiId": module.kpiAlias,
               "inputs": moduleInput.inputs
             };
             imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
