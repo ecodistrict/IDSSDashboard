@@ -43,16 +43,12 @@ angular.module('idss-dashboard').directive('kpiInput', ['$compile', 'ModuleServi
             // let the radio value be put (duplicated) on every radio button option..
             // TODO: find a nicer solution, wrap radio inputs in a parent object with name and selected value
             scope.setRadioInput = function(input) {
-                console.log(input);
                 for(var i in scope.inputs) {
                     if(scope.inputs.hasOwnProperty(i)) {
                         scope.inputs[i].value = input.referenceValue;
                     }
                 }
-                console.log(scope.inputs);
             };
-
-            console.log(scope.inputs);
 
             if(scope.inputs) {
                 render();
