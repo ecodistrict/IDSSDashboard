@@ -1,7 +1,7 @@
 {
   "author": "andreasrudena",
   "name": "idss-dashboard",
-  "version": "0.1.2",
+  "version": "1.0.3",
   "homepage": "http://ecodistr-ict.eu/",
   "devDependencies": {
     "grunt": "^0.4.5",
