@@ -43,11 +43,13 @@ angular.module( 'idss-dashboard.kpi', [])
 .controller( 'KpiController', ['$scope', 'socket', '$stateParams', '$state', 'kpiRecord', 'currentProcess', 'currentUser', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'ProcessService', 'variants', function KpiController( $scope, socket, $stateParams, $state, kpiRecord, currentProcess, currentUser, ModuleService, $modal, KpiService, VariantService, ProcessService, variants ) {
 
   var kpi = _.find(currentProcess.kpiList, function(k) {return k.kpiAlias === $stateParams.kpiAlias;});
+  KpiService.removeExtendedData(kpi); // possible old extended data from another view
   $scope.currentUser = currentUser; // current user is loaded again.. otherwise the user is not yet loaded when reloading page.. 
   $stateParams.back = $stateParams.back || 'compare-variants';
   var backState = $stateParams.back.split('/')[0];
   var selectedModule;
   if(kpi && kpiRecord) {
+    // extend data
     angular.extend(kpi, kpiRecord);
   }
   kpi.processId = currentProcess._id;
@@ -205,6 +207,7 @@ angular.module( 'idss-dashboard.kpi', [])
           kpi.inputs = moduleInput.inputs;
           moduleInput.userId = $scope.currentUser._id; // only facilitator should be able to do this
           moduleInput.status = 'unprocessed'; // input has changed
+          console.log(moduleInput);
           kpi.status = 'unprocessed'; // update GUI
           ModuleService.saveModuleInput(moduleInput);
         }
