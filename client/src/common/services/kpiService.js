@@ -340,6 +340,7 @@ angular.module('idss-dashboard')
     var removeExtendedData = function(kpi) {
         delete kpi._id;
         delete kpi.value;
+        delete kpi.disabled;
     };
 
     var getAllKpiRecords = function() {
