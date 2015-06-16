@@ -45,20 +45,36 @@ angular.module( 'idss-dashboard.analyse-problem', [
     });
   };
 
-  $scope.addStakeholder = function(name) {
-    if(currentUser) {
-      var registrant = {
-        firstName: name,
-        lastName: name,
-        name: name,
-        facilitatorId: currentUser._id,
-        activeProcessId: currentUser.activeProcessId,
-        role: 'Stakeholder',
-        email: name + '@idssdashboard.com'
-      };
-      LoginService.createLogin(registrant).then(function(stakeholder) {
-        $scope.stakeholders.push(stakeholder);
-      });
+  $scope.stakeholder = {
+    name: '',
+    email: ''
+  };
+
+  $scope.addStakeholder = function() {
+    if($scope.stakeholder.name && $scope.stakeholder.email) {
+      if(currentUser) {
+        var registrant = {
+          firstName: $scope.stakeholder.name,
+          lastName: $scope.stakeholder.name,
+          name: $scope.stakeholder.name,
+          facilitatorId: currentUser._id,
+          activeProcessId: currentUser.activeProcessId,
+          role: 'Stakeholder',
+          email: $scope.stakeholder.email
+        };
+        LoginService.createLogin(registrant).then(function(stakeholder) {
+          if(stakeholder.message) {
+            $scope.createStakeholderError = stakeholder.message;
+          } else {
+            $scope.createStakeholderError = "";
+            $scope.stakeholders.push(stakeholder);
+          }
+        });
+      } else {
+        $scope.createStakeholderError = "Current user was not found (bug)";
+      }
+    } else {
+      $scope.createStakeholderError = "Please provide name and email for stakeholder";
     }
   };
 

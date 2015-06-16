@@ -23,15 +23,16 @@
            ng-keyup="cancel($event)" ng-change="updateProcess('Changed process description')" id="process-description" rows="3">This project is aimed at…</textarea>
           </div>
         </form>
-         <p>{{currentProcess.description}}</p>
     </div>
     <div class="row">
         <form ng-if="facilitator" class="form">
           <div class="form-group">
             <label for="process-stakeholder">Please name the stakeholders of this process:</label>
-            <input type="text" id="process-stakeholder" ng-model="stakeholderName" class="form-control" autocomplete="result" placeholder="Stakeholder name"/>
+            <h3 class="label label-danger" ng-show="createStakeholderError">{{createStakeholderError}}</h3>
+            <input type="text" id="process-stakeholder" ng-model="stakeholder.name" class="form-control" placeholder="Stakeholder name"/>
+            <input type="text" id="process-stakeholder-email" ng-model="stakeholder.email" class="form-control" placeholder="Stakeholder email"/>
           </div>
-          <button type="submit" id="add-stakeholder-button" ng-show="stakeholderName" ng-click="addStakeholder(stakeholderName)" class="btn btn-default">Add stakeholder</button>
+          <button type="submit" id="add-stakeholder-button" ng-click="addStakeholder()" class="btn btn-default">Add stakeholder</button>
         </form>
     </div>
     <div class="row well" ng-if="facilitator" ng-repeat="stakeholder in stakeholders">
