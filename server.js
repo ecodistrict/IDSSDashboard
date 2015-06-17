@@ -334,5 +334,5 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
 
 });
 
-httpServer.listen(port);
+httpServer.listen(process.env.PORT || port);
 console.log('Express started on port ' + port);
