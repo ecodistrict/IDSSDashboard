@@ -52,15 +52,11 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
     });
 
     kpiModal.result.then(function (useKpi) {
-      if(!$scope.currentUser) {
-        // add copy of this KPI to process
-        useKpi = angular.copy(useKpi);
-        // make sure that the user id is the current user not the one that created the kpi
-        useKpi.userId = $scope.currentUser._id;
-        ProcessService.addKpi(angular.copy(useKpi));
-      } else {
-        alert('User was not loaded. Please try again');
-      }
+      // add copy of this KPI to the process
+      useKpi = angular.copy(useKpi);
+      // make sure that the user id is the current user not the one that created the kpi
+      useKpi.userId = process.userId;
+      ProcessService.addKpi(useKpi); 
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
     });
