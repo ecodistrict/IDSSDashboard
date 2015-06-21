@@ -42,14 +42,10 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
             // couldn't find a better way
             var width = $('#mcmsmv-container').width();
 
-            console.log(element);
-
             if(!mcmsmvData || !width) {
               return;
             }
 
-            console.log(width);
-            
             element.empty();
 
             var data = [];
@@ -237,10 +233,18 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
               return d.disabled ? 'n/a' : d.value + ' ' + d.unit;
             },
             function(d) {
-              return d.bad + ' ' + d.unit;
+              if(d.bad || d.bad === 0) {
+                return d.bad + ' ' + d.unit;
+              } else {
+                return 'Not set';
+              }
             },
             function(d) {
-              return d.excellent + ' ' + d.unit;
+              if(d.excellent || d.excellent === 0) {
+                return d.excellent + ' ' + d.unit;
+              } else {
+                return 'Not set';
+              }
             }
         ])
         .renderlet(function (table) {
@@ -268,10 +272,18 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
               return d.disabled ? 'n/a' : d.value + ' ' + d.unit;
             },
             function(d) {
-              return d.bad + ' ' + d.unit;
+              if(d.bad || d.bad === 0) {
+                return d.bad + ' ' + d.unit;
+              } else {
+                return 'Not set';
+              }
             },
             function(d) {
-              return d.excellent + ' ' + d.unit;
+              if(d.excellent || d.excellent === 0) {
+                return d.excellent + ' ' + d.unit;
+              } else {
+                return 'Not set';
+              }
             }
         ])
         // (optional) sort using the given field, :default = function(d){return d;}
