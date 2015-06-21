@@ -2,9 +2,11 @@
   <div class="row">
     <h3>Compare alternatives</h3>
   </div>
-  <mcmsmv data="mcmsmv"></mcmsmv>
   <div class="row">
-    <div ng-show="msg" class="alert alert-danger" role="alert"><pre stye>{{msg}}</pre></div>
+    <mcmsmv data="mcmsmv"></mcmsmv>
+  </div>
+  <div class="row">
+    <div ng-show="msg" class="alert alert-danger" role="alert"><pre>{{msg}}</pre></div>
     <button class="btn btn-info" ng-click="sendToMCMSMV()"><span class="glyphicon glyphicon-stats"></span> Send data to MCMSMV module </button>
   </div>
   <div class="row">
