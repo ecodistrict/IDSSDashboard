@@ -81,7 +81,7 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
                       value: kpiValue,
                       disabled: kpi.disabled,
                       kpiIndex: metadata[kpi.kpiId].index,
-                      unit: metadata[kpi.kpiId].unit,
+                      unit: metadata[kpi.kpiId].unit || 'score',
                       count: kpiCounter
                     });
                     kpiCounter++;
@@ -185,6 +185,9 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
         return d.value;
       });
 
+  function truncateString(str, length) {
+     return str.length > length ? str.substring(0, length - 3) + '...' : str;
+  }
 
   kpiChart.width(width * 0.4)
     .height(300)
@@ -194,27 +197,33 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
     .group(kpiGroup)
     .colors(d3.scale.category10())
     .label(function (d){
-       return d.key + ' ' + d.value;
+       return d.key + ' ' + Math.round(d.value * 100) / 100;
     })
-    // .title(function(d) {return d.kpiName;})
+    .title(function(d) {return d.key + ' ' + Math.round(d.value * 100) / 100;})
     .elasticX(true)
     .xAxis().ticks(4);
-
    
   stakeholderChart.width(width * 0.2)
     .height(300)
     .radius(width * 0.1)
     .innerRadius(20)
     .dimension(stakeholder)
-    .group(stakeholderGroup);
+    .group(stakeholderGroup)
+    .label(function (d){
+       return truncateString(d.data.key, 15);
+    })
+    .title(function(d) {return d.data.key + ' ' + Math.round(d.value * 100) / 100;});
 
   alternativesChart.width(width * 0.2)
     .height(300)
     .radius(width * 0.1)
     .innerRadius(20)
     .dimension(alternatives)
-    .group(alternativesGroup);
-    //.title(function(d){return d.value;});
+    .group(alternativesGroup)
+    .label(function (d){
+       return truncateString(d.data.key, 10);
+    })
+    .title(function(d) {return d.data.key + ' ' + Math.round(d.value * 100) / 100;});
 
     kpiTable
          .dimension(kpi)
