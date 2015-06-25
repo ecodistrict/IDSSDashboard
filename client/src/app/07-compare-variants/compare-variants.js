@@ -63,7 +63,7 @@ angular.module( 'idss-dashboard.compare-variants', [])
         // map on variant and kpi
         kpiValueMap[record.userId] = kpiValueMap[record.userId] || {};
         kpiValueMap[record.userId][record.variantId] = kpiValueMap[record.userId][record.variantId] || {};
-        kpiValueMap[record.userId][record.variantId][record.kpiAlias] = record.value;
+        kpiValueMap[record.userId][record.variantId][record.kpiAlias] = {value: record.value, disabled: record.disabled};
       });
 
       // create structure user/variant/kpi
@@ -77,6 +77,18 @@ angular.module( 'idss-dashboard.compare-variants', [])
           variants: [],
           kpiList: []
         };
+        // add kpi to stakeholder TODO: add weight
+        _.each(currentProcess.kpiList, function(kpi) {
+          stakeholderData.kpiList.push({
+            kpiName: kpi.name,
+            kpiDescription: kpi.description,
+            kpiId: kpi.kpiAlias,
+            bad: kpi.bad,
+            unit: kpi.unit,
+            excellent: kpi.excellent
+          });
+        });
+        
         // add to global data object
         mcmsmvData.stakeholders.push(stakeholderData);
         // add variants to variants list
@@ -94,32 +106,25 @@ angular.module( 'idss-dashboard.compare-variants', [])
           // add kpis to kpi list
           _.each(currentProcess.kpiList, function(kpi) {
 
-            var kpiValue;
+            var kpiValue, disabled;
 
             if(kpiValueMap[user._id] && kpiValueMap[user._id][variant._id] && (kpiValueMap[user._id][variant._id][kpi.kpiAlias] || kpiValueMap[user._id][variant._id][kpi.kpiAlias] === 0)) {
-              kpiValue = kpiValueMap[user._id][variant._id][kpi.kpiAlias];
+              kpiValue = kpiValueMap[user._id][variant._id][kpi.kpiAlias].value;
+              disabled = kpiValueMap[user._id][variant._id][kpi.kpiAlias].disabled;
             } else {
               // if this is undefined not even the facilitator has given a value to the kpi (no record has been found for variant)
-              kpiValue = kpiDefaultValueMap[variant._id][kpi.kpiAlias];
+              if(kpiDefaultValueMap[variant._id]) {
+                kpiValue = kpiDefaultValueMap[variant._id][kpi.kpiAlias];
+              }
             }
             // create kpi data
             var kpiData = {
               kpiId: kpi.kpiAlias,
               kpiValue: kpiValue,
-              disabled: kpi.disabled
+              disabled: disabled
             };
             // add to variant reference
             variantData.kpiList.push(kpiData);
-
-            // add kpi to stakeholder TODO: add weight
-            stakeholderData.kpiList.push({
-              kpiName: kpi.name,
-              kpiDescription: kpi.description,
-              kpiId: kpi.kpiAlias,
-              bad: kpi.bad,
-              unit: kpi.unit,
-              excellent: kpi.excellent
-            });
           });
         });
       });
