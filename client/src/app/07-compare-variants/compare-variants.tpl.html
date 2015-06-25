@@ -4,6 +4,9 @@
   </div>
   <div class="row">
     <mcmsmv data="mcmsmv"></mcmsmv>
+    <div ng-show="!mcmsmv" class="jumbotron">
+      <h1>Loading KPI values <span class="glyphicon glyphicon-refresh spin"></span></h1>
+    </div>
   </div>
   <div class="row">
     <div ng-show="msg" class="alert alert-danger" role="alert"><pre>{{msg}}</pre></div>
