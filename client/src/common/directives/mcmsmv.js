@@ -49,7 +49,8 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
             element.empty();
 
             var data = [];
-            var kpiCounter = 1;
+            var kpiRecordsCounter = 1;
+            var numKpis;
             var getMetadata = function(kpiList) {
               var metadata = {};
               _.each(kpiList, function(kpi, i) {
@@ -61,6 +62,8 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
             
             _.each(mcmsmvData.stakeholders, function(stakeholder) {
               var metadata = getMetadata(stakeholder.kpiList);
+              numKpis = stakeholder.kpiList.length;
+              console.log(numKpis);
                 _.each(stakeholder.variants, function(variant) {
                   _.each(variant.kpiList, function(kpi) {
                     // a value needs to be set
@@ -82,12 +85,16 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
                       disabled: kpi.disabled,
                       kpiIndex: metadata[kpi.kpiId].index,
                       unit: metadata[kpi.kpiId].unit || 'score',
-                      count: kpiCounter
+                      count: kpiRecordsCounter
                     });
-                    kpiCounter++;
+                    kpiRecordsCounter++;
                   });
                 });
             });
+  
+            var chartHeight = numKpis > 10 ? numKpis * 30 : 300;
+            console.log(numKpis);
+            console.log(chartHeight);
 
             element.append([
               // '<div class="col-xs-12">',
@@ -190,7 +197,7 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
   }
 
   kpiChart.width(width * 0.4)
-    .height(300)
+    .height(chartHeight)
     //.minWidth(0)
     //.margins({top: 5, left: 10, right: 10, bottom: 20})
     .dimension(kpi)
@@ -204,7 +211,7 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
     .xAxis().ticks(4);
    
   stakeholderChart.width(width * 0.2)
-    .height(300)
+    .height(chartHeight)
     .radius(width * 0.1)
     .innerRadius(20)
     .dimension(stakeholder)
@@ -215,7 +222,7 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
     .title(function(d) {return d.data.key + ' ' + Math.round(d.value * 100) / 100;});
 
   alternativesChart.width(width * 0.2)
-    .height(300)
+    .height(chartHeight)
     .radius(width * 0.1)
     .innerRadius(20)
     .dimension(alternatives)
