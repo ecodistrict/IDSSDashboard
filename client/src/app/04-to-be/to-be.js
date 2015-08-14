@@ -18,22 +18,59 @@ angular.module( 'idss-dashboard.to-be', [])
       authorizedRoles: ['Facilitator', 'Stakeholder']
     },
     resolve:{
+      currentProcess: ['ProcessService', function(ProcessService) {
+        return ProcessService.loadCurrentProcess().then(function(currentProcess) {
+          return currentProcess;
+        });
+      }],
       variants: ['VariantService', function(VariantService) {
-        var v = VariantService.getVariants();
-        if(v) {
-          return v;
-        } else {
-          return VariantService.loadVariants();
-        }
+        return VariantService.loadVariants().then(function(variants) {
+          return variants;
+        });
+      }],
+      currentUser: ['LoginService', function(LoginService) {
+        return LoginService.getCurrentUser().then(function(user) {
+          return user;
+        });
       }]
     }
   });
 }])
 
-.controller( 'ToBeController', ['$scope', '$timeout', '$sce', 'socket', '$state', 'variants', 'ModuleService', 'VariantService', '$modal', 'KpiService', function ToBeController( $scope, $timeout, $sce, socket, $state, variants, ModuleService, VariantService, $modal, KpiService ) {
+.controller( 'ToBeController', ['$scope', 'currentProcess', 'currentUser', 'variants', 'VariantService', '$modal', 'KpiService', 'LoginService', 
+  function ToBeController( $scope, currentProcess, currentUser, variants, VariantService, $modal, KpiService, LoginService ) {
 
     var toBeVariant = _.find(variants, function(v) {return v.type === 'to-be';});
     var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
+    $scope.currentUser = currentUser;
+
+    $scope.stakeholders = [];
+    
+    $scope.isFacilitator = currentUser.role === 'Facilitator';
+    if($scope.isFacilitator) {
+      currentUser.name = 'Facilitator, representing the group';
+      LoginService.getStakeholders().then(function(stakeholders) {
+        // add facilitator
+        stakeholders.push(currentUser);
+        $scope.stakeholders = stakeholders;
+      });
+    }
+
+    var init = function(userId) {
+      _.each(currentProcess.kpiList, function(kpi) {
+        KpiService.removeExtendedData(kpi); // in case data is already extended
+        kpi.loading = true;
+        kpi.status = 'initializing';
+        KpiService.getKpiRecord(toBeVariant._id, kpi.kpiAlias, userId).then(function(record) {
+          angular.extend(kpi, record); 
+          if(kpi.status === 'initializing' || kpi.status === 'processing') {
+            kpi.loading = true;
+          } else {
+            kpi.loading = false;
+          }
+        });
+      });
+    };
 
     if(asIsVariant) {
         // if first time - create the to be variant
@@ -43,27 +80,18 @@ angular.module( 'idss-dashboard.to-be', [])
             toBeVariant.name = 'To be';
             toBeVariant.type = 'to-be';
             toBeVariant.description = "The TO BE state defines the KPI ambitions for a connected user";
-            // to be input looks different so it has to be converted
-            _.each(toBeVariant.kpiList, function(toBeKpi) {
-                KpiService.generateToBeInput(angular.copy(toBeKpi), toBeKpi);
-            });
+            
             VariantService.createVariant(toBeVariant).then(function(newVariant) {
               toBeVariant = newVariant;
-              $scope.toBeVariant = KpiService.initOutputs(toBeVariant, asIsVariant);
               variants.push(toBeVariant);
+              init(currentUser._id);
             });
-        } else if(asIsVariant.kpiList.length !== toBeVariant.kpiList.length) {
-            VariantService.addOrRemoveKpis(asIsVariant, toBeVariant);
-            VariantService.saveVariant(toBeVariant).then(function(savedVariant) {
-              $scope.toBeVariant = KpiService.initOutputs(savedVariant, asIsVariant);
-            });
-
         } else {
-            $scope.toBeVariant = KpiService.initOutputs(toBeVariant, asIsVariant);
+            init(currentUser._id);
         }
     }
 
-  $scope.setScore = function(kpi) {
+  $scope.setAmbition = function(kpi) {
 
     var kpiModal, templateUrl, controller;
 
@@ -78,6 +106,7 @@ angular.module( 'idss-dashboard.to-be', [])
     kpiModal = $modal.open({
         templateUrl: templateUrl,
         controller: controller,
+        size: 'sm',
         resolve: {
           kpi: function() {
             return kpi;
@@ -86,19 +115,34 @@ angular.module( 'idss-dashboard.to-be', [])
       });
 
       kpiModal.result.then(function (configuredKpi) {
-        // update kpi in variant
-        VariantService.updateKpi(toBeVariant, configuredKpi);
-        // trigger update to kpi in scope
-        kpi.outputs = configuredKpi.outputs;
+        
+        kpi.value = configuredKpi.value;
+        console.log(configuredKpi, $scope.currentUser);
+        configuredKpi.userId = $scope.currentUser._id;
+        
+        KpiService.updateKpiRecord(configuredKpi);
       }, function () {
         console.log('Modal dismissed at: ' + new Date());
       });
 
   };
 
+  $scope.getStatus = function(kpi) {
+    if(kpi.value || kpi.value === 0) {
+      return 'success';
+    } else {
+      return 'warning';
+    } 
+  };
+
   // TODO: this is an indicator whether the KPI is ok or not 
   $scope.kpiIsConfigured = function(kpi) {
-    return kpi.inputSpecification;
+    return kpi.value || kpi.value === 0;
+  };
+
+  $scope.changeUser = function(user) {
+    $scope.currentUser = user;
+    init(user._id);
   };
 
 

@@ -11,7 +11,7 @@ ToBePage.prototype = Object.create({},
     },
     kpiAmbitions: {
       get: function() {
-        return element.all(by.repeater('kpi in toBeVariant.kpiList'));
+        return element.all(by.repeater('kpi in currentProcess.kpiList'));
       }
     },
     ambitionAtomicTestKpiButton: {

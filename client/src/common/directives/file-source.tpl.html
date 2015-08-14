@@ -28,12 +28,6 @@
                 <button id="fileupload-submit-button" type="button" class="btn btn-success btn-xs" ng-click="uploadFile(item)" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
                     <span class="glyphicon glyphicon-upload"></span> Upload
                 </button>
-                <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
-                    <span class="glyphicon glyphicon-ban-circle"></span> Cancel
-                </button>
-                <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
-                    <span class="glyphicon glyphicon-trash"></span> Remove
-                </button>
             </td>
         </tr>
     </tbody>

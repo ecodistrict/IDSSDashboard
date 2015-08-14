@@ -19,8 +19,8 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
           // For each small multiple…
           function bullet(g) {
             g.each(function(d, i) {
-              
-                var g = d3.select(this); // WTF?
+
+                var g = d3.select(this); 
 
                 var bad = ranges.call(this, d, i)[0];
                 var excellent = ranges.call(this, d, i)[1];
@@ -77,6 +77,8 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                   .attr("width", getMaxWidth)
                   .attr("height", height);
 
+             if(typeof d.measures[0] !== 'undefined') {
+
               // Update the measure rects.
               var measure = g.selectAll("rect.measure")
                   .data(measures);
@@ -102,6 +104,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                   .attr("fill", color)
                   .attr("y", height / 3);
 
+
               // Update the marker lines.
               var marker = g.selectAll("line.marker")
                   .data(markers);
@@ -123,6 +126,9 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                   .attr("x2", x1)
                   .attr("y1", height / 6)
                   .attr("y2", height * 5 / 6);
+
+              }
+
 
               // Update the tick groups.
               var tick = g.selectAll("g.tick")
@@ -269,32 +275,34 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
             var kpi = scope.kpi;
 
-            var render = function(output) {
+            var render = function() {
 
-                var bad = kpi.bad, excellent = kpi.excellent, value = output.value;
+              var width = $('#main').children('.container').width();
+              var bad = kpi.bad, excellent = kpi.excellent, value = kpi.value;
 
-                if(!value && value!==0) {
-                    return;
-                }
+              if(!width || width === 0) {
+                return; // skip rendering if width is zero
+              }
 
-                element.empty().attr('id', 'm-' + kpi.alias + '-aggregated-kpi');
+              var margin = {top: 5, right: 50, bottom: 20, left: 100};
+              width = width - margin.left - margin.right;
+              var height = 50 - margin.top - margin.bottom;
 
-                var margin = {top: 5, right: 50, bottom: 20, left: 120},
-                    width = 960 - margin.left - margin.right,
-                    height = 50 - margin.top - margin.bottom;
+                
+
+                element.empty().attr('id', 'm-' + kpi.kpiAlias + '-aggregated-kpi');
 
                 var chart = d3.bullet()
                     .width(width)
                     .height(height)
                     .duration(1000)
                     .tickFormat(function(d) {
-                        return d + ' ' + kpi.unit;
+                        return d;
                     });
 
 
                 var data = [{
                     title:"KPI value",
-                    subtitle:value + ' ' + kpi.unit,
                     ranges:[bad, excellent],
                     measures:[value],
                     markers:[value],
@@ -303,7 +311,8 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                     markerLabels:['Target Inventory']
                 }];
 
-                
+                data[0].subtitle = value || value === 0 ? value + ' ' + kpi.unit : 'No value is set';
+
                   var svg = d3.select(element[0]).selectAll("svg")
                       .data(data)
                     .enter().append("svg")
@@ -329,40 +338,10 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
             };
 
-            scope.$watchCollection('kpi.outputs', function(newOutputs, oldOutputs) {
-
-                // ignore first run, when undefined
-                if(newOutputs && newOutputs.length) {
-                    // if output changed
-                    if(oldOutputs && oldOutputs.length === newOutputs.length) {
-                        _.each(newOutputs, function(output, i) {
-                            if(output !== oldOutputs[i]) {
-                                if(output.type === 'kpi') {
-                                    render(output);
-                                }
-                            }
-                        });
-                    } else {
-                        // TODO: bad solution, fix this
-                        // if output was added
-                        _.each(newOutputs, function(output, i) {
-                            if(output.type === 'kpi') {
-                                render(output);
-                            }
-                        });
-
-                    }
-                }
+            scope.$watch('kpi.value', function(newValue, oldValue) {
+              // it needs to render to reset if undefined
+                render();
             });
-
-            if(scope.kpi.outputs) {
-                _.each(scope.kpi.outputs, function(output) {
-                    if(output.type === 'kpi') {
-                        render(output);
-                    }
-                });
-            }
-
 
 
         }

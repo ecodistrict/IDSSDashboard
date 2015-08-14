@@ -2,8 +2,7 @@ angular.module( 'idss-dashboard.analyse-problem', [
   'idss-dashboard.analyse-problem.manage-kpis',
   'idss-dashboard.analyse-problem.use-kpi',
   'idss-dashboard.analyse-problem.configure-kpi',
-  'idss-dashboard.analyse-problem.add-kpi',
-  'idss-dashboard.analyse-problem.kpi-input'
+  'idss-dashboard.analyse-problem.add-kpi'
 ])
 
 .config(['$stateProvider', function config( $stateProvider ) {
@@ -46,23 +45,44 @@ angular.module( 'idss-dashboard.analyse-problem', [
     });
   };
 
-  $scope.addStakeholder = function(name) {
-    if(currentUser) {
-      var registrant = {
-        firstName: name,
-        lastName: name,
-        facilitatorId: currentUser._id,
-        activeProcessId: currentUser.activeProcessId,
-        role: 'Stakeholder',
-        email: name + '@idssdashboard.com'
-      };
-      LoginService.createLogin(registrant).then(function(stakeholder) {
-        console.log(stakeholder);
-        LoginService.getStakeholders().then(function(stakeholders) {
-          $scope.stakeholders = stakeholders;
+  $scope.stakeholder = {
+    name: '',
+    email: ''
+  };
+
+  $scope.addStakeholder = function() {
+    if($scope.stakeholder.name && $scope.stakeholder.email) {
+      if(currentUser) {
+        var registrant = {
+          firstName: $scope.stakeholder.name,
+          lastName: $scope.stakeholder.name,
+          name: $scope.stakeholder.name,
+          facilitatorId: currentUser._id,
+          activeProcessId: currentUser.activeProcessId,
+          role: 'Stakeholder',
+          email: $scope.stakeholder.email
+        };
+        LoginService.createLogin(registrant).then(function(stakeholder) {
+          if(stakeholder.message) {
+            $scope.createStakeholderError = stakeholder.message;
+          } else {
+            $scope.createStakeholderError = "";
+            $scope.stakeholders.push(stakeholder);
+          }
         });
-      });
+      } else {
+        $scope.createStakeholderError = "Current user was not found (bug)";
+      }
+    } else {
+      $scope.createStakeholderError = "Please provide name and email for stakeholder";
     }
+  };
+
+  $scope.deleteStakeholder = function(stakeholder) {
+    LoginService.deleteStakeholder(stakeholder).then(function(deletedStakeholder) {
+      var index = _.indexOf($scope.stakeholders, stakeholder);
+      $scope.stakeholders.splice(index, 1);
+    });
   };
 
   $scope.loginStakeholder = function(stakeholder) {

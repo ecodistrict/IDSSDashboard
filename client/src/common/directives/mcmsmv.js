@@ -14,39 +14,43 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
         link: function(scope, element, attrs) {
 
           // get the window
-            var w = angular.element($window);
+            //var w = angular.element($window);
             // listen for the DOM ready to trigger the first render
-            w.ready(function() {
-              console.log(w.width());
-              width = w.width();
-              render(scope.data);
-            });
-            // listen on changes on window
-            w.bind('resize', function () {
-                scope.$apply();
-            });
-            // for rerender on windows resize
-            scope.getWindowWidth = function () {
-                return w.width();
-            };
-            // listen for changes in scope on window on resize
-            scope.$watch(scope.getWindowWidth, function (newWidth, oldWidth) {
-                if (newWidth !== oldWidth) {
-                  width = newWidth;
-                  render(scope.data);
-                }
-            });
+            // w.ready(function() {
+            //   console.log(w.width());
+            //   width = w.width();
+            //   render(scope.data);
+            // });
+            // // listen on changes on window
+            // w.bind('resize', function () {
+            //     scope.$apply();
+            // });
+            // // for rerender on windows resize
+            // scope.getWindowWidth = function () {
+            //     return w.width();
+            // };
+            // // listen for changes in scope on window on resize
+            // scope.$watch(scope.getWindowWidth, function (newWidth, oldWidth) {
+            //     if (newWidth !== oldWidth) {
+            //       width = newWidth;
+            //       render(scope.data);
+            //     }
+            // });
 
           function render(mcmsmvData) {
 
-            if(!mcmsmvData && width) {
+            // couldn't find a better way
+            var width = $('#mcmsmv-container').width();
+
+            if(!mcmsmvData || !width) {
               return;
             }
-            
+
             element.empty();
 
             var data = [];
-            var kpiCounter = 1;
+            var kpiRecordsCounter = 1;
+            var numKpis;
             var getMetadata = function(kpiList) {
               var metadata = {};
               _.each(kpiList, function(kpi, i) {
@@ -58,6 +62,8 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
             
             _.each(mcmsmvData.stakeholders, function(stakeholder) {
               var metadata = getMetadata(stakeholder.kpiList);
+              numKpis = stakeholder.kpiList.length;
+              console.log(numKpis);
                 _.each(stakeholder.variants, function(variant) {
                   _.each(variant.kpiList, function(kpi) {
                     // a value needs to be set
@@ -68,21 +74,27 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
                     }
                     data.push({
                       stakeholder: stakeholder.user.name,
+                      userId: stakeholder.user.id,
                       variantId: variant.variantId,
                       variantName: variant.name,
                       kpiName: metadata[kpi.kpiId].kpiName,
+                      kpiAlias: metadata[kpi.kpiId].kpiId,
                       bad: metadata[kpi.kpiId].bad,
                       excellent: metadata[kpi.kpiId].excellent,
                       value: kpiValue,
                       disabled: kpi.disabled,
                       kpiIndex: metadata[kpi.kpiId].index,
-                      unit: metadata[kpi.kpiId].unit,
-                      count: kpiCounter
+                      unit: metadata[kpi.kpiId].unit || 'score',
+                      count: kpiRecordsCounter
                     });
-                    kpiCounter++;
+                    kpiRecordsCounter++;
                   });
                 });
             });
+  
+            var chartHeight = numKpis > 10 ? numKpis * 30 : 300;
+            console.log(numKpis);
+            console.log(chartHeight);
 
             element.append([
               // '<div class="col-xs-12">',
@@ -180,36 +192,45 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
         return d.value;
       });
 
+  function truncateString(str, length) {
+     return str.length > length ? str.substring(0, length - 3) + '...' : str;
+  }
 
   kpiChart.width(width * 0.4)
-    .height(300)
+    .height(chartHeight)
     //.minWidth(0)
     //.margins({top: 5, left: 10, right: 10, bottom: 20})
     .dimension(kpi)
     .group(kpiGroup)
     .colors(d3.scale.category10())
     .label(function (d){
-       return d.key + ' ' + d.value;
+       return d.key + ' ' + Math.round(d.value * 100) / 100;
     })
-    // .title(function(d) {return d.kpiName;})
+    .title(function(d) {return d.key + ' ' + Math.round(d.value * 100) / 100;})
     .elasticX(true)
     .xAxis().ticks(4);
-
    
   stakeholderChart.width(width * 0.2)
-    .height(300)
+    .height(chartHeight)
     .radius(width * 0.1)
     .innerRadius(20)
     .dimension(stakeholder)
-    .group(stakeholderGroup);
+    .group(stakeholderGroup)
+    .label(function (d){
+       return truncateString(d.data.key, 15);
+    })
+    .title(function(d) {return d.data.key + ' ' + Math.round(d.value * 100) / 100;});
 
-    alternativesChart.width(width * 0.2)
-    .height(300)
+  alternativesChart.width(width * 0.2)
+    .height(chartHeight)
     .radius(width * 0.1)
     .innerRadius(20)
     .dimension(alternatives)
-    .group(alternativesGroup);
-    //.title(function(d){return d.value;});
+    .group(alternativesGroup)
+    .label(function (d){
+       return truncateString(d.data.key, 10);
+    })
+    .title(function(d) {return d.data.key + ' ' + Math.round(d.value * 100) / 100;});
 
     kpiTable
          .dimension(kpi)
@@ -219,7 +240,7 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
          .size(100) 
         .columns([
             function(d) {
-              return '<a href="#/variant-input/' + d.variantId + '">' + d.kpiName + '</a>';
+              return '<a href="#/kpi?variantId=' + d.variantId + '&kpiAlias=' + d.kpiAlias + '&back=compare-variants&userId=' + d.userId + '&stakeholder=' + d.stakeholder +'">' + d.kpiName + '</a>';
             },
             function(d) {
               return d.stakeholder;
@@ -228,10 +249,18 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
               return d.disabled ? 'n/a' : d.value + ' ' + d.unit;
             },
             function(d) {
-              return d.bad + ' ' + d.unit;
+              if(d.bad || d.bad === 0) {
+                return d.bad + ' ' + d.unit;
+              } else {
+                return 'Not set';
+              }
             },
             function(d) {
-              return d.excellent + ' ' + d.unit;
+              if(d.excellent || d.excellent === 0) {
+                return d.excellent + ' ' + d.unit;
+              } else {
+                return 'Not set';
+              }
             }
         ])
         .renderlet(function (table) {
@@ -250,7 +279,7 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
     //     // This code demonstrates generating the column header automatically based on the columns.
         .columns([
             function(d) {
-              return '<a href="#/variant-input/' + d.variantId + '">' + d.variantName + '</a>';
+              return '<a href="#/kpi?variantId=' + d.variantId + '&kpiAlias=' + d.kpiAlias + '&back=compare-variants&userId=' + d.userId + '&stakeholder=' + d.stakeholder +'">' + d.variantName + '</a>';
             },
             function(d) {
               return d.stakeholder;
@@ -259,10 +288,18 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
               return d.disabled ? 'n/a' : d.value + ' ' + d.unit;
             },
             function(d) {
-              return d.bad + ' ' + d.unit;
+              if(d.bad || d.bad === 0) {
+                return d.bad + ' ' + d.unit;
+              } else {
+                return 'Not set';
+              }
             },
             function(d) {
-              return d.excellent + ' ' + d.unit;
+              if(d.excellent || d.excellent === 0) {
+                return d.excellent + ' ' + d.unit;
+              } else {
+                return 'Not set';
+              }
             }
         ])
         // (optional) sort using the given field, :default = function(d){return d;}
@@ -286,11 +323,8 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
           //   return scope.render(scope.data);
           // });
 
-          // watch for width change on parent element
           scope.$watch('data', function(newData, oldData) {
-            if(newData !== oldData) {
-              return render(scope.data);
-            }
+            render(scope.data);
           });
 
         }

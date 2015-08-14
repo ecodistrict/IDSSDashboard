@@ -1,6 +1,6 @@
 angular.module('idss-dashboard')
 
-.factory('KpiService', ['$http', 'NotificationService', 'ProcessService', 'ModuleService', function ($http, NotificationService, ProcessService, ModuleService) {
+.factory('KpiService', ['$http', 'NotificationService', function ($http, NotificationService) {
 
     var loadKpis = function () {
         return $http
@@ -40,28 +40,28 @@ angular.module('idss-dashboard')
             });
     };
 
-    // input needs to be from as-is variant
-    var getBadKpiValue = function(settings) {
-        var bad = null;
-        if(settings.bad || settings.bad === 0) {
-            bad = settings.bad;
-        } else {
-            bad = 0; // qualitative KPI
-        }
-        return bad;
-    };
+    // // input needs to be from as-is variant
+    // var getBadKpiValue = function(settings) {
+    //     var bad = null;
+    //     if(settings.bad || settings.bad === 0) {
+    //         bad = settings.bad;
+    //     } else {
+    //         bad = 0; // qualitative KPI
+    //     }
+    //     return bad;
+    // };
 
-    // input needs to be from as-is variant
-    var getExcellentKpiValue = function(settings) {
-        var excellent = null;
-        if(settings.excellent || settings.existing === 0) {
-            excellent = settings.excellent;
-        } else {
-            excellent = 10; // qualitative KPI
-        }
-        return excellent;
+    // // input needs to be from as-is variant
+    // var getExcellentKpiValue = function(settings) {
+    //     var excellent = null;
+    //     if(settings.excellent || settings.existing === 0) {
+    //         excellent = settings.excellent;
+    //     } else {
+    //         excellent = 10; // qualitative KPI
+    //     }
+    //     return excellent;
 
-    };
+    // };
 
     var getResultKpiValue = function(kpi, cb) {
         if(kpi.qualitative) {
@@ -91,9 +91,8 @@ angular.module('idss-dashboard')
     };
 
     // This is the default configuration settings for qualitative KPI
-    // it is copied to as-is kpi when this kpi is used and during configuration it is used to generate input specification
-    var generateQualitativeKpiSettings = function(kpi) {
-        kpi.settings = [
+    var generateQualitativeKpiSettings = function() {
+        return [
             {
                 label: "Score 10. Excellent",
                 value: "Excellent",
@@ -152,277 +151,99 @@ angular.module('idss-dashboard')
         ];
     };
 
-    var generateQualitativeKpiInputSpecification = function(kpi) {
-        var settings = kpi.settings;
+    // var generateQuantitativeKpiSettings = function(kpi) {
 
-        scoreInputs = {
-            "kpiScore0": {
-              label: '0: ' + settings[10].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 10,
-              referenceValue: 0
-            },
-            "kpiScore1": {
-              label: '1: ' + settings[9].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 9,
-              referenceValue: 1
-            },
-            "kpiScore2": {
-              label: '2: ' + settings[8].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 8,
-              referenceValue: 2
-            },
-            "kpiScore3": {
-              label: '3: ' + settings[7].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 7,
-              referenceValue: 3
-            },
-            "kpiScore4": {
-              label: '4: ' + settings[6].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 6,
-              referenceValue: 4
-            },
-            "kpiScore5": {
-              label: '5: ' + settings[5].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 5,
-              referenceValue: 5
-            },
-            "kpiScore6": {
-              label: '6: ' + settings[4].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 4,
-              referenceValue: 6
-            },
-            "kpiScore7": {
-              label: '7: ' + settings[3].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 3,
-              referenceValue: 7
-            },
-            "kpiScore8": {
-              label: '8: ' + settings[2].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 2,
-              referenceValue: 8
-            },
-            "kpiScore9": {
-              label: '9: ' + settings[1].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 1,
-              referenceValue: 9
-            },
-            "kpiScore10": {
-              label: '10: ' + settings[0].value,
-              type: 'radio',
-              name: kpi.alias,
-              order: 0,
-              referenceValue: 10
-            }
-        };
-
-        kpi.inputSpecification = {
-            kpiScores: {
-                order: 0,
-                type: 'inputGroup',
-                label: 'Select a score',
-                info: 'Info',
-                inputs: scoreInputs
-            }
-        };
-    };
-
-    var generateQuantitativeKpiSettings = function(kpi) {
-
-        kpi.settings = {
-            bad: null,
-            excellent: null
-        };
-    };
-
-    // var generateQualitativeKpiInputSettings = function(kpi, scoreInputs) {
-
-    //     // set given scores or default
-    //     scoreInputs = scoreInputs || {
-    //         "kpiScore1": {
-    //           label: "Bad",
-    //           type: 'radio',
-    //           name: kpi.alias,
-    //           order: 1,
-    //           referenceValue: 1
-    //         },
-    //         "kpiScore6": {
-    //           label: "Sufficient",
-    //           type: 'radio',
-    //           name: kpi.alias,
-    //           order: 6,
-    //           referenceValue: 6
-    //         },
-    //         "kpiScore10": {
-    //           label: "Excellent",
-    //           type: 'radio',
-    //           name: kpi.alias,
-    //           order: 10,
-    //           referenceValue: 10
-    //         }
+    //     kpi.settings = {
+    //         bad: null,
+    //         excellent: null
     //     };
-
-    //     kpi.settings["kpiScores"] = {
-    //             order: 0,
-    //             type: 'inputGroup',
-    //             label: 'This is a preview, edit the options by pressing "Edit KPI values" above',
-    //             info: 'Info',
-    //             inputs: scoreInputs
-    //     };
-
     // };
 
-    var generatePriorityKpiInput = function(inputSpecification, priorityValue) {
+    // var generatePriorityKpiInput = function(inputSpecification, priorityValue) {
 
-        priorityValue = priorityValue || 3;
+    //     priorityValue = priorityValue || 3;
 
-        inputSpecification["priorityLabel"] = {
-            order: 1,
-            type: 'inputGroup',
-            label: 'Select how important this KPI is for you',
-            info: 'Select a value between 1 - 5 where 1 is very important and 5 is not very important',
-            inputs: {
-                "priorityValue": {
-                    type: 'number',
-                    label: 'Priority 1 - 5',
-                    value: priorityValue,
-                    min: 1,
-                    max: 5
-                }
-            }
-        };
-    };
+    //     inputSpecification["priorityLabel"] = {
+    //         order: 1,
+    //         type: 'inputGroup',
+    //         label: 'Select how important this KPI is for you',
+    //         info: 'Select a value between 1 - 5 where 1 is very important and 5 is not very important',
+    //         inputs: {
+    //             "priorityValue": {
+    //                 type: 'number',
+    //                 label: 'Priority 1 - 5',
+    //                 value: priorityValue,
+    //                 min: 1,
+    //                 max: 5
+    //             }
+    //         }
+    //     };
+    // };
 
-    var generateQuantitativeKpiInputSpecification = function(kpi) {
+    // var generateToBeInput = function(asIsKpi, toBeKpi) {
+    //     var bad;
+    //     var excellent;
+    //     var asIsKpiValue;
 
-        var settings = kpi.settings;
+    //     // qualitative can be copied straight from the reference on server when saving
+    //     if(!toBeKpi.qualitative) {
+    //         if(asIsKpi && asIsKpi.inputSpecification && asIsKpi.inputSpecification.kpiValueInputGroup) {
+    //             asIsKpiValue = asIsKpi.inputSpecification.kpiValueInputGroup.inputs.kpiValue.value;
+    //         }
+    //         bad = getBadKpiValue(asIsKpi.settings);
+    //         excellent = getExcellentKpiValue(asIsKpi.settings);
+    //         toBeKpi.inputSpecification = {
+    //             "kpiValueInputGroup": {
+    //                 type: 'inputGroup',
+    //                 order: 0,
+    //                 label: 'Select you ambition value for this KPI',
+    //                 info: 'Select a value between ' +  bad + asIsKpi.unit + '(bad) and ' + excellent + asIsKpi.unit + ' (excellent)',
+    //                 inputs: {
+    //                     "kpiValue": {
+    //                         type: 'number',
+    //                         label: 'Ambition in ' + asIsKpi.unit,
+    //                         min: bad < excellent ? bad : excellent,
+    //                         unit: asIsKpi.unit,
+    //                         max: excellent > bad ? excellent : bad,
+    //                         value: asIsKpiValue
+    //                     }
+    //                 }
+    //             }
+    //         };
+    //     } else {
+    //         toBeKpi.inputSpecification = angular.copy(asIsKpi.inputSpecification);
+    //     }
+    // };
+
+    // // for manual input as module results
+    // // inputspec is overwritten so any code using this function must save a copy of the old spec and set it back after output has been generated
+    // var generateManualInput = function(asIsKpi, moduleKpi) {
         
-        kpi.inputSpecification = {
-            kpiScores: {
-                order: 0,
-                type: 'inputGroup',
-                label: 'Limits - define the scores',
-                info: 'Info about scores',
-                inputs: {
-                    "kpiScoreExcellent": {
-                        label: 'Excellent',
-                        type: 'number',
-                        unit: kpi.unit,
-                        value: settings.excellent
-                    },
-                    "kpiScoreBad": {
-                        label: 'Bad',
-                        type: 'number',
-                        unit: kpi.unit,
-                        value: settings.bad
-                    }
-                }
-            }
-        };
-    };
-
-    var generateToBeInput = function(asIsKpi, toBeKpi) {
-        var bad;
-        var excellent;
-        var asIsKpiValue;
-
-        // qualitative can be copied straight from the reference on server when saving
-        if(!toBeKpi.qualitative) {
-            if(asIsKpi && asIsKpi.inputSpecification && asIsKpi.inputSpecification.kpiValueInputGroup) {
-                asIsKpiValue = asIsKpi.inputSpecification.kpiValueInputGroup.inputs.kpiValue.value;
-            }
-            bad = getBadKpiValue(asIsKpi.settings);
-            excellent = getExcellentKpiValue(asIsKpi.settings);
-            toBeKpi.inputSpecification = {
-                "kpiValueInputGroup": {
-                    type: 'inputGroup',
-                    order: 0,
-                    label: 'Select you ambition value for this KPI',
-                    info: 'Select a value between ' +  bad + asIsKpi.unit + '(bad) and ' + excellent + asIsKpi.unit + ' (excellent)',
-                    inputs: {
-                        "kpiValue": {
-                            type: 'number',
-                            label: 'Ambition in ' + asIsKpi.unit,
-                            min: bad < excellent ? bad : excellent,
-                            unit: asIsKpi.unit,
-                            max: excellent > bad ? excellent : bad,
-                            value: asIsKpiValue
-                        }
-                    }
-                }
-            };
-        } else {
-            toBeKpi.inputSpecification = angular.copy(asIsKpi.inputSpecification);
-        }
-    };
-
-    // for manual input as module results
-    // inputspec is overwritten so any code using this function must save a copy of the old spec and set it back after output has been generated
-    var generateManualInput = function(asIsKpi, moduleKpi) {
-        
-        var bad;
-        var excellent;
-        // qualitative can be copied straight from the reference on server when saving
-        if(!moduleKpi.qualitative) {
-            bad = getBadKpiValue(asIsKpi.settings);
-            excellent = getExcellentKpiValue(asIsKpi.settings);
-            moduleKpi.inputSpecification = {
-                "kpiValueInputGroup": {
-                    type: 'inputGroup',
-                    order: 0,
-                    label: 'Select manual result for this module',
-                    info: 'Select a value between ' +  bad + asIsKpi.unit + '(bad) and ' + excellent + asIsKpi.unit + ' (excellent)',
-                    inputs: {
-                        "kpiValue": {
-                            type: 'number',
-                            label: 'Value in ' + asIsKpi.unit,
-                            min: bad < excellent ? bad : excellent,
-                            unit: asIsKpi.unit,
-                            max: excellent > bad ? excellent : bad
-                        }
-                    }
-                }
-            };
-        }
-    };
-
-    var copyQualitativeKpiInputFromSettings = function(copyToKpi, asIsKpi) {
-        var scores, existingScore;
-        // check if value already is set on kpi
-        if(copyToKpi.inputSpecification && copyToKpi.inputSpecification.kpiScores) {
-            existingScore = copyToKpi.inputSpecification.kpiScores.inputs.kpiScore1.value;// all values are the same - the selected value
-        }
-        // TODO: find a nicer way to deep copy this..
-        copyToKpi.inputSpecification = copyToKpi.inputSpecification || {};
-        copyToKpi.inputSpecification.kpiScores = angular.copy(asIsKpi.inputSpecification.kpiScores);
-        copyToKpi.inputSpecification.kpiScores.inputs = angular.copy(asIsKpi.inputSpecification.kpiScores.inputs);
-        scores = copyToKpi.inputSpecification.kpiScores.inputs;
-        for(var i in scores) {
-            if(scores.hasOwnProperty(i)) {
-                scores[i] = angular.copy(scores[i]);
-                scores[i].value = existingScore;
-            }
-        }
-    };
+    //     var bad;
+    //     var excellent;
+    //     // qualitative can be copied straight from the reference on server when saving
+    //     if(!moduleKpi.qualitative) {
+    //         bad = getBadKpiValue(asIsKpi.settings);
+    //         excellent = getExcellentKpiValue(asIsKpi.settings);
+    //         moduleKpi.inputSpecification = {
+    //             "kpiValueInputGroup": {
+    //                 type: 'inputGroup',
+    //                 order: 0,
+    //                 label: 'Select manual result for this module',
+    //                 info: 'Select a value between ' +  bad + asIsKpi.unit + '(bad) and ' + excellent + asIsKpi.unit + ' (excellent)',
+    //                 inputs: {
+    //                     "kpiValue": {
+    //                         type: 'number',
+    //                         label: 'Value in ' + asIsKpi.unit,
+    //                         min: bad < excellent ? bad : excellent,
+    //                         unit: asIsKpi.unit,
+    //                         max: excellent > bad ? excellent : bad
+    //                     }
+    //                 }
+    //             }
+    //         };
+    //     }
+    // };
 
     var generateQualitativeKpiOutput = function(inputSpecification) {
 
@@ -471,96 +292,100 @@ angular.module('idss-dashboard')
         return outputs;
     };
 
-    // set outputs on the kpi
-    var initOutputs = function(currentVariant, asIsVariant, kpiMapOutputs) {
-        _.each(currentVariant.kpiList, function(kpi) {
-          var asIsKpi = _.find(asIsVariant.kpiList, function(k) { return k.alias === kpi.alias;});
-          if(asIsKpi) {
-              kpi.bad = getBadKpiValue(asIsKpi.settings);
-              kpi.excellent = getExcellentKpiValue(asIsKpi.settings);
-              kpi.unit = kpi.unit || 'score';
-              kpi.status = 'loading';
-              kpi.outputs = null; // manual output can exist (saved or cached), to avoid extra rendering wait for init of outputs below
-              kpi.loading = true;
-              
-              if(kpi.qualitative) {
-                kpi.moduleName = 'Qualitative KPI';
-                // returns null if score was not given to this kpi
-                kpi.outputs = generateQualitativeKpiOutput(kpi.inputSpecification);
-                kpi.status = kpi.outputs ? 'success' : 'unprocessed';
-                kpi.loading = false;
+    var getKpiRecord = function(variantId, kpiAlias, userId) {
 
-              } else {
-                if(currentVariant.type === 'to-be') {
-                    kpi.moduleName = kpi.selectedModule.name || 'Ambition';
-                    if(kpi.inputSpecification.kpiValueInputGroup) {
-                        kpi.outputs = generateQuantitativeKpiOutput(kpi.inputSpecification.kpiValueInputGroup.inputs.kpiValue);
-                    }
-                    kpi.status = kpi.outputs ? 'success' : 'unprocessed';
-                    kpi.loading = false;
-                } else if(kpi.selectedModule.id && !kpi.manual) {
-                    // try to fetch a module output if a module has been selected
-                    // if manual has been set this is prioritized, a kpi must be recalculated to override this
-                  kpi.moduleName = kpi.selectedModule.name;
-                  kpi.moduleId = kpi.selectedModule.id;
-                  ModuleService.getModuleOutput(currentVariant._id, kpi.selectedModule.id, kpi.alias).then(function(output) {
-                      kpi.status =  output.status; 
-                      if(kpi.status === 'initializing' || kpi.status === 'processing') {
-                        kpi.loading = true;
-                      } else {
-                        kpi.loading = false;
-                      }
+        var uri = userId ? 'kpirecords/' + variantId + '/' + kpiAlias + '/' + userId : 'kpirecords/' + variantId + '/' + kpiAlias + '/';
 
-                      _.each(output.outputs, function(o) {
-                        o.alias = kpi.alias;
-                        o.kpiName = kpi.name;
-                        o.kpiBad = kpi.bad;
-                        o.kpiExcellent = kpi.excellent;
-                        o.kpiUnit = kpi.unit;
-                        o.moduleId = kpi.moduleId;
-                        if(o.type === 'geojson' && kpiMapOutputs) {
-                          // TODO: update any existing map output, use id?
-                          kpiMapOutputs.push(o);
+        return $http
+            .get(uri)
+            .error(function(data, status) {
+                var label = 'Error when loading outputs';
+                NotificationService.createErrorFlash(label);
+            })
+            .then(function (res) {
+                var records = res.data;
+
+                if(!records || records.length === 0) {
+                    records = [
+                        {
+                            alias: kpiAlias,
+                            variantId: variantId,
+                            status: 'unprocessed'
                         }
-                      });
-
-                      kpi.outputs = output.outputs; // listen on this to trigger rendering
-                  });
-                } else {
-                  kpi.moduleName = kpi.selectedModule.name || 'Manual input (no module selected)';
-                  // try to set any manual given values, null if not found
-                  if(kpi.inputSpecification && kpi.inputSpecification.kpiValueInputGroup) {
-                      kpi.outputs = generateQuantitativeKpiOutput(kpi.inputSpecification.kpiValueInputGroup.inputs.kpiValue);
-                  }
-                  kpi.status = kpi.outputs ? 'success' : 'unprocessed';
-                  kpi.loading = false;
-                }
-              }
-          } else {
-            console.warn('WARNING: As is version of KPI did not exist');
-          }
-        });
-        return currentVariant;
+                    ];
+                } else if(records.length > 1) {
+                    var label = 'Several records exists';
+                    NotificationService.createErrorFlash(label);
+                    console.log(label);
+                } 
+                return records[0];
+            });
     };
-   
+
+    var updateKpiRecord = function(kpiToUpdate) {
+        return $http
+            .put('kpirecords', kpiToUpdate)
+            .error(function(status, err) {
+                var label = 'Error when saving kpi';
+                NotificationService.createErrorStatus(label);
+            })
+            .then(function (res) {
+                var savedKpiRecord = res.data;
+                var label = 'Kpi was saved';
+                NotificationService.createSuccessStatus(label);
+                return savedKpiRecord;
+            });
+    };
+
+    var removeExtendedData = function(kpi) {
+        delete kpi._id;
+        delete kpi.value;
+        delete kpi.disabled;
+    };
+
+    var getAllKpiRecords = function() {
+        return $http
+            .get('kpirecords')
+            .error(function(data, status) {
+                var label = 'Error when loading records';
+                NotificationService.createErrorFlash(label);
+            })
+            .then(function (res) {
+                var records = res.data;
+                return records;
+            });
+    };
+
+    var deleteKpiRecords = function(kpi) {
+        return $http
+            .delete('kpirecords/byKpiAlias/' + kpi.kpiAlias)
+            .error(function(data, status) {
+                var label = 'Error when deleting KPI records';
+                NotificationService.createErrorFlash(label);
+            })
+            .then(function (res) {
+                var kpi = res.data;
+                var label = 'KPI records was successfully deleted';
+                NotificationService.createSuccessFlash(label);
+                return kpi;
+            });
+    };
+
     return {
         loadKpis: loadKpis,
         createKpi: createKpi,
         deleteKpi: deleteKpi,
-        getBadKpiValue: getBadKpiValue,
-        getExcellentKpiValue: getExcellentKpiValue,
-        getResultKpiValue: getResultKpiValue,
+        getKpiRecord: getKpiRecord,
+        updateKpiRecord: updateKpiRecord,
+        removeExtendedData: removeExtendedData,
+        getAllKpiRecords: getAllKpiRecords,
         generateQualitativeKpiOutput: generateQualitativeKpiOutput,
         generateQuantitativeKpiOutput: generateQuantitativeKpiOutput,
-        //generateQualitativeKpiInputSettings: generateQualitativeKpiInputSettings,
-        generateQualitativeKpiInputSpecification: generateQualitativeKpiInputSpecification,
         generateQualitativeKpiSettings: generateQualitativeKpiSettings,
-        generateQuantitativeKpiInputSpecification: generateQuantitativeKpiInputSpecification,
-        generateQuantitativeKpiSettings: generateQuantitativeKpiSettings,
-        generateToBeInput: generateToBeInput,
-        generateManualInput: generateManualInput,
-        generateSettings: generateSettings,
-        copyQualitativeKpiInputFromSettings: copyQualitativeKpiInputFromSettings,
-        initOutputs: initOutputs
+        deleteKpiRecords: deleteKpiRecords,
+        //generateQuantitativeKpiSettings: generateQuantitativeKpiSettings,
+        //generateToBeInput: generateToBeInput,
+        //generateManualInput: generateManualInput,
+        generateSettings: generateSettings
     };
 }]);

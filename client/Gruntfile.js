@@ -277,7 +277,7 @@ module.exports = function ( grunt ) {
         protractor: {
           options: {
             keepAlive: true,
-            configFile: "protractor.rotterdam.conf.js"
+            configFile: "protractor.conf.js"
           },
           run: {}
         }

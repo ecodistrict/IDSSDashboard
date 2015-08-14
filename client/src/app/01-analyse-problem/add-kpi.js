@@ -4,32 +4,15 @@ angular.module( 'idss-dashboard.analyse-problem.add-kpi', [])
 
     $scope.kpi = {
       official: false,
-      inputSpecification: {},
-      settings: {},
       qualitative: false
     };
 
     var generateInputs = function() {
         var k = $scope.kpi;
         // this is used to set unique name to input radio group, the alias is ultimately set on server but they don't necessary need to be the same
-        k.alias = k.name.toLowerCase().split(' ').join('-');
+        k.kpiAlias = k.name.toLowerCase().split(' ').join('-');
+        k.unit = k.unit || 'score';
 
-        // TODO: this generates priority settings, this is removed for now - priority should be remade
-        //KpiService.generateSettings(k);
-
-      
-      if(k.qualitative) {
-
-        // TODO: refactor out this one..
-        //KpiService.generateQualitativeKpiInputSettings(k);
-        // the new one:
-        KpiService.generateQualitativeKpiSettings(k);
-
-      } else {
-
-        KpiService.generateQuantitativeKpiSettings(k);
-
-      }
     };
 
     $scope.cancel = function () {
@@ -39,7 +22,7 @@ angular.module( 'idss-dashboard.analyse-problem.add-kpi', [])
     $scope.ok = function() {
         // TODO: validation - check if name
         generateInputs();
-        $modalInstance.close($scope.kpi);
+        $modalInstance.close(angular.copy($scope.kpi));
     };
 
 }]);

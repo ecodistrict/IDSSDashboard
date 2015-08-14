@@ -10,10 +10,7 @@ angular.module('idss-dashboard').directive('kpiInput', ['$compile', 'ModuleServi
         restrict: 'E',
         scope: {
             inputs: '=',
-            process: '=', // used by some inputs
-            kpialias: '=', 
-            variantid: '=',
-            moduleid: '=' 
+            process: '='
         },
         link: function ( scope, element, attrs ) {
 
@@ -42,42 +39,20 @@ angular.module('idss-dashboard').directive('kpiInput', ['$compile', 'ModuleServi
 
             };
 
-            scope.saveInput = function(input) {
-                // TODO: delete this if not necessary, uncommented on trial
-
-                // console.log(scope);
-                // console.log(input);
-                // var key = input.key;
-                // var inputWrapper = {};
-                // inputWrapper[key] = input;
-                // if(scope.moduleid && scope.kpialias && scope.inputs) {
-                //     ModuleService.saveModuleInput(scope.variantid, {
-                //         moduleId: scope.moduleid, 
-                //         kpiId: scope.kpialias,
-                //         input: inputWrapper
-                //     });
-                // }
-            };
-
             // since it's not easy to store a radio input on the form
             // let the radio value be put (duplicated) on every radio button option..
             // TODO: find a nicer solution, wrap radio inputs in a parent object with name and selected value
             scope.setRadioInput = function(input) {
-                console.log(input);
                 for(var i in scope.inputs) {
                     if(scope.inputs.hasOwnProperty(i)) {
                         scope.inputs[i].value = input.referenceValue;
                     }
                 }
-                console.log(scope.inputs);
             };
 
-            scope.$watch('inputs', function(newInputs, oldInputs) {
-                console.log(newInputs, oldInputs);
-                if(newInputs) {
-                    render();
-                }
-            });
+            if(scope.inputs) {
+                render();
+            }
         }
     };
 

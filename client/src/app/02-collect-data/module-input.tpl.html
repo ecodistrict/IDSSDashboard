@@ -4,7 +4,8 @@
     <p>Input required by module {{kpi.moduleName}}</p>
 </div>
 <div class="modal-body">
-    <kpi-input inputs="module.inputSpecification" kpialias="kpi.alias" moduleid="kpi.moduleId" variantid="currentVariant._id" process="currentProcess"></kpi-input>
+	<div class="panel info" ng-show="message">{{message}} <span ng-show="loading" class="glyphicon glyphicon-refresh spin"></span></div>
+    <kpi-input inputs="kpi.inputSpecification" process="process"></kpi-input>
 </div>
 <div class="modal-footer">
     <a class="btn btn-sm btn-warning" ng-click="cancel()">Cancel</a>

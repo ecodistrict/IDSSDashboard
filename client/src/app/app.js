@@ -24,7 +24,8 @@ angular.module( 'idss-dashboard', [
   'idss-dashboard.assess-variants',
   'idss-dashboard.compare-variants',
   'idss-dashboard.qualitative-kpi-input',
-  'idss-dashboard.quantitative-kpi-input'
+  'idss-dashboard.quantitative-kpi-input',
+  'idss-dashboard.kpi'
 ])
 
 .constant('AUTH_EVENTS', {
@@ -57,9 +58,10 @@ angular.module( 'idss-dashboard', [
 
       // load current process
       ProcessService.loadCurrentProcess().then(function(currentProcess) {
-        if(currentProcess) {
-          $scope.currentProcess = currentProcess;
-        } 
+        $scope.currentProcess = currentProcess;
+        VariantService.loadVariants().then(function(variants) {
+          $scope.variants = variants;
+        });
       });
 
       socket.emit('getModules', {kpiList: []});
@@ -72,17 +74,20 @@ angular.module( 'idss-dashboard', [
       });
 
       // should this be a global listener?
-      socket.on('selectModule', function(modelInput) {
-        console.log('module input spec was added to dashboard server: ' + modelInput);
-        //VariantService.addModuleInputs(modelInput);
+      socket.on('selectModule', function(moduleInput) {
+        console.log('module input spec was added to dashboard server: ', moduleInput);
+        // needs to be added so that dashboard does not needs to be reloaded
+        ProcessService.addModuleInputSpecification(moduleInput);
       });
 
       socket.on('frameworkError', function(err) {
         console.log('Error from server: ' + err);
+        messageObject = JSON.parse(err);
+        var label = messageObject.message;
+        NotificationService.createErrorFlash(label);
       });
 
       socket.on('frameworkActivity', function(messageObject) {
-        console.log(messageObject);
         messageObject = JSON.parse(messageObject);
         var label = messageObject.message;
         console.log(label);
