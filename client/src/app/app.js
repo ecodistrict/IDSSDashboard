@@ -25,6 +25,7 @@ angular.module( 'idss-dashboard', [
   'idss-dashboard.compare-variants',
   'idss-dashboard.qualitative-kpi-input',
   'idss-dashboard.quantitative-kpi-input',
+  'idss-dashboard.kpi-weight',
   'idss-dashboard.kpi'
 ])
 

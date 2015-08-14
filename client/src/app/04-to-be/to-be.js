@@ -61,6 +61,7 @@ angular.module( 'idss-dashboard.to-be', [])
         KpiService.removeExtendedData(kpi); // in case data is already extended
         kpi.loading = true;
         kpi.status = 'initializing';
+        kpi.weight = 3; // default weight if kpi record does not exist
         KpiService.getKpiRecord(toBeVariant._id, kpi.kpiAlias, userId).then(function(record) {
           angular.extend(kpi, record); 
           if(kpi.status === 'initializing' || kpi.status === 'processing') {
@@ -117,6 +118,37 @@ angular.module( 'idss-dashboard.to-be', [])
       kpiModal.result.then(function (configuredKpi) {
         
         kpi.value = configuredKpi.value;
+        console.log(configuredKpi, $scope.currentUser);
+        configuredKpi.userId = $scope.currentUser._id;
+        
+        KpiService.updateKpiRecord(configuredKpi);
+      }, function () {
+        console.log('Modal dismissed at: ' + new Date());
+      });
+
+  };
+
+  $scope.setWeight = function(kpi) {
+
+    var kpiModal, 
+        templateUrl = 'kpi-weight/kpi-weight.tpl.html', 
+        controller = 'KpiWeightController';
+   
+
+    kpiModal = $modal.open({
+        templateUrl: templateUrl,
+        controller: controller,
+        size: 'sm',
+        resolve: {
+          kpi: function() {
+            return kpi;
+          }
+        }
+      });
+
+      kpiModal.result.then(function (configuredKpi) {
+        
+        kpi.weight = configuredKpi.weight;
         console.log(configuredKpi, $scope.currentUser);
         configuredKpi.userId = $scope.currentUser._id;
         
