@@ -87,7 +87,6 @@ angular.module('idss-dashboard').directive('kpiWeight', ['$compile', '$timeout',
       that.isRendered = isRendered;
       
       function render(newValue) {
-        console.log(config);
         svg = d3.select(container)
           .append('svg:svg')
             .attr('class', 'gauge')
