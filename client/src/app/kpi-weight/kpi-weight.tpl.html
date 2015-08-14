@@ -8,11 +8,11 @@
         {{validationError}}
     </div>
     <div class="form-group">
-      <label for="weight" class="col-sm-3 control-label">KPI Value <i ng-show="kpi.info" class="glyphicon glyphicon-question-sign" data-container="body" data-toggle="popover" data-placement="top" data-content="{{kpi.info}}" popover></i></label>
+      <label for="weight" class="col-sm-3 control-label">KPI Weight <i ng-show="kpi.info" class="glyphicon glyphicon-question-sign" data-container="body" data-toggle="popover" data-placement="top" data-content="{{kpi.info}}" popover></i></label>
       <div class="col-sm-9">
         <div class="input-group">
             <input ng-model="kpi.weight" ng-change="validate()" required id="weight" class="form-control text-right" type="number">
-            <div class="input-group-addon">(1: not important, 5: very important)</div>
+            <div class="input-group-addon">1: not important - 5: very important</div>
         </div>
       </div>
     </div>

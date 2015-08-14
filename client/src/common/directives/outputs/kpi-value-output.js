@@ -284,11 +284,9 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                 return; // skip rendering if width is zero
               }
 
-              var margin = {top: 5, right: 50, bottom: 20, left: 100};
+              var margin = {top: 15, right: 150, bottom: 15, left: 100};
               width = width - margin.left - margin.right;
               var height = 50 - margin.top - margin.bottom;
-
-                
 
                 element.empty().attr('id', 'm-' + kpi.kpiAlias + '-aggregated-kpi');
 
@@ -299,7 +297,6 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                     .tickFormat(function(d) {
                         return d;
                     });
-
 
                 var data = [{
                     title:"KPI value",
@@ -317,7 +314,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                       .data(data)
                     .enter().append("svg")
                       .attr("class", "bullet")
-                      .attr("width", width + margin.left + margin.right)
+                      .attr("width", width)
                       .attr("height", height + margin.top + margin.bottom)
                     .append("g")
                       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")

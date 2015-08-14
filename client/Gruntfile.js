@@ -44,9 +44,7 @@ module.exports = function ( grunt ) {
                 '<%= vendor_dir %>/angular-flash/dist/angular-flash.js'
             ],
             stylesheets: [
-                '<%= vendor_dir %>/dcjs/dc.css',
-                '<%= vendor_dir %>/nvd3/build/nv.d3.css'
-
+                '<%= vendor_dir %>/dcjs/dc.css'
             ],  
             assets: [
                 '<%= vendor_dir %>/bootstrap/dist/fonts/glyphicons-halflings-regular.eot',
