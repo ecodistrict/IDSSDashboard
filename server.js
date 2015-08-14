@@ -46,6 +46,17 @@ var httpServer = http.createServer(app);
 
 var io = require('socket.io').listen(httpServer, { log: false });
 
+// ***** STATIC ******* //
+
+var staticUrl = '/static';
+app.use(staticUrl, express.static(distFolder));
+app.use(staticUrl, express.static('./data'));
+app.use('/export', express.static('./export'));
+app.use(staticUrl, function(req, res, next) {
+  res.send(404);
+});
+
+
 // middleware
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -101,16 +112,6 @@ passport.deserializeUser(function(email, done) {
     done(err, user);
   });
 
-});
-
-// ***** STATIC ******* //
-
-var staticUrl = '/static';
-app.use(staticUrl, express.static(distFolder));
-app.use(staticUrl, express.static('./data'));
-app.use('/export', express.static('./export'));
-app.use(staticUrl, function(req, res, next) {
-  res.send(404);
 });
 
 // ***** REST API **** //
