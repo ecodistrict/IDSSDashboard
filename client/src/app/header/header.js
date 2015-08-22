@@ -2,7 +2,7 @@ angular.module( 'idss-dashboard.header', [
     'idss-dashboard.header.reenterpassword'
 ])
 
-.controller( 'HeaderCtrl', ['$scope', '$location', 'LoginService', '$state', '$rootScope', 'ProcessService', '$modal', function HeaderCtrl( $scope, $location, LoginService, $state, $rootScope, ProcessService, $modal ) {
+.controller( 'HeaderCtrl', ['$scope', '$location', 'LoginService', '$state', '$rootScope', 'ProcessService', '$modal', 'authService', function HeaderCtrl( $scope, $location, LoginService, $state, $rootScope, ProcessService, $modal, authService ) {
 
     $scope.logout = function() {
 

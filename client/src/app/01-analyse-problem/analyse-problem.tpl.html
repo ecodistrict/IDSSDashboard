@@ -2,8 +2,8 @@
     <div class="row">
         <h1>Process overview</h1>
     </div>
-    <div class="row">
-        <form ng-if="facilitator" role="form">
+    <div ng-if="facilitator" class="row">
+        <form role="form">
           <div class="form-group">
             <label for="process-title">Please give a title to this decision process (ex: your high level ambition):</label>
             <input type="text" ng-model="currentProcess.title" ng-model-options="{ updateOn: 'blur' }"
@@ -15,8 +15,8 @@
     <div class="row">
         <district-map id="district-map" district="currentProcess.district"></district-map>
     </div>
-    <div class="row">
-        <form ng-if="facilitator" role="form">
+    <div ng-if="facilitator" class="row">
+        <form role="form">
           <div class="form-group">
             <label for="process-description">Please add a description text of your project (optional):</label>
             <textarea class="form-control" ng-model="currentProcess.description" ng-model-options="{ updateOn: 'blur' }"
@@ -24,13 +24,18 @@
           </div>
         </form>
     </div>
-    <div class="row">
-        <form ng-if="facilitator" class="form">
+    <div ng-if="facilitator" class="row">
+        <label for="process-stakeholder">Please name the stakeholders of this process:</label>
+        <h3 class="label label-danger" ng-show="createStakeholderError">{{createStakeholderError}}</h3>
+        <form class="form-inline">
           <div class="form-group">
-            <label for="process-stakeholder">Please name the stakeholders of this process:</label>
-            <h3 class="label label-danger" ng-show="createStakeholderError">{{createStakeholderError}}</h3>
-            <input type="text" id="process-stakeholder" ng-model="stakeholder.name" class="form-control" placeholder="Stakeholder name"/>
-            <input type="text" id="process-stakeholder-email" ng-model="stakeholder.email" class="form-control" placeholder="Stakeholder email"/>
+            <input type="text" id="process-stakeholder" ng-model="stakeholder.name" class="form-control" placeholder="Name"/>
+          </div>
+          <div class="form-group">
+            <input type="text" id="process-stakeholder-email" ng-model="stakeholder.email" class="form-control" placeholder="Email"/>
+          </div>
+          <div class="form-group">
+            <input type="text" id="process-stakeholder-email" ng-model="stakeholder.password" class="form-control" placeholder="Password"/>
           </div>
           <button type="submit" id="add-stakeholder-button" ng-click="addStakeholder()" class="btn btn-default">Add stakeholder</button>
         </form>

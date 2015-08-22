@@ -34,6 +34,8 @@ angular.module( 'idss-dashboard.as-is', [])
 
 .controller( 'AsIsController', ['$scope', '$timeout', '$sce', 'socket', '$state', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'currentProcess', 'variants', function AsIsController( $scope, $timeout, $sce, socket, $state, ModuleService, $modal, KpiService, VariantService, currentProcess, variants ) {
 
+  console.log($scope);
+
   var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
   $scope.currentProcess = currentProcess;
 
@@ -41,7 +43,7 @@ angular.module( 'idss-dashboard.as-is', [])
     KpiService.removeExtendedData(kpi); // in case data is already extended 
     kpi.loading = true;
     kpi.status = 'initializing';
-    KpiService.getKpiRecord(asIsVariant._id, kpi.kpiAlias).then(function(record) {
+    KpiService.getKpiRecord(asIsVariant._id, kpi.kpiAlias, $scope.currentUser._id).then(function(record) {
         angular.extend(kpi, record); 
         if(kpi.status === 'initializing' || kpi.status === 'processing') {
           kpi.loading = true;

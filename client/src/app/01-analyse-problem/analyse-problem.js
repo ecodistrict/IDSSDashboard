@@ -47,11 +47,12 @@ angular.module( 'idss-dashboard.analyse-problem', [
 
   $scope.stakeholder = {
     name: '',
-    email: ''
+    email: '',
+    password: ''
   };
 
   $scope.addStakeholder = function() {
-    if($scope.stakeholder.name && $scope.stakeholder.email) {
+    if($scope.stakeholder.name && $scope.stakeholder.email && $scope.stakeholder.password) {
       if(currentUser) {
         var registrant = {
           firstName: $scope.stakeholder.name,
@@ -60,6 +61,7 @@ angular.module( 'idss-dashboard.analyse-problem', [
           facilitatorId: currentUser._id,
           activeProcessId: currentUser.activeProcessId,
           role: 'Stakeholder',
+          password: $scope.stakeholder.password,
           email: $scope.stakeholder.email
         };
         LoginService.createLogin(registrant).then(function(stakeholder) {
@@ -74,7 +76,7 @@ angular.module( 'idss-dashboard.analyse-problem', [
         $scope.createStakeholderError = "Current user was not found (bug)";
       }
     } else {
-      $scope.createStakeholderError = "Please provide name and email for stakeholder";
+      $scope.createStakeholderError = "Please provide name, email and password for stakeholder";
     }
   };
 
@@ -90,7 +92,7 @@ angular.module( 'idss-dashboard.analyse-problem', [
     VariantService.loadVariants().then(function(facilitatorVariants) {
       LoginService.logout().then(function(loggedOut) {
         if(loggedOut === true) {
-          LoginService.login({username: stakeholder.email, password: 'stakeholder'}).then(function(user) {
+          LoginService.login({username: stakeholder.email, password: stakeholder.password}).then(function(user) {
             VariantService.loadVariants().then(function(stakeholderVariants) {
               VariantService.addOrRemoveVariants(facilitatorVariants, stakeholderVariants);
               $state.transitionTo('analyse-problem');

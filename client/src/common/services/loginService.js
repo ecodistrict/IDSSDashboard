@@ -4,7 +4,7 @@ angular.module('idss-dashboard')
 
     var login = function (credentials) {
         return $http
-            .post('users/login', credentials)
+            .post('users/login', credentials, {ignoreAuthModule: true})
             .error(function(status, data) {
                 var label = 'Email or password was not correct';
                 console.log(label);

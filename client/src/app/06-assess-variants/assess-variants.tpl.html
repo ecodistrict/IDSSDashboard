@@ -17,7 +17,7 @@
   <div ng-if="currentVariant" class="tab-content">
     <div class="tab-pane fade in active" id="kpilist">
       <div class="panel-group" role="tablist" aria-multiselectable="true">
-        <div ng-repeat="kpi in currentProcess.kpiList" id="{{'set-' + kpi.kpiAlias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="goToKpiPage(kpi)">
+        <div ng-repeat="kpi in currentProcess.kpiList | orderBy:'-weight'" id="{{'set-' + kpi.kpiAlias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="goToKpiPage(kpi)">
             <div class="panel-heading" role="tab">
               <h4 class="panel-title">
                 <b>{{kpi.name}}</b> <i>(status: {{kpi.status}})</i>

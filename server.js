@@ -56,7 +56,6 @@ app.use(staticUrl, function(req, res, next) {
   res.send(404);
 });
 
-
 // middleware
 
 app.use(bodyParser.urlencoded({ extended: false }));
