@@ -24,6 +24,9 @@
           </div>
         </form>
     </div>
+    <div ng-if="!facilitator && currentProcess.description" class="row">
+      <div class="well">{{currentProcess.description}}</div>
+    </div>
     <div ng-if="facilitator" class="row">
         <label for="process-stakeholder">Please name the stakeholders of this process:</label>
         <h3 class="label label-danger" ng-show="createStakeholderError">{{createStakeholderError}}</h3>
