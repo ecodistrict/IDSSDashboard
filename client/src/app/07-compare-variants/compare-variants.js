@@ -85,6 +85,7 @@ angular.module( 'idss-dashboard.compare-variants', [])
             kpiId: kpi.kpiAlias,
             bad: kpi.bad,
             unit: kpi.unit,
+            weight: kpi.weight,
             excellent: kpi.excellent
           });
         });

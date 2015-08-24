@@ -171,7 +171,7 @@ angular.module('idss-dashboard').directive('kpiWeight', ['$compile', '$timeout',
               clipHeight: 60,
               ringWidth: 10,
               maxValue: 5,
-              minValue: 1,
+              minValue: 0,
               transitionMs: 500,
             });
             kpiWeightGauge.render(kpi.weight);

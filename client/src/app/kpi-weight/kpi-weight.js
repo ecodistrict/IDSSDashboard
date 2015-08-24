@@ -10,18 +10,18 @@ angular.module( 'idss-dashboard.kpi-weight', [])
     };
 
     $scope.validate = function() {
-        if($scope.kpi.weight >= 1 && $scope.kpi.weight <= 5) {
+        if($scope.kpi.weight >= 0 && $scope.kpi.weight <= 5) {
             $scope.validationError = "";
         } else {
-            $scope.validationError = "Value needs to be between 1 and 5";
+            $scope.validationError = "Value needs to be between 0 and 5";
         }
     };
 
     $scope.ok = function() {
-        if($scope.kpi.weight >= 1 && $scope.kpi.weight <= 5) {
+        if($scope.kpi.weight >= 0 && $scope.kpi.weight <= 5) {
             $modalInstance.close($scope.kpi);
         } else {
-            $scope.validationError = "Please provide a number between 1 and 5";
+            $scope.validationError = "Please provide a number between 0 and 5";
         }
     };
 

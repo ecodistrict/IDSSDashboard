@@ -118,8 +118,6 @@ angular.module( 'idss-dashboard.to-be', [])
       kpiModal.result.then(function (configuredKpi) {
         
         kpi.value = configuredKpi.value;
-        console.log(configuredKpi, $scope.currentUser);
-        configuredKpi.userId = $scope.currentUser._id;
         
         KpiService.updateKpiRecord(configuredKpi);
       }, function () {
@@ -149,8 +147,6 @@ angular.module( 'idss-dashboard.to-be', [])
       kpiModal.result.then(function (configuredKpi) {
         
         kpi.weight = configuredKpi.weight;
-        console.log(configuredKpi, $scope.currentUser);
-        configuredKpi.userId = $scope.currentUser._id;
         
         KpiService.updateKpiRecord(configuredKpi);
       }, function () {
