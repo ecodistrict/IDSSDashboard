@@ -27,17 +27,21 @@ angular.module( 'idss-dashboard.as-is', [])
         return VariantService.loadVariants().then(function(variants) {
           return variants;
         });
+      }],
+      currentUser: ['LoginService', function(LoginService) {
+        return LoginService.getCurrentUser().then(function(user) {
+          return user;
+        });
       }]
     }
   });
 }])
 
-.controller( 'AsIsController', ['$scope', '$timeout', '$sce', 'socket', '$state', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'currentProcess', 'variants', function AsIsController( $scope, $timeout, $sce, socket, $state, ModuleService, $modal, KpiService, VariantService, currentProcess, variants ) {
-
-  console.log($scope);
+.controller( 'AsIsController', ['$scope', '$timeout', '$sce', 'socket', '$state', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'currentProcess', 'variants', 'currentUser', function AsIsController( $scope, $timeout, $sce, socket, $state, ModuleService, $modal, KpiService, VariantService, currentProcess, variants, currentUser ) {
 
   var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
   $scope.currentProcess = currentProcess;
+  $scope.currentUser = currentUser;
 
   _.each(currentProcess.kpiList, function(kpi) {
     KpiService.removeExtendedData(kpi); // in case data is already extended 
