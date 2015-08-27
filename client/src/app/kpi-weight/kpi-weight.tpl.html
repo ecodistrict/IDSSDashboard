@@ -3,7 +3,7 @@
     <h3 class="kpi-title">{{kpi.name}}</h3>
 </div>
 <div class="modal-body">
-    <h3>Set KPI weight between 1-5</h3>
+    <h3>Set KPI weight between 0 to 5</h3>
     <div class="alert alert-danger" ng-show="validationError" role="alert">
         {{validationError}}
     </div>
@@ -12,7 +12,7 @@
       <div class="col-sm-9">
         <div class="input-group">
             <input ng-model="kpi.weight" ng-change="validate()" required id="weight" class="form-control text-right" type="number">
-            <div class="input-group-addon">1: not important - 5: very important</div>
+            <div class="input-group-addon">0: not important - 5: very important</div>
         </div>
       </div>
     </div>
