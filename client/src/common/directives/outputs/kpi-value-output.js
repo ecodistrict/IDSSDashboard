@@ -23,20 +23,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                 var max = Math.max(bad, Math.max(sufficient || -Infinity, Math.max(excellent || -Infinity, value || -Infinity)));
                 var min = Math.min(bad, Math.min(sufficient || Infinity, Math.min(excellent || Infinity, value || Infinity)));
                 var left, right, measures = [];
-                if(sufficient <= excellent) {
-                  left = min;
-                  right = max;
-                  measures.push(max);
-                  if(excellent || excellent === 0) {
-                    measures.push(excellent)
-                  }
-                  if(sufficient || sufficient === 0) {
-                    measures.push(sufficient)
-                  }
-                  measures.push(min);
-                  measures = _.uniq(measures, true);
-                  console.log(measures);
-                } else {
+                if(excellent < sufficient) {
                   left = max;
                   right = min;
                   measures.push(min);
@@ -49,6 +36,22 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                   measures.push(max);
                   measures = _.uniq(measures, true);
                   console.log(measures);
+                  
+                } else {
+
+                  left = min;
+                  right = max;
+                  measures.push(max);
+                  if(excellent || excellent === 0) {
+                    measures.push(excellent)
+                  }
+                  if(sufficient || sufficient === 0) {
+                    measures.push(sufficient)
+                  }
+                  measures.push(min);
+                  measures = _.uniq(measures, true);
+                  console.log(measures);
+                  
 
                 }
                 var numTicks = max > 100000 ? 4 : max > 1000 ? 4 : 10;
