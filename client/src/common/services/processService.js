@@ -113,7 +113,7 @@ angular.module('idss-dashboard')
             kpiToAdd.selectedModule = {id: null};
             if(kpiToAdd.qualitative) {
                 kpiToAdd.qualitativeSettings = KpiService.generateQualitativeKpiSettings();
-                kpiToAdd.bad = 0;
+                kpiToAdd.sufficient = 0;
                 kpiToAdd.excellent = 10;
             } 
             currentProcess.kpiList.unshift(kpiToAdd);
@@ -132,8 +132,8 @@ angular.module('idss-dashboard')
             return k.kpiAlias === newKpiData.kpiAlias;
         });
         // these are the kpi settings changes 
-        if(newKpiData.bad || newKpiData.bad === 0) {
-            kpi.bad = newKpiData.bad;
+        if(newKpiData.sufficient || newKpiData.sufficient === 0) {
+            kpi.sufficient = newKpiData.sufficient;
         }
         if(newKpiData.excellent || newKpiData.excellent === 0) {
             kpi.excellent = newKpiData.excellent;
