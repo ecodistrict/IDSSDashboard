@@ -61,7 +61,7 @@
           
             <ul ng-show="isAuthenticated" class="nav navbar-nav navbar-right">
                 <li class="dropdown">
-                    <a id="logout-dropdown" class="dropdown-toggle"><span class="glyphicon glyphicon-user"></span> {{ currentUser.fname }} <b class="caret"></b></a>
+                    <a id="logout-dropdown" class="dropdown-toggle"><span class="glyphicon glyphicon-user"></span> <span ng-bind="currentUser.fname"></span> <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <!-- <li><a ui-sref="current-user"><span class="glyphicon glyphicon-user"></span> {{ currentUser.name }}</a></li> -->
                         <li><a ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
@@ -74,7 +74,7 @@
     <div ng-show="isAuthenticated && currentProcess.title" class="container-fluid sub-menu navbar-inverse">
         <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
-                <a class="dropdown-toggle process-dropdown">Last saved: {{ currentProcess.dateModified | date:'HH:mm:ss' }} <span class="caret"></span></a>
+                <a class="dropdown-toggle process-dropdown">Last saved: <span ng-bind="currentProcess.dateModified | date:'HH:mm:ss'"></span> <span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
                     <li ng-repeat="log in currentProcess.logs.slice().reverse()">
                         <a data-toggle="tooltip" data-placement="left" data-html="true" title="<p><b>{{log.label}}</b></p><p>Date: {{log.date | date: 'MMM dd yyyy HH:mm:ss'}}</p><p>{{log.err}}</p>" tooltip>{{log.date | date:'MMM dd HH:mm:ss'}} {{log.label}}</a>
@@ -84,7 +84,7 @@
         </ul>
         <ul class="nav navbar-nav">
             <li class="dropdown">
-                <a class="dropdown-toggle process-dropdown">{{ currentProcess.title }} <span class="caret"></span></a>
+                <a class="dropdown-toggle process-dropdown"><span ng-bind="currentProcess.title"></span> <span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
                     <!-- <li><a ui-sref="export">Export to file</a></li>
                     <li><a ui-sref="upload-process">Import from file</a></li> -->
