@@ -6,12 +6,11 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
         // based on the work of Clint Ivy, Jamie Love, and Jason Davies.
         // http://projects.instantcognition.com/protovis/bulletchart/
         d3.bullet = function() {
-          var orient = "left", // TODO top & bottom
-              reverse = false,
-              duration = 0,
-              ranges = bulletRanges,
-              markers = bulletMarkers,
-              measures = bulletMeasures,
+          var duration = 0,
+              bad,
+              sufficient,
+              excellent,
+              value,
               width = 0,
               height = 0,
               tickFormat = null;
@@ -20,16 +19,43 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
           function bullet(g) {
             g.each(function(d, i) {
 
-                var g = d3.select(this); 
+                var g = d3.select(this);
+                var max = Math.max(bad, Math.max(sufficient || -Infinity, Math.max(excellent || -Infinity, value || -Infinity)));
+                var min = Math.min(bad, Math.min(sufficient || Infinity, Math.min(excellent || Infinity, value || Infinity)));
+                var left, right, measures = [];
+                if(sufficient <= excellent) {
+                  left = min;
+                  right = max;
+                  measures.push(max);
+                  if(excellent || excellent === 0) {
+                    measures.push(excellent)
+                  }
+                  if(sufficient || sufficient === 0) {
+                    measures.push(sufficient)
+                  }
+                  measures.push(min);
+                  measures = _.uniq(measures, true);
+                  console.log(measures);
+                } else {
+                  left = max;
+                  right = min;
+                  measures.push(min);
+                  if(excellent || excellent === 0) {
+                    measures.push(excellent)
+                  }
+                  if(sufficient || sufficient === 0) {
+                    measures.push(sufficient)
+                  }
+                  measures.push(max);
+                  measures = _.uniq(measures, true);
+                  console.log(measures);
 
-                var bad = ranges.call(this, d, i)[0];
-                var excellent = ranges.call(this, d, i)[1];
-
-                var numTicks = excellent > 100000 ? 2 : excellent > 1000 ? 4 : 10;
+                }
+                var numTicks = max > 100000 ? 4 : max > 1000 ? 4 : 10;
 
                 // Compute the new x-scale.
                 var x1 = d3.scale.linear()
-                  .domain([bad, excellent])
+                  .domain([left, right])
                   .range([0, width]);
 
                 // Retrieve the old x-scale, if this is an update.
@@ -41,73 +67,68 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                 this.__chart__ = x1;
 
                 // Derive width-scales from the x-scales.
-                var w0 = bulletWidth(x0),
-                  w1 = bulletWidth(x1);
-
-                // Update the range rects. Only create one rect from excellent
-                var range = g.selectAll("rect.range")
-                  .data([excellent]);
+                var w1 = function() {
+                  // start point
+                  var start = x1(0);
+                  return function(d) {
+                    // get difference of start and x(d) to get width
+                    return Math.abs(x1(d) - start);
+                  };
+                };
 
                 var getMaxWidth = function(d) {
-                    return Math.abs(x1(excellent) - x1(bad));
+                  console.log(Math.abs(x1(right) - x1(left)));
+                    return Math.abs(x1(right) - x1(left));
                 };
 
                 var getWidth = function(d) {
-                    return Math.abs(x1(d) - x1(bad));
+                    return Math.abs(x1(d) - x1(right));
                 };
 
                 var color = d3.scale.linear()
-                .domain([bad, (bad+excellent)*0.5, excellent])
+                .domain([left, (left+right)*0.5, right])
                 .range(["red", "yellow", "green"]);
 
+              // Update the range rects
+              var range = g.selectAll("rect.range")
+                  .data(measures);
 
               range.enter().append("rect")
                   .attr("class", function(d, i) { return "range s" + i; })
-                  .attr("width", w0)
-                  .attr("height", height)
-                  .attr("x", x0(0))
-                .transition()
-                  .duration(duration)
-                  .attr("width", getMaxWidth)
-                  .attr("x", x1(bad));
-
+                  .attr("width", 0);
+                
               range.transition()
                   .duration(duration)
-                  .attr("x", x1(bad))
-                  .attr("width", getMaxWidth)
+                  .attr("x", x1(left))
+                  .attr("width", x1)
                   .attr("height", height);
 
-             if(typeof d.measures[0] !== 'undefined') {
+             if(typeof value !== 'undefined') {
 
               // Update the measure rects.
               var measure = g.selectAll("rect.measure")
-                  .data(measures);
+                  .data([value]);
 
               measure.enter().append("rect")
                   .attr("class", function(d, i) { return "measure s" + i; })
-                  .attr("width", w0)
+                  .attr("width", x0)
                   .attr("height", height / 3)
                   .attr("fill", color)
-                  .attr("x", x0(0))
-                  .attr("y", height / 3)
-                .transition()
-                  .duration(duration)
-                  .attr("width", getWidth)
-                  .attr("fill", color)
-                  .attr("x", x1(bad));
+                  .attr("x", x0)
+                  .attr("y", height / 3);
 
               measure.transition()
                   .duration(duration)
-                  .attr("width", getWidth)
+                  .attr("width", x1)
                   .attr("height", height / 3)
-                  .attr("x", x1(bad))
+                  .attr("x", x1(left))
                   .attr("fill", color)
                   .attr("y", height / 3);
 
 
               // Update the marker lines.
               var marker = g.selectAll("line.marker")
-                  .data(markers);
+                  .data([value]);
 
               marker.enter().append("line")
                   .attr("class", "marker")
@@ -181,43 +202,32 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
             d3.timer.flush();
           }
 
-          // left, right, top, bottom
-          bullet.orient = function(x) {
-            if (!arguments.length) return orient;
-            orient = x;
-            reverse = orient == "right" || orient == "bottom";
+          bullet.bad = function(x) {
+            bad = x;
             return bullet;
           };
 
-          // ranges (bad, satisfactory, good)
-          bullet.ranges = function(x) {
-            if (!arguments.length) return ranges;
-            ranges = x;
+          bullet.sufficient = function(x) {
+            sufficient = x;
             return bullet;
           };
 
-          // markers (previous, goal)
-          bullet.markers = function(x) {
-            if (!arguments.length) return markers;
-            markers = x;
+          bullet.excellent = function(x) {
+            excellent = x;
             return bullet;
           };
 
-          // measures (actual, forecast)
-          bullet.measures = function(x) {
-            if (!arguments.length) return measures;
-            measures = x;
+          bullet.value = function(x) {
+            value = x;
             return bullet;
           };
 
           bullet.width = function(x) {
-            if (!arguments.length) return width;
             width = x;
             return bullet;
           };
 
           bullet.height = function(x) {
-            if (!arguments.length) return height;
             height = x;
             return bullet;
           };
@@ -237,34 +247,26 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
           return bullet;
         };
 
-        function bulletRanges(d) {
-          return d.ranges;
-        }
-
-        function bulletMarkers(d) {
-          return d.markers;
-        }
-
-        function bulletMeasures(d) {
-          return d.measures;
-        }
-
         function bulletTranslate(x) {
           return function(d) {
             return "translate(" + x(d) + ",0)";
           };
         }
 
-        function bulletWidth(x) {
-          // start point
-          var x0 = x(0);
-          return function(d) {
-            // get difference of start and x(d) to get width
-            return Math.abs(x(d) - x0);
-          };
-        }
-
 /* jshint ignore:end */
+
+function getBad(sufficient, excellent) {
+  if(!excellent || !sufficient) {
+    return 0;
+  } 
+  // span is a 6 out of 10
+  var span = Math.abs(sufficient - excellent) * 1.5;
+  if(sufficient >= excellent) {
+    return sufficient + span;
+  } else {
+    return sufficient - span;
+  }
+}
 
     return {
         restrict: 'E',
@@ -278,11 +280,22 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
             var render = function() {
 
               var width = $('#main').children('.container').width();
-              var bad = kpi.bad, excellent = kpi.excellent, value = kpi.value;
-
               if(!width || width === 0) {
                 return; // skip rendering if width is zero
               }
+
+              // measure and marker on value
+              var value = kpi.value;
+
+              // ranges
+              var sufficient = kpi.sufficient, excellent = kpi.excellent; 
+
+              if(!sufficient && !excellent && !value) {
+                // even if zero to much data is missing
+                return;
+              }
+
+              var bad = getBad(sufficient, excellent, value);
 
               var margin = {top: 15, right: 150, bottom: 15, left: 100};
               width = width - margin.left - margin.right;
@@ -291,8 +304,12 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                 element.empty().attr('id', 'm-' + kpi.kpiAlias + '-aggregated-kpi');
 
                 var chart = d3.bullet()
-                    .width(width)
+                    .width(width - margin.left - 20)
                     .height(height)
+                    .value(value)
+                    .bad(bad)
+                    .sufficient(sufficient)
+                    .excellent(excellent)
                     .duration(1000)
                     .tickFormat(function(d) {
                         return d;
@@ -300,9 +317,6 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
                 var data = [{
                     title:"KPI value",
-                    ranges:[bad, excellent],
-                    measures:[value],
-                    markers:[value],
                     rangeLabels:['Bad','Excellent'],
                     measureLabels:['Current Inventory'],
                     markerLabels:['Target Inventory']
@@ -332,6 +346,8 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                       .attr("class", "subtitle")
                       .attr("dy", "1em")
                       .text(function(d) { return d.subtitle; });
+
+
 
             };
 
