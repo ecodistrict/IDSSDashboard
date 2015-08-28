@@ -147,6 +147,8 @@ angular.module( 'idss-dashboard.to-be', [])
       kpiModal.result.then(function (configuredKpi) {
         
         kpi.weight = configuredKpi.weight;
+        kpi.value = configuredKpi.value;
+        kpi.minimum = configuredKpi.minimum;
         
         KpiService.updateKpiRecord(configuredKpi);
       }, function () {

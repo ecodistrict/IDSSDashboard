@@ -9,11 +9,19 @@ angular.module( 'idss-dashboard.kpi-weight', [])
       $modalInstance.dismiss('cancel');
     };
 
-    $scope.validate = function() {
+    $scope.validateWeight = function() {
         if($scope.kpi.weight >= 0 && $scope.kpi.weight <= 5) {
             $scope.validationError = "";
         } else {
             $scope.validationError = "Value needs to be between 0 and 5";
+        }
+    };
+
+    $scope.validateMin = function() {
+        if(angular.isNumber($scope.kpi.minimum)) {
+            $scope.validationError = "";
+        } else {
+            $scope.validationError = "Value needs to be a number";
         }
     };
 

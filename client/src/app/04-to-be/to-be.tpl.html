@@ -9,7 +9,7 @@
                 </select>
               </div>
             </form>
-            <div ng-repeat="kpi in currentProcess.kpiList | orderBy:'-weight'" id="{{'used-kpi-' + kpi.kpiAlias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="setAmbition(kpi)">
+            <div ng-repeat="kpi in currentProcess.kpiList | orderBy:'-weight'" id="{{'used-kpi-' + kpi.kpiAlias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="setWeight(kpi)">
                 <div class="panel-heading kpi-panel-heading" id="{{'set-ambition-' + kpi.kpiAlias + '-button'}}">
                   <div class="kpi-weight-gauge-container pull-right" ng-click="setWeight(kpi);$event.stopPropagation()">
                     <kpi-weight class="kpi-weight-gauge" ng-if="!kpi.disabled" kpi="kpi"></kpi-weight>
@@ -19,8 +19,7 @@
                     <b ng-bind="kpi.name"></b> <span ng-hide="kpiIsConfigured(kpi)" class="glyphicon glyphicon-exclamation-sign"></span>
                     <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
                   </h3>
-                  <button id="{{'set-value-' + kpi.alias}}" class="btn btn-xs btn-primary" ng-click="setAmbition(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-stats"></i> Set ambition</button>
-                  <button id="{{'set-weight-' + kpi.alias}}" class="btn btn-xs btn-primary" ng-click="setWeight(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-scale"></i> Set weight</button><br>
+                  <button id="{{'set-value-' + kpi.alias}}" class="btn btn-xs btn-primary" ng-click="setWeight(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-stats"></i> Set ambition</button>
                   <kpi-value-output ng-if="!kpi.disabled" kpi="kpi"></kpi-value-output>
                   <p ng-if="kpi.disabled" style="margin-top:10px" class="well">KPI <b>{{kpi.name}}</b> is not applicable for the <i>To be</i> situation</p>
                 </div>
