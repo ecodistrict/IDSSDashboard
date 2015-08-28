@@ -20,8 +20,8 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
             g.each(function(d, i) {
 
                 var g = d3.select(this);
-                var max = Math.max(bad, Math.max(sufficient || -Infinity, Math.max(excellent || -Infinity, value || -Infinity)));
-                var min = Math.min(bad, Math.min(sufficient || Infinity, Math.min(excellent || Infinity, value || Infinity)));
+                var max = getMax(bad, sufficient, excellent, value); 
+                var min = getMin(bad, sufficient, excellent, value); 
                 var left, right, measures = [];
                 if(excellent < sufficient) {
                   left = max;
@@ -258,8 +258,22 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
 /* jshint ignore:end */
 
+function getMin(bad, sufficient, excellent, value) {
+  sufficient = (sufficient || sufficient === 0) ? sufficient : Infinity;
+  excellent = (excellent || excellent === 0) ? excellent : Infinity;
+  value = (value || value === 0) ? value : Infinity;
+  return Math.min(bad, Math.min(sufficient, Math.min(excellent, value)));
+}
+
+function getMax(bad, sufficient, excellent, value) {
+  sufficient = (sufficient || sufficient === 0) ? sufficient : -Infinity;
+  excellent = (excellent || excellent === 0) ? excellent : -Infinity;
+  value = (value || value === 0) ? value : -Infinity;
+  return Math.max(bad, Math.max(sufficient, Math.max(excellent, value)));
+}
+
 function getBad(sufficient, excellent) {
-  if(!excellent || !sufficient) {
+  if((!excellent && excellent !== 0) || (!sufficient && sufficient !== 0)) {
     return 0;
   } 
   // span is a 6 out of 10
