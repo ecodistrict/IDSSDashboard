@@ -80,6 +80,9 @@ angular.module('idss-dashboard')
         })
         .then(function (res) {
             var outputs = res.data;
+            if(!outputs) {
+                NotificationService.createErrorFlash('No map data exists for this kpi');
+            }
             return outputs;
             
         });

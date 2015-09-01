@@ -35,7 +35,6 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                   }
                   measures.push(max);
                   measures = _.uniq(measures, true);
-                  console.log(measures);
                   
                 } else {
 
@@ -50,7 +49,6 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                   }
                   measures.push(min);
                   measures = _.uniq(measures, true);
-                  console.log(measures);
                   
 
                 }

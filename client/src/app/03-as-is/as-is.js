@@ -40,6 +40,8 @@ angular.module( 'idss-dashboard.as-is', [])
 .controller( 'AsIsController', ['$scope', '$timeout', '$sce', 'socket', '$state', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'currentProcess', 'variants', 'currentUser', function AsIsController( $scope, $timeout, $sce, socket, $state, ModuleService, $modal, KpiService, VariantService, currentProcess, variants, currentUser ) {
 
   var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
+  $scope.variants = variants; // for map
+  $scope.currentVariant = asIsVariant; // for map
   $scope.currentProcess = currentProcess;
   $scope.currentUser = currentUser;
 
@@ -72,6 +74,10 @@ angular.module( 'idss-dashboard.as-is', [])
 
   $scope.goToKpiPage = function(kpi) {
     $state.transitionTo('kpi', {variantId: asIsVariant._id, kpiAlias: kpi.kpiAlias, back: 'as-is'});
+  };
+
+  $scope.selectMap = function() {
+    $scope.trig = !$scope.trig;
   };
 
 }]);
