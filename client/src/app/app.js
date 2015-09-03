@@ -6,7 +6,6 @@ angular.module( 'idss-dashboard', [
   'ui.router',
   'ui.bootstrap',
   'angularFileUpload',
-  'nvd3ChartDirectives',
   'angular-flash.service', 
   'angular-flash.flash-alert-directive',
   'idss-dashboard.header',

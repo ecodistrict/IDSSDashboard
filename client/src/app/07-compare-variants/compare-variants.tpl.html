@@ -1,13 +1,17 @@
 <div class="container" id="mcmsmv-container">
-  <div class="row">
-    <h3>Compare alternatives</h3>
-  </div>
-  <div class="row">
+  <!-- <div class="row">
     <div ng-show="msg" class="alert alert-danger" role="alert"><pre>{{msg}}</pre></div>
     <button class="btn btn-info" ng-click="sendToMCMSMV()"><span class="glyphicon glyphicon-stats"></span> Send data to MCMSMV module </button>
+  </div> -->
+  <div class="row">
+    <h3>Compare alternatives</h3>
+    <div class="btn-group" role="group" style="margin-bottom:20px">
+      <button type="button" style="margin-right: 0 !important" ng-class="(type == 'score') ? 'btn-primary' : 'btn-default'" ng-click="type = 'score'" class="btn">Show scores</button>
+      <button type="button" ng-class="(type == 'value') ? 'btn-primary' : 'btn-default'" ng-click="type = 'value'" class="btn">Show kpi values</button>
+    </div>
   </div>
   <div class="row">
-    <mcmsmv data="mcmsmv"></mcmsmv>
+    <mcmsmv data="mcmsmv" type="type"></mcmsmv>
     <div ng-show="!mcmsmv" class="jumbotron">
       <h1>Loading KPI values <span class="glyphicon glyphicon-refresh spin"></span></h1>
     </div>

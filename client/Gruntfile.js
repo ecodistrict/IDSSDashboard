@@ -37,10 +37,8 @@ module.exports = function ( grunt ) {
                 '<%= vendor_dir %>/angular-ui-router/release/angular-ui-router.js',
                 '<%= vendor_dir %>/angular-file-upload/angular-file-upload.js',
                 '<%= vendor_dir %>/d3/d3.js',
-                '<%= vendor_dir %>/nvd3/build/nv.d3.js',
                 '<%= vendor_dir %>/crossfilter/crossfilter.js',
                 '<%= vendor_dir %>/dcjs/dc.js',
-                '<%= vendor_dir %>/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.js',
                 '<%= vendor_dir %>/angular-flash/dist/angular-flash.js',
                 '<%= vendor_dir %>/leaflet/dist/leaflet.js'
             ],

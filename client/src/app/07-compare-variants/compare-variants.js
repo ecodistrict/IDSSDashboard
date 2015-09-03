@@ -93,6 +93,7 @@ angular.module( 'idss-dashboard.compare-variants', [])
             sufficient: kpi.sufficient,
             excellent: kpi.excellent
           };
+          kpiBaseData.bad = calculateBad(kpi.sufficient, kpi.excellent);
           if(kpiValueMap[user._id] && kpiValueMap[user._id][kpi.kpiAlias]) {
             kpiBaseData.weight = kpiValueMap[user._id][kpi.kpiAlias].weight;
             kpiBaseData.minimum = kpiValueMap[user._id][kpi.kpiAlias].minimum;
@@ -173,6 +174,19 @@ angular.module( 'idss-dashboard.compare-variants', [])
   socket.on('mcmsmv', function(module) {
     console.log(module);
   });
+
+  function calculateBad(sufficient, excellent) {
+    if((!excellent && excellent !== 0) || (!sufficient && sufficient !== 0)) {
+      return 0;
+    } 
+    // span is a 6 out of 10
+    var span = Math.abs(sufficient - excellent) * 1.5;
+    if(sufficient >= excellent) {
+      return sufficient + span;
+    } else {
+      return sufficient - span;
+    }
+  }
 
 }]);
 
