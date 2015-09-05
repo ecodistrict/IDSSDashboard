@@ -66,7 +66,6 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
             _.each(mcmsmvData.stakeholders, function(stakeholder) {
               var metadata = getMetadata(stakeholder.kpiList);
               numKpis = stakeholder.kpiList.length;
-              console.log(numKpis);
                 _.each(stakeholder.variants, function(variant) {
                   _.each(variant.kpiList, function(kpi) {
                     // a value needs to be set
@@ -80,7 +79,6 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
                       if(excellent < bad) {
                         max = bad;
                         min = excellent;
-                        console.log('excellent is less');
                       } else {
                         max = excellent;
                         min = bad;
@@ -116,7 +114,6 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
                       unit: metadata[kpi.kpiId].unit || 'score',
                       count: kpiRecordsCounter
                     };
-                    console.log(dataPost.score);
                     data.push(dataPost);
                     kpiRecordsCounter++;
                   });
@@ -141,7 +138,7 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
               ' <div id="alternatives-chart" class="compare-filter"><strong>Alternative filter</strong></div>',
               '</div>',
               '<div class="col-xs-6">',
-              ' <div id="kpi-chart" class="compare-filter"><strong>KPI filter</strong></div>',
+              ' <div id="kpi-chart" class="compare-filter"><strong>KPI filter</strong><br /></div>',
               '</div>',
               '<div class="col-xs-12">',
               '<strong>KPI List</strong>',

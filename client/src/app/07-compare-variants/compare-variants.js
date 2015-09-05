@@ -67,7 +67,7 @@ angular.module( 'idss-dashboard.compare-variants', [])
         // this map is for weights and minimum (one for every user and kpi)
         kpiValueMap[record.userId][record.kpiAlias] = kpiValueMap[record.userId][record.kpiAlias] || {};
         // this map is for values on each variant
-        kpiValueMap[record.userId][record.variantId][record.kpiAlias] = {value: record.value};
+        kpiValueMap[record.userId][record.variantId][record.kpiAlias] = {value: record.value, disabled: record.disabled};
         // this map set min, weight
         kpiValueMap[record.userId][record.kpiAlias] = {weight: record.weight, minimum: record.minimum};
 
@@ -93,12 +93,11 @@ angular.module( 'idss-dashboard.compare-variants', [])
             sufficient: kpi.sufficient,
             excellent: kpi.excellent
           };
+          // this is now done for each user, that's not optimal..
           kpiBaseData.bad = calculateBad(kpi.sufficient, kpi.excellent);
           if(kpiValueMap[user._id] && kpiValueMap[user._id][kpi.kpiAlias]) {
             kpiBaseData.weight = kpiValueMap[user._id][kpi.kpiAlias].weight;
             kpiBaseData.minimum = kpiValueMap[user._id][kpi.kpiAlias].minimum;
-
-            console.log(kpiBaseData);
           }
           stakeholderData.kpiList.push(kpiBaseData);
 
@@ -121,10 +120,11 @@ angular.module( 'idss-dashboard.compare-variants', [])
           // add kpis to kpi list
           _.each(currentProcess.kpiList, function(kpi) {
 
-            var kpiValue, weight, minimum;
+            var kpiValue, disabled = false;
 
             if(kpiValueMap[user._id] && kpiValueMap[user._id][variant._id] && kpiValueMap[user._id][variant._id][kpi.kpiAlias]) {
               kpiValue = kpiValueMap[user._id][variant._id][kpi.kpiAlias].value;
+              disabled = kpiValueMap[user._id][variant._id][kpi.kpiAlias].disabled;
             } else {
               // if this is undefined not even the facilitator has given a value to the kpi (no record has been found for variant)
               if(kpiDefaultValueMap[variant._id]) {
@@ -134,7 +134,8 @@ angular.module( 'idss-dashboard.compare-variants', [])
             // create kpi data
             var kpiData = {
               kpiId: kpi.kpiAlias,
-              kpiValue: kpiValue
+              kpiValue: kpiValue,
+              disabled: disabled
             };
             // add to variant reference
             variantData.kpiList.push(kpiData);

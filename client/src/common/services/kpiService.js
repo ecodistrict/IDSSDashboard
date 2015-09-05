@@ -297,7 +297,7 @@ angular.module('idss-dashboard')
         var uri = userId ? 'kpirecords/' + variantId + '/' + kpiAlias + '/' + userId : 'kpirecords/' + variantId + '/' + kpiAlias + '/';
 
         return $http
-            .get(uri)
+            .get(uri, {cache: false})
             .error(function(data, status) {
                 var label = 'Error when loading outputs';
                 NotificationService.createErrorFlash(label);
