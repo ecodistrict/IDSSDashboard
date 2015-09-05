@@ -118,10 +118,10 @@ angular.module( 'idss-dashboard.to-be', [])
       kpiModal.result.then(function (configuredKpi) {
         
         kpi.value = configuredKpi.value;
-        
+
         KpiService.updateKpiRecord(configuredKpi);
       }, function () {
-        console.log('Modal dismissed at: ' + new Date());
+        console.log('Modal dismissed at: ' + new Date()); 
       });
 
   };
@@ -149,6 +149,11 @@ angular.module( 'idss-dashboard.to-be', [])
         kpi.weight = configuredKpi.weight;
         kpi.value = configuredKpi.value;
         kpi.minimum = configuredKpi.minimum;
+
+        // if user is changed the id needs to be correct (first time it is always the facilitator id)
+        configuredKpi.userId = $scope.currentUser._id;
+
+        console.log(configuredKpi);
         
         KpiService.updateKpiRecord(configuredKpi);
       }, function () {
