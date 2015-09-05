@@ -73,7 +73,9 @@ angular.module( 'idss-dashboard.as-is', [])
   };
 
   $scope.goToKpiPage = function(kpi) {
-    $state.transitionTo('kpi', {variantId: asIsVariant._id, kpiAlias: kpi.kpiAlias, back: 'as-is'});
+    if(currentUser.role === 'Facilitator') {
+      $state.transitionTo('kpi', {variantId: asIsVariant._id, kpiAlias: kpi.kpiAlias, back: 'as-is'});
+    }
   };
 
   $scope.selectMap = function() {

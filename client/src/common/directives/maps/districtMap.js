@@ -77,7 +77,8 @@ angular.module('idss-dashboard').directive('districtMap', ['$compile', 'ProcessS
         replace: true,
         template: '<div ng-transclude></div>',
         scope: {
-            district: "="
+            district: "=",
+            facilitator: "="
         },
         link: function(scope, element, attrs) {
 
@@ -227,7 +228,7 @@ angular.module('idss-dashboard').directive('districtMap', ['$compile', 'ProcessS
                     scope.changeLayer(scope.layer);
 
                     var buttonPanel = angular.element([
-                        '<div id="button-panel" class="btn-group">',
+                        '<div id="button-panel" class="btn-group" ng-show="facilitator">',
                             //'<button type="button" ng-class="interaction == \'navigate\' ? \'btn-primary\' : \'btn-default\'" ng-click="addInteraction(\'navigate\')" class="btn">Navigate</button>',
                             '<button id="save-district-polygon" type="button" ng-show="interaction==\'draw\'" ng-click="saveDistrictPolygons()" class="btn btn-default">Save district</button>',
                             '<button id="clear-district-polygon" type="button" ng-show="interaction==\'draw\'" ng-click="clearDistrictPolygons()" class="btn btn-default">Clear</button>',

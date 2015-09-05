@@ -16,13 +16,13 @@
   <div class="tab-content">
     <div class="tab-pane fade in active" id="kpilist">
       <div class="panel-group" role="tablist" aria-multiselectable="true">
-        <div ng-repeat="kpi in currentProcess.kpiList | orderBy:'-weight'" id="{{'set-' + kpi.kpiAlias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="goToKpiPage(kpi)">
+        <div ng-repeat="kpi in currentProcess.kpiList" id="{{'set-' + kpi.kpiAlias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="goToKpiPage(kpi)">
             <div class="panel-heading kpi-panel-heading" role="tab">
               <h4 class="panel-title">
                 <b ng-bind="kpi.name"></b> <i ng-bind="'(status: ' + kpi.status + ')'"></i>
                 <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
               </h4>
-              <button id="{{'adjust-kpi-' + kpi.alias}}" class="btn btn-xs btn-primary" ng-click="goToKpiPage(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-cog"></i> Edit</button><br>
+              <button ng-if="currentUser.role == 'Facilitator'" id="{{'adjust-kpi-' + kpi.alias}}" class="btn btn-xs btn-primary" ng-click="goToKpiPage(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-cog"></i> Edit</button><br>
               <kpi-value-output ng-if="!kpi.disabled" kpi="kpi"></kpi-value-output>
               <p ng-if="kpi.disabled" style="margin-top:10px" class="well">KPI <b>{{kpi.name}}</b> is not applicable for the <i>As is</i> situation</p>
             </div>

@@ -10,10 +10,13 @@
            ng-keyup="cancel($event)" ng-change="updateProcess('Changed title to ' + currentProcess.title)" class="form-control" id="process-title" placeholder="Process title">
           </div>
         </form>
-        <h2 ng-if="!facilitator">{{currentProcess.title}}</h2>
+        <h2>{{currentProcess.title}}</h2>
+    </div>
+    <div ng-if="!facilitator" class="row">
+        <h2>{{currentProcess.title}}</h2>
     </div>
     <div class="row">
-        <district-map id="district-map" district="currentProcess.district"></district-map>
+        <district-map id="district-map" district="currentProcess.district" facilitator="facilitator"></district-map>
     </div>
     <div ng-if="facilitator" class="row">
         <form role="form">

@@ -1,15 +1,16 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-12">
-            <h2>To be - go through KPIs again to set ambitions</h2>
+            <h2>To be - go through KPIs to set ambitions</h2>
+            <div ng-if="isFacilitator && stakeholders.length == 0" class="well">No stakeholder are added. <a ui-sref="analyse-problem">Add stakeholders</a></div>
             <form class="form" role="form" ng-if="isFacilitator">
               <div class="form-group">
-                <label>Select user</label>
+                <label>Select stakeholder</label>
                 <select class="form-control" ng-change="changeUser(currentUser)" ng-model="currentUser" ng-options="stakeholder as stakeholder.name for stakeholder in stakeholders">
                 </select>
               </div>
             </form>
-            <div ng-repeat="kpi in currentProcess.kpiList | orderBy:'-weight'" id="{{'used-kpi-' + kpi.kpiAlias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="setWeight(kpi)">
+            <div ng-if="currentUser.role != 'Facilitator'" ng-repeat="kpi in currentProcess.kpiList" id="{{'used-kpi-' + kpi.kpiAlias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="setWeight(kpi)">
                 <div class="panel-heading kpi-panel-heading" id="{{'set-ambition-' + kpi.kpiAlias + '-button'}}">
                   <div class="kpi-weight-gauge-container pull-right" ng-click="setWeight(kpi);$event.stopPropagation()">
                     <kpi-weight class="kpi-weight-gauge" ng-if="!kpi.disabled" kpi="kpi"></kpi-weight>

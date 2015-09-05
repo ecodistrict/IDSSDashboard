@@ -51,7 +51,7 @@
                         <li><a ui-sref="assess-variants">Use MCMSMV module</a></li>
                     </ul>
                 </li> -->
-                <li ng-class="{'active': highLightInMenu == 'compare-variants'}"><a ui-sref="compare-variants">Compare alternatives</a></li>
+                <li ng-show="currentUser.role == 'Facilitator'" ng-class="{'active': highLightInMenu == 'compare-variants'}"><a ui-sref="compare-variants">Compare alternatives</a></li>
 
             </ul>
 
@@ -85,7 +85,7 @@
         <ul class="nav navbar-nav">
             <li class="dropdown">
                 <a class="dropdown-toggle process-dropdown"><span ng-bind="currentProcess.title"></span> <span class="caret"></span></a>
-                <ul class="dropdown-menu" role="menu">
+                <ul ng-show="currentUser.role == 'Facilitator'" class="dropdown-menu" role="menu">
                     <!-- <li><a ui-sref="export">Export to file</a></li>
                     <li><a ui-sref="upload-process">Import from file</a></li> -->
                     <li><a ng-click="deleteProcess()">Delete this process</a></li>

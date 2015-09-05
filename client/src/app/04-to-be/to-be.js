@@ -50,9 +50,12 @@ angular.module( 'idss-dashboard.to-be', [])
     if($scope.isFacilitator) {
       currentUser.name = 'Facilitator, representing the group';
       LoginService.getStakeholders().then(function(stakeholders) {
-        // add facilitator
-        stakeholders.push(currentUser);
-        $scope.stakeholders = stakeholders;
+        // no don't add facilitator
+        //stakeholders.push(currentUser);
+        if(stakeholders && stakeholders.length && stakeholders.length > 0) {
+          $scope.currentUser = stakeholders[0];
+          $scope.stakeholders = stakeholders;
+        }
       });
     }
 
