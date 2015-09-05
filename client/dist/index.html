@@ -10,10 +10,12 @@
 
     <!-- compiled CSS -->
     <link rel="stylesheet" type="text/css" href="static/vendor/dcjs/dc.css" />
-    <link rel="stylesheet" type="text/css" href="static/assets/idss-dashboard-1.0.8.css" />
+    <link rel="stylesheet" type="text/css" href="static/vendor/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" type="text/css" href="static/vendor/leaflet-draw/dist/leaflet.draw.css" />
+    <link rel="stylesheet" type="text/css" href="static/assets/idss-dashboard-1.0.9.css" />
 
     <!-- compiled JavaScript -->
-    <script type="text/javascript" src="static/assets/idss-dashboard-1.0.8.js"></script>
+    <script type="text/javascript" src="static/assets/idss-dashboard-1.0.9.js"></script>
     
   </head>
   <body>
@@ -38,9 +40,7 @@
         <span class="alert-message">{{flash.message}}</span>
     </span>  
 
-
-    <div ui-view="main" id="main"></div>
-    
+    <div ui-view="main" id="main"></div>    
     
   </body>
 </html>
