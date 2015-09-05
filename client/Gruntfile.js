@@ -40,11 +40,14 @@ module.exports = function ( grunt ) {
                 '<%= vendor_dir %>/crossfilter/crossfilter.js',
                 '<%= vendor_dir %>/dcjs/dc.js',
                 '<%= vendor_dir %>/angular-flash/dist/angular-flash.js',
-                '<%= vendor_dir %>/leaflet/dist/leaflet.js'
+                '<%= vendor_dir %>/leaflet/dist/leaflet.js',
+                '<%= vendor_dir %>/leaflet-draw/dist/leaflet.draw.js'
+
             ],
             stylesheets: [
                 '<%= vendor_dir %>/dcjs/dc.css',
-                '<%= vendor_dir %>/leaflet/dist/leaflet.css'
+                '<%= vendor_dir %>/leaflet/dist/leaflet.css',
+                '<%= vendor_dir %>/leaflet-draw/dist/leaflet.draw.css'
             ],  
             assets: [
                 '<%= vendor_dir %>/bootstrap/dist/fonts/glyphicons-halflings-regular.eot',

@@ -37,7 +37,7 @@ angular.module('idss-dashboard').directive('kpiMap', ['ProcessService', '$compil
         },
         link: function(scope, element, attrs) {
 
-            var map, geojson;
+            var map, geojson, kpiLayer;
 
             var defaultStyle = {
                 color: "#2262CC",
@@ -80,11 +80,34 @@ angular.module('idss-dashboard').directive('kpiMap', ['ProcessService', '$compil
                 }).addTo(map);
             }
 
+            function getColor(bad, excellent, sufficient, value) {
+                var color = d3.scale.linear()
+                .domain([bad, sufficient, excellent])
+                .range(["red", "yellow", "green"]);
+
+                return color(value);
+            }
+
+            function getBad(sufficient, excellent) {
+              if((!excellent && excellent !== 0) || (!sufficient && sufficient !== 0)) {
+                return 0;
+              } 
+              // span is a 6 out of 10
+              var span = Math.abs(sufficient - excellent) * 1.5;
+              if(sufficient >= excellent) {
+                return sufficient + span;
+              } else {
+                return sufficient - span;
+              }
+            }
+
             function loadLayer(kpi, variant) {
                 // TODO: unbind previous events?
                 console.log(kpi);
                 scope.selectedKpi = kpi;
                 scope.selectedVariant = variant;
+
+                kpi.bad = getBad(kpi.sufficient, kpi.excellent);
 
                 ModuleService.getModuleOutput(variant._id, kpi.selectedModuleId, kpi.kpiAlias).then(function(data) {
 
@@ -94,7 +117,20 @@ angular.module('idss-dashboard').directive('kpiMap', ['ProcessService', '$compil
 
                     function onEachFeature(feature, layer) {
 
-                        layer.setStyle(defaultStyle);
+                        var color = "#666666";
+
+                        if((kpi.excellent || kpi.excellent === 0) && (kpi.sufficient || kpi.sufficient === 0) && (kpi.bad || kpi.bad === 0) && (feature.properties.kpiValue || feature.properties.kpiValue === 0)) {
+                            color = getColor(kpi.bad, kpi.excellent, kpi.sufficient, feature.properties.kpiValue);
+                        }
+
+                        layer.setStyle({
+                            color: color,
+                            weight: 2,
+                            opacity: 0.6,
+                            fillOpacity: 0.1,
+                            fillColor: color
+                        });
+
 
                         layer.on("mouseover", function (e) {
                             layer.setStyle(highlightStyle);
@@ -104,7 +140,13 @@ angular.module('idss-dashboard').directive('kpiMap', ['ProcessService', '$compil
                         });
 
                         layer.on("mouseout", function (e) {
-                            layer.setStyle(defaultStyle); 
+                            layer.setStyle({
+                            color: color,
+                            weight: 2,
+                            opacity: 0.6,
+                            fillOpacity: 0.1,
+                            fillColor: color
+                        }); 
                             scope.selectedFeature = null;
                             scope.$digest();
 
@@ -126,14 +168,18 @@ angular.module('idss-dashboard').directive('kpiMap', ['ProcessService', '$compil
                                 opacity: 1,
                                 fillOpacity: 0.8
                             };
+
+                            if(kpiLayer) {
+                                map.removeLayer(kpiLayer);
+                            }
                             
 
-                            var featureLayer = L.geoJson(geojson.value, {
+                            kpiLayer = L.geoJson(geojson.value, {
                                 pointToLayer: pointToLayer,
                                 onEachFeature: onEachFeature
                             }).addTo(map);
 
-                            map.fitBounds(featureLayer.getBounds());
+                            map.fitBounds(kpiLayer.getBounds());
                         }
                     }
                 });
