@@ -43,21 +43,8 @@ angular.module( 'idss-dashboard.to-be', [])
     var toBeVariant = _.find(variants, function(v) {return v.type === 'to-be';});
     var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
     $scope.currentUser = currentUser;
-
     $scope.stakeholders = [];
-    
     $scope.isFacilitator = currentUser.role === 'Facilitator';
-    if($scope.isFacilitator) {
-      currentUser.name = 'Facilitator, representing the group';
-      LoginService.getStakeholders().then(function(stakeholders) {
-        // no don't add facilitator
-        //stakeholders.push(currentUser);
-        if(stakeholders && stakeholders.length && stakeholders.length > 0) {
-          $scope.currentUser = stakeholders[0];
-          $scope.stakeholders = stakeholders;
-        }
-      });
-    }
 
     var init = function(userId) {
       _.each(currentProcess.kpiList, function(kpi) {
@@ -76,6 +63,16 @@ angular.module( 'idss-dashboard.to-be', [])
       });
     };
 
+    var getStakeholders = function() {
+      LoginService.getStakeholders().then(function(stakeholders) {
+        if(stakeholders && stakeholders.length && stakeholders.length > 0) {
+          $scope.currentUser = stakeholders[0];
+          $scope.stakeholders = stakeholders;
+          init($scope.currentUser._id);
+        }
+      });
+    };
+
     if(asIsVariant) {
         // if first time - create the to be variant
         if(!toBeVariant) {
@@ -88,46 +85,21 @@ angular.module( 'idss-dashboard.to-be', [])
             VariantService.createVariant(toBeVariant).then(function(newVariant) {
               toBeVariant = newVariant;
               variants.push(toBeVariant);
-              init(currentUser._id);
+              // if facilitator the 
+              if(!$scope.isFacilitator) {
+                init(currentUser._id);
+              } else {
+                getStakeholders();
+              }
             });
         } else {
+          if(!$scope.isFacilitator) {
             init(currentUser._id);
-        }
-    }
-
-  $scope.setAmbition = function(kpi) {
-
-    var kpiModal, templateUrl, controller;
-
-    if(kpi.qualitative) {
-      templateUrl = 'qualitative-kpi-input/qualitative-kpi-input.tpl.html';
-      controller = 'QualitativeKpiInputCtrl';
-    } else {
-      templateUrl = 'quantitative-kpi-input/quantitative-kpi-input.tpl.html';
-      controller = 'QuantitativeKpiInputCtrl';
-    }
-
-    kpiModal = $modal.open({
-        templateUrl: templateUrl,
-        controller: controller,
-        size: 'sm',
-        resolve: {
-          kpi: function() {
-            return kpi;
+          } else {
+            getStakeholders();
           }
         }
-      });
-
-      kpiModal.result.then(function (configuredKpi) {
-        
-        kpi.value = configuredKpi.value;
-
-        KpiService.updateKpiRecord(configuredKpi);
-      }, function () {
-        console.log('Modal dismissed at: ' + new Date()); 
-      });
-
-  };
+    }
 
   $scope.setWeight = function(kpi) {
 
