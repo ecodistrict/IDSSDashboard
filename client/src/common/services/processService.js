@@ -113,7 +113,7 @@ angular.module('idss-dashboard')
             kpiToAdd.selectedModule = {id: null};
             if(kpiToAdd.qualitative) {
                 kpiToAdd.qualitativeSettings = KpiService.generateQualitativeKpiSettings();
-                kpiToAdd.sufficient = 0;
+                kpiToAdd.sufficient = 6;
                 kpiToAdd.excellent = 10;
             } 
             currentProcess.kpiList.unshift(kpiToAdd);
