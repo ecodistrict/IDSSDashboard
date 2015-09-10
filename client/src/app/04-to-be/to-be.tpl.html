@@ -20,9 +20,10 @@
                     <b ng-bind="kpi.name"></b> <span ng-hide="kpiIsConfigured(kpi)" class="glyphicon glyphicon-exclamation-sign"></span>
                     <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
                   </h3>
-                  <button id="{{'set-value-' + kpi.alias}}" class="btn btn-xs btn-primary" ng-click="setWeight(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-stats"></i> Set ambition</button>
-                  <kpi-value-output ng-if="!kpi.disabled" kpi="kpi"></kpi-value-output>
+                  <button ng-if="kpi.weight > 0" id="{{'set-value-' + kpi.alias}}" class="btn btn-xs btn-primary" ng-click="setWeight(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-stats"></i> Set ambition</button>
+                  <kpi-value-output ng-if="!kpi.disabled && kpi.weight > 0" kpi="kpi"></kpi-value-output>
                   <p ng-if="kpi.disabled" style="margin-top:10px" class="well">KPI <b>{{kpi.name}}</b> is not applicable for the <i>To be</i> situation</p>
+                  <p ng-if="kpi.weight == 0" style="margin-top:10px" class="well">KPI <b>{{kpi.name}}</b> is set to weight 0 - not important</p>
                 </div>
             </div>
         </div>

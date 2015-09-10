@@ -39,6 +39,10 @@
                         </div>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label for="kpi-sufficient-description">Description for sufficent (optional):</label>
+                    <textarea class="form-control" ng-model="kpi.descriptionSufficient" id="kpi-sufficient-description" rows="3"></textarea>
+                </div>
                 <div class="form-group clearfix">
                     <label for="kpi-score-excellent" class="col-sm-3 control-label">Excellent: </label>
                     <div class="col-sm-9">
@@ -47,6 +51,10 @@
                             <div ng-show="kpi.unit" class="input-group-addon">{{kpi.unit}}</div>
                         </div>
                     </div>
+                </div>
+                <div class="form-group">
+                    <label for="kpi-excellent-description">Description for excellent (optional):</label>
+                    <textarea class="form-control" ng-model="kpi.descriptionExcellent" id="kpi-excellent-description" rows="3"></textarea>
                 </div>
             </form>
         </div>

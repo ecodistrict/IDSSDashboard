@@ -135,8 +135,14 @@ angular.module('idss-dashboard')
         if(newKpiData.sufficient || newKpiData.sufficient === 0) {
             kpi.sufficient = newKpiData.sufficient;
         }
+        if(newKpiData.descriptionSufficient || newKpiData.descriptionSufficient === '') {
+            kpi.descriptionSufficient = newKpiData.descriptionSufficient;
+        }
         if(newKpiData.excellent || newKpiData.excellent === 0) {
             kpi.excellent = newKpiData.excellent;
+        }
+        if(newKpiData.descriptionExcellent || newKpiData.descriptionExcellent === '') {
+            kpi.descriptionExcellent = newKpiData.descriptionExcellent;
         }
         if(newKpiData.qualitativeSettings) {
             kpi.qualitativeSettings = newKpiData.qualitativeSettings;

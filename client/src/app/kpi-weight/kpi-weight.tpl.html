@@ -34,8 +34,15 @@
             </div>
         </div>
     </div>
-    <p ng-if="!kpi.disabled">Sufficient: {{(kpi.sufficient || kpi.sufficient == 0) ? kpi.sufficient + ' '+ kpi.unit : 'not set' }}</p>
-    <p ng-if="!kpi.disabled">Excellent: {{(kpi.excellent || kpi.excellent == 0) ? kpi.excellent + ' ' + kpi.unit : 'not set' }}</p>
+    <p class="well" ng-if="!kpi.disabled">Sufficient: {{(kpi.sufficient || kpi.sufficient == 0) ? kpi.sufficient + ' '+ kpi.unit : 'not set' }}
+        <br>
+        <i>{{kpi.descriptionSufficient}}</i>
+    </p>
+    <p class="well" ng-if="!kpi.disabled">Excellent: {{(kpi.excellent || kpi.excellent == 0) ? kpi.excellent + ' ' + kpi.unit : 'not set' }}
+        <br>
+        <i>{{kpi.descriptionExcellent}}</i>
+    </p>
+
 </div>  
 <div class="modal-footer">
     <a class="btn btn-sm btn-warning" ng-click="cancel()">Cancel</a>
