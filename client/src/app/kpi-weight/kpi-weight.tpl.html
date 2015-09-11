@@ -16,7 +16,7 @@
             </div>
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group clearfix">
       <label for="quantitative-input" class="col-sm-3 control-label">Ambition </label>
       <div class="col-sm-9">
         <div class="input-group">
@@ -25,7 +25,7 @@
         </div>
       </div>
     </div>
-    <div class="form-group clearfix">
+    <!-- <div class="form-group clearfix">
         <label for="weight" class="col-sm-3 control-label">Minimum </label>
         <div class="col-sm-9">
             <div class="input-group">
@@ -33,7 +33,7 @@
                 <div class="input-group-addon">Minimum accepted in {{kpi.unit}}</div>
             </div>
         </div>
-    </div>
+    </div> -->
     <p class="well" ng-if="!kpi.disabled">Sufficient: {{(kpi.sufficient || kpi.sufficient == 0) ? kpi.sufficient + ' '+ kpi.unit : 'not set' }}
         <br>
         <i>{{kpi.descriptionSufficient}}</i>

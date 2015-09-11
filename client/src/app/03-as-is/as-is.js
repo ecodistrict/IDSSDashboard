@@ -50,6 +50,7 @@ angular.module( 'idss-dashboard.as-is', [])
     kpi.loading = true;
     kpi.status = 'initializing';
     KpiService.getKpiRecord(asIsVariant._id, kpi.kpiAlias, $scope.currentUser._id).then(function(record) {
+        delete kpi.asIsValue; // otherwise the comparison will be used in the visualisation
         angular.extend(kpi, record); 
         if(kpi.status === 'initializing' || kpi.status === 'processing') {
           kpi.loading = true;

@@ -371,6 +371,60 @@ angular.module('idss-dashboard')
             });
     };
 
+    var getBad = function(sufficient, excellent) {
+
+        if((!excellent && excellent !== 0) || (!sufficient && sufficient !== 0)) {
+            return 0;
+        } 
+        // span is a 6 out of 10
+        var span = Math.abs(sufficient - excellent) * 1.5;
+        if(sufficient >= excellent) {
+            return sufficient + span;
+        } else {
+            return sufficient - span;
+        }
+    };
+
+    var getMin = function(bad, sufficient, excellent, value) {
+      sufficient = (sufficient || sufficient === 0) ? sufficient : Infinity;
+      excellent = (excellent || excellent === 0) ? excellent : Infinity;
+      value = (value || value === 0) ? value : Infinity;
+      return Math.min(bad, Math.min(sufficient, Math.min(excellent, value)));
+    };
+
+    var getMax = function(bad, sufficient, excellent, value) {
+      sufficient = (sufficient || sufficient === 0) ? sufficient : -Infinity;
+      excellent = (excellent || excellent === 0) ? excellent : -Infinity;
+      value = (value || value === 0) ? value : -Infinity;
+      return Math.max(bad, Math.max(sufficient, Math.max(excellent, value)));
+    };
+
+    var setKpiColor = function(kpi) {
+        var sufficient = kpi.sufficient,
+            excellent = kpi.excellent,
+            value = kpi.value,
+            bad = getBad(sufficient, excellent),
+            min = getMin(bad, sufficient, excellent, value),
+            max = getMax(bad, sufficient, excellent, value),
+            right, left, color;
+        
+        if(excellent < sufficient) {
+            left = max;
+            right = min;
+        } else {
+            left = min;
+            right = max;
+        }
+
+        console.log(sufficient, excellent, value, bad, min, max, left, right);
+
+        color = d3.scale.linear()
+            .domain([left, (left+right)*0.5, right])
+            .range(["red", "yellow", "green"]);
+
+        kpi.color = color(value);
+    };
+
     return {
         loadKpis: loadKpis,
         createKpi: createKpi,
@@ -383,6 +437,10 @@ angular.module('idss-dashboard')
         generateQuantitativeKpiOutput: generateQuantitativeKpiOutput,
         generateQualitativeKpiSettings: generateQualitativeKpiSettings,
         deleteKpiRecords: deleteKpiRecords,
+        getBad: getBad,
+        getMin: getMin,
+        getMax: getMax,
+        setKpiColor: setKpiColor,
         //generateQuantitativeKpiSettings: generateQuantitativeKpiSettings,
         //generateToBeInput: generateToBeInput,
         //generateManualInput: generateManualInput,

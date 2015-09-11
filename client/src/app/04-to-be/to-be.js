@@ -44,7 +44,14 @@ angular.module( 'idss-dashboard.to-be', [])
     var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
     $scope.currentUser = currentUser;
     $scope.stakeholders = [];
-    $scope.isFacilitator = currentUser.role === 'Facilitator';
+    // REFACTOR THIS - mess with "current user", facilitator, active user.
+    var isFacilitator = $scope.isFacilitator = (currentUser.role === 'Facilitator');
+    var facilitatorId = null;
+    if(isFacilitator) {
+      // currentUser is overridden after getStakeholders for the selection list
+      // TODO: better to separate currentUser and selectedUser...
+      facilitatorId = currentUser._id;
+    }
 
     var init = function(userId) {
       _.each(currentProcess.kpiList, function(kpi) {
@@ -53,12 +60,17 @@ angular.module( 'idss-dashboard.to-be', [])
         kpi.status = 'initializing';
         kpi.weight = 3; // default weight if kpi record does not exist
         KpiService.getKpiRecord(toBeVariant._id, kpi.kpiAlias, userId).then(function(record) {
-          angular.extend(kpi, record); 
-          if(kpi.status === 'initializing' || kpi.status === 'processing') {
-            kpi.loading = true;
-          } else {
-            kpi.loading = false;
-          }
+          KpiService.getKpiRecord(asIsVariant._id, kpi.kpiAlias, facilitatorId).then(function(asIsRecord) {
+            kpi.asIsValue = asIsRecord.value;
+            angular.extend(kpi, record);
+            KpiService.setKpiColor(kpi);
+            console.log(kpi.color);
+            if(kpi.status === 'initializing' || kpi.status === 'processing') {
+              kpi.loading = true;
+            } else {
+              kpi.loading = false;
+            }
+          });
         });
       });
     };

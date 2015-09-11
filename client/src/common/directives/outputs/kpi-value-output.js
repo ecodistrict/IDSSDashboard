@@ -1,4 +1,4 @@
-angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$timeout', function($compile, $timeout) {
+angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$timeout', 'KpiService', function($compile, $timeout, KpiService) {
 
 /* jshint ignore:start */
 
@@ -11,6 +11,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
               sufficient,
               excellent,
               value,
+              asIsValue,
               width = 0,
               height = 0,
               tickFormat = null;
@@ -20,8 +21,8 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
             g.each(function(d, i) {
 
                 var g = d3.select(this);
-                var max = getMax(bad, sufficient, excellent, value); 
-                var min = getMin(bad, sufficient, excellent, value); 
+                var max = KpiService.getMax(bad, sufficient, excellent, value); 
+                var min = KpiService.getMin(bad, sufficient, excellent, value); 
                 var left, right, measures = [];
                 if(excellent < sufficient) {
                   left = max;
@@ -113,41 +114,86 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
               measure.enter().append("rect")
                   .attr("class", function(d, i) { return "measure s" + i; })
                   .attr("width", x0)
-                  .attr("height", height / 3)
+                  .attr("height", height / 8 * 3)
                   .attr("fill", color)
                   .attr("x", x0)
-                  .attr("y", height / 3);
+                  .attr("y", height / 8 * 2);
 
               measure.transition()
                   .duration(duration)
                   .attr("width", x1)
-                  .attr("height", height / 3)
+                  .attr("height", height / 8 * 3)
                   .attr("x", x1(left))
                   .attr("fill", color)
-                  .attr("y", height / 3);
+                  .attr("y", height / 8* 2);
 
 
               // Update the marker lines.
-              var marker = g.selectAll("line.marker")
-                  .data([value]);
+              // var marker = g.selectAll("line.marker")
+              //     .data([value]);
 
-              marker.enter().append("line")
-                  .attr("class", "marker")
-                  .attr("x1", x0)
-                  .attr("x2", x0)
-                  .attr("y1", height / 6)
-                  .attr("y2", height * 5 / 6)
-                .transition()
-                  .duration(duration)
-                  .attr("x1", x1)
-                  .attr("x2", x1);
+              // marker.enter().append("line")
+              //     .attr("class", "marker")
+              //     .attr("x1", x0)
+              //     .attr("x2", x0)
+              //     .attr("y1", height / 8 * 2)
+              //     .attr("y2", height / 8 * 5)
+              //   .transition()
+              //     .duration(duration)
+              //     .attr("x1", x1)
+              //     .attr("x2", x1);
 
-              marker.transition()
+              // marker.transition()
+              //     .duration(duration)
+              //     .attr("x1", x1)
+              //     .attr("x2", x1)
+              //     .attr("y1", height / 8 * 2)
+              //     .attr("y2", height / 8 * 5);
+
+              }
+
+              if(asIsValue || asIsValue === 0) {
+
+                // Update the measure rects.
+              var measure = g.selectAll("rect.measure-as-is")
+                  .data([asIsValue]);
+
+              measure.enter().append("rect")
+                  .attr("class", function(d, i) { return "measure s" + i; })
+                  .attr("width", x0)
+                  .attr("height", height / 8)
+                  .attr("fill", "#777")
+                  .attr("x", x0)
+                  .attr("y", height / 8 * 5);
+
+              measure.transition()
                   .duration(duration)
-                  .attr("x1", x1)
-                  .attr("x2", x1)
-                  .attr("y1", height / 6)
-                  .attr("y2", height * 5 / 6);
+                  .attr("width", x1)
+                  .attr("height", height / 8)
+                  .attr("x", x1(left))
+                  .attr("fill", "#777")
+                  .attr("y", height / 8 * 5);
+
+                var markerAsIs = g.selectAll("line.marker-as-is")
+                  .data([asIsValue]);
+
+                // markerAsIs.enter().append("line")
+                //     .attr("class", "marker-as-is")
+                //     .attr("x1", x0)
+                //     .attr("x2", x0)
+                //     .attr("y1", height / 8 * 5)
+                //     .attr("y2", height)
+                //   .transition()
+                //     .duration(duration)
+                //     .attr("x1", x1)
+                //     .attr("x2", x1);
+
+                // markerAsIs.transition()
+                //     .duration(duration)
+                //     .attr("x1", x1)
+                //     .attr("x2", x1)
+                //     .attr("y1", height / 8 * 5)
+                //     .attr("y2", height);
 
               }
 
@@ -223,6 +269,11 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
             return bullet;
           };
 
+          bullet.asIs = function(x) {
+            asIsValue = x;
+            return bullet;
+          };
+
           bullet.width = function(x) {
             width = x;
             return bullet;
@@ -256,33 +307,6 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
 
 /* jshint ignore:end */
 
-function getMin(bad, sufficient, excellent, value) {
-  sufficient = (sufficient || sufficient === 0) ? sufficient : Infinity;
-  excellent = (excellent || excellent === 0) ? excellent : Infinity;
-  value = (value || value === 0) ? value : Infinity;
-  return Math.min(bad, Math.min(sufficient, Math.min(excellent, value)));
-}
-
-function getMax(bad, sufficient, excellent, value) {
-  sufficient = (sufficient || sufficient === 0) ? sufficient : -Infinity;
-  excellent = (excellent || excellent === 0) ? excellent : -Infinity;
-  value = (value || value === 0) ? value : -Infinity;
-  return Math.max(bad, Math.max(sufficient, Math.max(excellent, value)));
-}
-
-function getBad(sufficient, excellent) {
-  if((!excellent && excellent !== 0) || (!sufficient && sufficient !== 0)) {
-    return 0;
-  } 
-  // span is a 6 out of 10
-  var span = Math.abs(sufficient - excellent) * 1.5;
-  if(sufficient >= excellent) {
-    return sufficient + span;
-  } else {
-    return sufficient - span;
-  }
-}
-
     return {
         restrict: 'E',
         scope: {
@@ -301,6 +325,7 @@ function getBad(sufficient, excellent) {
 
               // measure and marker on value
               var value = kpi.value;
+              var asIsValue = kpi.asIsValue;
 
               // ranges
               var sufficient = kpi.sufficient, excellent = kpi.excellent; 
@@ -310,7 +335,7 @@ function getBad(sufficient, excellent) {
                 return;
               }
 
-              var bad = getBad(sufficient, excellent, value);
+              var bad = KpiService.getBad(sufficient, excellent, value);
 
               var margin = {top: 15, right: 150, bottom: 15, left: 100};
               width = width - margin.left - margin.right;
@@ -322,6 +347,7 @@ function getBad(sufficient, excellent) {
                     .width(width - margin.left - 20)
                     .height(height)
                     .value(value)
+                    .asIs(asIsValue)
                     .bad(bad)
                     .sufficient(sufficient)
                     .excellent(excellent)
@@ -331,7 +357,7 @@ function getBad(sufficient, excellent) {
                     });
 
                 var data = [{
-                    title:"KPI value",
+                    title:"KPI values",
                     rangeLabels:['Bad','Excellent'],
                     measureLabels:['Current Inventory'],
                     markerLabels:['Target Inventory']
