@@ -64,7 +64,6 @@ angular.module( 'idss-dashboard.to-be', [])
             kpi.asIsValue = asIsRecord.value;
             angular.extend(kpi, record);
             KpiService.setKpiColor(kpi);
-            console.log(kpi.color);
             if(kpi.status === 'initializing' || kpi.status === 'processing') {
               kpi.loading = true;
             } else {

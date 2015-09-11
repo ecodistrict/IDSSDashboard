@@ -416,8 +416,6 @@ angular.module('idss-dashboard')
             right = max;
         }
 
-        console.log(sufficient, excellent, value, bad, min, max, left, right);
-
         color = d3.scale.linear()
             .domain([left, (left+right)*0.5, right])
             .range(["red", "yellow", "green"]);
