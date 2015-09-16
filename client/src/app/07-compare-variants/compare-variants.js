@@ -57,7 +57,7 @@ angular.module( 'idss-dashboard.compare-variants', [])
         kpiDefaultValueMap[record.variantId] = kpiDefaultValueMap[record.variantId] || {};
         if(firstStakeholder && firstStakeholder.facilitatorId === record.userId) {
           // facilitatorId, kpiAlias and variantId is unique key
-          kpiDefaultValueMap[record.variantId][record.kpiAlias] = record.value;
+          kpiDefaultValueMap[record.variantId][record.kpiAlias] = {value: record.value, disabled: record.disabled};
         }
 
         // map on variant and kpi
@@ -124,11 +124,13 @@ angular.module( 'idss-dashboard.compare-variants', [])
 
             if(kpiValueMap[user._id] && kpiValueMap[user._id][variant._id] && kpiValueMap[user._id][variant._id][kpi.kpiAlias]) {
               kpiValue = kpiValueMap[user._id][variant._id][kpi.kpiAlias].value;
-              disabled = kpiValueMap[user._id][variant._id][kpi.kpiAlias].disabled;
+              disabled = kpiValueMap[user._id][variant._id][kpi.kpiAlias].disabled; // this is for facilitator only
             } else {
               // if this is undefined not even the facilitator has given a value to the kpi (no record has been found for variant)
-              if(kpiDefaultValueMap[variant._id]) {
-                kpiValue = kpiDefaultValueMap[variant._id][kpi.kpiAlias];
+              if(kpiDefaultValueMap[variant._id] && kpiDefaultValueMap[variant._id][kpi.kpiAlias]) {
+                kpiValue = kpiDefaultValueMap[variant._id][kpi.kpiAlias].value;
+                // this is not very good, but it works for now - if no value was found for stakeholder, the disabled property can be set from the facilitator default
+                disabled = kpiDefaultValueMap[variant._id][kpi.kpiAlias].disabled; 
               }
             }
             // create kpi data
