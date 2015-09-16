@@ -21,7 +21,7 @@
                     <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
                   </h3>
                   <button ng-if="kpi.weight > 0" id="{{'set-value-' + kpi.alias}}" class="btn btn-xs btn-primary" ng-click="setWeight(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-stats"></i> Set ambition</button>
-                  <span class="label label-default" ng-if="kpi.asIsValue && kpi.weight > 0">As is {{kpi.asIsValue}} {{kpi.unit}}</span>
+                  <span class="label label-default">As is {{kpi.asIsValue || '-'}} {{kpi.unit}}</span>
                   <span class="label" ng-style="{'background-color': kpi.color}" ng-if="kpi.value && kpi.weight > 0">Ambition {{kpi.value}} {{kpi.unit}}</span>
                   <kpi-value-output ng-if="!kpi.disabled && kpi.weight > 0" kpi="kpi"></kpi-value-output>
                   <p ng-if="kpi.disabled" style="margin-top:10px" class="well">KPI <b>{{kpi.name}}</b> is not applicable for the <i>To be</i> situation</p>
