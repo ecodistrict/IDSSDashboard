@@ -61,7 +61,7 @@ angular.module( 'idss-dashboard.to-be', [])
         kpi.weight = 3; // default weight if kpi record does not exist
         KpiService.getKpiRecord(toBeVariant._id, kpi.kpiAlias, userId).then(function(record) {
           KpiService.getKpiRecord(asIsVariant._id, kpi.kpiAlias, facilitatorId).then(function(asIsRecord) {
-            kpi.asIsValue = asIsRecord.value;
+            kpi.asIsValue = asIsRecord.disabled ? undefined : asIsRecord.value;
             angular.extend(kpi, record);
             KpiService.setKpiColor(kpi);
             if(kpi.status === 'initializing' || kpi.status === 'processing') {
