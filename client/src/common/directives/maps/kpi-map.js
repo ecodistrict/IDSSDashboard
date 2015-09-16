@@ -70,7 +70,7 @@ angular.module('idss-dashboard').directive('kpiMap', ['ProcessService', '$compil
 
             function initMap() {
 
-                map = L.map('map', {zoomControl: false}).setView([51.505, -0.09], 13);
+                map = L.map('map', {zoomControl: false}).setView([49.87, 10.81], 4);
                 
                 L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.{ext}', {
                     type: 'map',
@@ -125,7 +125,7 @@ angular.module('idss-dashboard').directive('kpiMap', ['ProcessService', '$compil
 
                         layer.setStyle({
                             color: color,
-                            weight: 2,
+                            weight: 3,
                             opacity: 0.6,
                             fillOpacity: 0.1,
                             fillColor: color
@@ -142,7 +142,7 @@ angular.module('idss-dashboard').directive('kpiMap', ['ProcessService', '$compil
                         layer.on("mouseout", function (e) {
                             layer.setStyle({
                             color: color,
-                            weight: 2,
+                            weight: 3,
                             opacity: 0.6,
                             fillOpacity: 0.1,
                             fillColor: color
