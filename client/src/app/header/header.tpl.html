@@ -16,7 +16,7 @@
         <div class="collapse navbar-collapse" id="bs-navbar-collapse">
             <!-- menu default -->
             <ul ng-show="isAuthenticated" class="nav navbar-nav">
-                <li ng-show="currentUser.role == 'Stakeholder'"><a ui-sref="analyse-problem">Overview</a></li>
+                <!-- <li ng-show="currentUser.role == 'Stakeholder'"><a ui-sref="analyse-problem">Overview</a></li> -->
                 <li ng-show="currentUser.role == 'Facilitator'" class="dropdown" ng-class="{'active': highLightInMenu == 'analyse-problem'}">
                     <a class="dropdown-toggle">Analyse problem <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
@@ -33,9 +33,10 @@
                         <li><a ui-sref="collect-data">Module input</a></li>
                     </ul>
                 </li>
-                <li ng-class="{'active': highLightInMenu == 'as-is'}"><a ui-sref="as-is">As is</a></li>
+                <li ng-show="currentUser.role == 'Facilitator'" ng-class="{'active': highLightInMenu == 'as-is'}"><a ui-sref="as-is">As is</a></li>
                     
-                <li ng-class="{'active': highLightInMenu == 'to-be'}"><a ui-sref="to-be">To be</a></li>
+                <li ng-show="currentUser.role == 'Facilitator'" ng-class="{'active': highLightInMenu == 'to-be'}"><a ui-sref="to-be">To be</a></li>
+                <li ng-show="currentUser.role == 'Stakeholder'" ng-class="{'active': highLightInMenu == 'to-be'}"><a ui-sref="to-be">Set ambition</a></li>
                     
                 <li ng-show="currentUser.role == 'Facilitator'" ng-class="{'active': highLightInMenu == 'develop-variants'}"><a ui-sref="develop-variants">Develop alternatives</a></li>
                 <!-- <li class="dropdown">
