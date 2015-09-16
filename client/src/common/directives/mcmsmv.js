@@ -109,7 +109,7 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
                       weight: metadata[kpi.kpiId].weight,
                       value: kpiValue,
                       score: score,
-                      //disabled: kpi.disabled,
+                      disabled: kpi.disabled,
                       kpiIndex: metadata[kpi.kpiId].index,
                       unit: metadata[kpi.kpiId].unit || 'score',
                       count: kpiRecordsCounter
@@ -397,7 +397,7 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
               return d.stakeholder;
             },
             function(d) {
-              return d[scope.type];
+              return d.disabled ? '-' : d[scope.type];
             },
             function(d) {
               return d.weight;
@@ -439,7 +439,7 @@ angular.module('idss-dashboard').directive('mcmsmv', ['$window',function ($windo
               return d.stakeholder;
             },
             function(d) {
-              return d[scope.type];
+              return d.disabled ? '-' : d[scope.type];
             },
             function(d) {
               return d.weight;
