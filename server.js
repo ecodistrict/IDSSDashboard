@@ -147,10 +147,14 @@ if(process.env.NODE_ENV === 'production') {
 var imbConnection = new imb.TIMBConnection(imb.imbDefaultHostname, imb.imbDefaultTLSPort, 10, imbName, imb.imbDefaultPrefix, false, 
     "cert/client-eco-district.pfx", "&8dh48klosaxu90OKH", "cert/root-ca-imb.crt");
 
+// var imbConnection = new imb.TIMBConnection('cstb-temp', imb.imbDefaultTLSPort, 10, imbName, imb.imbDefaultPrefix, false, 
+//     "cert/client-eco-district.pfx", "&8dh48klosaxu90OKH", "cert/root-ca-imb.crt");
+
 var imbFrameworkPub;
 var imbFrameworkSub;
 
 if(process.env.NODE_ENV === 'production') {
+  console.log('run in production');
   imbFrameworkPub = imbConnection.publish("modules");
   imbFrameworkSub = imbConnection.subscribe("dashboard");
 } else {
