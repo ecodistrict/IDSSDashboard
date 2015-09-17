@@ -100,7 +100,7 @@ angular.module('idss-dashboard').directive('districtMap', ['$compile', 'ProcessS
 
                     element.css('width', '100%');
                     element.css('height', '100%');
-
+                    
                     var map = new ol.Map({
                         interactions: ol.interaction.defaults({mouseWheelZoom: false}),
                         layers: layers,
@@ -164,10 +164,8 @@ angular.module('idss-dashboard').directive('districtMap', ['$compile', 'ProcessS
                         if(!geometry) {
                             return;
                         }
-                        console.log(geometry);
                         var geoJsonFormat = new ol.format.GeoJSON();
                         var features = geoJsonFormat.readFeatures(geometry);
-                        console.log(features);
                         vectorSource.addFeatures(features);
                         var extent = vectorLayer.getSource().getExtent();
                         view.fitExtent(extent, map.getSize());
@@ -199,9 +197,12 @@ angular.module('idss-dashboard').directive('districtMap', ['$compile', 'ProcessS
                         
                     };
 
-                    scope.clearDistrictPolygons = function() {
+                    scope.clearDistrictPolygons = function(e) {
+                        e.stopPropagation();
+                        e.preventDefault();
                         featureOverlay.getFeatures().clear();
                         vectorSource.clear();
+                        return false;
                     };
 
                     scope.$watch('layer', function(newLayer, oldLayer) {
@@ -213,7 +214,6 @@ angular.module('idss-dashboard').directive('districtMap', ['$compile', 'ProcessS
 
                     scope.$watch('district', function(newDistrict, oldDistrict) {
                         if(newDistrict && newDistrict.geometry !== oldDistrict.geometry) {
-                            console.log(newDistrict, oldDistrict);
                             addDistrictFeatures(newDistrict.geometry);
                         }
                     });
@@ -231,8 +231,8 @@ angular.module('idss-dashboard').directive('districtMap', ['$compile', 'ProcessS
                         '<div id="button-panel" class="btn-group" ng-show="facilitator">',
                             //'<button type="button" ng-class="interaction == \'navigate\' ? \'btn-primary\' : \'btn-default\'" ng-click="addInteraction(\'navigate\')" class="btn">Navigate</button>',
                             '<button id="save-district-polygon" type="button" ng-show="interaction==\'draw\'" ng-click="saveDistrictPolygons()" class="btn btn-default">Save district</button>',
-                            '<button id="clear-district-polygon" type="button" ng-show="interaction==\'draw\'" ng-click="clearDistrictPolygons()" class="btn btn-default">Clear</button>',
-                            '<button id="edit-district-polygon" type="button" ng-show="interaction!=\'draw\'" ng-click="addInteraction(\'draw\')" class="btn btn-default">{{district.geometry ? \'Edit\' : \'Draw\'}} district boundary</button>',
+                            '<button id="clear-district-polygon" type="button" ng-show="interaction==\'draw\'" ng-click="clearDistrictPolygons($event)" class="btn btn-default">Clear</button>',
+                            '<button id="edit-district-polygon" type="button" ng-show="interaction!=\'draw\'" ng-click="addInteraction(\'draw\');" class="btn btn-default">{{district.geometry ? \'Edit\' : \'Draw\'}} district boundary</button>',
                         '</div>',
                         '<div id="layer-panel" class="btn-group dropup">',
                             '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">',
@@ -249,7 +249,6 @@ angular.module('idss-dashboard').directive('districtMap', ['$compile', 'ProcessS
                         '</div>'].join(''));
                 
                     $compile(buttonPanel)(scope);
-                    element.prepend('<label>District area of the process: </label>');
                     $(map.getTarget()).find('.ol-viewport').append(buttonPanel);
                     addDistrictFeatures(scope.district.geometry);
 
