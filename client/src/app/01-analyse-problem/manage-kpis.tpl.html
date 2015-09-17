@@ -5,8 +5,15 @@
             <div ng-repeat="kpi in kpiList" id="{{'select-kpi-' + kpi.alias}}" class="panel panel-default kpi-item" ng-click="useKpi(kpi)">
               <div class="panel-heading">
                 <h3 class="panel-title">{{kpi.name}} 
-                  <button ng-show="kpi.canDelete" id="{{'delete-kpi-' + kpi.alias}}" class="btn btn-xs btn-danger pull-right" ng-click="deleteKpi(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-trash"></i> Delete</button>
-                  <button id="{{'quick-use-kpi-' + kpi.alias}}" class="btn btn-xs btn-primary pull-right" ng-click="useKpiQuick(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-ok"></i> Use</button>
+                  <button ng-show="kpi.canDelete" id="{{'delete-kpi-' + kpi.alias}}" class="btn btn-xs btn-danger pull-right" ng-click="deleteKpi(kpi);$event.stopPropagation()">
+                    <i class="glyphicon glyphicon-trash"></i> Delete
+                  </button>
+                  <button id="{{'edit-kpi-' + kpi.alias}}" class="btn btn-xs btn-info pull-right" ng-click="addKpi(kpi);$event.stopPropagation()">
+                    <i class="glyphicon glyphicon-edit"></i> Edit
+                  </button>
+                  <button id="{{'quick-use-kpi-' + kpi.alias}}" class="btn btn-xs btn-primary pull-right" ng-click="useKpiQuick(kpi);$event.stopPropagation()">
+                    <i class="glyphicon glyphicon-ok"></i> Use
+                  </button>
                 </h3>
               </div>
               <div class="panel-body">

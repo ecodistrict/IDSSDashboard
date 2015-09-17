@@ -69,17 +69,42 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
   };
 
   // Add KPI to KPI repository
-  $scope.addKpi = function() {
+  $scope.addKpi = function(kpiToEdit) {
 
-    var kpiModal = $modal.open({
+    var config = {
       templateUrl: '01-analyse-problem/add-kpi.tpl.html',
-      controller: 'AddKpiCtrl'
-    });
+      controller: 'AddKpiCtrl',
+    };
+
+    if(kpiToEdit) {
+      config.resolve = {
+        kpi: function() {
+          return kpiToEdit;
+        }
+      };
+    }
+
+    var kpiModal = $modal.open(config);
 
     kpiModal.result.then(function (kpiToAdd) {
-      KpiService.createKpi(kpiToAdd).then(function(kpi) {
-        $scope.kpiList.push(kpi);
-      });
+      if(kpiToEdit) {
+        KpiService.updateKpi(kpiToAdd);
+        
+        // update properties on original since edit is on a copy
+        kpiToEdit.name = kpiToAdd.name;
+        kpiToEdit.description = kpiToAdd.description;
+        kpiToEdit.qualitative = kpiToAdd.qualitative;
+        kpiToEdit.unit = kpiToAdd.unit;
+        kpiToEdit.official = kpiToAdd.official;
+
+        if(kpiToAdd.updateSettings && kpiToAdd.updateSettings.updateForThisProcess) {
+          ProcessService.updateSelectedKpi(kpiToEdit);
+        }
+      } else {
+        KpiService.createKpi(kpiToAdd).then(function(kpi) {
+          $scope.kpiList.push(kpi);
+        });
+      }
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
     });

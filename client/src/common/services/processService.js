@@ -185,6 +185,20 @@ angular.module('idss-dashboard')
         }
     };
 
+    // when changing a KPI in KPI database, the process can be updated for already selected KPIs
+    var updateSelectedKpi = function(kpi) {
+        _.each(currentProcess.kpiList, function(selectedKpi) {
+            if(selectedKpi._id === kpi._id) {
+                selectedKpi.name = kpi.name;
+                selectedKpi.description = kpi.description;
+                selectedKpi.qualitative = kpi.qualitative;
+                selectedKpi.official = kpi.official;
+                selectedKpi.unit = kpi.unit;
+            }
+        });     
+        saveCurrentProcess(); 
+    };
+
 
     return {
         updateProcess: updateProcess,
@@ -196,6 +210,7 @@ angular.module('idss-dashboard')
         addKpi: addKpi,
         updateKpiSettings: updateKpiSettings,
         removeKpi: removeKpi,
-        addModuleInputSpecification: addModuleInputSpecification
+        addModuleInputSpecification: addModuleInputSpecification,
+        updateSelectedKpi: updateSelectedKpi
     };
 }]);

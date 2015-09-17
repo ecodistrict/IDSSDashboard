@@ -1,11 +1,20 @@
 angular.module( 'idss-dashboard.analyse-problem.add-kpi', [])
 
-.controller( 'AddKpiCtrl', ['$scope', '$modalInstance', 'KpiService', function AddKpiCtrl( $scope, $modalInstance, KpiService) {
+.controller( 'AddKpiCtrl', ['$scope', '$modalInstance', 'KpiService', 'kpi', function AddKpiCtrl( $scope, $modalInstance, KpiService, kpi) {
 
     $scope.kpi = {
       official: false,
       qualitative: false
     };
+
+    // for updating KPI
+    if(kpi) {
+        angular.extend($scope.kpi, kpi);
+        // if selected this will go through process and update selected KPI
+        $scope.kpi.updateSettings = {
+            updateForThisProcess: false
+        };
+    }
 
     var generateInputs = function() {
         var k = $scope.kpi;

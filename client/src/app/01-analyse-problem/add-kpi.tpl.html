@@ -47,6 +47,11 @@
               <button id="public-kpi-button" type="button" ng-class="{active: kpi.official==true}" class="btn btn-default" ng-click="kpi.official=true">Public</button>
             </div>
         </div>
+        <div class="checkbox" ng-if="kpi.updateSettings">
+            <label>
+                <input type="checkbox" ng-model="kpi.updateSettings.updateForThisProcess"> Update KPI already set for this process
+            </label>
+        </div>
     </form>
 </div>  
 <div class="modal-footer">

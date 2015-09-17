@@ -40,6 +40,21 @@ angular.module('idss-dashboard')
             });
     };
 
+    var updateKpi = function(kpiToUpdate) {
+        return $http
+            .put('kpis', kpiToUpdate)
+            .error(function(status, err) {
+                var label = 'Error when saving kpi';
+                NotificationService.createErrorStatus(label);
+            })
+            .then(function (res) {
+                var savedKpiRecord = res.data;
+                var label = 'Kpi was saved';
+                NotificationService.createSuccessStatus(label);
+                return savedKpiRecord;
+            });
+    };
+
     // // input needs to be from as-is variant
     // var getBadKpiValue = function(settings) {
     //     var bad = null;
@@ -427,6 +442,7 @@ angular.module('idss-dashboard')
         loadKpis: loadKpis,
         createKpi: createKpi,
         deleteKpi: deleteKpi,
+        updateKpi: updateKpi,
         getKpiRecord: getKpiRecord,
         updateKpiRecord: updateKpiRecord,
         removeExtendedData: removeExtendedData,
