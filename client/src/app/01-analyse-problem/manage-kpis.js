@@ -82,6 +82,10 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
           return kpiToEdit;
         }
       };
+    } else {
+      config.resolve = {
+        kpi: true // have to give the kpi truthy to the dialog...
+      };
     }
 
     var kpiModal = $modal.open(config);
@@ -89,7 +93,7 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
     kpiModal.result.then(function (kpiToAdd) {
       if(kpiToEdit) {
         KpiService.updateKpi(kpiToAdd);
-        
+
         // update properties on original since edit is on a copy
         kpiToEdit.name = kpiToAdd.name;
         kpiToEdit.description = kpiToAdd.description;

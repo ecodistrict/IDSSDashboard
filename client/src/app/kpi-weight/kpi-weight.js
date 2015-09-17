@@ -4,7 +4,7 @@ angular.module( 'idss-dashboard.kpi-weight', [])
 
     // work on a reference
     $scope.kpi = angular.copy(kpi);
-    if(kpi.qualitative) {
+    if(kpi.qualitative && kpi.qualitativeSettings && kpi.qualitativeSettings.length === 10) {
         $scope.kpi.descriptionSufficient = kpi.qualitativeSettings[4].value;
         $scope.kpi.descriptionExcellent = kpi.qualitativeSettings[0].value;
     }
