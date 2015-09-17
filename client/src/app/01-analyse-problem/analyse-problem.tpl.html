@@ -16,6 +16,7 @@
         <h2>{{currentProcess.title}}</h2>
     </div>
     <div class="row">
+        <label for="process-title">District area of the process:</label>
         <district-map id="district-map" district="currentProcess.district" facilitator="facilitator"></district-map>
     </div>
     <div ng-if="facilitator" class="row">
