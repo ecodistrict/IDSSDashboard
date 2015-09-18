@@ -238,16 +238,15 @@ angular.module('idss-dashboard').directive('geojsonMapInput', ['ProcessService',
                     epsg = data.crs.properties.name;
                 }
 
-                console.log('projection was set');
                 // set uid on every feature if not exists
                 _.each(data.features, function(f) {
                     f.properties = f.properties || {};
                     f.properties.uid = f.properties.uid || uidCount;
-                    for(var p in f.properties) {
-                        if(!/^([A-Za-z0-9\-\_]+)$/.test(p)) {
-                            alert('property ' + p + ' is not valid. This data cannot be saved in the database.');
-                        } 
-                    }
+                    // for(var p in f.properties) {
+                    //     if(!/^([A-Za-z0-9\-\_]+)$/.test(p)) {
+                    //         alert('property ' + p + ' is not valid. This data cannot be saved in the database.');
+                    //     } 
+                    // }
                     uidCount++;
                 });
                 // console.log('features uid was set');
