@@ -58,7 +58,7 @@ angular.module( 'idss-dashboard.to-be', [])
         KpiService.removeExtendedData(kpi); // in case data is already extended
         kpi.loading = true;
         kpi.status = 'initializing';
-        kpi.weight = 3; // default weight if kpi record does not exist
+        kpi.weight = 0; // default weight if kpi record does not exist
         KpiService.getKpiRecord(toBeVariant._id, kpi.kpiAlias, userId).then(function(record) {
           KpiService.getKpiRecord(asIsVariant._id, kpi.kpiAlias, facilitatorId).then(function(asIsRecord) {
             kpi.asIsValue = asIsRecord.disabled ? undefined : asIsRecord.value;
