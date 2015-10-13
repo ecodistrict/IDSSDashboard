@@ -37,7 +37,7 @@ angular.module( 'idss-dashboard.as-is', [])
   });
 }])
 
-.controller( 'AsIsController', ['$scope', '$timeout', '$sce', 'socket', '$state', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'currentProcess', 'variants', 'currentUser', function AsIsController( $scope, $timeout, $sce, socket, $state, ModuleService, $modal, KpiService, VariantService, currentProcess, variants, currentUser ) {
+.controller( 'AsIsController', ['$scope', '$timeout', '$sce', 'socket', '$state', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'currentProcess', 'variants', 'currentUser', '$window', function AsIsController( $scope, $timeout, $sce, socket, $state, ModuleService, $modal, KpiService, VariantService, currentProcess, variants, currentUser, $window ) {
 
   var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
   $scope.variants = variants; // for map
@@ -77,6 +77,11 @@ angular.module( 'idss-dashboard.as-is', [])
     if(currentUser.role === 'Facilitator') {
       $state.transitionTo('kpi', {variantId: asIsVariant._id, kpiAlias: kpi.kpiAlias, back: 'as-is'});
     }
+  };
+
+  $scope.goToCSModule = function(kpi) {
+    console.log(kpi);
+    $window.open('http://vps17642.public.cloudvps.com:3002/#?dashboard=' + kpi.kpiAlias);
   };
 
   $scope.selectMap = function() {
