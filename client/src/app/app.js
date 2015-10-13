@@ -96,17 +96,20 @@ angular.module( 'idss-dashboard', [
     
       // register event to check auth on page change
       $rootScope.$on('$stateChangeStart', function (event, next) {
-          var authorizedRoles = next.data.authorizedRoles;
-          if (!LoginService.isAuthorized(authorizedRoles)) {
-              event.preventDefault();
-              if (LoginService.isAuthenticated()) {
-                  // user is authenticated but not authorized - we could inform that
-                  // for now, send user to login
-                  $rootScope.$broadcast('event:auth-loginRequired');
-              } else {
-                  $rootScope.$broadcast('event:auth-loginRequired');
-              }
-          } 
+
+        var authorizedRoles = next.data.authorizedRoles;
+
+        if (!LoginService.isAuthorized(authorizedRoles) && next.url !== '/login') {
+              
+          event.preventDefault();
+          if (LoginService.isAuthenticated()) {
+            // user is authenticated but not authorized - we could inform that
+            // for now, send user to login
+            $rootScope.$broadcast('event:auth-loginRequired');
+          } else {
+            $rootScope.$broadcast('event:auth-loginRequired');
+          }
+        } 
       });
     };
     // if already logged in

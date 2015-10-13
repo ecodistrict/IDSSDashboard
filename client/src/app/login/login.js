@@ -26,6 +26,7 @@ angular.module( 'idss-dashboard.login', [
         username: '',
         password: ''
     };
+            
     $scope.login = function (credentials) {
         LoginService.login(credentials).then(function () {
             authService.loginConfirmed();
