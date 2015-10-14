@@ -104,6 +104,21 @@ angular.module('idss-dashboard')
         return currentProcess;
     };
 
+    // used in rare cases like testing to really update the process
+    var loadProcess = function(processId) {
+        return $http.get('processes/' + processId)
+        .error(function(status, err) {
+            var label = 'Error when loading process with ID: ' + processId;
+            NotificationService.createErrorStatus(label);
+        }).then(function (res) {
+            var process = res.data;
+            if(process) {
+                updateProcess(res.data);
+            }
+            return currentProcess;
+        });
+    };
+
     var addKpi = function(kpiToAdd) {
         var label;
         var alreadyAdded = _.find(currentProcess.kpiList, function(k) {return k.kpiAlias === kpiToAdd.alias;});
@@ -199,6 +214,17 @@ angular.module('idss-dashboard')
         saveCurrentProcess(); 
     };
 
+    var resetModuleInput = function(kpi) {
+        return $http.get('selectModule/' + kpi.moduleId + '/' + kpi.kpiAlias + '/' + kpi.processId)
+        .error(function(status, err) {
+            var label = 'Error when loading active process';
+            NotificationService.createErrorStatus(label);
+        })
+        .then(function (res) {
+            return res.data;
+        });
+    };
+
 
     return {
         updateProcess: updateProcess,
@@ -207,10 +233,12 @@ angular.module('idss-dashboard')
         createNewProcess: createNewProcess,
         deleteCurrentProcess: deleteCurrentProcess,
         getCurrentProcess: getCurrentProcess,
+        loadProcess: loadProcess,
         addKpi: addKpi,
         updateKpiSettings: updateKpiSettings,
         removeKpi: removeKpi,
         addModuleInputSpecification: addModuleInputSpecification,
-        updateSelectedKpi: updateSelectedKpi
+        updateSelectedKpi: updateSelectedKpi,
+        resetModuleInput: resetModuleInput
     };
 }]);

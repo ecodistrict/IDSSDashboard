@@ -16,6 +16,8 @@ var port = process.env.PORT || 3300;
 
 var imb = require('./lib/imb.js');
 
+var imbName, imbConnection, imbFrameworkPub, imbFrameworkSub;
+
 // *********** DB MODELS ******** //
 require('./lib/models/user');
 require('./lib/models/process');
@@ -131,27 +133,49 @@ require('./lib/routes/moduleOutput').addRoutes(app, moduleOutputRepository);
 require('./lib/routes/export').addRoutes(app, exportFile);
 require('./lib/routes/import').addRoutes(app, importFile);
 
+app.get('/selectModule/:moduleId/:kpiAlias/:processId', function(req, res) {
+  console.log(req.params);
+  var kpi = req.params;
+  if(kpi.moduleId) {
+      if(kpi.processId) {
+        var requestObj = { 
+          "type": "request",
+          "method": "selectModule",
+          "variantId": kpi.processId, 
+          "moduleId": kpi.moduleId,
+          "kpiId": kpi.kpiAlias
+        };
+        imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
+        res.status(200).json({msg: 'Request for input specification was sent to module ' + kpi.moduleId + ' for KPI ' + kpi.kpiAlias});
+      } else {
+        res.status(200).json({msg: 'No process id for selecting module: ' + kpi.kpiAlias});
+      }
+  } else {
+    res.status(200).json({msg: 'No module id selected for kpi: ' + kpi.kpiAlias});
+  }
+});
+
 app.all('/*', function(req, res) {
   res.sendfile('index.html', { root: distFolder });
 });
 
 // ****** IMB Connection ****** //
 
-var imbName;
+imbName;
 
 if(process.env.NODE_ENV === 'production') {
   imbName = 'dashboard';
 } else {
   imbName = 'dashboard-test';
 };
-var imbConnection = new imb.TIMBConnection(imb.imbDefaultHostname, imb.imbDefaultTLSPort, 10, imbName, imb.imbDefaultPrefix, false, 
+imbConnection = new imb.TIMBConnection(imb.imbDefaultHostname, imb.imbDefaultTLSPort, 10, imbName, imb.imbDefaultPrefix, false, 
     "cert/client-eco-district.pfx", "&8dh48klosaxu90OKH", "cert/root-ca-imb.crt");
 
-// var imbConnection = new imb.TIMBConnection('cstb-temp', imb.imbDefaultTLSPort, 10, imbName, imb.imbDefaultPrefix, false, 
+// imbConnection = new imb.TIMBConnection('cstb-temp', imb.imbDefaultTLSPort, 10, imbName, imb.imbDefaultPrefix, false, 
 //     "cert/client-eco-district.pfx", "&8dh48klosaxu90OKH", "cert/root-ca-imb.crt");
 
-var imbFrameworkPub;
-var imbFrameworkSub;
+imbFrameworkPub;
+imbFrameworkSub;
 
 if(process.env.NODE_ENV === 'production') {
   console.log('run in production');
