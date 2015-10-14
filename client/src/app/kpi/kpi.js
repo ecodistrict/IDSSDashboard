@@ -183,7 +183,7 @@ angular.module( 'idss-dashboard.kpi', [])
 
   $scope.setModuleInput = function(kpi) {
 
-    moduleInputModal = $modal.open({
+    var moduleInputModal = $modal.open({
         templateUrl: '02-collect-data/module-input.tpl.html',
         controller: 'ModuleInputController',
         resolve: {
