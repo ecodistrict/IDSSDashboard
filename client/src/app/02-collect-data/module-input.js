@@ -1,6 +1,6 @@
 angular.module( 'idss-dashboard.collect-data.module-input', [])
 
-.controller( 'ModuleInputController', ['$scope', '$modalInstance', 'kpi', 'ModuleService', 'VariantService', 'currentVariant', 'asIsVariant', 'currentProcess', function ModuleInputController( $scope, $modalInstance, kpi, ModuleService, VariantService, currentVariant, asIsVariant, currentProcess ) {
+.controller( 'ModuleInputController', ['$scope', '$modalInstance', 'kpi', 'ModuleService', 'VariantService', 'currentVariant', 'asIsVariant', 'currentProcess', '$modal', function ModuleInputController( $scope, $modalInstance, kpi, ModuleService, VariantService, currentVariant, asIsVariant, currentProcess, $modal ) {
 
   $scope.kpi = kpi;
   $scope.process = currentProcess;
@@ -56,6 +56,32 @@ angular.module( 'idss-dashboard.collect-data.module-input', [])
       };
     }
     $modalInstance.close(moduleInput);
+  };
+
+  $scope.resetInput = function() {
+
+    console.log('click works');
+
+    var confirm = $modal.open({
+        templateUrl: '02-collect-data/reset-input.tpl.html',
+        controller: 'ResetInputController',
+        resolve: {
+          kpi: function() {
+            console.log('resolve works');
+
+            return kpi;
+          }
+        }
+      });
+
+      confirm.result.then(function (result) {
+        // reload page with the new input spec
+        console.log(result);
+                
+      }, function () {
+        console.log('Modal dismissed at: ' + new Date());
+      });
+
   };
 
 }]);

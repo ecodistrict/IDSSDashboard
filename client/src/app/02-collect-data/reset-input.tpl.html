@@ -1,0 +1,15 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()" data-dismiss="modalInstance" aria-hidden="true">&times;</button>
+    <h3 class="kpi-title">KPI: {{kpi.name}}</h3>
+</div>
+<div class="modal-body">
+	<div class="panel"> 
+		<a id="save-module-input" class="btn btn-danger btn-sm" ng-click="reset()"><span class="glyphicon glyphicon-warning-sign"></span> Reset and delete the current input</a>
+	</div>
+	<div class="panel"> 
+		<div ng-repeat="status in statusMessages">{{status.text}} <span ng-show="status.loading" class="glyphicon glyphicon-refresh spin"></span></div>
+	</div>
+</div>
+<div class="modal-footer">
+    <a id="save-module-input" class="btn btn-primary btn-sm" ng-click="ok()">Close</a>
+</div>
