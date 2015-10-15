@@ -5,6 +5,7 @@ angular.module( 'idss-dashboard.collect-data.reset-input', [])
   $scope.kpi = kpi;
 
   $scope.reset = function () {
+
     statusMessages = $scope.statusMessages = [];
     statusMessages.push({
       text: 'Connecting to module',

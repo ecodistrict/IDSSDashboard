@@ -215,7 +215,7 @@ angular.module('idss-dashboard')
     };
 
     var resetModuleInput = function(kpi) {
-        return $http.get('selectModule/' + kpi.moduleId + '/' + kpi.kpiAlias + '/' + kpi.processId)
+        return $http.get('selectModule/' + kpi.selectedModuleId + '/' + kpi.kpiAlias + '/' + kpi.processId)
         .error(function(status, err) {
             var label = 'Error when loading active process';
             NotificationService.createErrorStatus(label);
