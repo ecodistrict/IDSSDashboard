@@ -12,10 +12,11 @@ angular.module( 'idss-dashboard.collect-data.reset-input', [])
     });
 
     $timeout(function() {
-      if(statusMessages.length === 1) {
-        statusMessages[0].loading = false;
+      // after 10 seconds the messages should be more than two if success to connect to module
+      if(statusMessages.length <= 2) {
+        statusMessages[statusMessages.length-1].loading = false;
         statusMessages.push({
-          text: 'Connection to module failed after timeout of 10 seconds. Click reset to try again or contact module vendor.'
+          text: 'Connection to module failed after timeout of 10 seconds. This indicates that the module is not currently running. Click reset to try again or contact module vendor.'
         });
       }
     }, 10000);
@@ -23,7 +24,8 @@ angular.module( 'idss-dashboard.collect-data.reset-input', [])
     ProcessService.resetModuleInput(kpi).then(function(response) {
       statusMessages[statusMessages.length-1].loading = false;
       statusMessages.push({
-        text: response.msg
+        text: response.msg,
+        loading: true
       });
     });
 
@@ -49,7 +51,6 @@ angular.module( 'idss-dashboard.collect-data.reset-input', [])
         });
       });
     });
-
 
   };
 
