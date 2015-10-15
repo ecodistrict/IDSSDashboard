@@ -142,7 +142,7 @@ app.get('/selectModule/:moduleId/:kpiAlias/:processId', function(req, res) {
           "type": "request",
           "method": "selectModule",
           "variantId": kpi.processId, 
-          "moduleId": kpi.moduleId,
+          "moduleId": kpi.moduleId, // this is called selectedModuleId in process kpi list
           "kpiId": kpi.kpiAlias
         };
         imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
@@ -225,13 +225,14 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
   });
 
   dashboardWebClientSocket.on('getModules', function(kpiList) {
-    console.log('From dashboard client: ', kpiList);
     var method = 'getModules';
+    console.log('From dashboard client: ' + method);
+
     var requestObj = {
       "type": "request",
       "method": method,
       "parameters": {
-        "kpiList": kpiList
+        "kpiList": kpiList //Kpi list is not used, it's meant for getModules for certain KPIs, like query
       }
     }
     imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
@@ -239,7 +240,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
 
   dashboardWebClientSocket.on('selectModule', function(kpi) {
     var method = 'selectModule';
-    console.log('From dashboard client: ' + method + ', data: ' + kpi.selectedModuleId);
+    console.log('From dashboard client: ' + method + ', moduleId: ' + kpi.selectedModuleId);
     if(kpi.selectedModuleId) {
       if(kpi.processId) {
         var requestObj = { 
