@@ -13,170 +13,165 @@ var httpServer = http.createServer(app);
 var imb = require('../../lib/imb.js');
 
 var moduleId = "geojson";
-var kpi = "geojson-test-kpi";
+var kpi1 = "test1";
+var kpi2 = "test2";
 
-var imbConnection = new imb.TIMBConnection();
-imbConnection.connect('imb.lohman-solutions.com', 4000, 1234, 'testModuleGeojsonInput', 'ecodistrict');
-var messageSub = imbConnection.subscribe('modelsTEST', true);
+var imbConnection = new imb.TIMBConnection(imb.imbDefaultHostname, imb.imbDefaultTLSPort, 10, "dashboard testmodule", imb.imbDefaultPrefix, false, 
+    "../../cert/client-eco-district.pfx", "&8dh48klosaxu90OKH", "../../cert/root-ca-imb.crt");
+
+imbConnection.on("onUniqueClientID", function (aUniqueClientID, aHubID) {
+    console.log('private event name: ' + imbConnection.privateEventName);
+    console.log('monitor event name: ' + imbConnection.monitorEventName);
+});
+
+imbConnection.on("onDisconnect", function (obj) {
+    console.log("disonnected");
+});
+
+var frameworkPub = imbConnection.publish("dashboardTEST");
+var frameworkSub = imbConnection.subscribe("modulesTEST");
+
+frameworkPub.onString = function(aEventEntry, aString) {
+  console.log(aEventEntry, aString);
+};
 
 var sendDashboard = function(requestObj) {
-  var request = JSON.stringify(requestObj).toString();
-  var message = imbConnection.publish('dashboardTEST', true);
-  var messageByteLength = Buffer.byteLength(request);
-  var eventPayload = new Buffer(4+messageByteLength);
-  var offset = 0;
-  eventPayload.writeInt32LE(messageByteLength, offset);
-  offset += 4;
-  eventPayload.write(request, offset);
-  message.normalEvent(imb.ekNormalEvent, eventPayload);
+  frameworkPub.signalString(JSON.stringify(requestObj).toString());
 };
 
-// getModel response
+// getModule response
 var moduleDefinition = {
-  "method": "getModels",
+  "method": "getModules",
   "type": "response",
   "name": "Geojson test module",
-  "id": moduleId,
+  "moduleId": moduleId,
   "description": "This module tests the geojson input",
-  "kpiList": [kpi]
+  "kpiList": [kpi1, kpi2]
 };
 
-// selectModel response
-var moduleInput = {
-    "method": "selectModel",
+var geojsonInputSpecification = {
+  "type": "geojson",
+  "label": "Define amenities with GeoJSON geometries"
+};
+
+// selectModule response
+var moduleInput1 = {
+    "method": "selectModule",
     "type": "response",
     "moduleId": moduleId,
-    "kpiId": kpi,
-    "inputs": [
-        {
-            "type": "geojson",
-            "geometryObject": "polygon",
-            "label": "Define buildings with GeoJSON polygon geometries",
-            "id": "buildings",
-            "inputs": [{
-                "id": "num-storeys",
-                "type": "number",
-                "label": "Number of storeys",
-                "min": 1,
-                "max": 10,
-                "value": 3
-            },{
-                "id": "glazing",
-                "type": "number",
-                "label": "Glazing area",
-                "unit": "%",
-                "min": 1,
-                "max": 100,
-                "value": 40
-            }, {
-                "id": "year-of-construction",
-                "type": "number",
-                "label": "Year of construction",
-                "min": 1400,
-                "max": 2100,
-                "value": 1930
-            }, {
-                "id": "usage",
-                "type": "select",
-                "options": [{
-                  "id": "detached",
-                  "label": "Detached house"
-                }, {
-                  "id": "block-of-flats",
-                  "label": "Block of flats"
-                }, {
-                  "id": "office",
-                  "label": "Office"
-                }],
-                "label": "Usage",
-                "value": "block-of-flats"
-            }, {
-                "id": "building-type",
-                "type": "select",
-                "options": [{
-                  "id": "concrete",
-                  "label": "Concrete"
-                }, {
-                  "id": "wood",
-                  "label": "Wooden"
-                }, {
-                  "id": "brick",
-                  "label": "Brick"
-                }],
-                "label": "Building type",
-                "value": "wood"
-            }]
-        }
-    ],
+    "kpiId": kpi1,
+    "inputSpecification": {
+      "buildings": geojsonInputSpecification,
+      "district": {
+        "type": "district-polygon",
+        "projection": "EPSG:3857"
+      },
+      "alternative": {
+        "type": "select",
+        "options": [{
+          "value": "more",
+          "label": "More park area"
+        }, {
+          "value": "default",
+          "label": "No change"
+        }, {
+          "value": "less",
+          "label": "Less park area"
+        }],
+        "label": "Source",
+        "value": "default"
+      }
+    }
 };
 
-// startModel response
-var startModel = {
-  "method": "startModel",
-  "type": "response",
-  "moduleId": moduleId
+// selectModule response
+var moduleInput2 = {
+    "method": "selectModule",
+    "type": "response",
+    "moduleId": moduleId,
+    "kpiId": kpi2,
+    "inputSpecification": {
+      "buildings": geojsonInputSpecification,
+      "district": {
+        "type": "district-polygon",
+        "projection": "EPSG:3857"
+      },
+      "alternative": {
+        "type": "select",
+        "options": [{
+          "value": "more",
+          "label": "More park area"
+        }, {
+          "value": "default",
+          "label": "No change"
+        }, {
+          "value": "less",
+          "label": "Less park area"
+        }],
+        "label": "Source",
+        "value": "default"
+      }
+    }
 };
 
-// modelResult test
-var modelResult = {
-    "method": "modelResult",
+// moduleResult test
+var moduleResult = {
+    "method": "moduleResult",
     "type": "result"
 };
 
-messageSub.onNormalEvent = function(eventDefinition, eventPayload) {
-  var offset = 0;
-  var length = eventPayload.readInt32LE(offset);
-  offset += 4;
-  var message = JSON.parse(eventPayload.toString('utf8', offset, offset + length));
-  if(message.method === 'getModels') {
-    console.log('getModels');
+frameworkSub.onString = function(aEventEntry, aString) {
+  var message = JSON.parse(aString);
+  console.log(message["method"]);
+  if(message.method === 'getModules') {
     sendDashboard(moduleDefinition);
-  } else if(message.method === 'selectModel') {
+  } else if(message.method === 'selectModule') {
+    console.log(message);
     if(message.moduleId === moduleId) {
-      moduleInput.variantId = message.variantId;
-      sendDashboard(moduleInput); 
+      
+      if(message.kpiId === 'test1') {
+        moduleInput1.variantId = message.variantId;
+        sendDashboard(moduleInput1); 
+      } else if(message.kpiId === 'test2') {
+        moduleInput2.variantId = message.variantId;
+        sendDashboard(moduleInput2); 
+      } 
     }
-  } else if(message.method === 'startModel') {
+  } else if(message.method === 'startModule') {
     if(message.moduleId === moduleId) {
-      // first send status that model started
-      startModel.status = 'processing'; 
-      startModel.kpiId = message.kpiId;
-      startModel.variantId = message.variantId;
-      sendDashboard(startModel);
-      // after calculating, send output
-      modelResult.kpiId = message.kpiId;
-      modelResult.variantId = message.variantId;
-      modelResult.moduleId = moduleId;
-      // some assumptions here!
+      var buildings = message.inputs.buildings.value;
+      var total = 0, count = 1, average;
+      var alternative = message.inputs.alternative.value;
+      var factor = alternative === 'more' ? 0.75 : alternative === 'less' ? 1.25 : 1;
 
-      console.log(message);
-      modelResult.outputs = [{
-      "type": "kpi",
-      "value": 7,
-      "info": "Mean value.."
-    },{
-      "type": "kpi-list",
-      "label": "Buildings and their heating systems",
-      "value": [
-        {
-          "kpiValue": 7,
-          "name": "Building 1"
-        },
-        {
-          "kpiValue": 8,
-          "name": "Building 2"
+      _.each(buildings.features, function(feature) {
+        var value;
+        if(feature.properties) {
+          factor = factor || 1;
+          value = 100 * factor;
+          feature.properties.kpiValue = value;
+          total += value;
+          count++;
         }
-      ]
-    },{
+      });
+
+      average = Math.round(total/count);
+
+      // after calculating, send output
+      moduleResult.kpiId = message.kpiId;
+      moduleResult.variantId = message.variantId;
+      moduleResult.moduleId = moduleId;
+      moduleResult.userId = message.userId;
+      moduleResult.status = "success";
+      moduleResult.outputs = [{
+        type: "kpi",
+        value: average
+      },{
         type: "geojson",
-        kpiProperty: "GEBHOOGTE",
-        displayProperties: [{property: "GEBHOOGTE", label: "GEB HOOGTE"}],
-        value: message.inputs[0].value
+        value: message.inputs.buildings.value
       }];
-      sendDashboard(modelResult);
-      // also send new status
-      startModel.status = 'success';
-      sendDashboard(startModel);
+
+      sendDashboard(moduleResult);
     }
   }
 };
