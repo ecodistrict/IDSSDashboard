@@ -81,7 +81,6 @@ angular.module('idss-dashboard').directive('kpiMap', ['ProcessService', '$compil
             }
 
             function getColor(bad, excellent, sufficient, value) {
-                console.log(bad, excellent, sufficient, value);
                 var color = d3.scale.linear()
                 .domain([bad, sufficient, excellent])
                 .range(["red", "yellow", "green"]);
@@ -122,7 +121,6 @@ angular.module('idss-dashboard').directive('kpiMap', ['ProcessService', '$compil
 
                         if((kpi.excellent || kpi.excellent === 0) && (kpi.sufficient || kpi.sufficient === 0) && (kpi.bad || kpi.bad === 0) && (feature.properties.kpiValue || feature.properties.kpiValue === 0)) {
                             color = getColor(kpi.bad, kpi.excellent, kpi.sufficient, feature.properties.kpiValue);
-                            console.log(color);
                         }
 
                         layer.setStyle({
