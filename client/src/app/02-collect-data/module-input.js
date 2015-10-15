@@ -75,11 +75,10 @@ angular.module( 'idss-dashboard.collect-data.module-input', [])
       });
 
       confirm.result.then(function (result) {
-        // reload page with the new input spec
-        console.log(result);
-                
+        $modalInstance.dismiss('cancel'); // close this modal to force a rerender 
       }, function () {
         console.log('Modal dismissed at: ' + new Date());
+        $modalInstance.dismiss('cancel'); 
       });
 
   };
