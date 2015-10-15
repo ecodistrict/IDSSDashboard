@@ -8,8 +8,7 @@ angular.module( 'idss-dashboard.header', [
 
         LoginService.logout().then(function() {
             $scope.isAuthenticated = LoginService.isAuthenticated();
-            $scope.$apply();
-            $state.transitionTo('login');
+            $state.reload();
         });
         
 
@@ -61,11 +60,6 @@ angular.module( 'idss-dashboard.header', [
         }, function () {
             console.log('Modal dismissed at: ' + new Date());
         });
-
-        
-
-        
-
             
 
     };
