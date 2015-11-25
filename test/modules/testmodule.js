@@ -242,8 +242,6 @@ frameworkSub.onString = function(aEventEntry, aString) {
         info: "Mean value.."
       },{
         type: "geojson",
-        kpiProperty: "GEBHOOGTE",
-        displayProperties: [{property: "GEBHOOGTE", label: "GEB HOOGTE"}],
         value: message.inputs.buildings.value
       }];
       frameworkPub.signalString(JSON.stringify(moduleResult).toString());

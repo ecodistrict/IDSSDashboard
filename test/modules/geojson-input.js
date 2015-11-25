@@ -28,8 +28,8 @@ imbConnection.on("onDisconnect", function (obj) {
     console.log("disonnected");
 });
 
-var frameworkPub = imbConnection.publish("dashboardTEST");
-var frameworkSub = imbConnection.subscribe("modulesTEST");
+var frameworkPub = imbConnection.publish("dashboard");
+var frameworkSub = imbConnection.subscribe("modules");
 
 frameworkPub.onString = function(aEventEntry, aString) {
   console.log(aEventEntry, aString);
