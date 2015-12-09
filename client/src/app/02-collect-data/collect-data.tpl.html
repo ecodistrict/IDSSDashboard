@@ -1,7 +1,19 @@
 <div class="container">
-    <div class="row">
-        
-        <h2>Collect Data</h2>
+  <div class="row">
+    <h3>Collect data</h3>
+  </div>
+  <ul class="nav nav-tabs" role="tablist" id="as-is-tabs">
+    <li role="presentation" class="active"><a href="as-is#kpilist" aria-controls="kpilist" role="tab" data-toggle="tab">
+      <i class="glyphicon glyphicon-tasks"></i>KPI list</a>
+    </li>
+    <li role="presentation">
+      <a href="as-is#kpimap" ng-click="selectMap()" aria-controls="kpimap" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-map-marker"></i> Map</a>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane fade in active" id="kpilist">
+      <div class="panel-group" role="tablist" aria-multiselectable="true">
         <div ng-show="!currentProcess.kpiList.length">No KPIs are used in this process, <a ui-sref="manage-kpis">manage KPIs here</a></div>
         <div ng-repeat="kpi in currentProcess.kpiList" id="{{'collect-data-' + kpi.kpiAlias}}" class="panel panel-primary module-item">
           <div class="panel-heading">
@@ -16,14 +28,55 @@
             </div>
           </div>
         </div>
-        
+      </div>
     </div>
-    <div class="row">
-        <form role="form">
-          <div class="form-group">
-            <button class="btn btn-primary pull-left" ui-sref="define-context"><span class="glyphicon glyphicon-chevron-left"></span> Previous</button>
-            <button class="pull-right btn btn-primary" ui-sref="as-is">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
-          </div>
-        </form>
+    <div class="tab-pane fade" id="kpimap">
+      <kpi-map kpi-list="currentProcess.kpiList" variant-list="variants" selected-variant="currentVariant" trig="trig"></kpi-map>
     </div>
+  </div>
+  <div class="row">
+    <h3>Upload file</h3>
+    <input type="file" nv-file-select="" uploader="uploader" />
+    <table ng-show="uploader.queue.length > 0" class="table">
+        <thead>
+            <tr>
+                <th width="50%">Name</th>
+                <th ng-show="uploader.isHTML5">Size</th>
+                <th ng-show="uploader.isHTML5">Progress</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in uploader.queue">
+                <td><strong>{{ item.file.name }}</strong></td>
+                <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                <td ng-show="uploader.isHTML5">
+                    <div class="progress" style="margin-bottom: 0;">
+                        <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                    </div>
+                </td>
+                <td class="text-center">
+                    <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                    <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                    <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+                </td>
+                <td nowrap>
+                    <button id="fileupload-submit-button" type="button" class="btn btn-success btn-xs" ng-click="uploadFile(item)" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                        <span class="glyphicon glyphicon-upload"></span> Upload
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+  </div>
+
+  <div class="row">
+      <form role="form">
+        <div class="form-group">
+          <button class="btn btn-primary pull-left" ui-sref="define-context"><span class="glyphicon glyphicon-chevron-left"></span> Previous</button>
+          <button class="pull-right btn btn-primary" ui-sref="as-is">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
+        </div>
+      </form>
+  </div>
 </div>

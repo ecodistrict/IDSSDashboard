@@ -34,9 +34,26 @@ angular.module( 'idss-dashboard.collect-data', [
   });
 }])
 
-.controller( 'CollectDataCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', 'currentProcess', 'ModuleService', function CollectDataCtrl( $scope, KpiService, ProcessService, $modal, currentProcess, ModuleService ) {
+.controller( 'CollectDataCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', 'currentProcess', 'ModuleService', 'FileUploader', function CollectDataCtrl( $scope, KpiService, ProcessService, $modal, currentProcess, ModuleService, FileUploader) {
 
   $scope.currentProcess = currentProcess;
+
+  var uploader = $scope.uploader = new FileUploader({
+      url: 'import/geojson'
+  });
+
+  $scope.uploadFile = function(item) {
+      item.upload();
+  };
+
+  uploader.onSuccessItem = function(item, response, status, headers) {
+      console.info('Success');
+      $scope.dataSource = response.data; // this triggers update in other directives that listens on input (geojson for ex)
+  };
+
+  uploader.onErrorItem = function(item, response, status, headers) {};
+
+  uploader.onCancelItem = function(item, response, status, headers) {};
 
   // TODO: create modal to upload files to process, this data is used for every module
 
