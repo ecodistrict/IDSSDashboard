@@ -168,14 +168,12 @@ if(process.env.NODE_ENV === 'production') {
 } else {
   imbName = 'dashboard-test';
 };
+
 imbConnection = new imb.TIMBConnection(imb.imbDefaultHostname, imb.imbDefaultTLSPort, 10, imbName, imb.imbDefaultPrefix, false, 
     "cert/client-eco-district.pfx", "&8dh48klosaxu90OKH", "cert/root-ca-imb.crt");
 
 // imbConnection = new imb.TIMBConnection('cstb-temp', imb.imbDefaultTLSPort, 10, imbName, imb.imbDefaultPrefix, false, 
 //     "cert/client-eco-district.pfx", "&8dh48klosaxu90OKH", "cert/root-ca-imb.crt");
-
-imbFrameworkPub;
-imbFrameworkSub;
 
 if(process.env.NODE_ENV === 'production') {
   console.log('run in production');
@@ -194,6 +192,11 @@ imbConnection.on("onUniqueClientID", function (aUniqueClientID, aHubID) {
 
 imbConnection.on("onDisconnect", function (obj) {
   console.log("disonnected");
+  process.exit();
+});
+
+imbConnection.on("onSocketClose", function (obj) {
+  console.log("socket closed");
   process.exit();
 });
 
