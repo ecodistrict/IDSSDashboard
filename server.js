@@ -260,32 +260,47 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     }
   });
 
-  dashboardWebClientSocket.on('startModule', function(module) {
-    kpiRecordRepository.getModuleInputFramework(module, function(err, moduleInput) {
-      if(err) {
-        dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
-      } else {
+  // dashboardWebClientSocket.on('startModule', function(module) {
+  //   kpiRecordRepository.getModuleInputFramework(module, function(err, moduleInput) {
+  //     if(err) {
+  //       dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
+  //     } else {
 
-        kpiRecordRepository.saveKpiRecordStatus(module, function(err) {
-          if(err) {
-            dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
-          } else {
-            var method = 'startModule';
-            console.log('From dashboard client: ' + method + ' data: ' + module);
-            var requestObj = {
-              "type": "request",
-              "method": method,
-              "userId": module.userId,
-              "moduleId": module.moduleId,
-              "variantId": module.variantId,
-              "kpiId": module.kpiAlias,
-              "inputs": moduleInput.inputs
-            };
-            imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
-          }
-        });
-      }
-    });
+  //       kpiRecordRepository.saveKpiRecordStatus(module, function(err) {
+  //         if(err) {
+  //           dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
+  //         } else {
+  //           var method = 'startModule';
+  //           console.log('From dashboard client: ' + method + ' data: ' + module);
+  //           var requestObj = {
+  //             "type": "request",
+  //             "method": method,
+  //             "userId": module.userId,
+  //             "moduleId": module.moduleId,
+  //             "variantId": module.variantId,
+  //             "kpiId": module.kpiAlias,
+  //             "inputs": moduleInput.inputs
+  //           };
+  //           imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
+  //         }
+  //       });
+  //     }
+  //   });
+  // });
+
+  dashboardWebClientSocket.on('startModule', function(module) {
+    var method = 'startModule';
+    console.log('From dashboard client: ' + method + ' data: ' + module);
+    var requestObj = {
+      "type": "request",
+      "method": method,
+      "userId": module.userId,
+      "moduleId": module.moduleId,
+      "caseId": module.caseId,
+      "variantId": module.variantId,
+      "kpiId": module.kpiAlias
+    };
+    imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
   });
 
   dashboardWebClientSocket.on('mcmsmv', function(module) {
@@ -325,14 +340,14 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
       } else if(message.method === 'startModule') {
         console.log('startmodule from modules');
         dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
-        kpiRecordRepository.saveKpiRecordStatus(message, function(err, success) {
-          if(err) {
-            console.log(err);
-            io.to(err.userId).emit("frameworkError", JSON.stringify(err));
-          } else {
-            io.to(success.userId).emit(message.method, message);
-          }
-        });
+        //kpiRecordRepository.saveKpiRecordStatus(message, function(err, success) {
+          // if(err) {
+          //   console.log(err);
+          //   io.to(err.userId).emit("frameworkError", JSON.stringify(err));
+          // } else {
+            io.to(message.userId).emit(message.method, message);
+          // }
+        //});
         
       } else if(message.method === 'moduleResult') {
         console.log('moduleresult from modules');
