@@ -26,6 +26,7 @@
     "mongoose": "~3.8.0",
     "passport": "^0.2.0",
     "passport-local": "^1.0.0",
+    "pg": "^4.4.3",
     "proj4": "^2.3.5",
     "request": "^2.45.0",
     "shortid": "^2.0.1",
