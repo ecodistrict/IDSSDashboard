@@ -189,13 +189,8 @@ if(process.env.NODE_ENV === 'production') {
   imbFrameworkSub = imbConnection.subscribe("dashboardTEST");
 };
 
-imbConnection.on("onUniqueClientID", function (aUniqueClientID, aHubID) {
-  console.log('private event name: ' + imbConnection.privateEventName);
-  console.log('monitor event name: ' + imbConnection.monitorEventName);
-});
-
 imbConnection.on("onDisconnect", function (obj) {
-  console.log("disonnected");
+  console.log("disconnected. kill process");
   process.exit();
 });
 
