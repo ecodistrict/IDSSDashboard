@@ -133,7 +133,7 @@ require('./lib/routes/variant').addRoutes(app, variantRepository);
 require('./lib/routes/moduleOutput').addRoutes(app, moduleOutputRepository);
 require('./lib/routes/export').addRoutes(app, exportFile);
 require('./lib/routes/import').addRoutes(app, importFile);
-require('./lib/routes/datamodule').addRoutes(app, dataModule);
+require('./lib/routes/dataModule').addRoutes(app, dataModule);
 
 app.get('/selectModule/:moduleId/:kpiAlias/:processId', function(req, res) {
   console.log(req.params);
