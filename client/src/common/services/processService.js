@@ -225,6 +225,18 @@ angular.module('idss-dashboard')
         });
     };
 
+    var getProcessGeojson = function () {
+        return $http
+            .get('datamodule')
+            .error(function(status, err) {
+                var label = 'Error when getting process data';
+                NotificationService.createErrorStatus(label);
+            })
+            .then(function (res) {
+                return res.data;
+            });
+    };
+
 
     return {
         updateProcess: updateProcess,
@@ -239,6 +251,7 @@ angular.module('idss-dashboard')
         removeKpi: removeKpi,
         addModuleInputSpecification: addModuleInputSpecification,
         updateSelectedKpi: updateSelectedKpi,
-        resetModuleInput: resetModuleInput
+        resetModuleInput: resetModuleInput,
+        getProcessGeojson: getProcessGeojson
     };
 }]);

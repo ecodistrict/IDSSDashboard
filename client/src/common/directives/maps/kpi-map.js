@@ -141,12 +141,13 @@ angular.module('idss-dashboard').directive('kpiMap', ['ProcessService', '$compil
 
                         layer.on("mouseout", function (e) {
                             layer.setStyle({
-                            color: color,
-                            weight: 3,
-                            opacity: 0.6,
-                            fillOpacity: 0.1,
-                            fillColor: color
-                        }); 
+                                color: color,
+                                weight: 3,
+                                opacity: 0.6,
+                                fillOpacity: 0.1,
+                                fillColor: color
+                            }); 
+                            
                             scope.selectedFeature = null;
                             scope.$digest();
 

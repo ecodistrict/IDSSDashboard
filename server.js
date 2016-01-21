@@ -122,6 +122,7 @@ var kpiRepository = require('./lib/kpi');
 var kpiRecordRepository = require('./lib/kpiRecord');
 var variantRepository = require('./lib/variant');
 var moduleOutputRepository = require('./lib/moduleOutput');
+var dataModule = require('./lib/dataModule');
 var exportFile = require('./lib/export');
 var importFile = require('./lib/import');
 require('./lib/routes/user').addRoutes(app, userRepository, passport);
@@ -132,6 +133,7 @@ require('./lib/routes/variant').addRoutes(app, variantRepository);
 require('./lib/routes/moduleOutput').addRoutes(app, moduleOutputRepository);
 require('./lib/routes/export').addRoutes(app, exportFile);
 require('./lib/routes/import').addRoutes(app, importFile);
+require('./lib/routes/datamodule').addRoutes(app, dataModule);
 
 app.get('/selectModule/:moduleId/:kpiAlias/:processId', function(req, res) {
   console.log(req.params);

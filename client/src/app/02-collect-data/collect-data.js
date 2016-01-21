@@ -87,6 +87,10 @@ angular.module( 'idss-dashboard.collect-data', [
     });
   };  
 
+  $scope.selectMap = function() {
+    $scope.trig = !$scope.trig;
+  };
+
   // listen on any module that was started, for updating loading status
   socket.on('startModule', function(module) {
     console.log('start module response', module);
