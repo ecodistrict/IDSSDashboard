@@ -46,7 +46,7 @@ angular.module( 'idss-dashboard.kpi', [])
   KpiService.removeExtendedData(kpi); // possible old extended data from another view
   $scope.currentUser = currentUser; // current user is loaded again.. otherwise the user is not yet loaded when reloading page.. 
   $stateParams.back = $stateParams.back || 'compare-variants';
-  var backState = $stateParams.back.split('/')[0];
+  var backState = decodeURIComponent($stateParams.back).split('/')[0];
   var selectedModule;
   if(kpi && kpiRecord) {
     // extend data
