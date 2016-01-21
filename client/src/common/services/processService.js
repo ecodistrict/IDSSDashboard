@@ -177,7 +177,8 @@ angular.module('idss-dashboard')
             kpi.selectedModuleId = newKpiData.selectedModuleId;
             // send request for getting inputs from module and save that in dashboard database
             kpi.processId = currentProcess._id;
-            socket.emit('selectModule', kpi);
+            // remove select module for now
+            // socket.emit('selectModule', kpi);
         } else {
             kpi.selectedModuleId = null;
         }

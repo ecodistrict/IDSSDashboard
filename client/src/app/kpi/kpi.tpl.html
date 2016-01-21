@@ -24,9 +24,9 @@
               <i class="glyphicon glyphicon-cloud-upload"></i> Stop
             </button>
 
-            <button ng-show="!kpi.qualitative && kpi.selectedModuleId && !kpi.disabled" class="btn btn-xs btn-primary" ng-click="setModuleInput(kpi);$event.stopPropagation()">
+            <!-- <button ng-show="!kpi.qualitative && kpi.selectedModuleId && !kpi.disabled" class="btn btn-xs btn-primary" ng-click="setModuleInput(kpi);$event.stopPropagation()">
                 <i class="glyphicon glyphicon-pencil"></i> Module input
-            </button>
+            </button> -->
 
             <button ng-show="!kpi.disabled" id="{{'set-' + kpi.kpiAlias + '-button'}}" class="btn btn-xs btn-warning" ng-click="setScore(kpi);$event.stopPropagation()">
               <i class="glyphicon glyphicon-stats"></i> {{kpi.qualitative ? 'Set score' : 'Set manual'}}
