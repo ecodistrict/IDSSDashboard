@@ -104,7 +104,6 @@ angular.module('idss-dashboard')
         return currentProcess;
     };
 
-    // used in rare cases like testing to really update the process
     var loadProcess = function(processId) {
         return $http.get('processes/' + processId)
         .error(function(status, err) {
@@ -116,6 +115,16 @@ angular.module('idss-dashboard')
                 updateProcess(res.data);
             }
             return currentProcess;
+        });
+    };
+
+    var getProcesses = function() {
+        return $http.get('processes')
+        .error(function(status, err) {
+            var label = 'Error when loading processes';
+            NotificationService.createErrorStatus(label);
+        }).then(function (res) {
+            return res.data;
         });
     };
 
@@ -246,6 +255,7 @@ angular.module('idss-dashboard')
         deleteCurrentProcess: deleteCurrentProcess,
         getCurrentProcess: getCurrentProcess,
         loadProcess: loadProcess,
+        getProcesses: getProcesses,
         addKpi: addKpi,
         updateKpiSettings: updateKpiSettings,
         removeKpi: removeKpi,

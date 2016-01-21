@@ -1,9 +1,29 @@
 <div class="container">
     <div class="row">
-        <div class="col-sm-6 col-md-4 col-md-offset-4">
-            <div ng-show="currentUser.role == 'Facilitator'" class="well">
-                <a ng-click="startNewProcess()" class="btn btn-lg btn-success btn-block">Create new process</a>
+        <div class="col-sm-12 col-md-12">
+
+            <h2>My Processes</h2>
+            <div ng-repeat="process in processes" id="{{'select-process-' + process._id}}" class="panel panel-default kpi-item" ng-click="loadProcess(process)">
+              <div class="panel-heading">
+                <h3 class="panel-title panel-title-margin">{{process.title || 'No title'}} <em ng-show="process.isActive" style="color: #999">(Active)</em></h3>
+                <button id="{{'load-process-' + process.title}}" class="btn btn-xs btn-primary" ng-click="loadProcess(process);$event.stopPropagation()">
+                  <i class="glyphicon glyphicon-ok"></i> Load
+                </button>
+                <!-- <button ng-show="process.isActive" id="{{'edit-process-' + process.title}}" class="btn btn-xs btn-info" ng-click="editProcess(process);$event.stopPropagation()">
+                  <i class="glyphicon glyphicon-edit"></i> 
+                </button> -->
+                <button id="{{'delete-process-' + process.title}}" class="btn btn-xs btn-danger" ng-click="deleteProcess(process);$event.stopPropagation()">
+                  <i class="glyphicon glyphicon-trash"></i> Delete
+                </button>
+              </div>
+              <div class="panel-body">
+                {{process.description}}
+              </div>
             </div>
+
+            <button class="btn btn-primary btn-xs pull-right" ng-click="startNewProcess()">
+                <span id="add-process-button" class="glyphicon glyphicon-plus"></span> Add new decision process
+            </button>
         </div>
     </div>
 </div>

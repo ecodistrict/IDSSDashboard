@@ -72,7 +72,7 @@
             </ul>
         </div>
     </div>
-    <div ng-show="isAuthenticated && currentProcess.title" class="container-fluid sub-menu navbar-inverse">
+    <div ng-show="isAuthenticated" class="container-fluid sub-menu navbar-inverse">
         <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
                 <a class="dropdown-toggle process-dropdown">Last saved: <span ng-bind="currentProcess.dateModified | date:'HH:mm:ss'"></span> <span class="caret"></span></a>
@@ -85,7 +85,7 @@
         </ul>
         <ul class="nav navbar-nav">
             <li class="dropdown">
-                <a class="dropdown-toggle process-dropdown"><span ng-bind="currentProcess.title"></span> <span class="caret"></span></a>
+                <a class="dropdown-toggle process-dropdown"><span ng-bind="currentProcess.title || 'No title'"></span> <span class="caret"></span></a>
                 <ul ng-show="currentUser.role == 'Facilitator'" class="dropdown-menu" role="menu">
                     <!-- <li><a ui-sref="export">Export to file</a></li>
                     <li><a ui-sref="upload-process">Import from file</a></li> -->
