@@ -48,43 +48,39 @@ angular.module( 'idss-dashboard', [
     flashProvider.errorClassnames.push('alert-danger');
 }])
 
-.controller( 'AppCtrl', [ '$scope', '$rootScope', '$location', 'USER_ROLES', 'authService', 'LoginService', 'ProcessService', 'socket', 'ModuleService', '$state', 'VariantService', 'NotificationService', function AppCtrl ( $scope, $rootScope, $location, USER_ROLES, authService, LoginService, ProcessService, socket, ModuleService, $state, VariantService, NotificationService) {
+.controller( 'AppCtrl', [ '$scope', '$rootScope', '$location', 'USER_ROLES', 'authService', 'LoginService', 'CaseService', 'socket', 'ModuleService', '$state', 'VariantService', 'NotificationService', function AppCtrl ( $scope, $rootScope, $location, USER_ROLES, authService, LoginService, CaseService, socket, ModuleService, $state, VariantService, NotificationService) {
 
     var init = function(user) {
       $scope.isAuthenticated = LoginService.isAuthenticated();
       $scope.currentUser = user;
-      // while waiting for current process to load use the default empty process from process service
-      $scope.currentProcess = ProcessService.getCurrentProcess();
+      // while waiting for current case to load use the default empty case from case service
+      $scope.currentCase = CaseService.getActiveCase();
 
-      // load current process
-      ProcessService.loadCurrentProcess().then(function(currentProcess) {
-        $scope.currentProcess = currentProcess;
+      // load current case
+      CaseService.loadActiveCase().then(function(activeCase) {
+        $scope.activeCase = activeCase;
         VariantService.loadVariants().then(function(variants) {
           $scope.variants = variants;
         });
       });
+  
+      socket.emit('privateRoom', $scope.currentUser);
 
       socket.emit('getModules', {kpiList: []});
 
-      socket.emit('privateRoom', {userId: user._id});
-    
       socket.on('getModules', function(moduleData) {
         console.log(moduleData);
         ModuleService.addModule(moduleData);
       });
-
-      // should this be a global listener?
-      socket.on('selectModule', function(moduleInput) {
-        console.log('module input spec was added to dashboard server: ', moduleInput);
-        // needs to be added so that dashboard does not needs to be reloaded
-        ProcessService.addModuleInputSpecification(moduleInput);
+      
+      socket.on('frameworkError', function(err) {
+        console.log('Error from server (framework): ' + err.message);
+        NotificationService.createErrorFlash(err.message);
       });
 
-      socket.on('frameworkError', function(err) {
-        console.log('Error from server: ' + err);
-        messageObject = JSON.parse(err);
-        var label = messageObject.message;
-        NotificationService.createErrorFlash(label);
+      socket.on('dashboardError', function(err) {
+        console.log('Error from server (dashboard): ' + err.message);
+        NotificationService.createErrorFlash(err.message);
       });
 
       socket.on('frameworkActivity', function(messageObject) {

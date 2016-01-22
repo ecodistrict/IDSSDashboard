@@ -55,29 +55,6 @@ angular.module('idss-dashboard')
             });
     };
 
-    // // input needs to be from as-is variant
-    // var getBadKpiValue = function(settings) {
-    //     var bad = null;
-    //     if(settings.bad || settings.bad === 0) {
-    //         bad = settings.bad;
-    //     } else {
-    //         bad = 0; // qualitative KPI
-    //     }
-    //     return bad;
-    // };
-
-    // // input needs to be from as-is variant
-    // var getExcellentKpiValue = function(settings) {
-    //     var excellent = null;
-    //     if(settings.excellent || settings.existing === 0) {
-    //         excellent = settings.excellent;
-    //     } else {
-    //         excellent = 10; // qualitative KPI
-    //     }
-    //     return excellent;
-
-    // };
-
     var getResultKpiValue = function(kpi, cb) {
         if(kpi.qualitative) {
             //if(!kpi.outputs) {
@@ -166,100 +143,6 @@ angular.module('idss-dashboard')
         ];
     };
 
-    // var generateQuantitativeKpiSettings = function(kpi) {
-
-    //     kpi.settings = {
-    //         bad: null,
-    //         excellent: null
-    //     };
-    // };
-
-    // var generatePriorityKpiInput = function(inputSpecification, priorityValue) {
-
-    //     priorityValue = priorityValue || 3;
-
-    //     inputSpecification["priorityLabel"] = {
-    //         order: 1,
-    //         type: 'inputGroup',
-    //         label: 'Select how important this KPI is for you',
-    //         info: 'Select a value between 1 - 5 where 1 is very important and 5 is not very important',
-    //         inputs: {
-    //             "priorityValue": {
-    //                 type: 'number',
-    //                 label: 'Priority 1 - 5',
-    //                 value: priorityValue,
-    //                 min: 1,
-    //                 max: 5
-    //             }
-    //         }
-    //     };
-    // };
-
-    // var generateToBeInput = function(asIsKpi, toBeKpi) {
-    //     var bad;
-    //     var excellent;
-    //     var asIsKpiValue;
-
-    //     // qualitative can be copied straight from the reference on server when saving
-    //     if(!toBeKpi.qualitative) {
-    //         if(asIsKpi && asIsKpi.inputSpecification && asIsKpi.inputSpecification.kpiValueInputGroup) {
-    //             asIsKpiValue = asIsKpi.inputSpecification.kpiValueInputGroup.inputs.kpiValue.value;
-    //         }
-    //         bad = getBadKpiValue(asIsKpi.settings);
-    //         excellent = getExcellentKpiValue(asIsKpi.settings);
-    //         toBeKpi.inputSpecification = {
-    //             "kpiValueInputGroup": {
-    //                 type: 'inputGroup',
-    //                 order: 0,
-    //                 label: 'Select you ambition value for this KPI',
-    //                 info: 'Select a value between ' +  bad + asIsKpi.unit + '(bad) and ' + excellent + asIsKpi.unit + ' (excellent)',
-    //                 inputs: {
-    //                     "kpiValue": {
-    //                         type: 'number',
-    //                         label: 'Ambition in ' + asIsKpi.unit,
-    //                         min: bad < excellent ? bad : excellent,
-    //                         unit: asIsKpi.unit,
-    //                         max: excellent > bad ? excellent : bad,
-    //                         value: asIsKpiValue
-    //                     }
-    //                 }
-    //             }
-    //         };
-    //     } else {
-    //         toBeKpi.inputSpecification = angular.copy(asIsKpi.inputSpecification);
-    //     }
-    // };
-
-    // // for manual input as module results
-    // // inputspec is overwritten so any code using this function must save a copy of the old spec and set it back after output has been generated
-    // var generateManualInput = function(asIsKpi, moduleKpi) {
-        
-    //     var bad;
-    //     var excellent;
-    //     // qualitative can be copied straight from the reference on server when saving
-    //     if(!moduleKpi.qualitative) {
-    //         bad = getBadKpiValue(asIsKpi.settings);
-    //         excellent = getExcellentKpiValue(asIsKpi.settings);
-    //         moduleKpi.inputSpecification = {
-    //             "kpiValueInputGroup": {
-    //                 type: 'inputGroup',
-    //                 order: 0,
-    //                 label: 'Select manual result for this module',
-    //                 info: 'Select a value between ' +  bad + asIsKpi.unit + '(bad) and ' + excellent + asIsKpi.unit + ' (excellent)',
-    //                 inputs: {
-    //                     "kpiValue": {
-    //                         type: 'number',
-    //                         label: 'Value in ' + asIsKpi.unit,
-    //                         min: bad < excellent ? bad : excellent,
-    //                         unit: asIsKpi.unit,
-    //                         max: excellent > bad ? excellent : bad
-    //                     }
-    //                 }
-    //             }
-    //         };
-    //     }
-    // };
-
     var generateQualitativeKpiOutput = function(inputSpecification) {
 
         var radioInputs;
@@ -307,50 +190,50 @@ angular.module('idss-dashboard')
         return outputs;
     };
 
-    var getKpiRecord = function(variantId, kpiAlias, userId) {
+    // var getKpiRecord = function(variantId, kpiAlias, userId) {
 
-        var uri = userId ? 'kpirecords/' + variantId + '/' + kpiAlias + '/' + userId : 'kpirecords/' + variantId + '/' + kpiAlias + '/';
+    //     var uri = userId ? 'kpirecords/' + variantId + '/' + kpiAlias + '/' + userId : 'kpirecords/' + variantId + '/' + kpiAlias + '/';
 
-        return $http
-            .get(uri, {cache: false})
-            .error(function(data, status) {
-                var label = 'Error when loading outputs';
-                NotificationService.createErrorFlash(label);
-            })
-            .then(function (res) {
-                var records = res.data;
+    //     return $http
+    //         .get(uri, {cache: false})
+    //         .error(function(data, status) {
+    //             var label = 'Error when loading outputs';
+    //             NotificationService.createErrorFlash(label);
+    //         })
+    //         .then(function (res) {
+    //             var records = res.data;
 
-                if(!records || records.length === 0) {
-                    records = [
-                        {
-                            alias: kpiAlias,
-                            variantId: variantId,
-                            status: 'unprocessed'
-                        }
-                    ];
-                } else if(records.length > 1) {
-                    var label = 'Several records exists';
-                    NotificationService.createErrorFlash(label);
-                    console.log(label);
-                } 
-                return records[0];
-            });
-    };
+    //             if(!records || records.length === 0) {
+    //                 records = [
+    //                     {
+    //                         alias: kpiAlias,
+    //                         variantId: variantId,
+    //                         status: 'unprocessed'
+    //                     }
+    //                 ];
+    //             } else if(records.length > 1) {
+    //                 var label = 'Several records exists';
+    //                 NotificationService.createErrorFlash(label);
+    //                 console.log(label);
+    //             } 
+    //             return records[0];
+    //         });
+    // };
 
-    var updateKpiRecord = function(kpiToUpdate) {
-        return $http
-            .put('kpirecords', kpiToUpdate)
-            .error(function(status, err) {
-                var label = 'Error when saving kpi';
-                NotificationService.createErrorStatus(label);
-            })
-            .then(function (res) {
-                var savedKpiRecord = res.data;
-                var label = 'Kpi was saved';
-                NotificationService.createSuccessStatus(label);
-                return savedKpiRecord;
-            });
-    };
+    // var updateKpiRecord = function(kpiToUpdate) {
+    //     return $http
+    //         .put('kpirecords', kpiToUpdate)
+    //         .error(function(status, err) {
+    //             var label = 'Error when saving kpi';
+    //             NotificationService.createErrorStatus(label);
+    //         })
+    //         .then(function (res) {
+    //             var savedKpiRecord = res.data;
+    //             var label = 'Kpi was saved';
+    //             NotificationService.createSuccessStatus(label);
+    //             return savedKpiRecord;
+    //         });
+    // };
 
     var removeExtendedData = function(kpi) {
         delete kpi._id;
@@ -358,33 +241,33 @@ angular.module('idss-dashboard')
         delete kpi.disabled;
     };
 
-    var getAllKpiRecords = function() {
-        return $http
-            .get('kpirecords')
-            .error(function(data, status) {
-                var label = 'Error when loading records';
-                NotificationService.createErrorFlash(label);
-            })
-            .then(function (res) {
-                var records = res.data;
-                return records;
-            });
-    };
+    // var getAllKpiRecords = function() {
+    //     return $http
+    //         .get('kpirecords')
+    //         .error(function(data, status) {
+    //             var label = 'Error when loading records';
+    //             NotificationService.createErrorFlash(label);
+    //         })
+    //         .then(function (res) {
+    //             var records = res.data;
+    //             return records;
+    //         });
+    // };
 
-    var deleteKpiRecords = function(kpi) {
-        return $http
-            .delete('kpirecords/byKpiAlias/' + kpi.kpiAlias)
-            .error(function(data, status) {
-                var label = 'Error when deleting KPI records';
-                NotificationService.createErrorFlash(label);
-            })
-            .then(function (res) {
-                var kpi = res.data;
-                var label = 'KPI records was successfully deleted';
-                NotificationService.createSuccessFlash(label);
-                return kpi;
-            });
-    };
+    // var deleteKpiRecords = function(kpi) {
+    //     return $http
+    //         .delete('kpirecords/byKpiAlias/' + kpi.kpiAlias)
+    //         .error(function(data, status) {
+    //             var label = 'Error when deleting KPI records';
+    //             NotificationService.createErrorFlash(label);
+    //         })
+    //         .then(function (res) {
+    //             var kpi = res.data;
+    //             var label = 'KPI records was successfully deleted';
+    //             NotificationService.createSuccessFlash(label);
+    //             return kpi;
+    //         });
+    // };
 
     var getBad = function(sufficient, excellent) {
 
@@ -443,21 +326,18 @@ angular.module('idss-dashboard')
         createKpi: createKpi,
         deleteKpi: deleteKpi,
         updateKpi: updateKpi,
-        getKpiRecord: getKpiRecord,
-        updateKpiRecord: updateKpiRecord,
+        //getKpiRecord: getKpiRecord,
+        //updateKpiRecord: updateKpiRecord,
         removeExtendedData: removeExtendedData,
-        getAllKpiRecords: getAllKpiRecords,
+        //getAllKpiRecords: getAllKpiRecords,
         generateQualitativeKpiOutput: generateQualitativeKpiOutput,
         generateQuantitativeKpiOutput: generateQuantitativeKpiOutput,
         generateQualitativeKpiSettings: generateQualitativeKpiSettings,
-        deleteKpiRecords: deleteKpiRecords,
+        //deleteKpiRecords: deleteKpiRecords,
         getBad: getBad,
         getMin: getMin,
         getMax: getMax,
         setKpiColor: setKpiColor,
-        //generateQuantitativeKpiSettings: generateQuantitativeKpiSettings,
-        //generateToBeInput: generateToBeInput,
-        //generateManualInput: generateManualInput,
         generateSettings: generateSettings
     };
 }]);

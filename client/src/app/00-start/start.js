@@ -22,43 +22,34 @@ angular.module( 'idss-dashboard.start', [
   });
 }])
 
-.controller( 'StartCtrl', ['$scope', 'ProcessService', '$state', function StartCtrl( $scope, ProcessService, $state ) {
+.controller( 'StartCtrl', ['$scope', 'CaseService', '$state', 'socket', 'LoginService', function StartCtrl( $scope, CaseService, $state, socket, LoginService ) {
 
-  $scope.currentProcess = currentProcess = ProcessService.getCurrentProcess();
+  var activeCase = $scope.activeCase = CaseService.loadActiveCase();
+  $scope.cases = [];
 
-  ProcessService.getProcesses().then(function(processes) {
-    _.each(processes, function(p) {
-      console.log(p._id, currentProcess._id);
-      if(p._id === currentProcess._id) {
-        p.isActive = true;
-      }
-    });
-
-    $scope.processes = processes;
-
+  CaseService.loadCases().then(function(cases) {
+    $scope.cases = cases;
   });
   
-  $scope.startNewProcess = function() {
-    ProcessService.createNewProcess().then(function(process) {
-      $scope.processes.push(process);
-      //$state.transitionTo('analyse-problem');
+  $scope.createNewCase = function() {
+    CaseService.createNewCase().then(function(createdCase) {
+      $scope.cases.push(createdCase);
     });    
   };
 
-  $scope.loadProcess = function(process) {
-    var oldProcessId = currentProcess._id;
-    ProcessService.loadProcess(process._id).then(function() {
-      _.each($scope.processes, function(p) {
-        console.log(p._id, oldProcessId, process._id);
-
-        if(p._id === process._id) {
-          p.isActive = true;
+  $scope.loadCase = function(caseToLoad) {
+    var oldCaseId = activeCase._id;
+    CaseService.loadCase(caseToLoad._id).then(function() {
+      _.each($scope.cases, function(c) {
+        if(c._id === caseToLoad._id) {
+          c.isActive = true;
         }
-        if(p._id === oldProcessId) {
-          p.isActive = false;
+        if(c._id === oldCaseId) {
+          c.isActive = false;
         }
       });
-      currentProcess = ProcessService.getCurrentProcess();
+      // the case has now been reloaded from server in service
+      activeCase = CaseService.getActiveCase();
     });
   };
 

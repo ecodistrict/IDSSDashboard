@@ -10,19 +10,19 @@ angular.module('idss-dashboard')
     };
 
     // current process is bootstrapped
-    var loader = $http
-        .get('processes/active')
-        .error(function(status, err) {
-            var label = 'Error when loading active process';
-            NotificationService.createErrorStatus(label);
-        })
-        .then(function (res) {
-            var process = res.data;
-            if(process) {
-                updateProcess(res.data);
-            }
-            return currentProcess;
-        });
+    // var loader = $http
+    //     .get('processes/active')
+    //     .error(function(status, err) {
+    //         var label = 'Error when loading active process';
+    //         NotificationService.createErrorStatus(label);
+    //     })
+    //     .then(function (res) {
+    //         var process = res.data;
+    //         if(process) {
+    //             updateProcess(res.data);
+    //         }
+    //         return currentProcess;
+    //     });
 
 
     // this function is used to set all properties of the process
@@ -37,16 +37,16 @@ angular.module('idss-dashboard')
         currentProcess.description = newProcessData.description;
     };
 
-    var loadCurrentProcess = function() {
-        var deferred;
-        if(currentProcess._id) {
-            deferred = $q.defer();
-            deferred.resolve(currentProcess);
-            return deferred.promise;
-        } else {
-            return loader;
-        }
-    };
+    // var loadCurrentProcess = function() {
+    //     var deferred;
+    //     if(currentProcess._id) {
+    //         deferred = $q.defer();
+    //         deferred.resolve(currentProcess);
+    //         return deferred.promise;
+    //     } else {
+    //         return loader;
+    //     }
+    // };
 
     var saveCurrentProcess = function () {
         return $http
@@ -250,7 +250,7 @@ angular.module('idss-dashboard')
 
     return {
         updateProcess: updateProcess,
-        loadCurrentProcess: loadCurrentProcess,
+        //loadCurrentProcess: loadCurrentProcess,
         saveCurrentProcess: saveCurrentProcess,
         createNewProcess: createNewProcess,
         deleteCurrentProcess: deleteCurrentProcess,

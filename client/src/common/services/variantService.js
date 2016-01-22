@@ -4,16 +4,16 @@ angular.module('idss-dashboard')
 
     var variants = [];
     // variants are bootstrapped
-    var loader = $http
-            .get('variants')
-            .error(function(status, data) {
-                var label = 'Error when loading variants';
-                NotificationService.createErrorFlash(label);
-            })
-            .then(function (res) {
-                variants = res.data;
-                return variants;
-            });
+    // var loader = $http
+    //         .get('variants')
+    //         .error(function(status, data) {
+    //             var label = 'Error when loading variants';
+    //             NotificationService.createErrorFlash(label);
+    //         })
+    //         .then(function (res) {
+    //             variants = res.data;
+    //             return variants;
+    //         });
 
     var getVariants = function() {
         if(variants.length === 0) {
@@ -23,9 +23,9 @@ angular.module('idss-dashboard')
         }
     };
 
-    var loadVariants = function () {
-        return loader;
-    };
+    // var loadVariants = function () {
+    //     return loader;
+    // };
 
     var loadVariant = function (variantId) {
         return $http
@@ -162,7 +162,7 @@ angular.module('idss-dashboard')
     // };
 
     return {
-        loadVariants: loadVariants,
+        //loadVariants: loadVariants,
         loadVariant: loadVariant,
         createVariant: createVariant,
         getVariants: getVariants,
