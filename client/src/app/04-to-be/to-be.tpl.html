@@ -10,7 +10,7 @@
                 </select>
               </div>
             </form>
-            <div ng-if="currentUser.role != 'Facilitator'" ng-repeat="kpi in currentProcess.kpiList" id="{{'used-kpi-' + kpi.kpiAlias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="setWeight(kpi)">
+            <div ng-if="currentUser.role != 'Facilitator'" ng-repeat="kpi in currentCase.kpiList" id="{{'used-kpi-' + kpi.kpiAlias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="setWeight(kpi)">
                 <div class="panel-heading kpi-panel-heading" id="{{'set-ambition-' + kpi.kpiAlias + '-button'}}">
                   <div class="kpi-weight-gauge-container pull-right" ng-click="setWeight(kpi);$event.stopPropagation()">
                     <kpi-weight class="kpi-weight-gauge" ng-if="!kpi.disabled" kpi="kpi"></kpi-weight>

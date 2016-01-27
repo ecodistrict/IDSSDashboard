@@ -2,7 +2,7 @@ angular.module( 'idss-dashboard.header', [
     'idss-dashboard.header.reenterpassword'
 ])
 
-.controller( 'HeaderCtrl', ['$scope', '$location', 'LoginService', '$state', '$rootScope', 'ProcessService', '$modal', 'authService', '$rootScope', function HeaderCtrl( $scope, $location, LoginService, $state, $rootScope, ProcessService, $modal, authService, $rootScope ) {
+.controller( 'HeaderCtrl', ['$scope', '$location', 'LoginService', '$state', '$rootScope', 'CaseService', '$modal', 'authService', '$rootScope', function HeaderCtrl( $scope, $location, LoginService, $state, $rootScope, CaseService, $modal, authService, $rootScope ) {
 
     $scope.logout = function() {
 
@@ -23,9 +23,9 @@ angular.module( 'idss-dashboard.header', [
     });
 
     $scope.deleteProcess = function() {
-    	ProcessService.deleteCurrentProcess().then(function() {
+    	CaseService.deleteCurrentProcess().then(function() {
     		// when loading a non existing process, a new process is created
-    		ProcessService.createNewProcess().then(function(newProcess) {
+    		CaseService.createNewProcess().then(function(newProcess) {
     			$scope.currentProcess = newProcess;
                 $state.transitionTo('start');
     		});

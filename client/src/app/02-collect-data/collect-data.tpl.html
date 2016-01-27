@@ -4,45 +4,31 @@
     <h3>Collect data</h3>
   </div>
 
-  <ul class="nav nav-tabs" role="tablist" id="as-is-tabs">
-    <li role="presentation" class="active"><a href="as-is#kpilist" aria-controls="kpilist" role="tab" data-toggle="tab">
-      <i class="glyphicon glyphicon-tasks"></i>KPI list</a>
-    </li>
-    <li role="presentation">
-      <a href="as-is#kpimap" ng-click="selectMap()" aria-controls="kpimap" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-map-marker"></i> Map</a>
-    </li>
-  </ul>
-
-  <div class="tab-content">
-    <div class="tab-pane fade in active" id="kpilist">
-      <div class="panel-group" role="tablist" aria-multiselectable="true">
-        <div ng-show="!currentProcess.kpiList.length">No KPIs are used in this process, <a ui-sref="manage-kpis">manage KPIs here</a></div>
-        <div ng-repeat="kpi in currentProcess.kpiList" id="{{'collect-data-' + kpi.kpiAlias}}" class="panel panel-primary module-item">
-          <div class="panel-heading">
-            <h3 class="panel-title">KPI: {{kpi.name}}</h3>
-          </div>
-          <div class="panel-body">
-            <div>
-               <p ng-show="kpi.selectedModuleId">Module used: {{kpi.selectedModuleId}}</p>
-               <p ng-show="!kpi.selectedModuleId && !kpi.qualitative">No module has been selected for this KPI. Select a module on <a ng-click="$event.stopPropagation()" ui-sref="manage-kpis">Select KPIs page</a> or set manual result values for "As is" and all alternatives created.</p>
-               <p ng-show="kpi.selectedModuleId && !kpi.qualitative">
-                <button id="{{'collect-data-kpi-' + kpi.alias}}" class="btn btn-xs btn-primary" ng-click="checkInputDataStatus(kpi);$event.stopPropagation()">
-                  <span ng-class="(kpi.status == 'success') ? 'glyphicon-check' : 'glyphicon-bell'" class="glyphicon"></span> 
-                  Check input status
-                </button>
-                <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
-              </p>
-               <p ng-show="kpi.info">{{kpi.info}}</p>
-               <p ng-show="kpi.qualitative">This is a qualitative KPI, no modules are used. Insert values to this KPI directly under As is, To be and variants respectively.</p>
-            </div>
-          </div>
+  
+  <div class="panel-group" role="tablist" aria-multiselectable="true">
+    <div ng-show="!currentCase.kpiList.length">No KPIs are used in this process, <a ui-sref="manage-kpis">manage KPIs here</a></div>
+    <div ng-repeat="kpi in currentCase.kpiList" id="{{'collect-data-' + kpi.kpiAlias}}" class="panel panel-primary module-item">
+      <div class="panel-heading">
+        <h3 class="panel-title">KPI: {{kpi.name}}</h3>
+      </div>
+      <div class="panel-body">
+        <div>
+           <p ng-show="kpi.selectedModuleId">Module used: {{kpi.selectedModuleId}}</p>
+           <p ng-show="!kpi.selectedModuleId && !kpi.qualitative">No module has been selected for this KPI. Select a module on <a ng-click="$event.stopPropagation()" ui-sref="manage-kpis">Select KPIs page</a> or set manual result values for "As is" and all alternatives created.</p>
+           <p ng-show="kpi.selectedModuleId && !kpi.qualitative">
+            <button id="{{'collect-data-kpi-' + kpi.alias}}" class="btn btn-xs btn-primary" ng-click="checkInputDataStatus(kpi);$event.stopPropagation()">
+              <span ng-class="(kpi.status == 'success') ? 'glyphicon-check' : 'glyphicon-bell'" class="glyphicon"></span> 
+              Check input status
+            </button>
+            <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
+          </p>
+           <p ng-show="kpi.info">{{kpi.info}}</p>
+           <p ng-show="kpi.qualitative">This is a qualitative KPI, no modules are used. Insert values to this KPI directly under As is, To be and variants respectively.</p>
         </div>
       </div>
     </div>
-    <div class="tab-pane fade" id="kpimap">
-      <collect-data-map trig="trig"></collect-data-map>
-    </div>
   </div>
+    
   <!-- <div class="row">
     <h3>Upload file</h3>
     <input type="file" nv-file-select="" uploader="uploader" />

@@ -25,9 +25,9 @@ angular.module( 'idss-dashboard.analyse-problem', [
   });
 }])
 
-.controller( 'AnalyseProblemCtrl', ['$scope', 'ProcessService', 'LoginService', 'VariantService', '$state', function AnalyseProblemCtrl( $scope, ProcessService, LoginService, VariantService, $state ) {
+.controller( 'AnalyseProblemCtrl', ['$scope', 'CaseService', 'LoginService', 'VariantService', '$state', function AnalyseProblemCtrl( $scope, CaseService, LoginService, VariantService, $state ) {
 
-  $scope.currentProcess = ProcessService.getCurrentProcess();
+  $scope.currentCase = CaseService.getActiveCase();
   var currentUser;
   LoginService.getCurrentUser().then(function(user) {
     currentUser = user;
@@ -39,9 +39,9 @@ angular.module( 'idss-dashboard.analyse-problem', [
     }
   });
 
-  $scope.updateProcess = function(logMessage){
-    ProcessService.saveCurrentProcess().then(function(process) {
-      console.log(process);
+  $scope.updateCase = function(logMessage){
+    CaseService.saveCurrentCase().then(function(savedCase) {
+      console.log(savedCase);
     });
   };
 
@@ -59,7 +59,7 @@ angular.module( 'idss-dashboard.analyse-problem', [
           lastName: $scope.stakeholder.name,
           name: $scope.stakeholder.name,
           facilitatorId: currentUser._id,
-          activeProcessId: currentUser.activeProcessId,
+          activeCaseId: currentUser.activeCaseId,
           role: 'Stakeholder',
           password: $scope.stakeholder.password,
           email: $scope.stakeholder.email

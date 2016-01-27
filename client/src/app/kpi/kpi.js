@@ -23,14 +23,14 @@ angular.module( 'idss-dashboard.kpi', [])
           return currentUser;
         });
       }],
-      currentProcess: ['ProcessService', function(ProcessService) {
-        return ProcessService.loadCurrentProcess().then(function(currentProcess) {
-          return currentProcess;
+      activeCase: ['CaseService', function(CaseService) {
+        return CaseService.loadActiveCase().then(function(activeCase) {
+          return activeCase;
         });
       }],
-      kpiRecord: ['KpiService', '$stateParams', function(KpiService, $stateParams) {
-        return KpiService.getKpiRecord($stateParams.variantId, $stateParams.kpiAlias, $stateParams.userId);
-      }],
+      // kpiRecord: ['KpiService', '$stateParams', function(KpiService, $stateParams) {
+      //   return KpiService.getKpiRecord($stateParams.variantId, $stateParams.kpiAlias, $stateParams.userId);
+      // }],
       variants: ['VariantService', function(VariantService) {
         return VariantService.loadVariants().then(function(variants) {
           return variants;
@@ -40,19 +40,17 @@ angular.module( 'idss-dashboard.kpi', [])
   });
 }])
 
-.controller( 'KpiController', ['$scope', 'socket', '$stateParams', '$state', 'kpiRecord', 'currentProcess', 'currentUser', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'ProcessService', 'variants', function KpiController( $scope, socket, $stateParams, $state, kpiRecord, currentProcess, currentUser, ModuleService, $modal, KpiService, VariantService, ProcessService, variants ) {
+.controller( 'KpiController', ['$scope', '$timeout', 'socket', '$stateParams', '$state', 'activeCase', 'currentUser', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'CaseService', 'variants', 
+  function KpiController( $scope, $timeout, socket, $stateParams, $state, activeCase, currentUser, ModuleService, $modal, KpiService, VariantService, CaseService, variants ) {
 
-  var kpi = _.find(currentProcess.kpiList, function(k) {return k.kpiAlias === $stateParams.kpiAlias;});
+  var kpi = _.find(activeCase.kpiList, function(k) {return k.kpiAlias === $stateParams.kpiAlias;});
   KpiService.removeExtendedData(kpi); // possible old extended data from another view
   $scope.currentUser = currentUser; // current user is loaded again.. otherwise the user is not yet loaded when reloading page.. 
   $stateParams.back = $stateParams.back || 'compare-variants';
   var backState = decodeURIComponent($stateParams.back).split('/')[0];
   var selectedModule;
-  if(kpi && kpiRecord) {
-    // extend data
-    angular.extend(kpi, kpiRecord);
-  }
-  kpi.processId = currentProcess._id;
+  kpi.caseId = activeCase._id;
+  kpi.status = kpi.status || 'initializing';
   if(kpi.status === 'initializing' || kpi.status === 'processing') {
     kpi.loading = true;
   }
@@ -94,9 +92,18 @@ angular.module( 'idss-dashboard.kpi', [])
       moduleId: kpi.selectedModuleId, 
       status: kpi.status,
       userId: $scope.currentUser._id, // if stakeholder id is sent in params, load data from stakeholder
-      processId: currentProcess._id
+      caseId: activeCase._id
     });
   };
+
+  socket.on('getKpiValue', function(record) {
+    if(record.status !== 'processing') {
+      kpi.loading = false;
+    }
+    if(record.kpiValue) {
+      kpi.value = record.kpiValue;
+    }
+  });
 
   // listen on any module that was started, for updating loading status
   socket.on('startModule', function(module) {
@@ -108,22 +115,22 @@ angular.module( 'idss-dashboard.kpi', [])
     }
   });
 
-  // set a new output on a kpi when output data returns
-  socket.on('moduleResult', function(module) {
-    console.log('module result', module);
+  // // set a new output on a kpi when output data returns
+  // socket.on('moduleResult', function(module) {
+  //   console.log('module result', module);
 
-    // this cancels/overrides any manual output
-    kpi.manual = false;
-    // if status changed/exists, otherwise keep old status
-    kpi.status = module.status || kpi.status;
+  //   // this cancels/overrides any manual output
+  //   kpi.manual = false;
+  //   // if status changed/exists, otherwise keep old status
+  //   kpi.status = module.status || kpi.status;
       
-    if(kpi.status !== 'processing') {
-      kpi.loading = false;
-    }
+  //   if(kpi.status !== 'processing') {
+  //     kpi.loading = false;
+  //   }
 
-    kpi.value = module.value;
+  //   kpi.value = module.value;
 
-  });
+  // });
 
   // if this is start page listen directly on socket to update module data
   socket.on('getModules', function(moduleData) {
@@ -132,6 +139,11 @@ angular.module( 'idss-dashboard.kpi', [])
       kpi.selectedModuleDescription = moduleData.description;
     }
   });
+
+  $timeout(function() {
+      kpi.status = kpi.status === 'initializing' ? 'unprocessed' : kpi.status;
+      kpi.loading = false;
+    }, 6000);
 
   $scope.stopCalculation = function(kpi) {
     kpi.status = 'unprocessed';
@@ -196,8 +208,8 @@ angular.module( 'idss-dashboard.kpi', [])
           asIsVariant: function() {
             return asIsVariant;
           },
-          currentProcess: function() {
-            return currentProcess;
+          activeCase: function() {
+            return activeCase;
           }
         }
       });
@@ -234,7 +246,7 @@ angular.module( 'idss-dashboard.kpi', [])
 
     kpiModal.result.then(function (configuredKpi) {
       // add the kpi settings and module spec kpi list in process
-      ProcessService.updateKpiSettings(configuredKpi);
+      CaseService.updateKpiSettings(configuredKpi);
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
     });

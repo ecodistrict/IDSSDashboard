@@ -18,12 +18,12 @@ angular.module( 'idss-dashboard.collect-data', [
       }
     },
     resolve:{
-      currentProcess: ['ProcessService', function(ProcessService) {
-        var p = ProcessService.getCurrentProcess();
+      currentCase: ['CaseService', function(CaseService) {
+        var p = CaseService.getActiveCase();
         if(p._id) {
           return p;
         } else {
-          return ProcessService.loadCurrentProcess();
+          return CaseService.loadActiveCase();
         }
       }],
       variants: ['VariantService', function(VariantService) {
@@ -44,10 +44,10 @@ angular.module( 'idss-dashboard.collect-data', [
   });
 }])
 
-.controller( 'CollectDataCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', 'currentProcess', 'ModuleService', 'FileUploader', 'socket', 'variants', 'currentUser', 
-  function CollectDataCtrl( $scope, KpiService, ProcessService, $modal, currentProcess, ModuleService, FileUploader, socket, variants, currentUser) {
+.controller( 'CollectDataCtrl', ['$scope', 'KpiService', 'CaseService', '$modal', 'currentCase', 'ModuleService', 'FileUploader', 'socket', 'variants', 'currentUser', 
+  function CollectDataCtrl( $scope, KpiService, CaseService, $modal, currentCase, ModuleService, FileUploader, socket, variants, currentUser) {
 
-  $scope.currentProcess = currentProcess;
+  $scope.currentCase = currentCase;
   var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
 
   // upload is disabled 
@@ -77,13 +77,13 @@ angular.module( 'idss-dashboard.collect-data', [
     kpi.loading = true;
 
     socket.emit('startModule', {
-      caseId: currentProcess._id,
+      caseId: currentCase._id,
       asIsVariantId: asIsVariant._id, // as is is needed if new alternative - if there is no input, take from as is
       kpiAlias: kpi.kpiAlias, 
       moduleId: kpi.selectedModuleId, 
       status: kpi.status,
       userId: currentUser._id, // if stakeholder id is sent in params, load data from stakeholder
-      processId: currentProcess._id
+      processId: currentCase._id
     });
   };  
 
@@ -95,7 +95,7 @@ angular.module( 'idss-dashboard.collect-data', [
   socket.on('startModule', function(module) {
     console.log('start module response', module);
 
-    var kpi = _.find(currentProcess.kpiList, function(k) {
+    var kpi = _.find(currentCase.kpiList, function(k) {
       console.log(k);
       return k.selectedModuleId === module.moduleId;
     });

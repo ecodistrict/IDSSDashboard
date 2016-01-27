@@ -18,10 +18,13 @@ angular.module( 'idss-dashboard.as-is', [])
       authorizedRoles: ['Facilitator', 'Stakeholder']
     },
     resolve:{
-      currentProcess: ['ProcessService', function(ProcessService) {
-        return ProcessService.loadCurrentProcess().then(function(currentProcess) {
-          return currentProcess;
-        });
+      activeCase: ['CaseService', function(CaseService) {
+        var p = CaseService.getActiveCase();
+        if(p._id) {
+          return p;
+        } else {
+          return CaseService.loadActiveCase();
+        }
       }],
       variants: ['VariantService', function(VariantService) {
         return VariantService.loadVariants().then(function(variants) {
@@ -37,28 +40,55 @@ angular.module( 'idss-dashboard.as-is', [])
   });
 }])
 
-.controller( 'AsIsController', ['$scope', '$timeout', '$sce', 'socket', '$state', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'currentProcess', 'variants', 'currentUser', '$window', function AsIsController( $scope, $timeout, $sce, socket, $state, ModuleService, $modal, KpiService, VariantService, currentProcess, variants, currentUser, $window ) {
+.controller( 'AsIsController', ['$scope', '$timeout', '$sce', 'socket', '$state', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'activeCase', 'variants', 'currentUser', '$window', 
+  function AsIsController( $scope, $timeout, $sce, socket, $state, ModuleService, $modal, KpiService, VariantService, activeCase, variants, currentUser, $window ) {
 
   var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
-  $scope.variants = variants; // for map
-  $scope.currentVariant = asIsVariant; // for map
-  $scope.currentProcess = currentProcess;
+  // $scope.variants = variants; // for map
+  // $scope.currentVariant = asIsVariant; // for map
+  $scope.currentCase = activeCase;
   $scope.currentUser = currentUser;
 
-  _.each(currentProcess.kpiList, function(kpi) {
+  _.each(activeCase.kpiList, function(kpi) {
     KpiService.removeExtendedData(kpi); // in case data is already extended 
     kpi.loading = true;
     kpi.status = 'initializing';
-    KpiService.getKpiRecord(asIsVariant._id, kpi.kpiAlias, $scope.currentUser._id).then(function(record) {
-        delete kpi.asIsValue; // otherwise the comparison will be used in the visualisation
-        angular.extend(kpi, record); 
-        if(kpi.status === 'initializing' || kpi.status === 'processing') {
-          kpi.loading = true;
-        } else {
-          kpi.loading = false;
-        }
+
+    socket.emit('getKpiResult', {
+      variantId: asIsVariant._id, 
+      kpiId: kpi.kpiAlias, 
+      moduleId: kpi.selectedModuleId, 
+      status: kpi.status,
+      userId: $scope.currentUser._id, // if stakeholder id is sent in params, load data from stakeholder
+      processId: activeCase._id
     });
+
+    $timeout(function() {
+      kpi.status = kpi.status === 'initializing' ? 'unprocessed' : kpi.status;
+      kpi.loading = false;
+    }, 6000);
+
+    // KpiService.getKpiRecord(asIsVariant._id, kpi.kpiAlias, $scope.currentUser._id).then(function(record) {
+    //     delete kpi.asIsValue; // otherwise the comparison will be used in the visualisation
+    //     angular.extend(kpi, record); 
+    //     if(kpi.status === 'initializing' || kpi.status === 'processing') {
+    //       kpi.loading = true;
+    //     } else {
+    //       kpi.loading = false;
+    //     }
+    // });
    
+  });
+
+  socket.on('getKpiResult', function(kpiMessage) {
+    var kpi = _.find(activeCase.kpiList, function(k) {
+      return k.kpiAlias === kpiMessage.kpiId;
+    });
+    if(kpi) {
+      kpi.value = kpiMessage.kpiValue;
+      kpi.loading = false;
+      kpi.status = kpiMessage.status;
+    }
   });
 
   $scope.getStatus = function(kpi) {

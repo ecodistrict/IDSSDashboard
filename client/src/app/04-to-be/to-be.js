@@ -18,10 +18,13 @@ angular.module( 'idss-dashboard.to-be', [])
       authorizedRoles: ['Facilitator', 'Stakeholder']
     },
     resolve:{
-      currentProcess: ['ProcessService', function(ProcessService) {
-        return ProcessService.loadCurrentProcess().then(function(currentProcess) {
-          return currentProcess;
-        });
+      activeCase: ['CaseService', function(CaseService) {
+        var p = CaseService.getActiveCase();
+        if(p._id) {
+          return p;
+        } else {
+          return CaseService.loadActiveCase();
+        }
       }],
       variants: ['VariantService', function(VariantService) {
         return VariantService.loadVariants().then(function(variants) {
@@ -37,8 +40,10 @@ angular.module( 'idss-dashboard.to-be', [])
   });
 }])
 
-.controller( 'ToBeController', ['$scope', 'currentProcess', 'currentUser', 'variants', 'VariantService', '$modal', 'KpiService', 'LoginService', 
-  function ToBeController( $scope, currentProcess, currentUser, variants, VariantService, $modal, KpiService, LoginService ) {
+.controller( 'ToBeController', ['$scope', 'socket', '$timeout', 'activeCase', 'currentUser', 'variants', 'VariantService', '$modal', 'KpiService', 'LoginService', 
+  function ToBeController( $scope, socket, $timeout, activeCase, currentUser, variants, VariantService, $modal, KpiService, LoginService ) {
+
+    $scope.currentCase = activeCase; 
 
     var toBeVariant = _.find(variants, function(v) {return v.type === 'to-be';});
     var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
@@ -54,25 +59,68 @@ angular.module( 'idss-dashboard.to-be', [])
     }
 
     var init = function(userId) {
-      _.each(currentProcess.kpiList, function(kpi) {
+
+      var kpiWeights = currentUser.kpiWeights || {};
+      kpiWeights[activeCase._id] = kpiWeights[activeCase._id] || {};
+
+      _.each(activeCase.kpiList, function(kpi) {
         KpiService.removeExtendedData(kpi); // in case data is already extended
         kpi.loading = true;
         kpi.status = 'initializing';
-        kpi.weight = 0; // default weight if kpi record does not exist
-        KpiService.getKpiRecord(toBeVariant._id, kpi.kpiAlias, userId).then(function(record) {
-          KpiService.getKpiRecord(asIsVariant._id, kpi.kpiAlias, facilitatorId).then(function(asIsRecord) {
-            kpi.asIsValue = asIsRecord.disabled ? undefined : asIsRecord.value;
-            angular.extend(kpi, record);
-            KpiService.setKpiColor(kpi);
-            if(kpi.status === 'initializing' || kpi.status === 'processing') {
-              kpi.loading = true;
-            } else {
-              kpi.loading = false;
-            }
-          });
+        kpi.weight = kpiWeights[activeCase._id][kpi.kpiAlias] || 0; // default weight if kpi record does not exist
+
+        socket.emit('getKpiResult', {
+          variantId: asIsVariant._id, 
+          kpiId: kpi.kpiAlias, 
+          moduleId: kpi.selectedModuleId, 
+          status: kpi.status,
+          userId: $scope.currentUser._id, // if stakeholder id is sent in params, load data from stakeholder
+          caseId: activeCase._id
         });
+
+        socket.emit('getKpiResult', {
+          variantId: toBeVariant._id, 
+          kpiId: kpi.kpiAlias, 
+          moduleId: kpi.selectedModuleId, 
+          status: kpi.status,
+          userId: $scope.currentUser._id, // if stakeholder id is sent in params, load data from stakeholder
+          caseId: activeCase._id
+        });
+
+        $timeout(function() {
+          kpi.status = kpi.status === 'initializing' ? 'unprocessed' : kpi.status;
+          kpi.loading = false;
+        }, 6000);
+
+        // KpiService.getKpiRecord(toBeVariant._id, kpi.kpiAlias, userId).then(function(record) {
+        //   KpiService.getKpiRecord(asIsVariant._id, kpi.kpiAlias, facilitatorId).then(function(asIsRecord) {
+        //     kpi.asIsValue = asIsRecord.disabled ? undefined : asIsRecord.value;
+        //     angular.extend(kpi, record);
+        //     KpiService.setKpiColor(kpi);
+        //     if(kpi.status === 'initializing' || kpi.status === 'processing') {
+        //       kpi.loading = true;
+        //     } else {
+        //       kpi.loading = false;
+        //     }
+        //   });
+        // });
       });
     };
+
+    socket.on('getKpiResult', function(kpiMessage) {
+      var kpi = _.find(activeCase.kpiList, function(k) {
+        return k.kpiAlias === kpiMessage.kpiId && k.variantId === kpiMessage.variantId;
+      });
+      if(kpi) {
+        if(kpiMessage.variantId === asIsVariant._id) {
+          kpi.asIsValue = kpiMessage.kpiValue;
+        } else {
+          kpi.value = kpiMessage.kpiValue;
+        }
+        kpi.loading = false;
+        kpi.status = kpiMessage.status;
+      }
+    });
 
     var getStakeholders = function() {
       LoginService.getStakeholders().then(function(stakeholders) {
@@ -131,17 +179,40 @@ angular.module( 'idss-dashboard.to-be', [])
       });
 
       kpiModal.result.then(function (configuredKpi) {
+
+        if(kpi.weight !== configuredKpi.weight) {
+
+          configuredKpi.caseId = activeCase._id;
+
+          KpiService.saveKpiWeight(configuredKpi);
+
+          // trigger update in gui
+          kpi.weight = configuredKpi.weight;
+
+        }
         
-        kpi.weight = configuredKpi.weight;
-        kpi.value = configuredKpi.value;
-        kpi.minimum = configuredKpi.minimum;
 
         // if user is changed the id needs to be correct (first time it is always the facilitator id)
         configuredKpi.userId = $scope.currentUser._id;
 
         console.log(configuredKpi);
-        
-        KpiService.updateKpiRecord(configuredKpi);
+
+        if(kpi.value !== configuredKpi.value) {
+
+          socket.emit('setKpiResult', {
+            caseId: activeCase._id,
+            variantId: toBeVariant._id,
+            kpiId: configuredKpi.kpiAlias,
+            userId: currentUser._id,
+            kpiValue: configuredKpi.value
+          });
+
+          // trigger update in gui
+          kpi.value = configuredKpi.value;
+
+        }
+          
+        //KpiService.updateKpiRecord(configuredKpi);
       }, function () {
         console.log('Modal dismissed at: ' + new Date());
       });

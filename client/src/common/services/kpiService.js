@@ -321,11 +321,28 @@ angular.module('idss-dashboard')
         kpi.color = color(value);
     };
 
+    // save the kpi weight on user
+    var saveKpiWeight = function(kpi) {
+        console.log(kpi);
+        return $http
+            .post('users/kpiweight', kpi)
+            .error(function(data, status) {
+                var label = 'Error saving weight';
+                NotificationService.createErrorFlash(label);
+            })
+            .then(function (res) {
+                var label = 'Weight was updated';
+                NotificationService.createSuccessFlash(label);
+                return kpi;
+            });
+    };
+
     return {
         loadKpis: loadKpis,
         createKpi: createKpi,
         deleteKpi: deleteKpi,
         updateKpi: updateKpi,
+        saveKpiWeight: saveKpiWeight,
         //getKpiRecord: getKpiRecord,
         //updateKpiRecord: updateKpiRecord,
         removeExtendedData: removeExtendedData,

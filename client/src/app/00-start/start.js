@@ -24,11 +24,21 @@ angular.module( 'idss-dashboard.start', [
 
 .controller( 'StartCtrl', ['$scope', 'CaseService', '$state', 'socket', 'LoginService', function StartCtrl( $scope, CaseService, $state, socket, LoginService ) {
 
-  var activeCase = $scope.activeCase = CaseService.loadActiveCase();
   $scope.cases = [];
+  $scope.activeCase = {};
 
-  CaseService.loadCases().then(function(cases) {
-    $scope.cases = cases;
+  CaseService.loadActiveCase().then(function(activeCase) {
+    
+    $scope.activeCase = activeCase;
+
+    CaseService.loadCases().then(function(cases) {
+      _.each(cases, function(c) {
+        if(c._id === $scope.activeCase._id) {
+          c.isActive = true;
+        }
+      });
+      $scope.cases = cases;
+    });
   });
   
   $scope.createNewCase = function() {
@@ -38,7 +48,7 @@ angular.module( 'idss-dashboard.start', [
   };
 
   $scope.loadCase = function(caseToLoad) {
-    var oldCaseId = activeCase._id;
+    var oldCaseId = $scope.activeCase._id;
     CaseService.loadCase(caseToLoad._id).then(function() {
       _.each($scope.cases, function(c) {
         if(c._id === caseToLoad._id) {
@@ -49,7 +59,7 @@ angular.module( 'idss-dashboard.start', [
         }
       });
       // the case has now been reloaded from server in service
-      activeCase = CaseService.getActiveCase();
+      $scope.activeCase = CaseService.getActiveCase();
     });
   };
 
