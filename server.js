@@ -212,12 +212,87 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     console.log('From dashboard client: ' + method);
 
     var requestObj = {
-      "type": "request",
-      "method": method,
-      "parameters": {
-        "kpiList": kpiList //Kpi list is not used, it's meant for getModules for certain KPIs, like query
+      type: "request",
+      method: method,
+      parameters: {
+        kpiList: kpiList //Kpi list is not used, it's meant for getModules for certain KPIs, like query
       }
     }
+    imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
+  });
+
+  dashboardWebClientSocket.on('createCase', function(caseData) {
+    var method = 'createCase';
+    console.log('From dashboard client: ' + method);
+    console.log(caseData);
+
+    var requestObj = {
+      type: "request",
+      method: method,
+      caseId: caseData.caseId,
+      userId: caseData.userId
+    }
+    imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
+  });
+
+  dashboardWebClientSocket.on('deleteCase', function(caseData) {
+    var method = 'deleteCase';
+    console.log('From dashboard client: ' + method);
+    console.log(caseData);
+
+    var requestObj = {
+      type: "request",
+      method: method,
+      caseId: caseData.caseId,
+      userId: caseData.userId
+    }
+    imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
+  });
+
+  dashboardWebClientSocket.on('createVariant', function(variantData) {
+    var method = 'createCase';
+    console.log('From dashboard client: ' + method);
+
+    var requestObj = {
+      type: "request",
+      method: method,
+      caseId: variantData.caseId,
+      variantId: variantData.variantId,
+      userId: variantData.userId
+    }
+    imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
+  });
+
+  dashboardWebClientSocket.on('getKpiResult', function(kpi) {
+    var method = 'getKpiResult';
+    console.log('From dashboard client: ' + method);
+
+    var requestObj = {
+      type: "request",
+      method: method,
+      caseId: kpi.caseId,
+      variantId: kpi.variantId,
+      userId: kpi.userId,
+      kpiId: kpi.kpiId
+    };
+
+    imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
+  });
+
+  dashboardWebClientSocket.on('setKpiResult', function(kpi) {
+    var method = 'setKpiResult';
+    console.log('From dashboard client: ' + method);
+
+    var requestObj = {
+      type: "request",
+      method: method,
+      caseId: kpi.caseId,
+      variantId: kpi.variantId,
+      userId: kpi.userId,
+      kpiId: kpi.kpiId,
+      kpiValue: kpi.kpiValue
+    };
+
     imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
   });
 
@@ -350,41 +425,17 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         case 'getModules': 
           dashboardWebClientSocket.emit(message.method, message);
           break;
-        case 'startModule':
-          dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
-          io.to(message.userId).emit(message.method, message);
-          break;
-        case 'createCase': 
-          if(message.status === 'success') {
-            caseRepository.createCase(message.userId, function(err, caseData) {
-              if(err) {
-                console.log('error creating case: ', err);
-                return io.to(err.userId).emit('dashboardError', JSON.stringify({message: 'Error creating case in dashboard'}));
-              }
-              io.to(message.userId).emit(message.method, message);
-            });
-          } else {
-            io.to(message.userId).emit('frameworkError', {message: 'Process could not be created'});
-          }
-          break;
-        case 'deleteCase':
-          if(message.status === 'success') {
-            caseRepository.deleteCase(message.caseId, message.userId, function(err, caseData) {
-              if(err) {
-                console.log('error deleting case: ', err);
-                return io.to(err.userId).emit('dashboardError', JSON.stringify({message: 'Error deleting case in dashboard'}));
-              }
-              io.to(message.userId).emit(message.method, message);
-            });
-          } else {
-            io.to(message.userId).emit('frameworkError', {message: 'Process could not be deleted'});
-          }
-          break;
         case 'mcmsmv':
           dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
           io.to(message.userId).emit(message.method, message);
         default:
-          console.log(method + ' is not a supported method for imb messages');
+          if(message.userId) {
+            console.log('send to dashboard client');
+            console.log(message);
+            io.to(message.userId).emit(message.method, message);
+          } else {
+            console.log('user id was not set');
+          }
           break;
       }
       

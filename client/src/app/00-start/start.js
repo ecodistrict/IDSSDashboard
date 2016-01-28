@@ -43,9 +43,43 @@ angular.module( 'idss-dashboard.start', [
   
   $scope.createNewCase = function() {
     CaseService.createNewCase().then(function(createdCase) {
+      socket.emit('createCase', {
+        caseId: createdCase._id,
+        userId: createdCase.userId
+      });
+      createdCase.loading = true;
       $scope.cases.push(createdCase);
     });    
   };
+
+  $scope.deleteCase = function(caseItem) {
+    caseItem.loading = true;
+    socket.emit('deleteCase', {
+      caseId: caseItem._id,
+      userId: caseItem.userId
+    });  
+  };
+
+  socket.on('deleteCase', function(message) {
+    CaseService.deleteCase({_id: message.caseId}).then(function(deletedCase) {
+      var caseItem = _.find($scope.cases, function(c) {
+        return c._id === deletedCase._id;
+      });
+      caseItem.loading = false;
+      // remove from list
+      var index = _.indexOf($scope.cases, caseItem);
+      if (index > -1) {
+          $scope.cases.splice(index, 1);
+      }
+    });  
+  });
+
+  socket.on('createCase', function(message) {
+    var caseItem = _.find($scope.cases, function(c) {
+      return c._id === message.caseId;
+    });
+    caseItem.loading = false;
+  });
 
   $scope.loadCase = function(caseToLoad) {
     var oldCaseId = $scope.activeCase._id;

@@ -44,6 +44,13 @@ angular.module( 'idss-dashboard.as-is', [])
   function AsIsController( $scope, $timeout, $sce, socket, $state, ModuleService, $modal, KpiService, VariantService, activeCase, variants, currentUser, $window ) {
 
   var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
+  if(asIsVariant.isNew) {
+    socket.emit('createVariant', {
+      userId: currentUser._id,
+      variantId: asIsVariant._id,
+      caseId: activeCase._id
+    });
+  }
   // $scope.variants = variants; // for map
   // $scope.currentVariant = asIsVariant; // for map
   $scope.currentCase = activeCase;
@@ -78,6 +85,10 @@ angular.module( 'idss-dashboard.as-is', [])
     //     }
     // });
    
+  });
+
+  socket.on('createVariant', function(message) {
+    console.log('create variant returned:', message);
   });
 
   socket.on('getKpiResult', function(kpiMessage) {

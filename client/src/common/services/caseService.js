@@ -26,6 +26,7 @@
 
         var updateCase = function(newCaseData) {
             currentCase._id = newCaseData._id;
+            currentCase.userId = newCaseData.userId;
             currentCase.dateModified = newCaseData.dateModified;
             currentCase.district = newCaseData.district; // remove reference ATT!
             currentCase.title = newCaseData.title;
@@ -76,9 +77,9 @@
                 });
         };
 
-        var deleteCurrentCase = function() {
+        var deleteCase = function(caseItem) {
             return $http
-                .delete('cases/' + currentCase._id)
+                .delete('cases/' + caseItem._id)
                 .error(function(status, data) {
                     var label = 'Error when deleting process';
                     NotificationService.createErrorFlash(label);
@@ -87,10 +88,13 @@
                     var c = res.data;
                     var label = 'Process ' + c.title + ' was successfully deleted';
                     NotificationService.createSuccessFlash(label);
-                    currentCase = {
-                        title: null,
-                        kpiList: []
-                    };
+                    // reset current case if that was deleted
+                    if(caseItem._id === currentCase._id) {
+                        currentCase = {
+                            title: null,
+                            kpiList: []
+                        };
+                    }
                     return c; 
                 });
         };
@@ -211,7 +215,7 @@
             loadActiveCase: loadActiveCase,
             saveCurrentCase: saveCurrentCase,
             createNewCase: createNewCase,
-            deleteCurrentCase: deleteCurrentCase,
+            deleteCase: deleteCase,
             getActiveCase: getActiveCase,
             loadCase: loadCase,
             loadCases: loadCases,

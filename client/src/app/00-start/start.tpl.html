@@ -3,7 +3,7 @@
         <div class="col-sm-12 col-md-12">
 
             <h2>My Processes</h2>
-            <div ng-repeat="case in cases" id="{{'select-case-' + case._id}}" class="panel panel-default kpi-item" ng-click="loadCase(case)">
+            <div ng-repeat="case in cases track by $index" id="{{'select-case-' + case._id}}" class="panel panel-default kpi-item" ng-click="loadCase(case)">
               <div class="panel-heading">
                 <h3 class="panel-title panel-title-margin">{{case.title || 'No title'}} <em ng-show="case.isActive" style="color: #999">(Active)</em></h3>
                 <button id="{{'load-case-' + case.title}}" class="btn btn-xs btn-primary" ng-click="loadCase(case);$event.stopPropagation()">
@@ -12,18 +12,26 @@
                 <!-- <button ng-show="case.isActive" id="{{'edit-case-' + case.title}}" class="btn btn-xs btn-info" ng-click="editCase(case);$event.stopPropagation()">
                   <i class="glyphicon glyphicon-edit"></i> 
                 </button> -->
-                <!-- <button id="{{'delete-case-' + case.title}}" class="btn btn-xs btn-danger" ng-click="deleteCase(case);$event.stopPropagation()">
+                <button id="{{'delete-case-' + case.title}}" class="btn btn-xs btn-danger" ng-click="deleteCase(case);$event.stopPropagation()">
                   <i class="glyphicon glyphicon-trash"></i> Delete
-                </button> -->
+                </button>
+                <span ng-show="case.loading" class="glyphicon glyphicon-refresh spin"></span>
               </div>
               <div class="panel-body">
                 {{case.description}}
               </div>
             </div>
 
-            <button class="btn btn-primary btn-xs pull-right" ng-click="startNewCase()">
+            <button class="btn btn-primary btn-xs pull-right" ng-click="createNewCase()">
                 <span id="add-case-button" class="glyphicon glyphicon-plus"></span> Add new decision process
             </button>
         </div>
+    </div>
+    <div class="row">
+        <form role="form">
+          <div class="form-group">
+            <button id="next-button" class="pull-right btn btn-primary" ui-sref="analyse-problem">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
+          </div>
+        </form>
     </div>
 </div>

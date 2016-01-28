@@ -69,6 +69,13 @@ angular.module( 'idss-dashboard.kpi', [])
   var currentVariant = $scope.currentVariant = _.find(variants, function(v) {return v._id === $stateParams.variantId;});
   var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
 
+  socket.emit('getKpiResult', {
+    kpiId: kpi.kpiAlias,
+    userId: currentUser._id,
+    caseId: activeCase._id,
+    variantId: currentVariant._id
+  });
+
   $scope.getStatus = function(kpi) {
     if(kpi.status === 'unprocessed') {
       return 'warning';
@@ -96,13 +103,19 @@ angular.module( 'idss-dashboard.kpi', [])
     });
   };
 
-  socket.on('getKpiValue', function(record) {
+  socket.on('getKpiResult', function(record) {
     if(record.status !== 'processing') {
       kpi.loading = false;
     }
     if(record.kpiValue) {
       kpi.value = record.kpiValue;
+      kpi.status = 'success';
     }
+  });
+
+  socket.on('setKpiResult', function(record) {
+    console.log('set kpi value returned:');
+    console.log(record);
   });
 
   // listen on any module that was started, for updating loading status
@@ -145,11 +158,12 @@ angular.module( 'idss-dashboard.kpi', [])
       kpi.loading = false;
     }, 6000);
 
+  // not working since introduction of data module, now only looks like it stopped calculation
   $scope.stopCalculation = function(kpi) {
     kpi.status = 'unprocessed';
     kpi.loading = false;
 
-    KpiService.updateKpiRecord(kpi); 
+    //KpiService.updateKpiRecord(kpi); 
 
     //ModuleService.updateModuleOutputStatus(kpi.variantId, kpi.moduleId, kpi.kpiAlias, kpi.status);
 
@@ -184,8 +198,19 @@ angular.module( 'idss-dashboard.kpi', [])
         configuredKpi.status = kpi.status = 'success';
         configuredKpi.loading = kpi.loading = false;
         kpi.value = configuredKpi.value;
+
+        console.log('configuredKpi');
+        console.log(configuredKpi);
+
+        socket.emit('setKpiResult', {
+          caseId: activeCase._id,
+          userId: currentUser._id,
+          kpiId: configuredKpi.kpiAlias,
+          kpiValue: configuredKpi.value,
+          variantId: currentVariant._id
+        });
         
-        KpiService.updateKpiRecord(configuredKpi);
+        //KpiService.updateKpiRecord(configuredKpi);
         
       }, function () {
         console.log('Modal dismissed at: ' + new Date());
@@ -193,42 +218,42 @@ angular.module( 'idss-dashboard.kpi', [])
 
     };
 
-  $scope.setModuleInput = function(kpi) {
+  // $scope.setModuleInput = function(kpi) {
 
-    var moduleInputModal = $modal.open({
-        templateUrl: '02-collect-data/module-input.tpl.html',
-        controller: 'ModuleInputController',
-        resolve: {
-          kpi: function() {
-            return kpi;
-          },
-          currentVariant: function() {
-            return currentVariant;
-          },
-          asIsVariant: function() {
-            return asIsVariant;
-          },
-          activeCase: function() {
-            return activeCase;
-          }
-        }
-      });
+  //   var moduleInputModal = $modal.open({
+  //       templateUrl: '02-collect-data/module-input.tpl.html',
+  //       controller: 'ModuleInputController',
+  //       resolve: {
+  //         kpi: function() {
+  //           return kpi;
+  //         },
+  //         currentVariant: function() {
+  //           return currentVariant;
+  //         },
+  //         asIsVariant: function() {
+  //           return asIsVariant;
+  //         },
+  //         activeCase: function() {
+  //           return activeCase;
+  //         }
+  //       }
+  //     });
 
-      moduleInputModal.result.then(function (moduleInput) {
-        if(moduleInput) {
-          kpi.inputs = moduleInput.inputs;
-          moduleInput.userId = $scope.currentUser._id; // only facilitator should be able to do this
-          moduleInput.status = 'unprocessed'; // input has changed
-          console.log(moduleInput);
-          kpi.status = 'unprocessed'; // update GUI
-          ModuleService.saveModuleInput(moduleInput);
-        }
+  //     moduleInputModal.result.then(function (moduleInput) {
+  //       if(moduleInput) {
+  //         kpi.inputs = moduleInput.inputs;
+  //         moduleInput.userId = $scope.currentUser._id; // only facilitator should be able to do this
+  //         moduleInput.status = 'unprocessed'; // input has changed
+  //         console.log(moduleInput);
+  //         kpi.status = 'unprocessed'; // update GUI
+  //         ModuleService.saveModuleInput(moduleInput);
+  //       }
                 
-      }, function () {
-        console.log('Modal dismissed at: ' + new Date());
-      });
+  //     }, function () {
+  //       console.log('Modal dismissed at: ' + new Date());
+  //     });
 
-    };
+  //   };
 
 
   $scope.configureKpi = function(kpi) {

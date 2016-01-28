@@ -20,6 +20,11 @@ angular.module( 'idss-dashboard.develop-variants', [
       authorizedRoles: ['Facilitator', 'Stakeholder']
     },
     resolve:{
+      currentUser: ['LoginService', function(LoginService) {
+        return LoginService.getCurrentUser().then(function(currentUser) {
+          return currentUser;
+        });
+      }],
       variants: ['VariantService', function(VariantService) {
         var v = VariantService.getVariants();
         if(v) {
@@ -32,7 +37,8 @@ angular.module( 'idss-dashboard.develop-variants', [
   });
 }])
 
-.controller( 'DevelopVariantsController', ['$scope', 'ProcessService', 'ContextService', '$modal', '$state', 'variants', 'VariantService', function DevelopVariantsController( $scope, ProcessService, ContextService, $modal, $state, variants, VariantService ) {
+.controller( 'DevelopVariantsController', ['$scope', 'socket', 'currentUser', 'ProcessService', 'ContextService', '$modal', '$state', 'variants', 'VariantService', 
+  function DevelopVariantsController( $scope, socket, currentUser, ProcessService, ContextService, $modal, $state, variants, VariantService ) {
 
   var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
   $scope.variants = variants;
@@ -56,12 +62,21 @@ angular.module( 'idss-dashboard.develop-variants', [
 
     variantModal.result.then(function (configuredVariant) {
       VariantService.createVariant(configuredVariant).then(function(createdVariant) {
+        socket.emit('createVariant', {
+          caseId: asIsVariant.caseId,
+          variantId: createdVariant._id,
+          userId: currentUser._id
+        });
         $scope.variants.push(createdVariant);
       });
     }, function () {
         console.log('Modal dismissed at: ' + new Date());
     });
   };
+
+  socket.on('createVariant', function(message) {
+    console.log('create variant returned:', message);
+  });
 
   $scope.deleteVariant = function(variant) {
     VariantService.deleteVariant(variant).then(function(deletedVariant) {
