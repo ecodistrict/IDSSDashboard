@@ -297,13 +297,13 @@ angular.module('idss-dashboard')
       return Math.max(bad, Math.max(sufficient, Math.max(excellent, value)));
     };
 
-    var setKpiColor = function(kpi) {
-        var sufficient = kpi.sufficient,
+    var setKpiColor = function(kpi, property) {
+        var refValue = kpi[property] || kpi.value,
+            sufficient = kpi.sufficient,
             excellent = kpi.excellent,
-            value = kpi.value,
             bad = getBad(sufficient, excellent),
-            min = getMin(bad, sufficient, excellent, value),
-            max = getMax(bad, sufficient, excellent, value),
+            min = getMin(bad, sufficient, excellent, refValue),
+            max = getMax(bad, sufficient, excellent, refValue),
             right, left, color;
         
         if(excellent < sufficient) {
@@ -318,7 +318,7 @@ angular.module('idss-dashboard')
             .domain([left, (left+right)*0.5, right])
             .range(["red", "yellow", "green"]);
 
-        kpi.color = color(value);
+        kpi.color = color(refValue);
     };
 
     // save the kpi weight on user
@@ -337,12 +337,29 @@ angular.module('idss-dashboard')
             });
     };
 
+    // save the kpi ambition on user
+    var saveKpiAmbition = function(kpi) {
+        console.log(kpi);
+        return $http
+            .post('users/kpiambition', kpi)
+            .error(function(data, status) {
+                var label = 'Error saving ambition';
+                NotificationService.createErrorFlash(label);
+            })
+            .then(function (res) {
+                var label = 'Ambition was updated';
+                NotificationService.createSuccessFlash(label);
+                return kpi;
+            });
+    };
+
     return {
         loadKpis: loadKpis,
         createKpi: createKpi,
         deleteKpi: deleteKpi,
         updateKpi: updateKpi,
         saveKpiWeight: saveKpiWeight,
+        saveKpiAmbition: saveKpiAmbition,
         //getKpiRecord: getKpiRecord,
         //updateKpiRecord: updateKpiRecord,
         removeExtendedData: removeExtendedData,

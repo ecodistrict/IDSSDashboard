@@ -15,6 +15,7 @@
                   <i class="glyphicon glyphicon-trash"></i> Delete alternative
                 </button>
                 <h3 class="panel-title">Alternative: {{variant.name}}</h3>
+                <span ng-show="variant.loading" class="glyphicon glyphicon-refresh spin"></span>
               </div>
               <div class="panel-body">
                 {{variant.description}}

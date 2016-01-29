@@ -6,7 +6,7 @@
             <div ng-repeat="case in cases track by $index" id="{{'select-case-' + case._id}}" class="panel panel-default kpi-item" ng-click="loadCase(case)">
               <div class="panel-heading">
                 <h3 class="panel-title panel-title-margin">{{case.title || 'No title'}} <em ng-show="case.isActive" style="color: #999">(Active)</em></h3>
-                <button id="{{'load-case-' + case.title}}" class="btn btn-xs btn-primary" ng-click="loadCase(case);$event.stopPropagation()">
+                <button id="{{'load-case-' + case.title}}" class="btn btn-xs btn-primary" ng-show="currentCase._id != case._id" ng-click="loadCase(case);$event.stopPropagation()">
                   <i class="glyphicon glyphicon-ok"></i> Load
                 </button>
                 <!-- <button ng-show="case.isActive" id="{{'edit-case-' + case.title}}" class="btn btn-xs btn-info" ng-click="editCase(case);$event.stopPropagation()">

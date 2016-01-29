@@ -71,40 +71,21 @@ angular.module( 'idss-dashboard.assess-variants', [])
       kpi.status = 'initializing';
 
       socket.emit('getKpiResult', {
-        variantId: asIsVariant._id, 
+        variantId: variantId, 
         kpiId: kpi.kpiAlias, 
         moduleId: kpi.selectedModuleId, 
         status: kpi.status,
         userId: $scope.currentUser._id, // if stakeholder id is sent in params, load data from stakeholder
-        processId: activeCase._id
+        caseId: activeCase._id
       });
 
       $timeout(function() {
         kpi.status = kpi.status === 'initializing' ? 'unprocessed' : kpi.status;
         kpi.loading = false;
       }, 6000);
-
-      // KpiService.getKpiRecord(currentVariant._id, kpi.kpiAlias).then(function(record) {
-      //     angular.extend(kpi, record); 
-      //     if(kpi.status === 'initializing' || kpi.status === 'processing') {
-      //       kpi.loading = true;
-      //     } else {
-      //       kpi.loading = false;
-      //     }
-      // });
      
     });
 
-    socket.on('getKpiResult', function(kpiMessage) {
-      var kpi = _.find(activeCase.kpiList, function(k) {
-        return k.kpiAlias === kpiMessage.kpiId;
-      });
-      if(kpi) {
-        kpi.value = kpiMessage.kpiValue;
-        kpi.loading = false;
-        kpi.status = kpiMessage.status;
-      }
-    });
   }
 
   $scope.getStatus = function(kpi) {

@@ -40,6 +40,9 @@ angular.module( 'idss-dashboard.develop-variants', [
 .controller( 'DevelopVariantsController', ['$scope', 'socket', 'currentUser', 'ProcessService', 'ContextService', '$modal', '$state', 'variants', 'VariantService', 
   function DevelopVariantsController( $scope, socket, currentUser, ProcessService, ContextService, $modal, $state, variants, VariantService ) {
 
+  socket.forward('createVariant', $scope);
+  socket.forward('deleteVariant', $scope);
+
   var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
   $scope.variants = variants;
 
@@ -67,6 +70,7 @@ angular.module( 'idss-dashboard.develop-variants', [
           variantId: createdVariant._id,
           userId: currentUser._id
         });
+        createdVariant.loading = true;
         $scope.variants.push(createdVariant);
       });
     }, function () {
@@ -74,16 +78,40 @@ angular.module( 'idss-dashboard.develop-variants', [
     });
   };
 
-  socket.on('createVariant', function(message) {
-    console.log('create variant returned:', message);
-  });
-
   $scope.deleteVariant = function(variant) {
-    VariantService.deleteVariant(variant).then(function(deletedVariant) {
-      var index = _.indexOf(variants, variant);
-      variants.splice(index, 1);
+    variant.loading = true;
+    socket.emit('deleteVariant', {
+      caseId: asIsVariant.caseId,
+      variantId: variant._id,
+      userId: currentUser._id
     });
   };
+
+  $scope.$on('socket:createVariant', function (ev, data) {
+    var variant = _.find($scope.variants, function(c) {
+      return c._id === data.variantId;
+    });
+    variant.loading = false;
+  });
+
+  $scope.$on('socket:deleteVariant', function (ev, data) {
+    console.log(data);
+    var variant = _.find($scope.variants, function(c) {
+      return c._id === data.variantId;
+    });
+
+    if(variant) {
+      VariantService.deleteVariant({_id: data.variantId}).then(function(deletedVariant) {
+        
+        variant.loading = false;
+        // remove from list
+        var index = _.indexOf($scope.variants, variant);
+        if (index > -1) {
+            $scope.variants.splice(index, 1);
+        }
+      }); 
+    }
+  });
 
 }]);
 

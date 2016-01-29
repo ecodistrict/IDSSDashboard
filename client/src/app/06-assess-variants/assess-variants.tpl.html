@@ -17,7 +17,7 @@
 <!--   <div ng-if="currentVariant" class="tab-content">
     <div class="tab-pane fade in active" id="kpilist"> -->
       <div ng-if="currentVariant" class="panel-group" role="tablist" aria-multiselectable="true">
-        <div ng-repeat="kpi in currentCase.kpiList | orderBy:'-weight'" id="{{'set-' + kpi.kpiAlias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="goToKpiPage(kpi)">
+        <div ng-repeat="kpi in activeCase.kpiList | orderBy:'-weight'" id="{{'set-' + kpi.kpiAlias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="goToKpiPage(kpi)">
             <div class="panel-heading kpi-panel-heading" role="tab">
               <h4 class="panel-title">
                 <b ng-bind="kpi.name"></b> <i>(status: {{kpi.status}})</i>
@@ -30,7 +30,7 @@
       </div>
     <!-- </div> -->
     <!-- <div class="tab-pane fade" id="kpimap">
-      <kpi-map kpi-list="currentCase.kpiList" variant-list="variants" selected-variant="currentVariant" trig="trig"></kpi-map>
+      <kpi-map kpi-list="activeCase.kpiList" variant-list="variants" selected-variant="currentVariant" trig="trig"></kpi-map>
     </div> -->
   <!-- </div> -->
 

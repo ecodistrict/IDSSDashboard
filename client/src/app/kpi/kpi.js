@@ -73,6 +73,7 @@ angular.module( 'idss-dashboard.kpi', [])
     kpiId: kpi.kpiAlias,
     userId: currentUser._id,
     caseId: activeCase._id,
+    moduleId: kpi.selectedModuleId,
     variantId: currentVariant._id
   });
 
@@ -102,56 +103,6 @@ angular.module( 'idss-dashboard.kpi', [])
       caseId: activeCase._id
     });
   };
-
-  socket.on('getKpiResult', function(record) {
-    if(record.status !== 'processing') {
-      kpi.loading = false;
-    }
-    if(record.kpiValue) {
-      kpi.value = record.kpiValue;
-      kpi.status = 'success';
-    }
-  });
-
-  socket.on('setKpiResult', function(record) {
-    console.log('set kpi value returned:');
-    console.log(record);
-  });
-
-  // listen on any module that was started, for updating loading status
-  socket.on('startModule', function(module) {
-    console.log('start module', module);
-      
-    kpi.status = module.status;
-    if(kpi.status !== 'processing') {
-      kpi.loading = false;
-    }
-  });
-
-  // // set a new output on a kpi when output data returns
-  // socket.on('moduleResult', function(module) {
-  //   console.log('module result', module);
-
-  //   // this cancels/overrides any manual output
-  //   kpi.manual = false;
-  //   // if status changed/exists, otherwise keep old status
-  //   kpi.status = module.status || kpi.status;
-      
-  //   if(kpi.status !== 'processing') {
-  //     kpi.loading = false;
-  //   }
-
-  //   kpi.value = module.value;
-
-  // });
-
-  // if this is start page listen directly on socket to update module data
-  socket.on('getModules', function(moduleData) {
-    if(kpi.selectedModuleId === moduleData.moduleId) {
-      kpi.selectedModuleName = moduleData.name;
-      kpi.selectedModuleDescription = moduleData.description;
-    }
-  });
 
   $timeout(function() {
       kpi.status = kpi.status === 'initializing' ? 'unprocessed' : kpi.status;

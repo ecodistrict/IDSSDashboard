@@ -250,7 +250,21 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
   });
 
   dashboardWebClientSocket.on('createVariant', function(variantData) {
-    var method = 'createCase';
+    var method = 'createVariant';
+    console.log('From dashboard client: ' + method);
+
+    var requestObj = {
+      type: "request",
+      method: method,
+      caseId: variantData.caseId,
+      variantId: variantData.variantId,
+      userId: variantData.userId
+    }
+    imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
+  });
+
+  dashboardWebClientSocket.on('deleteVariant', function(variantData) {
+    var method = 'deleteVariant';
     console.log('From dashboard client: ' + method);
 
     var requestObj = {
@@ -275,6 +289,10 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
       userId: kpi.userId,
       kpiId: kpi.kpiId
     };
+
+    if(kpi.facilitatorId) {
+      requestObj.facilitatorId = kpi.facilitatorId;
+    }
 
     imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
   });
@@ -422,12 +440,10 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
       console.log('From framework: ' + message.method);
 
       switch(method) {
+        // getModules is broadcasted
         case 'getModules': 
           dashboardWebClientSocket.emit(message.method, message);
           break;
-        case 'mcmsmv':
-          dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
-          io.to(message.userId).emit(message.method, message);
         default:
           if(message.userId) {
             console.log('send to dashboard client');

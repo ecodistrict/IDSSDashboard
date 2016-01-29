@@ -20,7 +20,7 @@
               <i class="glyphicon glyphicon-cloud-upload"></i> Calculate
             </button>
 
-             <button ng-show="kpi.loading && !kpi.qualitative" class="btn btn-xs btn-danger" ng-click="stopCalculation(kpi);$event.stopPropagation()">
+             <button ng-show="kpi.loading && kpi.selectedModuleId" class="btn btn-xs btn-danger" ng-click="stopCalculation(kpi);$event.stopPropagation()">
               <i class="glyphicon glyphicon-cloud-upload"></i> Stop
             </button>
 

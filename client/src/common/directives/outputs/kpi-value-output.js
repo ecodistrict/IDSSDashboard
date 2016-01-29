@@ -362,7 +362,8 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
     return {
         restrict: 'E',
         scope: {
-            kpi: '='
+            kpi: '=',
+            showAmbition: '@'
         },
         link: function ( scope, element, attrs ) {
 
@@ -376,8 +377,11 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
               }
 
               // measure and marker on value
-              var value = kpi.value;
-              var asIsValue = kpi.asIsValue;
+              var value = scope.showAmbition ? kpi.ambition : kpi.value;
+              var asIsValue = scope.showAmbition ? kpi.value : null;
+
+              console.log(kpi);
+              console.log(value);
 
               // ranges
               var sufficient = kpi.sufficient, excellent = kpi.excellent; 
@@ -449,14 +453,26 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                       .attr("dy", "1em")
                       .text(function(d) { return d.subtitle; });
 
-
-
             };
 
             scope.$watch('kpi.value', function(newValue, oldValue) {
-              // it needs to render to reset if undefined
+              if(newValue !== oldValue || typeof newValue === 'undefined') {
                 render();
+              }
             });
+
+            console.log(scope.showAmbition);
+
+            if(scope.showAmbition) {
+
+              scope.$watch('kpi.ambition', function(newValue, oldValue) {
+                console.log(newValue, oldValue);
+                if(newValue !== oldValue || typeof newValue === 'undefined') {
+                  render();
+                }
+              });
+
+            }
 
 
         }

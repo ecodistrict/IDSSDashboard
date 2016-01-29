@@ -54,7 +54,7 @@ angular.module( 'idss-dashboard', [
       $scope.isAuthenticated = LoginService.isAuthenticated();
       $scope.currentUser = user;
       // while waiting for current case to load use the default empty case from case service
-      $scope.currentCase = CaseService.getActiveCase();
+      $scope.activeCase = CaseService.getActiveCase();
 
       // load current case
       CaseService.loadActiveCase().then(function(activeCase) {
@@ -70,7 +70,16 @@ angular.module( 'idss-dashboard', [
 
       socket.on('getModules', function(moduleData) {
         console.log(moduleData);
+        // add module to catalog
         ModuleService.addModule(moduleData);
+        // extend kpi data with module data if needed
+        var kpi = _.find($scope.activeCase.kpiList, function(k) {
+          return k.selectedModuleId === moduleData.moduleId;
+        });
+        if(kpi) {
+          kpi.selectedModuleName = moduleData.name;
+          kpi.selectedModuleDescription = moduleData.description;
+        }
       });
       
       socket.on('frameworkError', function(err) {
@@ -89,7 +98,26 @@ angular.module( 'idss-dashboard', [
         console.log(label);
         NotificationService.createInfoFlash(label);
       });
-    
+
+      socket.on('getKpiResult', function(kpiMessage) {
+        var kpi = _.find($scope.activeCase.kpiList, function(k) {
+          return k.kpiAlias === kpiMessage.kpiId;
+        });
+        console.log(kpi);
+        if(kpi) {
+          console.log(kpi);
+          console.log('set kpi ' + kpi.kpiAlias + ' to ' + kpiMessage.kpiValue);
+          kpi.value = kpiMessage.kpiValue;
+          kpi.loading = false;
+          kpi.status = kpiMessage.status;
+        }
+      });
+
+      socket.on('createVariant', function(message) {
+        console.log('create variant returned:', message);
+      });
+
+
       // register event to check auth on page change
       $rootScope.$on('$stateChangeStart', function (event, next) {
 

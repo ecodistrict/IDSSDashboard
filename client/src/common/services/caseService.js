@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function CaseService($http, NotificationService, $q, KpiService, socket) {
+    function CaseService($http, NotificationService, $q, KpiService) {
 
         // this is used while process is loading to avoid errors in GUI
         var currentCase = {
@@ -78,6 +78,7 @@
         };
 
         var deleteCase = function(caseItem) {
+            console.log('delete case');
             return $http
                 .delete('cases/' + caseItem._id)
                 .error(function(status, data) {
@@ -228,6 +229,6 @@
 
     angular.module('idss-dashboard').factory('CaseService', CaseService);
 
-    CaseService.$inject = ['$http', 'NotificationService', '$q', 'KpiService', 'socket'];
+    CaseService.$inject = ['$http', 'NotificationService', '$q', 'KpiService'];
 
 })();

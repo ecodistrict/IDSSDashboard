@@ -24,6 +24,9 @@ angular.module( 'idss-dashboard.start', [
 
 .controller( 'StartCtrl', ['$scope', 'CaseService', '$state', 'socket', 'LoginService', function StartCtrl( $scope, CaseService, $state, socket, LoginService ) {
 
+  socket.forward('createCase', $scope);
+  socket.forward('deleteCase', $scope);
+
   $scope.cases = [];
   $scope.activeCase = {};
 
@@ -60,25 +63,29 @@ angular.module( 'idss-dashboard.start', [
     });  
   };
 
-  socket.on('deleteCase', function(message) {
-    CaseService.deleteCase({_id: message.caseId}).then(function(deletedCase) {
-      var caseItem = _.find($scope.cases, function(c) {
-        return c._id === deletedCase._id;
-      });
-      caseItem.loading = false;
-      // remove from list
-      var index = _.indexOf($scope.cases, caseItem);
-      if (index > -1) {
-          $scope.cases.splice(index, 1);
-      }
-    });  
-  });
-
-  socket.on('createCase', function(message) {
+  $scope.$on('socket:createCase', function (ev, data) {
     var caseItem = _.find($scope.cases, function(c) {
-      return c._id === message.caseId;
+      return c._id === data.caseId;
     });
     caseItem.loading = false;
+  });
+
+  $scope.$on('socket:deleteCase', function (ev, data) {
+    var caseItem = _.find($scope.cases, function(c) {
+      return c._id === data.caseId;
+    });
+
+    if(caseItem) {
+      CaseService.deleteCase({_id: data.caseId}).then(function(deletedCase) {
+        
+        caseItem.loading = false;
+        // remove from list
+        var index = _.indexOf($scope.cases, caseItem);
+        if (index > -1) {
+            $scope.cases.splice(index, 1);
+        }
+      }); 
+    }
   });
 
   $scope.loadCase = function(caseToLoad) {

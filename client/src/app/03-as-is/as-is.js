@@ -44,30 +44,32 @@ angular.module( 'idss-dashboard.as-is', [])
   function AsIsController( $scope, $timeout, $sce, socket, $state, ModuleService, $modal, KpiService, VariantService, activeCase, variants, currentUser, $window ) {
 
   var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
-  if(asIsVariant.isNew) {
-    socket.emit('createVariant', {
-      userId: currentUser._id,
-      variantId: asIsVariant._id,
-      caseId: activeCase._id
-    });
-  }
+  // in case we want to signal new as is variant. For now the case is the as is variant in the database
+  // this means that the dashboard send the as-is variantId for getKpiResult, but the variantId is ingnored in datamodule 
+  // if(asIsVariant.isNew) {
+  //   socket.emit('createVariant', {
+  //     userId: currentUser._id,
+  //     variantId: asIsVariant._id,
+  //     caseId: activeCase._id
+  //   });
+  // }
   // $scope.variants = variants; // for map
   // $scope.currentVariant = asIsVariant; // for map
   $scope.currentCase = activeCase;
   $scope.currentUser = currentUser;
 
   _.each(activeCase.kpiList, function(kpi) {
-    KpiService.removeExtendedData(kpi); // in case data is already extended 
+    KpiService.removeExtendedData(kpi); // always refresh the data 
     kpi.loading = true;
     kpi.status = 'initializing';
 
     socket.emit('getKpiResult', {
       variantId: asIsVariant._id, 
       kpiId: kpi.kpiAlias, 
-      moduleId: kpi.selectedModuleId, 
+      moduleId: kpi.selectedModuleId,
       status: kpi.status,
       userId: $scope.currentUser._id, // if stakeholder id is sent in params, load data from stakeholder
-      processId: activeCase._id
+      caseId: activeCase._id
     });
 
     $timeout(function() {
@@ -85,21 +87,6 @@ angular.module( 'idss-dashboard.as-is', [])
     //     }
     // });
    
-  });
-
-  socket.on('createVariant', function(message) {
-    console.log('create variant returned:', message);
-  });
-
-  socket.on('getKpiResult', function(kpiMessage) {
-    var kpi = _.find(activeCase.kpiList, function(k) {
-      return k.kpiAlias === kpiMessage.kpiId;
-    });
-    if(kpi) {
-      kpi.value = kpiMessage.kpiValue;
-      kpi.loading = false;
-      kpi.status = kpiMessage.status;
-    }
   });
 
   $scope.getStatus = function(kpi) {
