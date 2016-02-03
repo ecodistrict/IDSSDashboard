@@ -26,11 +26,6 @@ angular.module( 'idss-dashboard.to-be', [])
           return CaseService.loadActiveCase();
         }
       }],
-      variants: ['VariantService', function(VariantService) {
-        return VariantService.loadVariants().then(function(variants) {
-          return variants;
-        });
-      }],
       currentUser: ['LoginService', function(LoginService) {
         return LoginService.getCurrentUser().then(function(user) {
           return user;
@@ -40,14 +35,10 @@ angular.module( 'idss-dashboard.to-be', [])
   });
 }])
 
-.controller( 'ToBeController', ['$scope', 'socket', '$timeout', 'activeCase', 'currentUser', 'variants', 'VariantService', '$modal', 'KpiService', 'LoginService', 
-  function ToBeController( $scope, socket, $timeout, activeCase, currentUser, variants, VariantService, $modal, KpiService, LoginService ) {
+.controller( 'ToBeController', ['$scope', 'socket', '$timeout', 'activeCase', 'currentUser', 'VariantService', '$modal', 'KpiService', 'LoginService', 
+  function ToBeController( $scope, socket, $timeout, activeCase, currentUser, VariantService, $modal, KpiService, LoginService ) {
 
     $scope.currentCase = activeCase; 
-
-    var toBeVariant = _.find(variants, function(v) {return v.type === 'to-be';});
-    var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
-    
     $scope.currentUser = currentUser;
     $scope.stakeholders = [];
     
@@ -76,7 +67,6 @@ angular.module( 'idss-dashboard.to-be', [])
 
         // get the as is values
         socket.emit('getKpiResult', {
-          variantId: asIsVariant._id, 
           kpiId: kpi.kpiAlias, 
           moduleId: kpi.selectedModuleId, 
           status: kpi.status,
@@ -101,33 +91,11 @@ angular.module( 'idss-dashboard.to-be', [])
         }
       });
     };
-
-    if(asIsVariant) {
-        // if first time - create the to be variant
-        if(!toBeVariant) {
-            toBeVariant = angular.copy(asIsVariant); // shallow copy
-            delete toBeVariant._id;
-            toBeVariant.name = 'To be';
-            toBeVariant.type = 'to-be';
-            toBeVariant.description = "The TO BE state defines the KPI ambitions for a connected user";
-            
-            VariantService.createVariant(toBeVariant).then(function(newVariant) {
-              toBeVariant = newVariant;
-              variants.push(toBeVariant);
-              // if facilitator the 
-              if(!isFacilitator) {
-                init(currentUser);
-              } else {
-                getStakeholders();
-              }
-            });
-        } else {
-          if(!isFacilitator) {
-            init(currentUser);
-          } else {
-            getStakeholders();
-          }
-        }
+    
+    if(!isFacilitator) {
+      init(currentUser);
+    } else {
+      getStakeholders();
     }
 
   $scope.setWeight = function(kpi) {

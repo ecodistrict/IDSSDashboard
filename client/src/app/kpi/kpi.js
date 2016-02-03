@@ -67,7 +67,9 @@ angular.module( 'idss-dashboard.kpi', [])
   $scope.kpi = kpi;
 
   var currentVariant = $scope.currentVariant = _.find(variants, function(v) {return v._id === $stateParams.variantId;});
-  var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
+  if(!currentVariant) {
+    currentVariant = {}; // If currentVariant is empty this is as is situation
+  }
 
   socket.emit('getKpiResult', {
     kpiId: kpi.kpiAlias,
@@ -95,7 +97,6 @@ angular.module( 'idss-dashboard.kpi', [])
 
     socket.emit('startModule', {
       variantId: currentVariant._id, 
-      asIsVariantId: asIsVariant._id, // as is is needed if new alternative - if there is no input, take from as is
       kpiAlias: kpi.kpiAlias, 
       moduleId: kpi.selectedModuleId, 
       status: kpi.status,
@@ -168,43 +169,6 @@ angular.module( 'idss-dashboard.kpi', [])
       });
 
     };
-
-  // $scope.setModuleInput = function(kpi) {
-
-  //   var moduleInputModal = $modal.open({
-  //       templateUrl: '02-collect-data/module-input.tpl.html',
-  //       controller: 'ModuleInputController',
-  //       resolve: {
-  //         kpi: function() {
-  //           return kpi;
-  //         },
-  //         currentVariant: function() {
-  //           return currentVariant;
-  //         },
-  //         asIsVariant: function() {
-  //           return asIsVariant;
-  //         },
-  //         activeCase: function() {
-  //           return activeCase;
-  //         }
-  //       }
-  //     });
-
-  //     moduleInputModal.result.then(function (moduleInput) {
-  //       if(moduleInput) {
-  //         kpi.inputs = moduleInput.inputs;
-  //         moduleInput.userId = $scope.currentUser._id; // only facilitator should be able to do this
-  //         moduleInput.status = 'unprocessed'; // input has changed
-  //         console.log(moduleInput);
-  //         kpi.status = 'unprocessed'; // update GUI
-  //         ModuleService.saveModuleInput(moduleInput);
-  //       }
-                
-  //     }, function () {
-  //       console.log('Modal dismissed at: ' + new Date());
-  //     });
-
-  //   };
 
 
   $scope.configureKpi = function(kpi) {

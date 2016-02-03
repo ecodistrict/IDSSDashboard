@@ -26,11 +26,6 @@ angular.module( 'idss-dashboard.as-is', [])
           return CaseService.loadActiveCase();
         }
       }],
-      variants: ['VariantService', function(VariantService) {
-        return VariantService.loadVariants().then(function(variants) {
-          return variants;
-        });
-      }],
       currentUser: ['LoginService', function(LoginService) {
         return LoginService.getCurrentUser().then(function(user) {
           return user;
@@ -40,21 +35,9 @@ angular.module( 'idss-dashboard.as-is', [])
   });
 }])
 
-.controller( 'AsIsController', ['$scope', '$timeout', '$sce', 'socket', '$state', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'activeCase', 'variants', 'currentUser', '$window', 
-  function AsIsController( $scope, $timeout, $sce, socket, $state, ModuleService, $modal, KpiService, VariantService, activeCase, variants, currentUser, $window ) {
+.controller( 'AsIsController', ['$scope', '$timeout', '$sce', 'socket', '$state', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'activeCase', 'currentUser', '$window', 
+  function AsIsController( $scope, $timeout, $sce, socket, $state, ModuleService, $modal, KpiService, VariantService, activeCase, currentUser, $window ) {
 
-  var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
-  // in case we want to signal new as is variant. For now the case is the as is variant in the database
-  // this means that the dashboard send the as-is variantId for getKpiResult, but the variantId is ingnored in datamodule 
-  // if(asIsVariant.isNew) {
-  //   socket.emit('createVariant', {
-  //     userId: currentUser._id,
-  //     variantId: asIsVariant._id,
-  //     caseId: activeCase._id
-  //   });
-  // }
-  // $scope.variants = variants; // for map
-  // $scope.currentVariant = asIsVariant; // for map
   $scope.currentCase = activeCase;
   $scope.currentUser = currentUser;
 
@@ -64,7 +47,6 @@ angular.module( 'idss-dashboard.as-is', [])
     kpi.status = 'initializing';
 
     socket.emit('getKpiResult', {
-      variantId: asIsVariant._id, 
       kpiId: kpi.kpiAlias, 
       moduleId: kpi.selectedModuleId,
       status: kpi.status,
@@ -76,16 +58,6 @@ angular.module( 'idss-dashboard.as-is', [])
       kpi.status = kpi.status === 'initializing' ? 'unprocessed' : kpi.status;
       kpi.loading = false;
     }, 6000);
-
-    // KpiService.getKpiRecord(asIsVariant._id, kpi.kpiAlias, $scope.currentUser._id).then(function(record) {
-    //     delete kpi.asIsValue; // otherwise the comparison will be used in the visualisation
-    //     angular.extend(kpi, record); 
-    //     if(kpi.status === 'initializing' || kpi.status === 'processing') {
-    //       kpi.loading = true;
-    //     } else {
-    //       kpi.loading = false;
-    //     }
-    // });
    
   });
 
@@ -103,7 +75,7 @@ angular.module( 'idss-dashboard.as-is', [])
 
   $scope.goToKpiPage = function(kpi) {
     if(currentUser.role === 'Facilitator') {
-      $state.transitionTo('kpi', {variantId: asIsVariant._id, kpiAlias: kpi.kpiAlias, back: 'as-is'});
+      $state.transitionTo('kpi', {kpiAlias: kpi.kpiAlias, back: 'as-is'});
     }
   };
 
