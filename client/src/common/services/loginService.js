@@ -88,9 +88,9 @@ angular.module('idss-dashboard')
     };
 
     // TODO: remove from this service..
-    var getStakeholders = function() {
+    var getStakeholders = function(caseId) {
         return $http
-            .get('users/stakeholders').error(function(err) {
+            .get('users/stakeholders/' + caseId).error(function(err) {
                 NotificationService.createErrorFlash(err.message);
             })
             .then(function (res) {

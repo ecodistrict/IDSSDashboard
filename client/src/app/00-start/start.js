@@ -85,20 +85,21 @@ angular.module( 'idss-dashboard.start', [
             $scope.cases.splice(index, 1);
         }
       }); 
+    } else {
+      console.log('case item was not found');
     }
   });
 
   $scope.loadCase = function(caseToLoad) {
-    var oldCaseId = $scope.activeCase._id;
+    var activeCase;
     CaseService.loadCase(caseToLoad._id).then(function() {
       _.each($scope.cases, function(c) {
         if(c._id === caseToLoad._id) {
-          c.isActive = true;
-        }
-        if(c._id === oldCaseId) {
-          c.isActive = false;
-        }
+          activeCase = c;
+        } 
+        c.isActive = false;
       });
+      activeCase.isActive = true;
       // the case has now been reloaded from server in service
       $scope.activeCase = CaseService.getActiveCase();
     });

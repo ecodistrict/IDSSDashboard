@@ -22,16 +22,6 @@ angular.module( 'idss-dashboard.header', [
 
     });
 
-    $scope.deleteProcess = function() {
-    	CaseService.deleteCurrentProcess().then(function() {
-    		// when loading a non existing process, a new process is created
-    		CaseService.createNewProcess().then(function(newProcess) {
-    			$scope.currentProcess = newProcess;
-                $state.transitionTo('start');
-    		});
-    	});
-    };
-
     $scope.loginAsFacilitator = function() {
 
         var passwordModal = $modal.open({
