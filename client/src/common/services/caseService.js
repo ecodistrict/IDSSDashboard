@@ -28,7 +28,7 @@
             currentCase._id = newCaseData._id;
             currentCase.userId = newCaseData.userId;
             currentCase.dateModified = newCaseData.dateModified;
-            currentCase.district = newCaseData.district; // remove reference ATT!
+            currentCase.districtPolygon = newCaseData.districtPolygon;
             currentCase.title = newCaseData.title;
             currentCase.kpiList = newCaseData.kpiList || [];
             currentCase.description = newCaseData.description;
@@ -45,7 +45,14 @@
             }
         };
 
-        var saveCurrentCase = function () {
+        var saveCurrentCase = function (caseData) {
+            // HACK!
+            // if case data is sent in, the reference to currentCase was lost and this data first needs to update currentCase
+            // example: in district polygon, only the polygon is sent to directive
+            if(caseData && caseData.districtPolygon) {
+                currentCase.districtPolygon = caseData.districtPolygon;
+            }
+
             return $http
                 .put('cases', currentCase)
                 .error(function(status, err) {

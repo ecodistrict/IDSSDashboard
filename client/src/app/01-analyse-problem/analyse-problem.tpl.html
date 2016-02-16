@@ -14,10 +14,10 @@
     <div ng-if="!facilitator" class="row">
         <h2>{{currentCase.title}}</h2>
     </div>
-    <!-- <div class="row">
+    <div class="row">
         <label for="process-title">District area of the process:</label>
-        <district-map id="district-map" district="currentCase.district" facilitator="facilitator"></district-map>
-    </div> -->
+        <district-map id="district-map" district-polygon="currentCase.districtPolygon" facilitator="facilitator"></district-map>
+    </div>
     <div ng-if="facilitator" class="row">
         <form role="form">
           <div class="form-group">

@@ -1,11 +1,11 @@
-angular.module('idss-dashboard').directive('districtMap', ['$timeout', '$compile', 'ProcessService', function ($timeout, $compile, ProcessService) {
+angular.module('idss-dashboard').directive('districtMap', ['$timeout', '$compile', 'CaseService', function ($timeout, $compile, CaseService) {
 
     return {
         restrict: 'E',
         template: ['<div id="map">',
         '</div>'].join(''),
         scope: {
-            district: '='
+            districtPolygon: '='
         },
         link: function(scope, element, attrs) {
 
@@ -94,9 +94,10 @@ angular.module('idss-dashboard').directive('districtMap', ['$timeout', '$compile
                     districtLayer.addLayer(layer);
                     drawLayer.removeHooks();
                     buttonStates.drawing = false;
-                    scope.district.geometry = layer.toGeoJSON().geometry;
+                    scope.districtPolygon = layer.toGeoJSON();
+                    console.log(layer.toGeoJSON());
                     map.fitBounds(districtLayer.getBounds());
-                    ProcessService.saveCurrentProcess().then(function(process) {
+                    CaseService.saveCurrentCase().then(function(process) {
                         console.log(process);
                     });
                 });
@@ -119,7 +120,7 @@ angular.module('idss-dashboard').directive('districtMap', ['$timeout', '$compile
 
                 // add buttons
 
-                drawBtn = angular.element('<button class="btn btn-sm btn-primary move-up-margin" ng-click="draw()" ng-show="!buttonStates.drawing && !district.geometry.coordinates">Draw</button>');
+                drawBtn = angular.element('<button class="btn btn-sm btn-primary move-up-margin" ng-click="draw()" ng-show="!buttonStates.drawing && !districtPolygon.geometry">Draw</button>');
 
                 scope.draw = function() {
                     console.log(buttonStates);
@@ -128,7 +129,7 @@ angular.module('idss-dashboard').directive('districtMap', ['$timeout', '$compile
                     drawLayer.addHooks();
                 };
 
-                editBtn = angular.element('<button class="btn btn-sm btn-primary move-up-margin" ng-click="edit()" ng-show="!buttonStates.drawing && district.geometry.coordinates">Edit</button>');
+                editBtn = angular.element('<button class="btn btn-sm btn-primary move-up-margin" ng-click="edit()" ng-show="!buttonStates.drawing && districtPolygon.geometry">Edit</button>');
 
                 scope.edit = function() {
                     if(!buttonStates.editing) {
@@ -138,18 +139,18 @@ angular.module('idss-dashboard').directive('districtMap', ['$timeout', '$compile
                     }
                 };
 
-                removeBtn = angular.element('<button class="btn btn-sm btn-primary move-up-margin" ng-click="remove()" ng-show="district.geometry.coordinates">Clear</button>');
+                removeBtn = angular.element('<button class="btn btn-sm btn-primary move-up-margin" ng-click="remove()" ng-show="districtPolygon.geometry">Clear</button>');
 
                 scope.remove = function() {
                     districtLayer.clearLayers();
                     buttonStates.drawing = false;
-                    scope.district.geometry = {};
-                    ProcessService.saveCurrentProcess().then(function(process) {
+                    scope.districtPolygon = {};
+                    CaseService.saveCurrentCase().then(function(process) {
                         console.log(process);
                     });
                 };
 
-                saveBtn = angular.element('<button class="btn btn-sm btn-primary move-up-margin" ng-click="save()" ng-show="district.geometry.coordinates">Save</button>');
+                saveBtn = angular.element('<button class="btn btn-sm btn-primary move-up-margin" ng-click="save()" ng-show="districtPolygon.geometry">Save</button>');
 
                 scope.save = function() {
                     // for now only on layer is possible
@@ -158,9 +159,9 @@ angular.module('idss-dashboard').directive('districtMap', ['$timeout', '$compile
                         l.editing.disable();
                         layer = l;
                     });
-                    scope.district.geometry = layer.toGeoJSON().geometry;
-                    map.fitBounds(districtLayer.getBounds());
-                    ProcessService.saveCurrentProcess().then(function(process) {
+                    districtLayer.clearLayers();
+                    scope.districtPolygon = layer.toGeoJSON(); // this will trigger watch - rerender
+                    CaseService.saveCurrentCase({districtPolygon: scope.districtPolygon}).then(function(process) {
                         console.log(process);
                     });
                 };
@@ -171,9 +172,10 @@ angular.module('idss-dashboard').directive('districtMap', ['$timeout', '$compile
                 $compile(removeBtn)(scope);
                 $compile(saveBtn)(scope);
 
-                scope.$watch('district', function(newDistrict, oldDistrict) {
-                    if(newDistrict && newDistrict.geometry) {
-                        console.log(newDistrict);
+                scope.$watch('districtPolygon', function(newPolygon, oldPolygon) {
+                    console.log(newPolygon);
+                    if(newPolygon && newPolygon.geometry) {
+                        console.log(newPolygon);
                         // L.geoJson(data, {
                         //     style: function (feature) {
                         //         return {color: feature.properties.color};
@@ -182,7 +184,7 @@ angular.module('idss-dashboard').directive('districtMap', ['$timeout', '$compile
                         //         layer.bindPopup(feature.properties.description);
                         //     }
                         // }).addTo(map);
-                        districtLayer.addData(newDistrict.geometry);
+                        districtLayer.addData(newPolygon.geometry);
                         map.fitBounds(districtLayer.getBounds());
                     }
                 });
