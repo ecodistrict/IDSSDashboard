@@ -43,8 +43,8 @@ angular.module( 'idss-dashboard.develop-variants', [
   socket.forward('createVariant', $scope);
   socket.forward('deleteVariant', $scope);
 
-  var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
   $scope.variants = variants;
+  console.log(currentUser);
 
   $scope.addVariant = function() {
     var variant = {
@@ -66,11 +66,11 @@ angular.module( 'idss-dashboard.develop-variants', [
     variantModal.result.then(function (configuredVariant) {
       VariantService.createVariant(configuredVariant).then(function(createdVariant) {
         socket.emit('createVariant', {
-          caseId: asIsVariant.caseId,
+          caseId: currentUser.activeCaseId,
           variantId: createdVariant._id,
           userId: currentUser._id
         });
-        createdVariant.loading = true;
+        //createdVariant.loading = true;
         $scope.variants.push(createdVariant);
       });
     }, function () {
@@ -80,18 +80,32 @@ angular.module( 'idss-dashboard.develop-variants', [
 
   $scope.deleteVariant = function(variant) {
     variant.loading = true;
-    socket.emit('deleteVariant', {
-      caseId: asIsVariant.caseId,
-      variantId: variant._id,
-      userId: currentUser._id
-    });
+    VariantService.deleteVariant({_id: data.variantId}).then(function(deletedVariant) {
+      //variant.loading = false;
+      // remove from list
+      var index = _.indexOf($scope.variants, variant);
+      if (index > -1) {
+          $scope.variants.splice(index, 1);
+      }
+      // emit message for delete variant
+      // IMPORTANT: now there is no garantee that the variant is deleted in the database 
+      // this is possible because dashboard should be able to run in stand-alone mode
+      socket.emit('deleteVariant', {
+        caseId: currentUser.activeCaseId,
+        variantId: variant._id,
+        userId: currentUser._id
+      });
+    }); 
   };
 
   $scope.$on('socket:createVariant', function (ev, data) {
     var variant = _.find($scope.variants, function(c) {
       return c._id === data.variantId;
     });
-    variant.loading = false;
+    //variant.loading = false;
+
+    console.log('fix me: creation of variants is not garanteed in data module. TODO: some check to see the data module state');
+
   });
 
   $scope.$on('socket:deleteVariant', function (ev, data) {
@@ -100,17 +114,7 @@ angular.module( 'idss-dashboard.develop-variants', [
       return c._id === data.variantId;
     });
 
-    if(variant) {
-      VariantService.deleteVariant({_id: data.variantId}).then(function(deletedVariant) {
-        
-        variant.loading = false;
-        // remove from list
-        var index = _.indexOf($scope.variants, variant);
-        if (index > -1) {
-            $scope.variants.splice(index, 1);
-        }
-      }); 
-    }
+    console.log('fix me: deletion of variants is not garanteed in data module. TODO: some check to see the data module state');
   });
 
 }]);

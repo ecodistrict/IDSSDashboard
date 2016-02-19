@@ -380,9 +380,6 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
               var value = scope.showAmbition ? kpi.ambition : kpi.value;
               var asIsValue = scope.showAmbition ? kpi.value : null;
 
-              console.log(kpi);
-              console.log(value);
-
               // ranges
               var sufficient = kpi.sufficient, excellent = kpi.excellent; 
 
@@ -461,12 +458,13 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
               }
             });
 
-            console.log(scope.showAmbition);
+            if(kpi.value || kpi.value === 0) {
+              render();
+            }
 
             if(scope.showAmbition) {
 
               scope.$watch('kpi.ambition', function(newValue, oldValue) {
-                console.log(newValue, oldValue);
                 if(newValue !== oldValue || typeof newValue === 'undefined') {
                   render();
                 }

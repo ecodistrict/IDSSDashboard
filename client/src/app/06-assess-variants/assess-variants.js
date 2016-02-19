@@ -45,7 +45,6 @@ angular.module( 'idss-dashboard.assess-variants', [])
 
   var variantId = $stateParams.variantId;
   var currentVariant;
-  var asIsVariant;
 
   $scope.activeCase = activeCase;
   $scope.otherVariants = [];
@@ -54,35 +53,38 @@ angular.module( 'idss-dashboard.assess-variants', [])
   _.each(variants, function(variant) {
     if(variant._id === variantId) {
       $scope.currentVariant = currentVariant = variant;
-      $scope.currentVariantName = currentVariant.name;
-    } else if(variant.type === 'as-is') {
-      asIsVariant = variant;
-    } else if(variant.type === 'to-be') {
-      toBeVariant = variant;
     } else {
       $scope.otherVariants.push(variant);
     }
   });
 
   if(currentVariant) {
+
+    currentVariant.kpiValues = currentVariant.kpiValues || {};
+    
     _.each(activeCase.kpiList, function(kpi) {
       KpiService.removeExtendedData(kpi); // in case data is already extended 
-      kpi.loading = true;
-      kpi.status = 'initializing';
 
-      socket.emit('getKpiResult', {
-        variantId: variantId, 
-        kpiId: kpi.kpiAlias, 
-        moduleId: kpi.selectedModuleId, 
-        status: kpi.status,
-        userId: $scope.currentUser._id, // if stakeholder id is sent in params, load data from stakeholder
-        caseId: activeCase._id
-      });
+      kpi.value = currentVariant.kpiValues[kpi.kpiAlias];
+      if(kpi.value || kpi.value === 0) {
+        kpi.status = 'success';
+      } else {
+        kpi.status = 'unprocessed';
+      }
+      
+      // socket.emit('getKpiResult', {
+      //   variantId: variantId, 
+      //   kpiId: kpi.kpiAlias, 
+      //   moduleId: kpi.selectedModuleId, 
+      //   status: kpi.status,
+      //   userId: $scope.currentUser._id, // if stakeholder id is sent in params, load data from stakeholder
+      //   caseId: activeCase._id
+      // });
 
-      $timeout(function() {
-        kpi.status = kpi.status === 'initializing' ? 'unprocessed' : kpi.status;
-        kpi.loading = false;
-      }, 6000);
+      // $timeout(function() {
+      //   kpi.status = kpi.status === 'initializing' ? 'unprocessed' : kpi.status;
+      //   kpi.loading = false;
+      // }, 6000);
      
     });
 

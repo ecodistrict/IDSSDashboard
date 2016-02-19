@@ -20,7 +20,6 @@
             <div class="panel-heading kpi-panel-heading" role="tab">
               <h4 class="panel-title">
                 <b ng-bind="kpi.name"></b> <i ng-bind="'(status: ' + kpi.status + ')'"></i>
-                <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
               </h4>
               <button ng-if="currentUser.role == 'Facilitator'" id="{{'adjust-kpi-' + kpi.alias}}" class="btn btn-xs btn-primary" ng-click="goToKpiPage(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-cog"></i> Edit</button>
               <button class="btn btn-xs btn-info" ng-click="goToCSModule(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-new-window"></i> CS Module</button><br>

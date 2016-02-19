@@ -45,15 +45,15 @@ angular.module( 'idss-dashboard.kpi', [])
 
   var kpi = _.find(activeCase.kpiList, function(k) {return k.kpiAlias === $stateParams.kpiAlias;});
   KpiService.removeExtendedData(kpi); // possible old extended data from another view
+  
   $scope.currentUser = currentUser; // current user is loaded again.. otherwise the user is not yet loaded when reloading page.. 
   $stateParams.back = $stateParams.back || 'compare-variants';
+  
   var backState = decodeURIComponent($stateParams.back).split('/')[0];
   var selectedModule;
+  
   kpi.caseId = activeCase._id;
-  kpi.status = kpi.status || 'initializing';
-  if(kpi.status === 'initializing' || kpi.status === 'processing') {
-    kpi.loading = true;
-  }
+
   $scope.stakeholderName = $stateParams.stakeholder || $scope.currentUser.name || $scope.currentUser.fname;
   // if selected module is already loaded in dashboard
   if(kpi.selectedModuleId) {
@@ -64,20 +64,35 @@ angular.module( 'idss-dashboard.kpi', [])
     }
   }
 
-  $scope.kpi = kpi;
-
   var currentVariant = $scope.currentVariant = _.find(variants, function(v) {return v._id === $stateParams.variantId;});
+  // if this is as is kpi
   if(!currentVariant) {
-    currentVariant = {}; // If currentVariant is empty this is as is situation
+    kpi.value = activeCase.kpiValues[kpi.kpiAlias];
+    currentVariant = {
+      name: 'As is'
+    }; // If currentVariant is empty this is as is situation
+  } else {
+    currentVariant.kpiValues = currentVariant.kpiValues || {};
+    kpi.value = currentVariant.kpiValues[kpi.kpiAlias];
+  }
+  // set status
+  if(kpi.value || kpi.value === 0) {
+    kpi.status = 'success';
+  } else {
+    kpi.status = 'unprocessed';
   }
 
-  socket.emit('getKpiResult', {
-    kpiId: kpi.kpiAlias,
-    userId: currentUser._id,
-    caseId: activeCase._id,
-    moduleId: kpi.selectedModuleId,
-    variantId: currentVariant._id
-  });
+  $scope.currentVariant = currentVariant;
+
+  $scope.kpi = kpi;
+
+  // socket.emit('getOverallKpiResult', {
+  //   kpiId: kpi.kpiAlias,
+  //   userId: currentUser._id,
+  //   caseId: activeCase._id,
+  //   moduleId: kpi.selectedModuleId,
+  //   variantId: currentVariant._id
+  // });
 
   $scope.getStatus = function(kpi) {
     if(kpi.status === 'unprocessed') {
@@ -105,10 +120,10 @@ angular.module( 'idss-dashboard.kpi', [])
     });
   };
 
-  $timeout(function() {
-      kpi.status = kpi.status === 'initializing' ? 'unprocessed' : kpi.status;
-      kpi.loading = false;
-    }, 6000);
+  // $timeout(function() {
+  //     kpi.status = kpi.status === 'initializing' ? 'unprocessed' : kpi.status;
+  //     kpi.loading = false;
+  //   }, 6000);
 
   // not working since introduction of data module, now only looks like it stopped calculation
   $scope.stopCalculation = function(kpi) {
@@ -154,15 +169,24 @@ angular.module( 'idss-dashboard.kpi', [])
         console.log('configuredKpi');
         console.log(configuredKpi);
 
-        socket.emit('setKpiResult', {
-          caseId: activeCase._id,
-          userId: currentUser._id,
-          kpiId: configuredKpi.kpiAlias,
-          kpiValue: configuredKpi.value,
-          variantId: currentVariant._id
-        });
+        // if this kpi belongs to variant
+        if(currentVariant._id) {
+          VariantService.addKpiValue(currentVariant, configuredKpi.kpiAlias, configuredKpi.value);
+        } else { // otherwise this is as is situation
+          CaseService.addKpiValue(configuredKpi.kpiAlias, configuredKpi.value);
+        }
+
+        // socket.emit('setOverallKpiResult', {
+        //   caseId: activeCase._id,
+        //   userId: currentUser._id,
+        //   kpiId: configuredKpi.kpiAlias,
+        //   kpiValue: configuredKpi.value,
+        //   variantId: currentVariant._id
+        // });
         
-        //KpiService.updateKpiRecord(configuredKpi);
+        // TODO: if variant save with variant service 
+        // if as is save with case service
+        //KpiService.addKpiValue(configuredKpi.alias, configuredKpi.value);
         
       }, function () {
         console.log('Modal dismissed at: ' + new Date());

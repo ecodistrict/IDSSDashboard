@@ -83,6 +83,16 @@ angular.module('idss-dashboard')
             });
     };
 
+    // kpi values stored on variants
+    var addKpiValue = function(variant, kpiId, kpiValue) {
+        variant.kpiValues = variant.kpiValues || {};
+        variant.kpiValues[kpiId] = kpiValue;
+        return saveVariant(variant).then(function(v) {
+            NotificationService.createSuccessFlash('KPI value was added');
+            return v;
+        });
+    };   
+
     var deleteVariant = function(variantToDelete) {
         return $http
             .delete('variants/' + variantToDelete._id)
@@ -169,6 +179,7 @@ angular.module('idss-dashboard')
         loadVariantsByProcessId: loadVariantsByProcessId,
         deleteVariant: deleteVariant,
         saveVariant: saveVariant,
+        addKpiValue: addKpiValue
         //addOrRemoveKpis: addOrRemoveKpis,
         //addOrRemoveVariants: addOrRemoveVariants
     };

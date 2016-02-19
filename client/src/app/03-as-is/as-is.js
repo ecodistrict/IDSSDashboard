@@ -43,21 +43,28 @@ angular.module( 'idss-dashboard.as-is', [])
 
   _.each(activeCase.kpiList, function(kpi) {
     KpiService.removeExtendedData(kpi); // always refresh the data 
-    kpi.loading = true;
-    kpi.status = 'initializing';
+    //kpi.loading = true;
+    
 
-    socket.emit('getKpiResult', {
-      kpiId: kpi.kpiAlias, 
-      moduleId: kpi.selectedModuleId,
-      status: kpi.status,
-      userId: $scope.currentUser._id, // if stakeholder id is sent in params, load data from stakeholder
-      caseId: activeCase._id
-    });
+    kpi.value = activeCase.kpiValues[kpi.kpiAlias];
+    if(kpi.value || kpi.value === 0) {
+      kpi.status = 'success';
+    } else {
+      kpi.status = 'unprocessed';
+    }
 
-    $timeout(function() {
-      kpi.status = kpi.status === 'initializing' ? 'unprocessed' : kpi.status;
-      kpi.loading = false;
-    }, 6000);
+    // socket.emit('getKpiResult', {
+    //   kpiId: kpi.kpiAlias, 
+    //   moduleId: kpi.selectedModuleId,
+    //   status: kpi.status,
+    //   userId: $scope.currentUser._id, // if stakeholder id is sent in params, load data from stakeholder
+    //   caseId: activeCase._id
+    // });
+
+    // $timeout(function() {
+    //   kpi.status = kpi.status === 'initializing' ? 'unprocessed' : kpi.status;
+    //   kpi.loading = false;
+    // }, 6000);
    
   });
 

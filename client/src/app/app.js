@@ -99,19 +99,19 @@ angular.module( 'idss-dashboard', [
         NotificationService.createInfoFlash(label);
       });
 
-      socket.on('getKpiResult', function(kpiMessage) {
-        var kpi = _.find($scope.activeCase.kpiList, function(k) {
-          return k.kpiAlias === kpiMessage.kpiId;
-        });
-        console.log(kpi);
-        if(kpi) {
-          console.log(kpi);
-          console.log('set kpi ' + kpi.kpiAlias + ' to ' + kpiMessage.kpiValue);
-          kpi.value = kpiMessage.kpiValue;
-          kpi.loading = false;
-          kpi.status = kpiMessage.status;
-        }
-      });
+      // socket.on('getKpiResult', function(kpiMessage) {
+      //   var kpi = _.find($scope.activeCase.kpiList, function(k) {
+      //     return k.kpiAlias === kpiMessage.kpiId;
+      //   });
+      //   console.log(kpi);
+      //   if(kpi) {
+      //     console.log(kpi);
+      //     console.log('set kpi ' + kpi.kpiAlias + ' to ' + kpiMessage.kpiValue);
+      //     kpi.value = kpiMessage.kpiValue;
+      //     kpi.loading = false;
+      //     kpi.status = kpiMessage.status;
+      //   }
+      // });
 
       socket.on('createVariant', function(message) {
         console.log('create variant returned:', message);

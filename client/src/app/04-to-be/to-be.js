@@ -60,30 +60,17 @@ angular.module( 'idss-dashboard.to-be', [])
         KpiService.removeExtendedData(kpi); // in case data is already extended
         kpi.loading = true;
         kpi.status = 'initializing';
+        kpi.value = activeCase.kpiValues[kpi.kpiAlias];
         kpi.weight = kpiWeights[activeCase._id][kpi.kpiAlias] || 0; // default weight if kpi record does not exist
         kpi.ambition = kpiAmbitions[activeCase._id][kpi.kpiAlias]; // could be undefined
         KpiService.setKpiColor(kpi, 'ambition');
         console.log(kpi.ambition);
 
-        // get the as is values
-        socket.emit('getKpiResult', {
-          kpiId: kpi.kpiAlias, 
-          moduleId: kpi.selectedModuleId, 
-          status: kpi.status,
-          userId: facilitatorId,
-          caseId: activeCase._id
-        });
-
-        $timeout(function() {
-          kpi.status = kpi.status === 'initializing' ? 'unprocessed' : kpi.status;
-          kpi.loading = false;
-        }, 6000);
-
       });
     };
 
     var getStakeholders = function() {
-      LoginService.getStakeholders().then(function(stakeholders) {
+      LoginService.getStakeholders(activeCase._id).then(function(stakeholders) {
         if(stakeholders && stakeholders.length && stakeholders.length > 0) {
           $scope.stakeholder = stakeholders[0];
           $scope.stakeholders = stakeholders;

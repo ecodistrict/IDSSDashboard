@@ -6,7 +6,8 @@
         // this is used while process is loading to avoid errors in GUI
         var currentCase = {
             title: null,
-            kpiList: []
+            kpiList: [],
+            kpiValues: {}
         };
 
         // current case is bootstrapped
@@ -31,6 +32,7 @@
             currentCase.districtPolygon = newCaseData.districtPolygon;
             currentCase.title = newCaseData.title;
             currentCase.kpiList = newCaseData.kpiList || [];
+            currentCase.kpiValues = newCaseData.kpiValues || {};
             currentCase.description = newCaseData.description;
         };
 
@@ -158,6 +160,16 @@
             }
         };
 
+        // kpi values stored on case is As is values
+        var addKpiValue = function(kpiId, kpiValue) {
+            currentCase.kpiValues = currentCase.kpiValues || {}; // this should not be needed..
+            currentCase.kpiValues[kpiId] = kpiValue;
+            return saveCurrentCase().then(function(c) {
+                NotificationService.createSuccessFlash('KPI value was added');
+                return c;
+            });
+        };      
+
         var updateKpiSettings = function(newKpiData) {
             var kpi = _.find(currentCase.kpiList, function(k) {
                 return k.kpiAlias === newKpiData.kpiAlias;
@@ -228,6 +240,7 @@
             loadCase: loadCase,
             loadCases: loadCases,
             addKpi: addKpi,
+            addKpiValue: addKpiValue,
             updateKpiSettings: updateKpiSettings,
             removeKpi: removeKpi,
             updateSelectedKpi: updateSelectedKpi

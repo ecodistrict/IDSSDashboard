@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-xs-12">
             <h2>To be - go through KPIs to set ambitions</h2>
-            <div ng-if="isFacilitator && stakeholders.length == 0" class="well">No stakeholder are added. <a ui-sref="analyse-problem">Add stakeholders</a></div>
+            <div ng-if="isFacilitator && stakeholders.length == 0" class="well">No stakeholders are added. <a ui-sref="analyse-problem">Add stakeholders</a></div>
             <form class="form" role="form" ng-if="isFacilitator">
               <div class="form-group">
                 <label>Select stakeholder</label>
@@ -10,7 +10,7 @@
                 </select>
               </div>
             </form>
-            <div ng-repeat="kpi in currentCase.kpiList" id="{{'used-kpi-' + kpi.kpiAlias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="setWeight(kpi)">
+            <div ng-if="stakeholders.length > 0" ng-repeat="kpi in currentCase.kpiList" id="{{'used-kpi-' + kpi.kpiAlias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="setWeight(kpi)">
                 <div class="panel-heading kpi-panel-heading" id="{{'set-ambition-' + kpi.kpiAlias + '-button'}}">
                   <div class="kpi-weight-gauge-container pull-right" ng-click="setWeight(kpi);$event.stopPropagation()">
                     <kpi-weight class="kpi-weight-gauge" ng-if="!kpi.disabled" kpi="kpi"></kpi-weight>
@@ -18,7 +18,6 @@
                   </div>
                   <h3 class="panel-title">
                     <b ng-bind="kpi.name"></b> <span ng-hide="kpiIsConfigured(kpi)" class="glyphicon glyphicon-exclamation-sign"></span>
-                    <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
                   </h3>
                   <button ng-if="kpi.weight > 0" id="{{'set-value-' + kpi.alias}}" class="btn btn-xs btn-primary" ng-click="setWeight(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-stats"></i> Set ambition</button>
                   <span class="label label-default">As is {{(kpi.value || kpi.value == 0) ? kpi.value : '-'}} {{kpi.unit}}</span>
