@@ -50,6 +50,9 @@ angular.module( 'idss-dashboard.compare-variants', [])
     currentUser = user;
 
     LoginService.getStakeholders(activeCase._id).then(function(stakeholders) {
+      // in case there are no stakeholders, show in gui
+      $scope.stakeholders = stakeholders;
+
       _.each(stakeholders, function(stakeholder) {
         // base object for stakeholder
         var stakeholderData = {
@@ -91,7 +94,7 @@ angular.module( 'idss-dashboard.compare-variants', [])
           kpiData.bad = calculateBad(kpi.sufficient, kpi.excellent);
           // add weight and ambition
           if(stakeholder.kpiWeights && stakeholder.kpiWeights[activeCase._id] && stakeholder.kpiWeights[activeCase._id][kpi.kpiAlias]) {
-            kpiData.weight = stakeholder.kpiWeights[activeCase._id][kpi.kpiAlias];
+            kpiData.weight = stakeholder.kpiWeights[activeCase._id] [kpi.kpiAlias];
           }
           stakeholderData.kpiList.push(kpiData);
 
