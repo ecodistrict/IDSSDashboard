@@ -24,8 +24,8 @@ angular.module( 'idss-dashboard.start', [
 
 .controller( 'StartCtrl', ['$scope', 'CaseService', '$state', 'socket', 'LoginService', function StartCtrl( $scope, CaseService, $state, socket, LoginService ) {
 
-  socket.forward('createCase', $scope);
-  socket.forward('deleteCase', $scope);
+  // socket.forward('createCase', $scope);
+  // socket.forward('deleteCase', $scope);
 
   $scope.cases = [];
   $scope.activeCase = {};
@@ -46,49 +46,61 @@ angular.module( 'idss-dashboard.start', [
   
   $scope.createNewCase = function() {
     CaseService.createNewCase().then(function(createdCase) {
+      
+      // signal remove - dashboard works stand alone, create some check to see database status
       socket.emit('createCase', {
         caseId: createdCase._id,
         userId: createdCase.userId
       });
-      createdCase.loading = true;
+
       $scope.cases.push(createdCase);
+
     });    
   };
 
   $scope.deleteCase = function(caseItem) {
-    caseItem.loading = true;
-    socket.emit('deleteCase', {
-      caseId: caseItem._id,
-      userId: caseItem.userId
-    });  
-  };
 
-  $scope.$on('socket:createCase', function (ev, data) {
-    var caseItem = _.find($scope.cases, function(c) {
-      return c._id === data.caseId;
-    });
-    caseItem.loading = false;
-  });
+    CaseService.deleteCase({_id: data.caseId}).then(function(deletedCase) {  
 
-  $scope.$on('socket:deleteCase', function (ev, data) {
-    var caseItem = _.find($scope.cases, function(c) {
-      return c._id === data.caseId;
-    });
-
-    if(caseItem) {
-      CaseService.deleteCase({_id: data.caseId}).then(function(deletedCase) {
-        
-        caseItem.loading = false;
-        // remove from list
-        var index = _.indexOf($scope.cases, caseItem);
+      // signal remove - dashboard works stand alone, create some check to see database status
+      socket.emit('deleteCase', {
+        caseId: caseItem._id,
+        userId: caseItem.userId
+      });  
+      // remove from list
+      var index = _.indexOf($scope.cases, caseItem);
         if (index > -1) {
             $scope.cases.splice(index, 1);
         }
-      }); 
-    } else {
-      console.log('case item was not found');
-    }
-  });
+    }); 
+  };
+
+  // $scope.$on('socket:createCase', function (ev, data) {
+  //   var caseItem = _.find($scope.cases, function(c) {
+  //     return c._id === data.caseId;
+  //   });
+  //   caseItem.loading = false;
+  // });
+
+  // $scope.$on('socket:deleteCase', function (ev, data) {
+  //   var caseItem = _.find($scope.cases, function(c) {
+  //     return c._id === data.caseId;
+  //   });
+
+  //   if(caseItem) {
+  //     CaseService.deleteCase({_id: data.caseId}).then(function(deletedCase) {
+        
+  //       caseItem.loading = false;
+  //       // remove from list
+  //       var index = _.indexOf($scope.cases, caseItem);
+  //       if (index > -1) {
+  //           $scope.cases.splice(index, 1);
+  //       }
+  //     }); 
+  //   } else {
+  //     console.log('case item was not found');
+  //   }
+  // });
 
   $scope.loadCase = function(caseToLoad) {
     var activeCase;
