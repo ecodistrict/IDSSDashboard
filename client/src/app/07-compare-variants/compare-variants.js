@@ -48,10 +48,105 @@ angular.module( 'idss-dashboard.compare-variants', [])
 
   LoginService.getCurrentUser().then(function(user) {
     currentUser = user;
-    socket.emit('getKpiResult', {
-      userId: user._id,
-      caseId: activeCase._id
+
+    LoginService.getStakeholders(activeCase._id).then(function(stakeholders) {
+      _.each(stakeholders, function(stakeholder) {
+        // base object for stakeholder
+        var stakeholderData = {
+          user: {
+            id: stakeholder._id,
+            name: stakeholder.name
+          },
+          variants: [],
+          kpiList: []
+        };
+
+        // add As is "variant", reference is used later in code
+        var asIsVariant = {
+          name: "As is",
+          description: "This is the current state",
+          kpiList: []
+        };
+        stakeholderData.variants.push(asIsVariant);
+
+        // add To be "variant", reference is used later in code
+        var toBeVariant = {
+          name: "To be",
+          description: "This is the ambition",
+          kpiList: []
+        };
+        stakeholderData.variants.push(toBeVariant);
+
+        // add overall kpi list to stakeholder (as is and to be variants are also added to)
+        _.each(activeCase.kpiList, function(kpi) {
+          var kpiData = {
+            kpiName: kpi.name,
+            kpiDescription: kpi.description,
+            kpiId: kpi.kpiAlias,
+            unit: kpi.unit,
+            sufficient: kpi.sufficient,
+            excellent: kpi.excellent
+          };
+          // this is now done for each user, that's not optimal..
+          kpiData.bad = calculateBad(kpi.sufficient, kpi.excellent);
+          // add weight and ambition
+          if(stakeholder.kpiWeights && stakeholder.kpiWeights[activeCase._id] && stakeholder.kpiWeights[activeCase._id][kpi.kpiAlias]) {
+            kpiData.weight = stakeholder.kpiWeights[activeCase._id][kpi.kpiAlias];
+          }
+          stakeholderData.kpiList.push(kpiData);
+
+          // now also add to as is and to be kpi values
+          if(stakeholder.kpiAmbitions && stakeholder.kpiAmbitions[activeCase._id] && stakeholder.kpiAmbitions[activeCase._id][kpi.kpiAlias]) {
+            toBeVariant.kpiList.push({
+              kpiValue: stakeholder.kpiAmbitions[activeCase._id][kpi.kpiAlias],
+              kpiId: kpi.kpiAlias
+            });
+          }
+          if(activeCase.kpiValues && activeCase.kpiValues[kpi.kpiAlias]) {
+            asIsVariant.kpiList.push({
+              kpiValue: activeCase.kpiValues[kpi.kpiAlias],
+              kpiId: kpi.kpiAlias
+            });
+          }
+        });
+        
+        // create rest of variants
+        _.each(variants, function(variant) {
+          // create variant data
+          var variantData = {
+            variantId: variant._id,
+            description: variant.description,
+            name: variant.name,
+            type: variant.type,
+            kpiList: []
+          };
+          // add to stakeholder reference
+          stakeholderData.variants.push(variantData);
+          // add kpis to kpi list
+          _.each(activeCase.kpiList, function(kpi) {
+
+            variant.kpiValues = variant.kpiValues || {};
+
+            // add to variant reference
+            variantData.kpiList.push({
+              kpiId: kpi.kpiAlias,
+              kpiValue: variant.kpiValues[kpi.kpiAlias]
+            });
+          });
+        });
+
+        mcmsmvData.stakeholders.push(stakeholderData);
+
+      });
+
+      $scope.mcmsmv = mcmsmvData;
+
     });
+
+    // socket.emit('getKpiResult', {
+    //   userId: user._id,
+    //   caseId: activeCase._id
+    // });
     
     
     // KpiService.getAllKpiRecords().then(function(kpiRecords) {
@@ -161,130 +256,125 @@ angular.module( 'idss-dashboard.compare-variants', [])
     // });
   });
 
-  socket.on('getKpiResult', function(records) {
+  // socket.on('getKpiResult', function(records) {
 
-    // if first response message with records, get all stakeholder records
-    if(records && records.length && records.length > 1) {
-      // if facilitator
-      if(records[0].userId === currentUser._id) {
-        // request the stakeholder data
-        LoginService.getStakeholders().then(function(s) {
-          stakeholders = s;
-          if(stakeholders && stakeholders.length && stakeholders.length > 0) {
-            _.each(stakeholders, function(s) {
-              socket.emit('getKpiResult', {
-                userId: s._id,
-                caseId: activeCase._id
-              });
-            });
-          }
-        });
-        _.each(records, function(record) {
-          // set the facilitator data as default values
-          kpiDefaultValueMap[record.variantId] = kpiDefaultValueMap[record.variantId] || {};
-          kpiDefaultValueMap[record.variantId][record.kpiId] = {value: record.value, disabled: record.disabled};
-        });
+  //   // if first response message with records, get all stakeholder records
+  //   if(records && records.length && records.length > 1) {
+  //     // if facilitator
+  //     if(records[0].userId === currentUser._id) {
+  //       // request the stakeholder data
+  //       LoginService.getStakeholders().then(function(s) {
+  //         stakeholders = s;
+  //         if(stakeholders && stakeholders.length && stakeholders.length > 0) {
+  //           _.each(stakeholders, function(s) {
+  //             socket.emit('getKpiResult', {
+  //               userId: s._id,
+  //               caseId: activeCase._id
+  //             });
+  //           });
+  //         }
+  //       });
+  //       _.each(records, function(record) {
+  //         // set the facilitator data as default values
+  //         kpiDefaultValueMap[record.variantId] = kpiDefaultValueMap[record.variantId] || {};
+  //         kpiDefaultValueMap[record.variantId][record.kpiId] = {value: record.value, disabled: record.disabled};
+  //       });
         
 
-      } else {
-        // fill kpi value map
-        _.each(records, function(record) {
-          // map on variant and kpi
-          kpiValueMap[record.userId] = kpiValueMap[record.userId] || {};
-          kpiValueMap[record.userId][record.variantId] = kpiValueMap[record.userId][record.variantId] || {};
-          // this map is for values on each variant
-          kpiValueMap[record.userId][record.variantId][record.kpiAlias] = {value: record.value, disabled: record.disabled};
+  //     } else {
+  //       // fill kpi value map
+  //       _.each(records, function(record) {
+  //         // map on variant and kpi
+  //         kpiValueMap[record.userId] = kpiValueMap[record.userId] || {};
+  //         kpiValueMap[record.userId][record.variantId] = kpiValueMap[record.userId][record.variantId] || {};
+  //         // this map is for values on each variant
+  //         kpiValueMap[record.userId][record.variantId][record.kpiAlias] = {value: record.value, disabled: record.disabled};
           
-        }); 
-        // now loop through stakeholders to generate the mcmsmv data
-        _.each(stakeholders, function(stakeholder) {
-          // create stakeholder data
-          var stakeholderData = {
-            user: {
-              id: stakeholder._id,
-              name: stakeholder.name
-            },
-            variants: [],
-            kpiList: []
-          };
-          // fill stakeholders kpi list
-          _.each(activeCase.kpiList, function(kpi) {
-            var kpiBaseData = {
-              kpiName: kpi.name,
-              kpiDescription: kpi.description,
-              kpiId: kpi.kpiAlias,
-              unit: kpi.unit,
-              sufficient: kpi.sufficient,
-              excellent: kpi.excellent
-            };
-            // calculate bad, this is now done for each user, that's not optimal..
-            kpiBaseData.bad = calculateBad(kpi.sufficient, kpi.excellent);
-            // find weight
-            if(stakeholder.kpiWeights[activeCase._id] && stakeholder.kpiWeights[activeCase._id][kpi.kpiAlias]) {
-              kpiBaseData.weight = stakeholder.kpiWeights[activeCase._id][kpi.kpiAlias];
-            } else {
-              kpiBaseData.weight = 0;
-            }
-            // push kpi base data to stakeholders kpi list
-            stakeholderData.kpiList.push(kpiBaseData);
+  //       }); 
+  //       // now loop through stakeholders to generate the mcmsmv data
+  //       _.each(stakeholders, function(stakeholder) {
+  //         // create stakeholder data
+  //         var stakeholderData = {
+  //           user: {
+  //             id: stakeholder._id,
+  //             name: stakeholder.name
+  //           },
+  //           variants: [],
+  //           kpiList: []
+  //         };
+  //         // fill stakeholders kpi list
+  //         _.each(activeCase.kpiList, function(kpi) {
+  //           var kpiBaseData = {
+  //             kpiName: kpi.name,
+  //             kpiDescription: kpi.description,
+  //             kpiId: kpi.kpiAlias,
+  //             unit: kpi.unit,
+  //             sufficient: kpi.sufficient,
+  //             excellent: kpi.excellent
+  //           };
+  //           // calculate bad, this is now done for each user, that's not optimal..
+  //           kpiBaseData.bad = calculateBad(kpi.sufficient, kpi.excellent);
+  //           // find weight
+  //           if(stakeholder.kpiWeights[activeCase._id] && stakeholder.kpiWeights[activeCase._id][kpi.kpiAlias]) {
+  //             kpiBaseData.weight = stakeholder.kpiWeights[activeCase._id][kpi.kpiAlias];
+  //           } else {
+  //             kpiBaseData.weight = 0;
+  //           }
+  //           // push kpi base data to stakeholders kpi list
+  //           stakeholderData.kpiList.push(kpiBaseData);
 
-          });
-          // add to global data object
-          mcmsmvData.stakeholders.push(stakeholderData);
+  //         });
+  //         // add to global data object
+  //         mcmsmvData.stakeholders.push(stakeholderData);
 
-          // add variants to variants list
-          _.each(variants, function(variant) {
-            // create variant data
-            var variantData = {
-              variantId: variant._id,
-              description: variant.description,
-              name: variant.name,
-              type: variant.type,
-              kpiList: []
-            };
-            // add to stakeholder reference
-            stakeholderData.variants.push(variantData);
-            // add kpis to kpi list
-            _.each(activeCase.kpiList, function(kpi) {
+  //         // add variants to variants list
+  //         _.each(variants, function(variant) {
+  //           // create variant data
+  //           var variantData = {
+  //             variantId: variant._id,
+  //             description: variant.description,
+  //             name: variant.name,
+  //             type: variant.type,
+  //             kpiList: []
+  //           };
+  //           // add to stakeholder reference
+  //           stakeholderData.variants.push(variantData);
+  //           // add kpis to kpi list
+  //           _.each(activeCase.kpiList, function(kpi) {
 
-              var kpiValue, disabled = false;
+  //             var kpiValue, disabled = false;
 
-              if(kpiValueMap[user._id] && kpiValueMap[user._id][variant._id] && kpiValueMap[user._id][variant._id][kpi.kpiAlias]) {
-                kpiValue = kpiValueMap[user._id][variant._id][kpi.kpiAlias].value;
-                disabled = kpiValueMap[user._id][variant._id][kpi.kpiAlias].disabled; // this is for facilitator only
-              } else {
-                // if this is undefined not even the facilitator has given a value to the kpi (no record has been found for variant)
-                if(kpiDefaultValueMap[variant._id] && kpiDefaultValueMap[variant._id][kpi.kpiAlias]) {
-                  kpiValue = kpiDefaultValueMap[variant._id][kpi.kpiAlias].value;
-                  // this is not very good, but it works for now - if no value was found for stakeholder, the disabled property can be set from the facilitator default
-                  disabled = kpiDefaultValueMap[variant._id][kpi.kpiAlias].disabled; 
-                }
-              }
-              // create kpi data
-              var kpiData = {
-                kpiId: kpi.kpiAlias,
-                kpiValue: kpiValue,
-                disabled: disabled
-              };
-              // add to variant reference
-              variantData.kpiList.push(kpiData);
-            });
-          });
-        });
-      }
-    } 
+  //             if(kpiValueMap[user._id] && kpiValueMap[user._id][variant._id] && kpiValueMap[user._id][variant._id][kpi.kpiAlias]) {
+  //               kpiValue = kpiValueMap[user._id][variant._id][kpi.kpiAlias].value;
+  //               disabled = kpiValueMap[user._id][variant._id][kpi.kpiAlias].disabled; // this is for facilitator only
+  //             } else {
+  //               // if this is undefined not even the facilitator has given a value to the kpi (no record has been found for variant)
+  //               if(kpiDefaultValueMap[variant._id] && kpiDefaultValueMap[variant._id][kpi.kpiAlias]) {
+  //                 kpiValue = kpiDefaultValueMap[variant._id][kpi.kpiAlias].value;
+  //                 // this is not very good, but it works for now - if no value was found for stakeholder, the disabled property can be set from the facilitator default
+  //                 disabled = kpiDefaultValueMap[variant._id][kpi.kpiAlias].disabled; 
+  //               }
+  //             }
+  //             // create kpi data
+  //             var kpiData = {
+  //               kpiId: kpi.kpiAlias,
+  //               kpiValue: kpiValue,
+  //               disabled: disabled
+  //             };
+  //             // add to variant reference
+  //             variantData.kpiList.push(kpiData);
+  //           });
+  //         });
+  //       });
+  //     }
+  //   } 
       
-  });
+  // });
 
-  $timeout(function(){
-    // this should be triggered when everything is loaded
-    $scope.mcmsmv = mcmsmvData;
-  }, 6000);
-
-  $scope.sendData = {
-    loading: false,
-    status: 'unprocessed'
-  };
+  // $timeout(function(){
+  //   // this should be triggered when everything is loaded
+  //   $scope.mcmsmv = mcmsmvData;
+  // }, 6000);
 
   $scope.sendToMCMSMV = function() {
     var modules = ModuleService.getModulesFromKpiId('mcmsmv');
