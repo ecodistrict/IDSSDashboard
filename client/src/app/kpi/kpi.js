@@ -70,10 +70,15 @@ angular.module( 'idss-dashboard.kpi', [])
     kpi.value = activeCase.kpiValues[kpi.kpiAlias];
     currentVariant = {
       name: 'As is'
-    }; // If currentVariant is empty this is as is situation
+    }; 
+    // set any disabled
+    kpi.disabled = activeCase.kpiDisabled[kpi.kpiAlias];
   } else {
     currentVariant.kpiValues = currentVariant.kpiValues || {};
+    currentVariant.kpiDisabled = currentVariant.kpiDisabled || {};
     kpi.value = currentVariant.kpiValues[kpi.kpiAlias];
+    // set any disabled
+    kpi.disabled = currentVariant.kpiDisabled[kpi.kpiAlias];
   }
   // set status
   if(kpi.value || kpi.value === 0) {
@@ -219,7 +224,12 @@ angular.module( 'idss-dashboard.kpi', [])
 
   $scope.disable = function(kpi, state) {
     kpi.disabled = state;
-    KpiService.updateKpiRecord(kpi);
+    // if this kpi belongs to variant
+    if(currentVariant._id) {
+      VariantService.toggleDisabled(currentVariant, kpi);
+    } else { // otherwise this is as is situation
+      CaseService.toggleDisabled(kpi);
+    }
   };
 
   $scope.goBack = function() {

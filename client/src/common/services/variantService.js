@@ -93,6 +93,19 @@ angular.module('idss-dashboard')
         });
     };   
 
+    // kpi disabled for the variant
+    var toggleDisabled = function(variant, kpi) {
+        variant.kpiDisabled = variant.kpiDisabled || {}; // should not be needed..
+        if(variant.kpiDisabled[kpi.kpiAlias]) {
+            variant.kpiDisabled[kpi.kpiAlias] = false;
+        } else {
+            variant.kpiDisabled[kpi.kpiAlias] = true;
+        }
+        return saveVariant(variant).then(function(c) {
+            NotificationService.createSuccessFlash('KPI settings changed');
+        });
+    };
+
     var deleteVariant = function(variantToDelete) {
         return $http
             .delete('variants/' + variantToDelete._id)
@@ -179,7 +192,8 @@ angular.module('idss-dashboard')
         loadVariantsByProcessId: loadVariantsByProcessId,
         deleteVariant: deleteVariant,
         saveVariant: saveVariant,
-        addKpiValue: addKpiValue
+        addKpiValue: addKpiValue,
+        toggleDisabled: toggleDisabled
         //addOrRemoveKpis: addOrRemoveKpis,
         //addOrRemoveVariants: addOrRemoveVariants
     };

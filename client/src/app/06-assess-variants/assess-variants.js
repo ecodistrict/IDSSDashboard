@@ -61,7 +61,8 @@ angular.module( 'idss-dashboard.assess-variants', [])
   if(currentVariant) {
 
     currentVariant.kpiValues = currentVariant.kpiValues || {};
-    
+    currentVariant.kpiDisabled = currentVariant.kpiDisabled || {};
+
     _.each(activeCase.kpiList, function(kpi) {
       KpiService.removeExtendedData(kpi); // in case data is already extended 
 
@@ -71,6 +72,7 @@ angular.module( 'idss-dashboard.assess-variants', [])
       } else {
         kpi.status = 'unprocessed';
       }
+      kpi.disabled = currentVariant.kpiDisabled[kpi.kpiAlias];
       
       // socket.emit('getKpiResult', {
       //   variantId: variantId, 

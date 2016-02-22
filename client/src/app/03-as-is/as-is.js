@@ -52,6 +52,7 @@ angular.module( 'idss-dashboard.as-is', [])
     } else {
       kpi.status = 'unprocessed';
     }
+    kpi.disabled = activeCase.kpiDisabled[kpi.kpiAlias];
 
     // socket.emit('getKpiResult', {
     //   kpiId: kpi.kpiAlias, 

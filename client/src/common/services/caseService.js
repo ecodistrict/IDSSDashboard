@@ -7,7 +7,8 @@
         var currentCase = {
             title: null,
             kpiList: [],
-            kpiValues: {}
+            kpiValues: {},
+            kpiDisabled: {}
         };
 
         // current case is bootstrapped
@@ -33,6 +34,7 @@
             currentCase.title = newCaseData.title;
             currentCase.kpiList = newCaseData.kpiList || [];
             currentCase.kpiValues = newCaseData.kpiValues || {};
+            currentCase.kpiDisabled = newCaseData.kpiDisabled || {};
             currentCase.description = newCaseData.description;
         };
 
@@ -168,7 +170,20 @@
                 NotificationService.createSuccessFlash('KPI value was added');
                 return c;
             });
-        };      
+        };    
+
+        // kpi disabled for the As is situation
+        var toggleDisabled = function(kpi) {
+            currentCase.kpiDisabled = currentCase.kpiDisabled || {}; // should not be needed..
+            if(currentCase.kpiDisabled[kpi.kpiAlias]) {
+                currentCase.kpiDisabled[kpi.kpiAlias] = false;
+            } else {
+                currentCase.kpiDisabled[kpi.kpiAlias] = true;
+            }
+            return saveCurrentCase().then(function(c) {
+                NotificationService.createSuccessFlash('KPI settings changed');
+            });
+        };
 
         var updateKpiSettings = function(newKpiData) {
             var kpi = _.find(currentCase.kpiList, function(k) {
@@ -243,7 +258,8 @@
             addKpiValue: addKpiValue,
             updateKpiSettings: updateKpiSettings,
             removeKpi: removeKpi,
-            updateSelectedKpi: updateSelectedKpi
+            updateSelectedKpi: updateSelectedKpi,
+            toggleDisabled: toggleDisabled
         };
     }
 
