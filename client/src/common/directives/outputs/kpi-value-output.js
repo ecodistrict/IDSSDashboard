@@ -394,6 +394,19 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
               width = width - margin.left - margin.right;
               var height = 50 - margin.top - margin.bottom;
 
+              // if not kpi.allowNegative - set everything beneath zero to zero...
+              if(!kpi.allowNegative) {
+                if(bad < 0) {
+                  bad = 0;
+                }
+                if(sufficient < 0) {
+                  sufficient = 0;
+                }
+                if(excellent < 0) {
+                  excellent = 0;
+                }
+              }
+
                 element.empty().attr('id', 'm-' + kpi.kpiAlias + '-aggregated-kpi');
 
                 var chart = d3.bullet()

@@ -21,7 +21,7 @@
             <div class="panel-heading kpi-panel-heading" role="tab">
               <h4 class="panel-title">
                 <b ng-bind="kpi.name"></b> <i>(status: {{kpi.status}})</i>
-                <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
+                <!-- <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span> -->
               </h4>
               <kpi-value-output ng-if="!kpi.disabled" kpi="kpi"></kpi-value-output>
               <p ng-if="kpi.disabled" style="margin-top:10px" class="well">KPI <b>{{kpi.name}}</b> is not applicable for this alternative</p>

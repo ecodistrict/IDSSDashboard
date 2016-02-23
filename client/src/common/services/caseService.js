@@ -202,6 +202,9 @@
             if(newKpiData.descriptionExcellent || newKpiData.descriptionExcellent === '') {
                 kpi.descriptionExcellent = newKpiData.descriptionExcellent;
             }
+            if(typeof newKpiData.allowNegative) {
+                kpi.allowNegative = newKpiData.allowNegative;
+            }
             if(newKpiData.qualitativeSettings) {
                 kpi.qualitativeSettings = newKpiData.qualitativeSettings;
             }
