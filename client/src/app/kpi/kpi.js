@@ -43,6 +43,8 @@ angular.module( 'idss-dashboard.kpi', [])
 .controller( 'KpiController', ['$scope', '$timeout', 'socket', '$stateParams', '$state', 'activeCase', 'currentUser', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'CaseService', 'variants', 
   function KpiController( $scope, $timeout, socket, $stateParams, $state, activeCase, currentUser, ModuleService, $modal, KpiService, VariantService, CaseService, variants ) {
 
+  socket.forward('startModule', $scope);
+
   var kpi = _.find(activeCase.kpiList, function(k) {return k.kpiAlias === $stateParams.kpiAlias;});
   KpiService.removeExtendedData(kpi); // possible old extended data from another view
   
@@ -235,6 +237,19 @@ angular.module( 'idss-dashboard.kpi', [])
   $scope.goBack = function() {
     $state.transitionTo(backState, {variantId: currentVariant._id});
   };
+
+  $scope.$on('socket:startModule', function (ev, module) {
+    console.log(module);
+    kpi.status = module.status;
+    if(kpi.status !== 'processing') {
+      kpi.loading = false;
+    }
+    kpi.info = module.info;
+    if(typeof module.kpiValue == 'number') { //jshint ignore:line
+      kpi.value = module.kpiValue;
+    }
+
+  });
 
 }]);
 

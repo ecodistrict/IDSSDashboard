@@ -444,6 +444,18 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         case 'getModules': 
           dashboardWebClientSocket.emit(message.method, message);
           break;
+        // startmodule must save any kpiValue to db
+        case 'startModule':
+          if(message.kpiValue && message.userId && message.caseId) {
+            caseRepository.updateKpiValue(message.userId, message.caseId, message, function(err, modifiedCase) {
+              if(err) {
+                console.log(err);
+              } else {
+                console.log('updated kpi value', message);
+              }
+            });
+          } 
+          // Note: no break, the message goes on to default..
         default:
           if(message.userId) {
             console.log('send to dashboard client');

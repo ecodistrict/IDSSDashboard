@@ -43,7 +43,10 @@ angular.module( 'idss-dashboard.develop-variants', [
   socket.forward('createVariant', $scope);
   socket.forward('deleteVariant', $scope);
 
-  $scope.variants = variants;
+  // work around if old data (variants) exists.. could be removed
+  $scope.variants = _.without(variants, function(v) {
+    return v.type !== 'as-is' || v.type !== 'to-be';
+  });
   console.log(currentUser);
 
   $scope.addVariant = function() {

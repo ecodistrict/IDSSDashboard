@@ -48,7 +48,8 @@ angular.module( 'idss-dashboard.collect-data', [
   function CollectDataCtrl( $scope, KpiService, CaseService, $modal, currentCase, ModuleService, FileUploader, socket, variants, currentUser) {
 
   $scope.currentCase = currentCase;
-  var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
+
+  socket.forward('startModule', $scope);
 
   // upload is disabled 
 
@@ -78,7 +79,6 @@ angular.module( 'idss-dashboard.collect-data', [
 
     socket.emit('startModule', {
       caseId: currentCase._id,
-      asIsVariantId: asIsVariant._id, // as is is needed if new alternative - if there is no input, take from as is
       kpiAlias: kpi.kpiAlias, 
       moduleId: kpi.selectedModuleId, 
       status: kpi.status,
@@ -91,13 +91,10 @@ angular.module( 'idss-dashboard.collect-data', [
     $scope.trig = !$scope.trig;
   };
 
-  // listen on any module that was started, for updating loading status
-  socket.on('startModule', function(module) {
-    console.log('start module response', module);
-
+  $scope.$on('socket:startModule', function (ev, module) {
     var kpi = _.find(currentCase.kpiList, function(k) {
       console.log(k);
-      return k.selectedModuleId === module.moduleId;
+      return (k.selectedModuleId === module.moduleId && k.kpiAlias === module.kpiId);
     });
 
     console.log(kpi);
@@ -111,7 +108,7 @@ angular.module( 'idss-dashboard.collect-data', [
       kpi.info = module.info;
 
     }
-      
+
   });
 
 }]);
