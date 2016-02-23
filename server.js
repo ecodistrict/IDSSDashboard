@@ -171,7 +171,7 @@ if(process.env.NODE_ENV === 'production') {
 } else {
   imbName = 'dashboard-test';
 };
-imbConnection = new imb.TIMBConnection(imb.imbDefaultHostname, imb.imbDefaultTLSPort, 10, imbName, imb.imbDefaultPrefix, false, 
+imbConnection = new imb.TIMBConnection(imb.imbDefaultHostname, 443, 10, imbName, imb.imbDefaultPrefix, false, 
     "cert/client-eco-district.pfx", "&8dh48klosaxu90OKH", "cert/root-ca-imb.crt");
 
 // imbConnection = new imb.TIMBConnection('cstb-temp', imb.imbDefaultTLSPort, 10, imbName, imb.imbDefaultPrefix, false, 
@@ -446,14 +446,26 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
           break;
         // startmodule must save any kpiValue to db
         case 'startModule':
-          if(message.kpiValue && message.userId && message.caseId) {
-            caseRepository.updateKpiValue(message.userId, message.caseId, message, function(err, modifiedCase) {
-              if(err) {
-                console.log(err);
-              } else {
-                console.log('updated kpi value', message);
-              }
-            });
+          if(message.kpiValue && message.userId) {
+            // if variantId does not exists, this is the as is situation
+            if(!message.variantId && message.caseId) {
+              caseRepository.updateKpiValue(message.userId, message.caseId, message, function(err, modifiedCase) {
+                if(err) {
+                  console.log(err);
+                } else {
+                  console.log('updated kpi value on as is', message);
+                }
+              });
+            } else if(message.variantId && message.caseId) {
+              variantRepository.updateKpiValue(message.userId, message.variantId, message, function(err, modifiedVariant) {
+                if(err) {
+                  console.log(err);
+                } else {
+                  console.log('updated kpi value on variant', message);
+                }
+              });
+            }
+            
           } 
           // Note: no break, the message goes on to default..
         default:

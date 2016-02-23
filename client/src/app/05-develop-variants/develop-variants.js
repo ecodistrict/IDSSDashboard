@@ -83,7 +83,7 @@ angular.module( 'idss-dashboard.develop-variants', [
 
   $scope.deleteVariant = function(variant) {
     variant.loading = true;
-    VariantService.deleteVariant({_id: data.variantId}).then(function(deletedVariant) {
+    VariantService.deleteVariant(variant).then(function(deletedVariant) {
       //variant.loading = false;
       // remove from list
       var index = _.indexOf($scope.variants, variant);

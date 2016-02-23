@@ -60,7 +60,7 @@ angular.module( 'idss-dashboard.start', [
 
   $scope.deleteCase = function(caseItem) {
 
-    CaseService.deleteCase({_id: data.caseId}).then(function(deletedCase) {  
+    CaseService.deleteCase(caseItem).then(function(deletedCase) {  
 
       // signal remove - dashboard works stand alone, create some check to see database status
       socket.emit('deleteCase', {

@@ -380,20 +380,14 @@ angular.module( 'idss-dashboard.compare-variants', [])
   // }, 6000);
 
   $scope.sendToMCMSMV = function() {
-    var modules = ModuleService.getModulesFromKpiId('mcmsmv');
 
-    if(modules.length > 0) {
+    socket.emit('mcmsmv', {
+      variants: mcmsmvData,
+      kpiId: 'mcmsmv',
+      userId: currentUser._id
+    });
+    $scope.msg = JSON.stringify(mcmsmvData, undefined, 4);
 
-      socket.emit('mcmsmv', {
-        variants: mcmsmvData,
-        kpiId: 'mcmsmv',
-        userId: currentUser._id
-      });
-      $scope.msg = JSON.stringify(mcmsmvData, undefined, 4);
-
-    } else {
-      $scope.msg = JSON.stringify(mcmsmvData, undefined, 4);
-    }
   };
 
   // listen on any model that was started, for updating loading status
