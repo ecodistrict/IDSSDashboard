@@ -64,6 +64,7 @@ angular.module('idss-dashboard')
                 var variant = res.data;
                 var label = 'Variant ' + variant.name + ' was successfully created';
                 NotificationService.createSuccessFlash(label);
+                variants.push(variant);
                 return variant;
             });
     };
