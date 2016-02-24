@@ -58,7 +58,6 @@ angular.module( 'idss-dashboard.to-be', [])
 
       _.each(activeCase.kpiList, function(kpi) {
         KpiService.removeExtendedData(kpi); // in case data is already extended
-        kpi.loading = true;
         kpi.status = 'initializing';
         kpi.value = activeCase.kpiValues[kpi.kpiAlias];
         kpi.weight = kpiWeights[activeCase._id][kpi.kpiAlias] || 0; // default weight if kpi record does not exist
@@ -105,7 +104,12 @@ angular.module( 'idss-dashboard.to-be', [])
 
       kpiModal.result.then(function (configuredKpi) {
 
-        configuredKpi.userId = $scope.stakeholder._id;
+        // could be logged in stakeholder
+        if(isFacilitator) {
+          configuredKpi.userId = $scope.stakeholder._id;
+        } else {
+          configuredKpi.userId = currentUser._id;
+        }
         configuredKpi.caseId = activeCase._id;
 
         KpiService.saveKpiWeight(configuredKpi);

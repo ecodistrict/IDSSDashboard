@@ -26,6 +26,11 @@ angular.module( 'idss-dashboard.start', [
 
   // socket.forward('createCase', $scope);
   // socket.forward('deleteCase', $scope);
+  var currentUser;
+  LoginService.getCurrentUser().then(function(user) {
+    currentUser = user;
+    $scope.facilitator = user.role === 'Facilitator';
+  });
 
   $scope.cases = [];
   $scope.activeCase = {};

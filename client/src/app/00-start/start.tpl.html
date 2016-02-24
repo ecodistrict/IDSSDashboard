@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="row">
+    <div ng-if="facilitator" class="row">
         <div class="col-sm-12 col-md-12">
 
             <h2>My Processes</h2>
@@ -27,11 +27,16 @@
             </button>
         </div>
     </div>
-    <div class="row">
+    <div ng-if="facilitator" class="row">
         <form role="form">
           <div class="form-group">
             <button id="next-button" class="pull-right btn btn-primary" ui-sref="analyse-problem">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
           </div>
         </form>
+    </div>
+    <div ng-if="!facilitator" class="row">
+      <div class="well">
+        <p>Welcome! Please set your ambitions on the tab "Set ambitions"</p>
+      </div>
     </div>
 </div>
