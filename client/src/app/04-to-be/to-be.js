@@ -49,19 +49,20 @@ angular.module( 'idss-dashboard.to-be', [])
     var init = function(stakeholder) {
 
       console.log(stakeholder);
+      $scope.stakeholder = stakeholder;
 
       var kpiWeights = stakeholder.kpiWeights || {};
-      kpiWeights[activeCase._id] = kpiWeights[activeCase._id] || {};
+      //kpiWeights[activeCase._id] = kpiWeights[activeCase._id] || {};
 
       var kpiAmbitions = stakeholder.kpiAmbitions || {};
-      kpiAmbitions[activeCase._id] = kpiAmbitions[activeCase._id] || {};
+      //kpiAmbitions[activeCase._id] = kpiAmbitions[activeCase._id] || {};
 
       _.each(activeCase.kpiList, function(kpi) {
         KpiService.removeExtendedData(kpi); // in case data is already extended
         kpi.status = 'initializing';
         kpi.value = activeCase.kpiValues[kpi.kpiAlias];
-        kpi.weight = kpiWeights[activeCase._id][kpi.kpiAlias] || 0; // default weight if kpi record does not exist
-        kpi.ambition = kpiAmbitions[activeCase._id][kpi.kpiAlias]; // could be undefined
+        kpi.weight = kpiWeights[kpi.kpiAlias] || 0; // default weight if kpi record does not exist
+        kpi.ambition = kpiAmbitions[kpi.kpiAlias]; // could be undefined
         KpiService.setKpiColor(kpi, 'ambition');
         console.log(kpi.ambition);
 
@@ -108,16 +109,25 @@ angular.module( 'idss-dashboard.to-be', [])
         if(isFacilitator) {
           configuredKpi.userId = $scope.stakeholder._id;
         } else {
-          configuredKpi.userId = currentUser._id;
+          configuredKpi.userId = $scope.currentUser._id;
         }
         configuredKpi.caseId = activeCase._id;
 
-        KpiService.saveKpiWeight(configuredKpi);
-        KpiService.saveKpiAmbition(configuredKpi);
+        if(configuredKpi.weight || configuredKpi.weight === 0) {
+          KpiService.saveKpiWeight(configuredKpi);
+          // save on referense
+          $scope.stakeholder.kpiWeights[configuredKpi.kpiAlias] = configuredKpi.weight;
+        }
+        if(configuredKpi.ambition || configuredKpi.ambition === 0) {
+          KpiService.saveKpiAmbition(configuredKpi);
+          // save on referense
+          $scope.stakeholder.kpiAmbitions[configuredKpi.kpiAlias] = configuredKpi.ambition;
+        }
 
         // trigger update in gui
         kpi.weight = configuredKpi.weight;
         kpi.ambition = configuredKpi.ambition;
+
 
       }, function () {
         console.log('Modal dismissed at: ' + new Date());
@@ -140,7 +150,7 @@ angular.module( 'idss-dashboard.to-be', [])
 
   $scope.changeUser = function(user) {
     $scope.currentUser = user;
-    init(user._id);
+    init(user);
   };
 
 
