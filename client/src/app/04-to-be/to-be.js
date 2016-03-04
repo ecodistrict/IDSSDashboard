@@ -52,20 +52,22 @@ angular.module( 'idss-dashboard.to-be', [])
       $scope.stakeholder = stakeholder;
 
       var kpiWeights = stakeholder.kpiWeights || {};
-      //kpiWeights[activeCase._id] = kpiWeights[activeCase._id] || {};
+      kpiWeights[activeCase._id] = kpiWeights[activeCase._id] || {};
 
       var kpiAmbitions = stakeholder.kpiAmbitions || {};
-      //kpiAmbitions[activeCase._id] = kpiAmbitions[activeCase._id] || {};
+      kpiAmbitions[activeCase._id] = kpiAmbitions[activeCase._id] || {};
+
+      // if this was first time
+      $scope.stakeholder.kpiWeights = kpiWeights;
+      $scope.stakeholder.kpiAmbitions = kpiAmbitions;
 
       _.each(activeCase.kpiList, function(kpi) {
         KpiService.removeExtendedData(kpi); // in case data is already extended
         kpi.status = 'initializing';
         kpi.value = activeCase.kpiValues[kpi.kpiAlias];
-        kpi.weight = kpiWeights[kpi.kpiAlias] || 0; // default weight if kpi record does not exist
-        kpi.ambition = kpiAmbitions[kpi.kpiAlias]; // could be undefined
+        kpi.weight = kpiWeights[activeCase._id][kpi.kpiAlias] || 0; // default weight if kpi record does not exist
+        kpi.ambition = kpiAmbitions[activeCase._id][kpi.kpiAlias]; // could be undefined
         KpiService.setKpiColor(kpi, 'ambition');
-        console.log(kpi.ambition);
-
       });
     };
 
@@ -116,12 +118,12 @@ angular.module( 'idss-dashboard.to-be', [])
         if(configuredKpi.weight || configuredKpi.weight === 0) {
           KpiService.saveKpiWeight(configuredKpi);
           // save on referense
-          $scope.stakeholder.kpiWeights[configuredKpi.kpiAlias] = configuredKpi.weight;
+          $scope.stakeholder.kpiWeights[configuredKpi.caseId][configuredKpi.kpiAlias] = configuredKpi.weight;
         }
         if(configuredKpi.ambition || configuredKpi.ambition === 0) {
           KpiService.saveKpiAmbition(configuredKpi);
           // save on referense
-          $scope.stakeholder.kpiAmbitions[configuredKpi.kpiAlias] = configuredKpi.ambition;
+          $scope.stakeholder.kpiAmbitions[configuredKpi.caseId][configuredKpi.kpiAlias] = configuredKpi.ambition;
         }
 
         // trigger update in gui

@@ -93,15 +93,15 @@ angular.module( 'idss-dashboard.compare-variants', [])
           // this is now done for each user, that's not optimal..
           kpiData.bad = calculateBad(kpi.sufficient, kpi.excellent);
           // add weight and ambition
-          if(stakeholder.kpiWeights && stakeholder.kpiWeights[kpi.kpiAlias]) {
-            kpiData.weight = stakeholder.kpiWeights[kpi.kpiAlias];
+          if(stakeholder.kpiWeights && stakeholder.kpiWeights[activeCase._id] && stakeholder.kpiWeights[activeCase._id][kpi.kpiAlias]) {
+            kpiData.weight = stakeholder.kpiWeights[activeCase._id][kpi.kpiAlias];
           }
           stakeholderData.kpiList.push(kpiData);
 
           // now also add to as is and to be kpi values
-          if(stakeholder.kpiAmbitions && stakeholder.kpiAmbitions[kpi.kpiAlias]) {
+          if(stakeholder.kpiAmbitions && stakeholder.kpiAmbitions[activeCase._id] && stakeholder.kpiAmbitions[activeCase._id][kpi.kpiAlias]) {
             toBeVariant.kpiList.push({
-              kpiValue: stakeholder.kpiAmbitions[kpi.kpiAlias],
+              kpiValue: stakeholder.kpiAmbitions[activeCase._id][kpi.kpiAlias],
               kpiId: kpi.kpiAlias
             });
           }
@@ -318,8 +318,8 @@ angular.module( 'idss-dashboard.compare-variants', [])
   //           // calculate bad, this is now done for each user, that's not optimal..
   //           kpiBaseData.bad = calculateBad(kpi.sufficient, kpi.excellent);
   //           // find weight
-  //           if(stakeholder.kpiWeights && stakeholder.kpiWeights[kpi.kpiAlias]) {
-  //             kpiBaseData.weight = stakeholder.kpiWeights[kpi.kpiAlias];
+  //           if(stakeholder.kpiWeights[activeCase._id] && stakeholder.kpiWeights[activeCase._id][kpi.kpiAlias]) {
+  //             kpiBaseData.weight = stakeholder.kpiWeights[activeCase._id][kpi.kpiAlias];
   //           } else {
   //             kpiBaseData.weight = 0;
   //           }

@@ -99,6 +99,18 @@ angular.module('idss-dashboard')
             });
     };
 
+    // TODO: remove from this service..
+    var getAllStakeholders = function(caseId) {
+        return $http
+            .get('users/stakeholders').error(function(err) {
+                NotificationService.createErrorFlash(err.message);
+            })
+            .then(function (res) {
+                var stakeholders = res.data;
+                return stakeholders;
+            });
+    };
+
     var deleteStakeholder = function(stakeholder) {
         return $http
             .delete('users/stakeholders/' + stakeholder._id)
@@ -114,6 +126,20 @@ angular.module('idss-dashboard')
             });
     };
 
+    var setActiveCase = function(stakeholder) {
+        return $http.put('users/stakeholders/activecase', stakeholder)
+            .error(function(status, data) {
+                var label = 'Error when updating stakeholder';
+                NotificationService.createErrorFlash(label);
+            })
+            .then(function (res) {
+                var updatedStakeholder = res.data;
+                var label = 'Stakeholder ' + updatedStakeholder.name + ' was successfully updated';
+                NotificationService.createSuccessFlash(label);
+                return updatedStakeholder; 
+            });
+    };
+
     return {
         login: login,
         logout: logout,
@@ -122,7 +148,9 @@ angular.module('idss-dashboard')
         getCurrentUser: getCurrentUser,
         createLogin: createLogin,
         forgotPassword: forgotPassword,
+        setActiveCase: setActiveCase,
         getStakeholders: getStakeholders, // move this to separate service?
+        getAllStakeholders: getAllStakeholders, // move this to separate service?
         deleteStakeholder: deleteStakeholder
     };
 }])

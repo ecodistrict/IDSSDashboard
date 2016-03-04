@@ -405,6 +405,9 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                 if(excellent < 0) {
                   excellent = 0;
                 }
+                if(asIsValue < 0) {
+                  asIsValue = 0;
+                }
               }
 
                 element.empty().attr('id', 'm-' + kpi.kpiAlias + '-aggregated-kpi');

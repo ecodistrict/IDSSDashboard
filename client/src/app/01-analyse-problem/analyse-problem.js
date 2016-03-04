@@ -33,7 +33,12 @@ angular.module( 'idss-dashboard.analyse-problem', [
     currentUser = user;
     $scope.facilitator = user.role === 'Facilitator';
     if($scope.facilitator) {
-      LoginService.getStakeholders(user.activeCaseId).then(function(stakeholders) {
+      LoginService.getAllStakeholders(user.activeCaseId).then(function(stakeholders) {
+        _.each(stakeholders, function(s) {
+          if(s.activeCaseId === $scope.currentCase._id) {
+            s.isActiveCase = true;
+          }
+        });
         $scope.stakeholders = stakeholders;
       });
     }
@@ -103,6 +108,16 @@ angular.module( 'idss-dashboard.analyse-problem', [
         }
       });
     });
+  };
+
+  $scope.setToActiveCase = function(stakeholder) {
+    LoginService.setActiveCase(stakeholder).then(function(updatedStakeholder) {
+      if($scope.currentCase._id === updatedStakeholder.activeCaseId) {
+        stakeholder.isActiveCase = true;
+      } else {
+        stakeholder.isActiveCase = false;
+      }
+    }); 
   };
 
 }]);

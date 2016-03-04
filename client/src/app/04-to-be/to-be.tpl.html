@@ -21,7 +21,7 @@
                   </h3>
                   <button ng-if="kpi.weight > 0" id="{{'set-value-' + kpi.alias}}" class="btn btn-xs btn-primary" ng-click="setWeight(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-stats"></i> Set ambition</button>
                   <span class="label label-default">As is {{(kpi.value || kpi.value == 0) ? kpi.value : '-'}} {{kpi.unit}}</span>
-                  <span class="label" ng-style="{'background-color': kpi.color}" ng-if="kpi.value && kpi.weight > 0">Ambition {{kpi.ambition}} {{kpi.unit}}</span>
+                  <span class="label" ng-style="{'background-color': kpi.color}" ng-if="(kpi.value || kpi.value == 0) && kpi.weight > 0">Ambition {{kpi.ambition}} {{kpi.unit}}</span>
                   <kpi-value-output show-ambition="true" ng-show="!kpi.disabled && kpi.weight > 0" kpi="kpi"></kpi-value-output>
                   <p ng-if="kpi.disabled" style="margin-top:10px" class="well">KPI <b>{{kpi.name}}</b> is not applicable for the <i>To be</i> situation</p>
                   <p ng-if="kpi.weight == 0" style="margin-top:10px" class="well">KPI <b>{{kpi.name}}</b> is set to weight 0 - not important</p>
