@@ -115,6 +115,10 @@ angular.module('idss-dashboard')
                 NotificationService.createErrorFlash(label);
             })
             .then(function (res) {
+                
+                var index = _.indexOf(variants, variantToDelete);
+                variants.splice(index, 1);
+
                 var variant = res.data;
                 var label = 'Variant ' + variant.name + ' was successfully deleted';
                 NotificationService.createSuccessFlash(label);
