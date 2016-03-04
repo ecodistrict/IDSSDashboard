@@ -1,6 +1,8 @@
 <div class="container">
 
   <div class="row">
+    <button class="btn btn-default pull-right" ng-show="!showAll && kpisAreDisabled()" ng-click="toggleHidden()"><span class="glyphicon glyphicon-eye-close"></span> Disabled KPIs</button>
+    <button class="btn btn-default pull-right" ng-show="showAll && kpisAreDisabled()" ng-click="toggleHidden()"><span class="glyphicon glyphicon-eye-open"></span> Disabled KPIs</button>
     <button class="btn btn-primary" ui-sref="develop-variants"><span class="glyphicon glyphicon-chevron-left"></span> Develop alternatives</button>
     <h3 ng-if="currentVariant">Assess alternative: {{currentVariant.name}}</h3>
   </div>
@@ -17,7 +19,7 @@
 <!--   <div ng-if="currentVariant" class="tab-content">
     <div class="tab-pane fade in active" id="kpilist"> -->
       <div ng-if="currentVariant" class="panel-group" role="tablist" aria-multiselectable="true">
-        <div ng-repeat="kpi in activeCase.kpiList | orderBy:'-weight'" id="{{'set-' + kpi.kpiAlias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="goToKpiPage(kpi)">
+        <div ng-repeat="kpi in activeCase.kpiList | orderBy:'-weight'" id="{{'set-' + kpi.kpiAlias}}" ng-show="showAll || !kpi.disabled" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="goToKpiPage(kpi)">
             <div class="panel-heading kpi-panel-heading" role="tab">
               <h4 class="panel-title">
                 <b ng-bind="kpi.name"></b> <i>(status: {{kpi.status}})</i>

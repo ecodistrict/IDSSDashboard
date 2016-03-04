@@ -109,5 +109,13 @@ angular.module( 'idss-dashboard.assess-variants', [])
     $state.transitionTo('kpi', {variantId: currentVariant._id, kpiAlias: kpi.kpiAlias, back: 'assess-variants/' + currentVariant._id});
   };
 
+  $scope.showAll = false;
+  $scope.toggleHidden = function() {
+    $scope.showAll = !$scope.showAll;
+  };
+  $scope.kpisAreDisabled = function() {
+    return _.find($scope.activeCase.kpiList, function(k) {return k.disabled;});
+  };
+
 }]);
 
