@@ -446,7 +446,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
           break;
         // startmodule must save any kpiValue to db
         case 'startModule':
-          if(message.kpiValue && message.userId) {
+          if((message.kpiValue || message.kpiValue === 0) && message.userId) {
             // if variantId does not exists, this is the as is situation
             if(!message.variantId && message.caseId) {
               caseRepository.updateKpiValue(message.userId, message.caseId, message, function(err, modifiedCase) {
