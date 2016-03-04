@@ -4,6 +4,11 @@ angular.module( 'idss-dashboard.header', [
 
 .controller( 'HeaderCtrl', ['$scope', '$location', 'LoginService', '$state', '$rootScope', 'CaseService', '$modal', 'authService', '$rootScope', function HeaderCtrl( $scope, $location, LoginService, $state, $rootScope, CaseService, $modal, authService, $rootScope ) {
 
+    // get current case
+    CaseService.loadActiveCase().then(function(activeCase) {
+        $scope.currentCase = activeCase;
+    });
+
     $scope.logout = function() {
 
         LoginService.logout().then(function() {
