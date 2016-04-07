@@ -25,7 +25,9 @@ angular.module( 'idss-dashboard', [
   'idss-dashboard.qualitative-kpi-input',
   'idss-dashboard.quantitative-kpi-input',
   'idss-dashboard.kpi-weight',
-  'idss-dashboard.kpi'
+  'idss-dashboard.kpi',
+  'idss-dashboard.kpi-map',
+  'idss-dashboard.file-connection'
 ])
 
 .constant('AUTH_EVENTS', {
