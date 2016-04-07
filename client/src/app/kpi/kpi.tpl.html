@@ -67,8 +67,14 @@
             </p>
             <p ng-if="kpi.selectedModuleDescription">Module description: {{kpi.selectedModuleDescription}}</p>
 
+            <p ng-if="kpi.connectedModuleUrl">
+              <button class="btn btn-xs btn-primary" ng-click="openModule()">
+                <i class="glyphicon glyphicon-wrench"></i> Go to {{kpi.selectedModuleName}}
+              </button>
+            </p>
+
             <button class="btn btn-xs btn-primary" ng-click="configureKpi(kpi);$event.stopPropagation()">
-                <i class="glyphicon glyphicon-wrench"></i> KPI Configuration
+                <i class="glyphicon glyphicon-cog"></i> KPI Configuration
             </button>
 
       </div>

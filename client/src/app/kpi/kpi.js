@@ -40,10 +40,11 @@ angular.module( 'idss-dashboard.kpi', [])
   });
 }])
 
-.controller( 'KpiController', ['$scope', '$timeout', 'socket', '$stateParams', '$state', 'activeCase', 'currentUser', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'CaseService', 'variants', 
-  function KpiController( $scope, $timeout, socket, $stateParams, $state, activeCase, currentUser, ModuleService, $modal, KpiService, VariantService, CaseService, variants ) {
+.controller( 'KpiController', ['$scope', '$window', '$timeout', 'socket', '$stateParams', '$state', 'activeCase', 'currentUser', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'CaseService', 'variants', 
+  function KpiController( $scope, $window, $timeout, socket, $stateParams, $state, activeCase, currentUser, ModuleService, $modal, KpiService, VariantService, CaseService, variants ) {
 
   socket.forward('startModule', $scope);
+  socket.forward('getModules', $scope);
 
   var kpi = _.find(activeCase.kpiList, function(k) {return k.kpiAlias === $stateParams.kpiAlias;});
   KpiService.removeExtendedData(kpi); // possible old extended data from another view
@@ -58,11 +59,14 @@ angular.module( 'idss-dashboard.kpi', [])
 
   $scope.stakeholderName = $stateParams.stakeholder || $scope.currentUser.name || $scope.currentUser.fname;
   // if selected module is already loaded in dashboard
+  console.log(kpi);
   if(kpi.selectedModuleId) {
     selectedModule = ModuleService.getModule(kpi.selectedModuleId);
+    console.log(selectedModule);
     if(selectedModule) {
       kpi.selectedModuleName = selectedModule.name;
       kpi.selectedModuleDescription = selectedModule.description;
+      kpi.connectedModuleUrl = selectedModule.connectedModuleUrl;
     }
   }
 
@@ -238,6 +242,13 @@ angular.module( 'idss-dashboard.kpi', [])
     $state.transitionTo(backState, {variantId: currentVariant._id});
   };
 
+  $scope.openModule = function() {
+    if(kpi.connectedModuleUrl) {
+      console.log(kpi.connectedModuleUrl);
+      $window.open(kpi.connectedModuleUrl, '_blank');
+    }
+  };
+
   $scope.$on('socket:startModule', function (ev, module) {
     console.log(module);
     kpi.status = module.status;
@@ -247,6 +258,17 @@ angular.module( 'idss-dashboard.kpi', [])
     kpi.info = module.info;
     if(typeof module.kpiValue == 'number') { //jshint ignore:line
       kpi.value = module.kpiValue;
+    }
+
+  });
+
+  // in case the page was reloaded we need to listen directly on the get modules message
+  $scope.$on('socket:getModules', function (ev, module) {
+    console.log(module);
+    if(kpi.selectedModuleId === module.moduleId) {
+      kpi.selectedModuleName = module.name;
+      kpi.selectedModuleDescription = module.description;
+      kpi.connectedModuleUrl = module.connectedModuleUrl;
     }
 
   });
