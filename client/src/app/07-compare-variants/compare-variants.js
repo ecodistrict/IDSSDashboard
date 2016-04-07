@@ -93,19 +93,19 @@ angular.module( 'idss-dashboard.compare-variants', [])
           // this is now done for each user, that's not optimal..
           kpiData.bad = calculateBad(kpi.sufficient, kpi.excellent);
           // add weight and ambition
-          if(stakeholder.kpiWeights && stakeholder.kpiWeights[activeCase._id] && stakeholder.kpiWeights[activeCase._id][kpi.kpiAlias]) {
+          if(stakeholder.kpiWeights && stakeholder.kpiWeights[activeCase._id] && (stakeholder.kpiWeights[activeCase._id][kpi.kpiAlias] || stakeholder.kpiWeights[activeCase._id][kpi.kpiAlias] === 0)) {
             kpiData.weight = stakeholder.kpiWeights[activeCase._id][kpi.kpiAlias];
           }
           stakeholderData.kpiList.push(kpiData);
 
           // now also add to as is and to be kpi values
-          if(stakeholder.kpiAmbitions && stakeholder.kpiAmbitions[activeCase._id] && stakeholder.kpiAmbitions[activeCase._id][kpi.kpiAlias]) {
+          if(stakeholder.kpiAmbitions && stakeholder.kpiAmbitions[activeCase._id] && (stakeholder.kpiAmbitions[activeCase._id][kpi.kpiAlias] || stakeholder.kpiAmbitions[activeCase._id][kpi.kpiAlias] === 0)) {
             toBeVariant.kpiList.push({
               kpiValue: stakeholder.kpiAmbitions[activeCase._id][kpi.kpiAlias],
               kpiId: kpi.kpiAlias
             });
           }
-          if(activeCase.kpiValues && activeCase.kpiValues[kpi.kpiAlias]) {
+          if(activeCase.kpiValues && (activeCase.kpiValues[kpi.kpiAlias] || activeCase.kpiValues[kpi.kpiAlias] === 0)) {
             asIsVariant.kpiList.push({
               kpiValue: activeCase.kpiValues[kpi.kpiAlias],
               kpiId: kpi.kpiAlias
@@ -381,12 +381,18 @@ angular.module( 'idss-dashboard.compare-variants', [])
 
   $scope.sendToMCMSMV = function() {
 
-    socket.emit('mcmsmv', {
-      variants: mcmsmvData,
-      kpiId: 'mcmsmv',
-      userId: currentUser._id
-    });
-    $scope.msg = JSON.stringify(mcmsmvData, undefined, 4);
+    // toggle functionality
+    if(!$scope.msg) {
+
+      socket.emit('mcmsmv', {
+        variants: mcmsmvData,
+        kpiId: 'mcmsmv',
+        userId: currentUser._id
+      });
+      $scope.msg = JSON.stringify(mcmsmvData, undefined, 4);
+    } else {
+      $scope.msg = null;
+    }
 
   };
 
