@@ -63,6 +63,10 @@ angular.module( 'idss-dashboard', [
           $scope.activeCase = activeCase;
           VariantService.loadVariants().then(function(variants) {
             $scope.variants = variants;
+            socket.emit('initModule', {
+              caseId: activeCase._id,
+              userId: user._id
+            });
           });
         });
       }
