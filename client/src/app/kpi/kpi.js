@@ -245,7 +245,13 @@ angular.module( 'idss-dashboard.kpi', [])
   $scope.openModule = function() {
     if(kpi.connectedModuleUrl) {
       console.log(kpi.connectedModuleUrl);
-      $window.open(kpi.connectedModuleUrl, '_blank');
+      $window.open(kpi.connectedModuleUrl + 
+        '/?sessionId=' + 
+        kpi.caseId + 
+        '_' + 
+        kpi.variantId +
+        '_' +
+        $scope.currentUser._id, '_blank');
     }
   };
 
