@@ -444,6 +444,56 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         case 'getModules': 
           dashboardWebClientSocket.emit(message.method, message);
           break;
+        case 'getCase':
+          var responseMessage = {
+            caseId: message.caseId,
+            userId: message.userId,
+            method: 'getCase',
+            type: 'response'
+          }
+          if(!responseMessage.caseId || !responseMessage.userId) {
+            responseMessage.error = 'Params missing, check userId or caseId';
+            responseMessage.status = 422;
+            imbFrameworkPub.signalString(JSON.stringify(responseMessage).toString());
+          } else {
+            caseRepository._getCaseById(message.caseId, message.userId, function(err, foundCase) {
+              if(err) {
+                responseMessage.error = 'Error retrieving data, check that userId or caseId are correct for this case';
+                responseMessage.status = 500;
+              } else if(!foundCase) {
+                responseMessage.error = 'No case was found';
+                responseMessage.status = 404;
+              } else {
+                responseMessage.caseData = foundCase;
+                responseMessage.status = 200;
+              }
+              imbFrameworkPub.signalString(JSON.stringify(responseMessage).toString());
+            });
+          }
+          break;
+        case 'getCases':
+          var responseMessage = {
+            userId: message.userId,
+            method: 'getCases',
+            type: 'response'
+          }
+          if(!responseMessage.userId) {
+            responseMessage.error = 'Params missing, check userId';
+            responseMessage.status = 422;
+            imbFrameworkPub.signalString(JSON.stringify(responseMessage).toString());
+          } else {
+            caseRepository._getCases(message.userId, function(err, foundCases) {
+              if(err) {
+                responseMessage.error = 'Error retrieving data, check that userId is correct';
+                responseMessage.status = 500;
+              } else {
+                responseMessage.cases = foundCases;
+                responseMessage.status = 200;
+              }
+              imbFrameworkPub.signalString(JSON.stringify(responseMessage).toString());
+            });
+          }
+          break;
         // startmodule must save any kpiValue to db
         case 'startModule':
           if((message.kpiValue || message.kpiValue === 0) && message.userId) {
