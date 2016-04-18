@@ -58,13 +58,22 @@ angular.module( 'idss-dashboard', [
       // while waiting for current case to load use the default empty case from case service
       $scope.activeCase = CaseService.getActiveCase();
 
-      // load current case
-      CaseService.loadActiveCase().then(function(activeCase) {
-        $scope.activeCase = activeCase;
-        VariantService.loadVariants().then(function(variants) {
-          $scope.variants = variants;
+      if(user.activeCaseId) {
+        CaseService.loadCase(user.activeCaseId).then(function(activeCase) {
+          $scope.activeCase = activeCase;
+          VariantService.loadVariants().then(function(variants) {
+            $scope.variants = variants;
+          });
         });
-      });
+      }
+
+      // load current case
+      // CaseService.loadActiveCase().then(function(activeCase) {
+      //   $scope.activeCase = activeCase;
+      //   VariantService.loadVariants().then(function(variants) {
+      //     $scope.variants = variants;
+      //   });
+      // });
   
       socket.emit('privateRoom', $scope.currentUser);
 
