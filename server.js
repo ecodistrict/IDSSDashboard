@@ -221,6 +221,19 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
   });
 
+  dashboardWebClientSocket.on('initModule', function(message) {
+    var method = 'initModule';
+    console.log('From dashboard client: ' + method);
+
+    var requestObj = {
+      type: "request",
+      method: method,
+      caseId: message.caseId,
+      userId: message.userId
+    }
+    imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
+  });
+
   dashboardWebClientSocket.on('createCase', function(caseData) {
     var method = 'createCase';
     console.log('From dashboard client: ' + method);
@@ -488,6 +501,30 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
                 responseMessage.status = 500;
               } else {
                 responseMessage.cases = foundCases;
+                responseMessage.status = 200;
+              }
+              imbFrameworkPub.signalString(JSON.stringify(responseMessage).toString());
+            });
+          }
+          break;
+        case 'getVariants':
+          var responseMessage = {
+            userId: message.userId,
+            caseId: message.caseId,
+            method: 'getVariants',
+            type: 'response'
+          }
+          if(!responseMessage.userId || !responseMessage.caseId) {
+            responseMessage.error = 'Params missing, check userId or caseId';
+            responseMessage.status = 422;
+            imbFrameworkPub.signalString(JSON.stringify(responseMessage).toString());
+          } else {
+            variantRepository._getVariants(message.userId, message.caseId, function(err, foundVariants) {
+              if(err) {
+                responseMessage.error = 'Error retrieving data, check that userId, caseId is correct';
+                responseMessage.status = 500;
+              } else {
+                responseMessage.variants = foundVariants;
                 responseMessage.status = 200;
               }
               imbFrameworkPub.signalString(JSON.stringify(responseMessage).toString());
