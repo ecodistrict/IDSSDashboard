@@ -15,7 +15,7 @@
                 <button id="{{'delete-case-' + case.title}}" class="btn btn-xs btn-danger" ng-click="deleteCase(case);$event.stopPropagation()">
                   <i class="glyphicon glyphicon-trash"></i> Delete
                 </button>
-                <button class="btn btn-xs btn-info" ng-click="checkDataModuleStatus(case);$event.stopPropagation()">
+                <button class="btn btn-xs btn-default" ng-click="checkDataModuleStatus(case);$event.stopPropagation()">
                   <i class="glyphicon glyphicon-info-sign"></i> Data module status
                 </button>
                 <span ng-show="case.loading" class="glyphicon glyphicon-refresh spin"></span> {{case.dataModuleStatus}}
