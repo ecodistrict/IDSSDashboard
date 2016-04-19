@@ -16,7 +16,7 @@ var port = process.env.PORT || 3300;
 
 var imb = require('./lib/imb.js');
 
-var imbName, imbConnection, imbFrameworkPub, imbFrameworkSub;
+var imbName, imbConnection, imbFrameworkPub, imbFrameworkSub, dataPub;
 
 // *********** DB MODELS ******** //
 require('./lib/models/user');
@@ -180,6 +180,9 @@ imbConnection = new imb.TIMBConnection(imb.imbDefaultHostname, 443, 10, imbName,
 imbFrameworkPub;
 imbFrameworkSub;
 
+dataPub = imbConnection.publish('data');
+dataSub = imbConnection.subscribe('data');
+
 if(process.env.NODE_ENV === 'production') {
   console.log('run in production');
   imbFrameworkPub = imbConnection.publish("modules");
@@ -234,67 +237,76 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
   });
 
+  // DATA PUB MESSAGE
   dashboardWebClientSocket.on('createCase', function(caseData) {
     var method = 'createCase';
     console.log('From dashboard client: ' + method);
-    console.log(caseData);
 
     var requestObj = {
+      eventId: 'data',
       type: "request",
       method: method,
       caseId: caseData.caseId,
       userId: caseData.userId
     }
-    imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
+    dataPub.signalString(JSON.stringify(requestObj).toString());
   });
 
+// DATA PUB MESSAGE
   dashboardWebClientSocket.on('deleteCase', function(caseData) {
     var method = 'deleteCase';
     console.log('From dashboard client: ' + method);
     console.log(caseData);
 
     var requestObj = {
+      eventId: 'data',
       type: "request",
       method: method,
       caseId: caseData.caseId,
       userId: caseData.userId
     }
-    imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
+    dataPub.signalString(JSON.stringify(requestObj).toString());
   });
 
+// DATA PUB MESSAGE
   dashboardWebClientSocket.on('createVariant', function(variantData) {
     var method = 'createVariant';
     console.log('From dashboard client: ' + method);
 
     var requestObj = {
+      eventId: 'data',
       type: "request",
       method: method,
       caseId: variantData.caseId,
       variantId: variantData.variantId,
       userId: variantData.userId
     }
-    imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
+    dataPub.signalString(JSON.stringify(requestObj).toString());
   });
 
+// DATA PUB MESSAGE
   dashboardWebClientSocket.on('deleteVariant', function(variantData) {
     var method = 'deleteVariant';
     console.log('From dashboard client: ' + method);
 
     var requestObj = {
+      eventId: 'data',
       type: "request",
       method: method,
       caseId: variantData.caseId,
       variantId: variantData.variantId,
       userId: variantData.userId
     }
-    imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
+    dataPub.signalString(JSON.stringify(requestObj).toString());
   });
 
+// DATA PUB MESSAGE
   dashboardWebClientSocket.on('getKpiResult', function(kpi) {
     var method = 'getKpiResult';
     console.log('From dashboard client: ' + method);
 
     var requestObj = {
+      eventId: 'data',
       type: "request",
       method: method,
       caseId: kpi.caseId,
@@ -307,25 +319,25 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
       requestObj.facilitatorId = kpi.facilitatorId;
     }
 
-    imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
+    dataPub.signalString(JSON.stringify(requestObj).toString());
   });
 
-  dashboardWebClientSocket.on('setKpiResult', function(kpi) {
-    var method = 'setKpiResult';
-    console.log('From dashboard client: ' + method);
+  // dashboardWebClientSocket.on('setKpiResult', function(kpi) {
+  //   var method = 'setKpiResult';
+  //   console.log('From dashboard client: ' + method);
 
-    var requestObj = {
-      type: "request",
-      method: method,
-      caseId: kpi.caseId,
-      variantId: kpi.variantId,
-      userId: kpi.userId,
-      kpiId: kpi.kpiId,
-      kpiValue: kpi.kpiValue
-    };
+  //   var requestObj = {
+  //     type: "request",
+  //     method: method,
+  //     caseId: kpi.caseId,
+  //     variantId: kpi.variantId,
+  //     userId: kpi.userId,
+  //     kpiId: kpi.kpiId,
+  //     kpiValue: kpi.kpiValue
+  //   };
 
-    imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
-  });
+  //   imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
+  // });
 
   // dashboardWebClientSocket.on('getCases', function(user) {
 
@@ -457,9 +469,11 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
         case 'getModules': 
           dashboardWebClientSocket.emit(message.method, message);
           break;
+        // this is API - sent back to framework only
         case 'getCase':
           var responseMessage = {
             caseId: message.caseId,
+            moduleId: message.moduleId,
             userId: message.userId,
             method: 'getCase',
             type: 'response'
@@ -484,9 +498,11 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
             });
           }
           break;
+        // this is API - sent back to framework only
         case 'getCases':
           var responseMessage = {
             userId: message.userId,
+            moduleId: message.moduleId,
             method: 'getCases',
             type: 'response'
           }
@@ -507,9 +523,11 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
             });
           }
           break;
+        // this is API - sent back to framework only
         case 'getVariants':
           var responseMessage = {
             userId: message.userId,
+            moduleId: message.moduleId,
             caseId: message.caseId,
             method: 'getVariants',
             type: 'response'
@@ -567,10 +585,30 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
       }
       
     } catch(e) {
-      console.log('Error when parsing the JSON string:');
+      console.log('Error when receiving message from modules sub:');
       console.log(aString);
     }
   };
+
+  dataSub.onString = function(aEventEntry, aString) {
+    try {
+      var message = JSON.parse(aString),
+          method = message.method;
+
+      console.log('From data module: ' + message.method);
+
+      if(message.userId) {
+        console.log('send to dashboard client');
+        console.log(message);
+        io.to(message.userId).emit(message.method, message);
+      } else {
+        console.log('user id was not set');
+      }
+    } catch(e) {
+      console.log('Error when receiving message from data sub:');
+      console.log(aString);
+    }
+  }
 
 });
 
