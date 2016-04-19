@@ -1,4 +1,5 @@
-angular.module('idss-dashboard').directive('kpiMap', ['ProcessService', '$compile', 'ModuleService', '$timeout', function (ProcessService, $compile, ModuleService, $timeout) {
+angular.module('idss-dashboard').directive('kpiMap', ['socket', '$compile', 'ModuleService', '$timeout', '$modal', 
+    function (socket, $compile, ModuleService, $timeout, $modal) {
 
     return {
         restrict: 'E',
@@ -27,17 +28,21 @@ angular.module('idss-dashboard').directive('kpiMap', ['ProcessService', '$compil
         '       <li ng-repeat="kpi in kpiList"><a ng-click="loadLayer(kpi, selectedVariant)">{{kpi.name}} in {{kpi.unit}}</a></li>',
         '     </ul>',
         '   </div>',
-        '<div id="map">',
+        '<div id="map" style="margin-top:-20px">',
         '</div>'].join(''),
         scope: {
             kpiList: '=',
             variantList: '=',
             selectedVariant: '=',
-            trig: '='
+            case: '=',
+            user: '='
         },
         link: function(scope, element, attrs) {
 
-            var map, geojson, kpiLayer;
+            socket.forward('getKpiResult', scope);
+            socket.forward('getGeoJson', scope);
+
+            var map, geojson, kpiLayer, kpiResultData, geoJsonData;
 
             var defaultStyle = {
                 color: "#2262CC",
@@ -56,6 +61,7 @@ angular.module('idss-dashboard').directive('kpiMap', ['ProcessService', '$compil
             };
 
             scope.selectedFeature = null;
+            scope.selectedKpi = null;
 
             scope.$watch('trig', function(newValue, oldValue) {
                 if(newValue && newValue !== oldValue) {
@@ -102,104 +108,187 @@ angular.module('idss-dashboard').directive('kpiMap', ['ProcessService', '$compil
             }
 
             function loadLayer(kpi, variant) {
-                // TODO: unbind previous events?
-                console.log(kpi);
+                if(!kpi || !variant) {
+                    console.log('no kpi or variant');
+                    console.log(kpi, variant);
+                    return;
+                }
+                // set new active kpi and variant
                 scope.selectedKpi = kpi;
                 scope.selectedVariant = variant;
+                // delete current dataset from scope
+                kpiResultData = null;
+                geoJsonData = null;
+                // send both events, react when both are back
+                socket.emit('getKpiResult', {
+                  caseId: scope.case._id,
+                  variantId: variant._id,
+                  kpiId: kpi._id,
+                  userId: scope.user._id
+                });
+                socket.emit('getGeoJson', {
+                  caseId: scope.case._id,
+                  variantId: variant._id,
+                  userId: scope.user._id
+                });
+            }
 
+            function initLayers() {
+                var initialKpi, initialVariant = scope.selectedVariant;
+                if(!scope.kpiList || scope.kpiList.length === 0) {
+                    return;
+                }
+                initialKpi = scope.kpiList[0];
+                if(!scope.selectedVariant && scope.variantList && scope.variantList.length > 0) {
+                    initialVariant = scope.variantList[0];
+                }
+                loadLayer(initialKpi, initialVariant);
+            }
+
+            function prepareGeoJsonData(geoJsonData, kpiResultData) {
+                console.log(geoJsonData);
+                console.log(kpiResultData);
+                console.log('add kpi values to feature properties');
+            }
+
+            // the kpiResultData and geoJsonData need to have been loaded
+            function drawLayer() {
+
+                if(!kpiResultData || !geoJsonData) {
+                    return;
+                }
+
+                prepareGeoJsonData(geoJsonData, kpiResultData);
+
+                var kpi = scope.selectedKpi;
                 kpi.bad = getBad(kpi.sufficient, kpi.excellent);
 
-                ModuleService.getModuleOutput(variant._id, kpi.selectedModuleId, kpi.kpiAlias).then(function(data) {
+                function pointToLayer(feature, latlng) {
+                    return L.circleMarker(latlng, geojsonMarkerOptions);
+                }
 
-                    function pointToLayer(feature, latlng) {
-                        return L.circleMarker(latlng, geojsonMarkerOptions);
+                function onEachFeature(feature, layer) {
+
+                    var color = "#666666";
+
+                    if((kpi.excellent || kpi.excellent === 0) && (kpi.sufficient || kpi.sufficient === 0) && (kpi.bad || kpi.bad === 0) && (feature.properties.kpiValue || feature.properties.kpiValue === 0)) {
+                        color = getColor(kpi.bad, kpi.excellent, kpi.sufficient, feature.properties.kpiValue);
                     }
 
-                    function onEachFeature(feature, layer) {
+                    layer.setStyle({
+                        color: color,
+                        weight: 3,
+                        opacity: 0.6,
+                        fillOpacity: 0.1,
+                        fillColor: color
+                    });
 
-                        var color = "#666666";
 
-                        if((kpi.excellent || kpi.excellent === 0) && (kpi.sufficient || kpi.sufficient === 0) && (kpi.bad || kpi.bad === 0) && (feature.properties.kpiValue || feature.properties.kpiValue === 0)) {
-                            color = getColor(kpi.bad, kpi.excellent, kpi.sufficient, feature.properties.kpiValue);
-                        }
+                    layer.on("mouseover", function (e) {
+                        layer.setStyle(highlightStyle);
+                        scope.selectedFeature = feature;
+                        console.log(feature);
+                        scope.$digest();
+                    });
 
+                    layer.on("mouseout", function (e) {
                         layer.setStyle({
                             color: color,
                             weight: 3,
                             opacity: 0.6,
                             fillOpacity: 0.1,
                             fillColor: color
-                        });
+                        }); 
+                        
+                        scope.selectedFeature = null;
+                        scope.$digest();
 
+                    });
 
-                        layer.on("mouseover", function (e) {
-                            layer.setStyle(highlightStyle);
-                            scope.selectedFeature = feature;
-                            console.log(feature);
-                            scope.$digest();
-                        });
+                }
 
-                        layer.on("mouseout", function (e) {
-                            layer.setStyle({
-                                color: color,
-                                weight: 3,
-                                opacity: 0.6,
-                                fillOpacity: 0.1,
-                                fillColor: color
-                            }); 
-                            
-                            scope.selectedFeature = null;
-                            scope.$digest();
+                var geojsonMarkerOptions = {
+                    radius: 8,
+                    fillColor: "#ff7800",
+                    color: "#000",
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                };
 
-                        });
+                if(kpiLayer) {
+                    map.removeLayer(kpiLayer);
+                }
 
-                    }
+                kpiLayer = L.geoJson(geoJsonData, {
+                    pointToLayer: pointToLayer,
+                    onEachFeature: onEachFeature
+                }).addTo(map);
 
-                    console.log(data);
-                    if(data && data.outputs) {
-                        geojson = _.find(data.outputs, function(d) {return d.type === 'geojson';});
-                        if(geojson && geojson.value) {
-                            console.log(map);
-
-                            var geojsonMarkerOptions = {
-                                radius: 8,
-                                fillColor: "#ff7800",
-                                color: "#000",
-                                weight: 1,
-                                opacity: 1,
-                                fillOpacity: 0.8
-                            };
-
-                            if(kpiLayer) {
-                                map.removeLayer(kpiLayer);
-                            }
-                            
-
-                            kpiLayer = L.geoJson(geojson.value, {
-                                pointToLayer: pointToLayer,
-                                onEachFeature: onEachFeature
-                            }).addTo(map);
-
-                            map.fitBounds(kpiLayer.getBounds());
-                        }
-                    }
-                });
+                map.fitBounds(kpiLayer.getBounds());
             }
 
-            function initLayers() {
-                if(!scope.kpiList || scope.kpiList.length === 0) {
-                    return;
-                }
-                scope.selectedKpi = scope.kpiList[0];
-                if(!scope.selectedVariant && scope.variantList && scope.variantList > 0) {
-                    scope.selectedVariant = scope.variantList[0];
-                }
-                loadLayer(scope.selectedKpi, scope.selectedVariant);
-
-            }
+            initMap();
+            initLayers();
 
             scope.loadLayer = loadLayer;
-            
+
+            scope.$on('socket:getKpiResult', function (ev, data) {
+
+                kpiResultData = data;
+
+                if(geoJsonData) {
+                    drawLayer();
+                }
+
+            });
+
+            scope.$on('socket:getGeoJson', function (ev, data) {
+
+                geoJsonData = data;
+
+                if(kpiResultData) {
+                    drawLayer();
+                }
+
+            });
+
+
+
+            // scope.setModuleInput = function() {
+
+            //     if(!scope.selectedKpi || !scope.selectedVariant) {
+            //         return;
+            //     }
+
+            //     var moduleInputModal = $modal.open({
+            //         templateUrl: 'kpi-map/file-connection.tpl.html',
+            //         controller: 'FileConnectionController',
+            //         resolve: {
+            //           kpi: function() {
+            //             return scope.selectedKpi;
+            //           },
+            //           variant: function() {
+            //             return scope.selectedVariant;
+            //           }
+            //         }
+            //       });
+
+            //       moduleInputModal.result.then(function (moduleInput) {
+            //         if(moduleInput) {
+            //           kpi.inputs = moduleInput.inputs;
+            //           moduleInput.userId = $scope.currentUser._id; // only facilitator should be able to do this
+            //           moduleInput.status = 'unprocessed'; // input has changed
+            //           console.log(moduleInput);
+            //           kpi.status = 'unprocessed'; // update GUI
+            //           ModuleService.saveModuleInput(moduleInput);
+            //         }
+                            
+            //       }, function () {
+            //         console.log('Modal dismissed at: ' + new Date());
+            //       });
+
+            // };
 
         }
     };
