@@ -96,5 +96,9 @@ angular.module( 'idss-dashboard.as-is', [])
     $scope.trig = !$scope.trig;
   };
 
+  $scope.goToDesignModule = function() {
+    $window.open('http://vps17642.public.cloudvps.com:4501/?session=' + $scope.currentCase._id + '$undefined$' + $scope.currentUser._id);
+  };
+
 }]);
 
