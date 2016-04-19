@@ -48,7 +48,7 @@
     </div>
     <div id="stakeholder-list" class="row well" ng-if="facilitator" ng-repeat="stakeholder in stakeholders">
         <p>Name: {{stakeholder.name}}, Email: {{stakeholder.email}}, Password: {{stakeholder.rawPassword}}</p>
-        <button type="submit" id="delete-stakeholder-button" ng-click="deleteStakeholder(stakeholder)" class="btn btn-danger">Delete stakeholder</button>
+        <button type="submit" id="delete-stakeholder-button" ng-click="deleteStakeholder(stakeholder)" class="btn btn-danger">Delete stakeholder (for all cases)</button>
         <button id="set-to-active" ng-show="stakeholder.isActiveCase" class="pull-right btn btn-primary">Active case <span class="glyphicon glyphicon-check"></span></button>
         <button id="set-to-active" ng-click="setToActiveCase(stakeholder)" ng-show="!stakeholder.isActiveCase" class="pull-right btn btn-default">Set to active case</button>
     </div>
