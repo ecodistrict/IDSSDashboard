@@ -40,6 +40,19 @@ angular.module('idss-dashboard')
             });
     };
 
+    var _loadVariants = function () {
+        return $http
+            .get('variants')
+            .error(function(status, data) {
+                var label = 'Error when loading variants';
+                NotificationService.createErrorFlash(label);
+            })
+            .then(function (res) {
+                variants = res.data;
+                return variants;
+            });
+    };
+
     var loadVariantsByProcessId = function () {
         return $http
             .get('variants/processid')
@@ -64,7 +77,6 @@ angular.module('idss-dashboard')
                 var variant = res.data;
                 var label = 'Variant ' + variant.name + ' was successfully created';
                 NotificationService.createSuccessFlash(label);
-                variants.push(variant);
                 return variant;
             });
     };
@@ -191,6 +203,7 @@ angular.module('idss-dashboard')
 
     return {
         loadVariants: loadVariants,
+        _loadVariants: _loadVariants, // caching problem when adding several cases...
         loadVariant: loadVariant,
         createVariant: createVariant,
         getVariants: getVariants,
