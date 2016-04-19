@@ -24,12 +24,7 @@ angular.module( 'idss-dashboard.assess-variants', [])
         });
       }],
       variants: ['VariantService', function(VariantService) {
-        var v = VariantService.getVariants();
-        if(v) {
-          return v;
-        } else {
-          return VariantService.loadVariants();
-        }
+        return VariantService._loadVariants();
       }],
       currentUser: ['LoginService', function(LoginService) {
         return LoginService.getCurrentUser().then(function(user) {
@@ -60,6 +55,8 @@ angular.module( 'idss-dashboard.assess-variants', [])
 
   if(currentVariant) {
 
+    console.log(currentVariant);
+
     currentVariant.kpiValues = currentVariant.kpiValues || {};
     currentVariant.kpiDisabled = currentVariant.kpiDisabled || {};
 
@@ -67,8 +64,10 @@ angular.module( 'idss-dashboard.assess-variants', [])
       KpiService.removeExtendedData(kpi); // in case data is already extended 
 
       kpi.value = currentVariant.kpiValues[kpi.kpiAlias];
+      console.log(kpi.kpiAlias);
       if(kpi.value || kpi.value === 0) {
         kpi.status = 'success';
+        console.log(kpi.value);
       } else {
         kpi.status = 'unprocessed';
       }
@@ -118,24 +117,6 @@ angular.module( 'idss-dashboard.assess-variants', [])
   $scope.kpisAreDisabled = function() {
     return _.find($scope.activeCase.kpiList, function(k) {return k.disabled;});
   };
-
-  $scope.checkDataModuleStatus = function(variant) {
-
-    variant.loading = true;
-    
-    socket.emit('createVariant', {
-      caseId: activeCase._id,
-      variantId: variant._id,
-      userId: variant.userId
-    });  
-      
-  };
-
-  $scope.$on('socket:createVariant', function (ev, data) {
-    console.log(data);
-    currentVariant.loading = false;
-    currentVariant.dataModuleStatus = data.status;
-  });
 
 }]);
 

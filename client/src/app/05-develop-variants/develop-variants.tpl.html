@@ -9,12 +9,20 @@
     <div class="row">
         <div class="col-xs-12">
           <h2>Alternatives</h2>
-            <div ng-repeat="variant in variants" id="{{variant._id}}" ng-show="variant.type!='as-is' && variant.type!='to-be'" class="panel panel-success kpi-item" ui-sref="assess-variants({variantId: variant._id})">
+            <div ng-repeat="variant in variants track by $index" id="{{variant._id}}" ng-show="variant.type!='as-is' && variant.type!='to-be'" class="panel panel-success kpi-item" ui-sref="assess-variants({variantId: variant._id})">
               <div class="panel-heading">
                 <button class="btn btn-xs btn-danger pull-right" ng-click="deleteVariant(variant);$event.stopPropagation()">
                   <i class="glyphicon glyphicon-trash"></i> Delete alternative
                 </button>
-                <h3 class="panel-title">Alternative: {{variant.name}} <button class="btn btn-xs btn-primary" ng-click="goToDesignModule(variant);$event.stopPropagation()"><i class="glyphicon glyphicon-cog"></i> Open Design Module</button></h3>
+                <h3 class="panel-title">Alternative: {{variant.name}} 
+                  <button class="btn btn-xs btn-primary" ng-click="editVariant(variant);$event.stopPropagation()"><i class="glyphicon glyphicon-pencil"></i> Edit</button>
+                  <button class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-tasks"></i> Kpi List</button>
+                  <button class="btn btn-xs btn-info" ng-click="goToDesignModule(variant);$event.stopPropagation()"><i class="glyphicon glyphicon-cog"></i> Open Design Module</button>
+                  <button class="btn btn-xs btn-default" ng-click="checkDataModuleStatus(variant);$event.stopPropagation()">
+                      <i class="glyphicon glyphicon-info-sign"></i> Data module status
+                  </button>
+                  <span ng-show="variant.loading" class="glyphicon glyphicon-refresh spin"></span> {{variant.dataModuleStatus}}
+                </h3>
                 <!-- <span ng-show="variant.loading" class="glyphicon glyphicon-refresh spin"></span> -->
               </div>
               <div class="panel-body">

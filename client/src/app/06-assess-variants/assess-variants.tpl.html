@@ -5,10 +5,6 @@
     <button class="btn btn-default pull-right" ng-show="showAll && kpisAreDisabled()" ng-click="toggleHidden()"><span class="glyphicon glyphicon-eye-open"></span> Disabled KPIs</button>
     <button class="btn btn-primary" ui-sref="develop-variants"><span class="glyphicon glyphicon-chevron-left"></span> Develop alternatives</button>
     <h3 ng-if="currentVariant">Assess alternative: {{currentVariant.name}} 
-      <button class="btn btn-xs btn-info" ng-click="checkDataModuleStatus(currentVariant);$event.stopPropagation()">
-                  <i class="glyphicon glyphicon-info-sign"></i> Data module status
-      </button>
-      <span ng-show="currentVariant.loading" class="glyphicon glyphicon-refresh spin"></span> {{currentVariant.dataModuleStatus}}
     </h3>
   </div>
 
@@ -27,7 +23,7 @@
         <div ng-repeat="kpi in activeCase.kpiList | orderBy:'-weight'" id="{{'set-' + kpi.kpiAlias}}" ng-show="showAll || !kpi.disabled" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="goToKpiPage(kpi)">
             <div class="panel-heading kpi-panel-heading" role="tab">
               <h4 class="panel-title">
-                <b ng-bind="kpi.name"></b> <i>(status: {{kpi.status}})</i>
+                <b ng-bind="kpi.name"></b> <i>(status: {{kpi.status || 'unprocessed'}})</i>
                 <!-- <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span> -->
               </h4>
               <kpi-value-output ng-if="!kpi.disabled" kpi="kpi"></kpi-value-output>

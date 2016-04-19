@@ -34,12 +34,7 @@ angular.module( 'idss-dashboard.develop-variants', [
         }
       }],
       variants: ['VariantService', function(VariantService) {
-        var v = VariantService.getVariants();
-        if(v) {
-          return v;
-        } else {
-          return VariantService.loadVariants();
-        }
+        return VariantService._loadVariants();
       }]
     }
   });
@@ -51,11 +46,7 @@ angular.module( 'idss-dashboard.develop-variants', [
   socket.forward('createVariant', $scope);
   socket.forward('deleteVariant', $scope);
 
-  // work around if old data (variants) exists.. could be removed
-  $scope.variants = _.without(variants, function(v) {
-    return v.type !== 'as-is' || v.type !== 'to-be';
-  });
-  console.log(currentUser);
+  $scope.variants = variants;
 
   $scope.addVariant = function() {
     var variant = {
@@ -89,6 +80,28 @@ angular.module( 'idss-dashboard.develop-variants', [
     });
   };
 
+  $scope.editVariant = function(variant) {
+    
+    var variantModal = $modal.open({
+        templateUrl: '05-develop-variants/add-variant.tpl.html',
+        controller: 'AddVariantController',
+        resolve: {
+          variant: function() {
+            return variant;
+          }
+        }
+    });
+
+    variantModal.result.then(function (configuredVariant) {
+      VariantService.saveVariant(configuredVariant).then(function(savedVariant) {
+        variant.name = savedVariant.name;
+        variant.description = savedVariant.description;
+      });
+    }, function () {
+        console.log('Modal dismissed at: ' + new Date());
+    });
+  };
+
   $scope.deleteVariant = function(variant) {
     variant.loading = true;
     VariantService.deleteVariant(variant).then(function(deletedVariant) {
@@ -109,14 +122,21 @@ angular.module( 'idss-dashboard.develop-variants', [
     }); 
   };
 
+  $scope.checkDataModuleStatus = function(variant) {
+
+    variant.loading = true;
+    
+    socket.emit('createVariant', {
+      caseId: activeCase._id,
+      variantId: variant._id,
+      userId: variant.userId
+    });  
+      
+  };
+
   $scope.$on('socket:createVariant', function (ev, data) {
-    var variant = _.find($scope.variants, function(c) {
-      return c._id === data.variantId;
-    });
-    //variant.loading = false;
-
-    console.log('fix me: creation of variants is not garanteed in data module. TODO: some check to see the data module state');
-
+    currentVariant.loading = false;
+    currentVariant.dataModuleStatus = data.status;
   });
 
   $scope.$on('socket:deleteVariant', function (ev, data) {
