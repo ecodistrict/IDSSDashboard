@@ -25,7 +25,7 @@ require('./lib/models/kpi');
 require('./lib/models/variant');
 require('./lib/models/case');
 require('./lib/models/output');
-require('./lib/models/kpiRecord');
+//require('./lib/models/kpiRecord');
 var User = mongoose.model('User'); // needed for passport below
 
 // *********** DB CONNECT ********* //
@@ -121,20 +121,20 @@ var userRepository = require('./lib/user');
 //var processRepository = require('./lib/process');
 var caseRepository = require('./lib/case');
 var kpiRepository = require('./lib/kpi');
-var kpiRecordRepository = require('./lib/kpiRecord');
+//var kpiRecordRepository = require('./lib/kpiRecord');
 var variantRepository = require('./lib/variant');
 //var moduleOutputRepository = require('./lib/moduleOutput');
-var dataModule = require('./lib/dataModule');
+//var dataModule = require('./lib/dataModule');
 //var importFile = require('./lib/import');
 require('./lib/routes/user').addRoutes(app, userRepository, passport);
 //require('./lib/routes/process').addRoutes(app, processRepository);
 require('./lib/routes/cases').addRoutes(app, caseRepository);
 require('./lib/routes/kpi').addRoutes(app, kpiRepository);
-require('./lib/routes/kpiRecord').addRoutes(app, kpiRecordRepository);
+//require('./lib/routes/kpiRecord').addRoutes(app, kpiRecordRepository);
 require('./lib/routes/variant').addRoutes(app, variantRepository);
 //require('./lib/routes/moduleOutput').addRoutes(app, moduleOutputRepository);
 //require('./lib/routes/import').addRoutes(app, importFile);
-require('./lib/routes/dataModule').addRoutes(app, dataModule);
+//require('./lib/routes/dataModule').addRoutes(app, dataModule);
 
 // app.get('/selectModule/:moduleId/:kpiAlias/:processId', function(req, res) {
 //   console.log(req.params);
@@ -181,7 +181,8 @@ imbFrameworkPub;
 imbFrameworkSub;
 
 dataPub = imbConnection.publish('data');
-dataSub = imbConnection.subscribe('data');
+var dataEventId = 'data-to-dashboard'
+dataSub = imbConnection.subscribe(dataEventId);
 
 if(process.env.NODE_ENV === 'production') {
   console.log('run in production');
@@ -243,7 +244,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     console.log('From dashboard client: ' + method);
 
     var requestObj = {
-      eventId: 'data',
+      eventId: dataEventId,
       type: "request",
       method: method,
       caseId: caseData.caseId,
@@ -259,7 +260,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     console.log(caseData);
 
     var requestObj = {
-      eventId: 'data',
+      eventId: dataEventId,
       type: "request",
       method: method,
       caseId: caseData.caseId,
@@ -274,7 +275,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     console.log('From dashboard client: ' + method);
 
     var requestObj = {
-      eventId: 'data',
+      eventId: dataEventId,
       type: "request",
       method: method,
       caseId: variantData.caseId,
@@ -290,7 +291,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     console.log('From dashboard client: ' + method);
 
     var requestObj = {
-      eventId: 'data',
+      eventId: dataEventId,
       type: "request",
       method: method,
       caseId: variantData.caseId,
@@ -306,7 +307,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     console.log('From dashboard client: ' + method);
 
     var requestObj = {
-      eventId: 'data',
+      eventId: dataEventId,
       type: "request",
       method: method,
       caseId: kpi.caseId,
@@ -318,6 +319,33 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     if(kpi.facilitatorId) {
       requestObj.facilitatorId = kpi.facilitatorId;
     }
+
+    dataPub.signalString(JSON.stringify(requestObj).toString());
+  });
+
+  // DATA PUB MESSAGE
+  dashboardWebClientSocket.on('getGeoJson', function(message) {
+    var method = 'getGeoJson';
+    console.log('From dashboard client: ' + method);
+
+    // var requestObj = {
+    //   eventId: dataEventId,
+    //   type: "request",
+    //   method: method,
+    //   caseId:message.caseId,
+    //   variantId:message.variantId,
+    //   userId:message.userId
+    // };
+
+    var requestObj = {
+      eventId: dataEventId,
+      variantId: 'lcalccalt4b',
+      caseId: 'hovsjo',
+      userId: 'cstb',
+      method: 'getGeoJson',
+      element_type_filter: 'building',
+      type: 'request'
+    };
 
     dataPub.signalString(JSON.stringify(requestObj).toString());
   });
