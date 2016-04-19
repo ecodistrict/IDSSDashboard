@@ -14,14 +14,14 @@
                 <button class="btn btn-xs btn-danger pull-right" ng-click="deleteVariant(variant);$event.stopPropagation()">
                   <i class="glyphicon glyphicon-trash"></i> Delete alternative
                 </button>
-                <h3 class="panel-title">Alternative: {{variant.name}}</h3>
+                <h3 class="panel-title">Alternative: {{variant.name}} <button class="btn btn-xs btn-primary" ng-click="goToDesignModule(variant);$event.stopPropagation()"><i class="glyphicon glyphicon-cog"></i> Open Design Module</button></h3>
                 <!-- <span ng-show="variant.loading" class="glyphicon glyphicon-refresh spin"></span> -->
               </div>
               <div class="panel-body">
                 {{variant.description}}
               </div>
             </div>
-            <div class="well" ng-show="variants.length < 3"> 
+            <div class="well" ng-show="variants.length < 1"> 
               <button ng-click="addVariant()" class="btn btn-success">No alternatives exists: Create one <span class="glyphicon glyphicon-plus"></span></button>
             </div>
         </div>

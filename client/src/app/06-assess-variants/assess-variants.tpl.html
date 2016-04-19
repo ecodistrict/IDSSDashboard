@@ -4,7 +4,12 @@
     <button class="btn btn-default pull-right" ng-show="!showAll && kpisAreDisabled()" ng-click="toggleHidden()"><span class="glyphicon glyphicon-eye-close"></span> Disabled KPIs</button>
     <button class="btn btn-default pull-right" ng-show="showAll && kpisAreDisabled()" ng-click="toggleHidden()"><span class="glyphicon glyphicon-eye-open"></span> Disabled KPIs</button>
     <button class="btn btn-primary" ui-sref="develop-variants"><span class="glyphicon glyphicon-chevron-left"></span> Develop alternatives</button>
-    <h3 ng-if="currentVariant">Assess alternative: {{currentVariant.name}}</h3>
+    <h3 ng-if="currentVariant">Assess alternative: {{currentVariant.name}} 
+      <button class="btn btn-xs btn-info" ng-click="checkDataModuleStatus(currentVariant);$event.stopPropagation()">
+                  <i class="glyphicon glyphicon-info-sign"></i> Data module status
+      </button>
+      <span ng-show="currentVariant.loading" class="glyphicon glyphicon-refresh spin"></span> {{currentVariant.dataModuleStatus}}
+    </h3>
   </div>
 
   <!-- <ul ng-if="currentVariant" class="nav nav-tabs" role="tablist" id="as-is-tabs">
@@ -36,7 +41,7 @@
     </div> -->
   <!-- </div> -->
 
-  <div class="row">
+  <!-- <div class="row">
         <div class="col-xs-12">
           <h2>Alternatives:</h2>
             <div ng-repeat="variant in otherVariants" id="{{variant._id}}" class="panel panel-success kpi-item" ui-sref="assess-variants({variantId: variant._id})">
@@ -48,7 +53,7 @@
               <button ui-sref="develop-variants" class="btn btn-success">Develop more alternatives <span class="glyphicon glyphicon-plus"></span></button>
             </div>
         </div>
-    </div>
+    </div> -->
     <div class="row">
         <form role="form">
           <div class="form-group">

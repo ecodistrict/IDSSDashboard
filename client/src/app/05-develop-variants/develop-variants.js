@@ -25,6 +25,14 @@ angular.module( 'idss-dashboard.develop-variants', [
           return currentUser;
         });
       }],
+      activeCase: ['CaseService', function(CaseService) {
+        var p = CaseService.getActiveCase();
+        if(p._id) {
+          return p;
+        } else {
+          return CaseService.loadActiveCase();
+        }
+      }],
       variants: ['VariantService', function(VariantService) {
         var v = VariantService.getVariants();
         if(v) {
@@ -37,8 +45,8 @@ angular.module( 'idss-dashboard.develop-variants', [
   });
 }])
 
-.controller( 'DevelopVariantsController', ['$scope', 'socket', 'currentUser', 'ProcessService', 'ContextService', '$modal', '$state', 'variants', 'VariantService', 
-  function DevelopVariantsController( $scope, socket, currentUser, ProcessService, ContextService, $modal, $state, variants, VariantService ) {
+.controller( 'DevelopVariantsController', ['$scope', '$window', 'socket', 'currentUser', 'activeCase', 'ContextService', '$modal', '$state', 'variants', 'VariantService', 
+  function DevelopVariantsController( $scope, $window, socket, currentUser, activeCase, ContextService, $modal, $state, variants, VariantService ) {
 
   socket.forward('createVariant', $scope);
   socket.forward('deleteVariant', $scope);
@@ -119,6 +127,10 @@ angular.module( 'idss-dashboard.develop-variants', [
 
     console.log('fix me: deletion of variants is not garanteed in data module. TODO: some check to see the data module state');
   });
+
+  $scope.goToDesignModule = function(variant) {
+    $window.open('http://vps17642.public.cloudvps.com:4501/?session=' + activeCase._id + '$' + variant._id + '$' + $scope.currentUser._id);
+  };
 
 }]);
 

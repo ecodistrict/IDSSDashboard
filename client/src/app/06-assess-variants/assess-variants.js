@@ -101,7 +101,9 @@ angular.module( 'idss-dashboard.assess-variants', [])
       return 'info';
     } else if(kpi.status === 'success') {
       return 'success';
-    } 
+    } else {
+      return 'primary';
+    }
   };
 
   $scope.goToKpiPage = function(kpi) {
@@ -116,6 +118,24 @@ angular.module( 'idss-dashboard.assess-variants', [])
   $scope.kpisAreDisabled = function() {
     return _.find($scope.activeCase.kpiList, function(k) {return k.disabled;});
   };
+
+  $scope.checkDataModuleStatus = function(variant) {
+
+    variant.loading = true;
+    
+    socket.emit('createVariant', {
+      caseId: activeCase._id,
+      variantId: variant._id,
+      userId: variant.userId
+    });  
+      
+  };
+
+  $scope.$on('socket:createVariant', function (ev, data) {
+    console.log(data);
+    currentVariant.loading = false;
+    currentVariant.dataModuleStatus = data.status;
+  });
 
 }]);
 
