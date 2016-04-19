@@ -24,8 +24,9 @@ angular.module( 'idss-dashboard.start', [
 
 .controller( 'StartCtrl', ['$scope', 'CaseService', '$state', 'socket', 'LoginService', function StartCtrl( $scope, CaseService, $state, socket, LoginService ) {
 
-  // socket.forward('createCase', $scope);
-  // socket.forward('deleteCase', $scope);
+  socket.forward('createCase', $scope);
+  socket.forward('deleteCase', $scope);
+
   var currentUser;
   LoginService.getCurrentUser().then(function(user) {
     currentUser = user;
@@ -80,12 +81,25 @@ angular.module( 'idss-dashboard.start', [
     }); 
   };
 
-  // $scope.$on('socket:createCase', function (ev, data) {
-  //   var caseItem = _.find($scope.cases, function(c) {
-  //     return c._id === data.caseId;
-  //   });
-  //   caseItem.loading = false;
-  // });
+  $scope.checkDataModuleStatus = function(caseItem) {
+
+    caseItem.loading = true;
+    
+    socket.emit('createCase', {
+      caseId: caseItem._id,
+      userId: caseItem.userId
+    });  
+      
+  };
+
+  $scope.$on('socket:createCase', function (ev, data) {
+    var caseItem = _.find($scope.cases, function(c) {
+      return c._id === data.caseId;
+    });
+    console.log(data);
+    caseItem.loading = false;
+    caseItem.dataModuleStatus = data.status;
+  });
 
   // $scope.$on('socket:deleteCase', function (ev, data) {
   //   var caseItem = _.find($scope.cases, function(c) {
