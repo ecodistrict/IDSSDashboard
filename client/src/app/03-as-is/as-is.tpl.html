@@ -4,35 +4,20 @@
     <h3>As is situation <button class="btn btn-xs btn-primary" ng-click="goToDesignModule();$event.stopPropagation()"><i class="glyphicon glyphicon-cog"></i> Open Design Module</button></h3>
   </div>
 
-  <!-- <ul class="nav nav-tabs" role="tablist" id="as-is-tabs">
-    <li role="presentation" class="active"><a href="as-is#kpilist" aria-controls="kpilist" role="tab" data-toggle="tab">
-      <i class="glyphicon glyphicon-tasks"></i>KPI list</a>
-    </li>
-    <li role="presentation">
-      <a href="as-is#kpimap" ng-click="selectMap()" aria-controls="kpimap" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-map-marker"></i> Map</a>
-    </li>
-  </ul>
-
-  <div class="tab-content">
-    <div class="tab-pane fade in active" id="kpilist"> -->
-      <div class="panel-group" role="tablist" aria-multiselectable="true">
-        <div ng-repeat="kpi in currentCase.kpiList" id="{{'set-' + kpi.kpiAlias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="goToKpiPage(kpi)">
-            <div class="panel-heading kpi-panel-heading" role="tab">
-              <h4 class="panel-title">
-                <b ng-bind="kpi.name"></b> <i ng-bind="'(status: ' + kpi.status + ')'"></i>
-              </h4>
-              <button ng-if="currentUser.role == 'Facilitator'" id="{{'adjust-kpi-' + kpi.alias}}" class="btn btn-xs btn-primary" ng-click="goToKpiPage(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-cog"></i> Edit</button>
-              <br>
-              <kpi-value-output ng-if="!kpi.disabled" kpi="kpi"></kpi-value-output>
-              <p ng-if="kpi.disabled" style="margin-top:10px" class="well">KPI <b>{{kpi.name}}</b> is not applicable for the <i>As is</i> situation</p>
-            </div>
+  <div class="panel-group" role="tablist" aria-multiselectable="true">
+    <div ng-repeat="kpi in currentCase.kpiList" id="{{'set-' + kpi.kpiAlias}}" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="goToKpiPage(kpi)">
+        <div class="panel-heading kpi-panel-heading" role="tab">
+          <h4 class="panel-title">
+            <b ng-bind="kpi.name"></b> <i ng-bind="'(status: ' + kpi.status + ')'"></i>
+          </h4>
+          <button ng-if="currentUser.role == 'Facilitator'" id="{{'adjust-kpi-' + kpi.alias}}" class="btn btn-xs btn-primary" ng-click="goToKpiPage(kpi);$event.stopPropagation()"><i class="glyphicon glyphicon-cog"></i> Edit</button>
+          <br>
+          <kpi-value-output ng-if="!kpi.disabled" kpi="kpi"></kpi-value-output>
+          <p ng-if="kpi.disabled" style="margin-top:10px" class="well">KPI <b>{{kpi.name}}</b> is not applicable for the <i>As is</i> situation</p>
         </div>
-      </div>
-    <!-- </div>
-    <div class="tab-pane fade" id="kpimap">
-      <kpi-map kpi-list="currentCase.kpiList" variant-list="variants" selected-variant="currentVariant" trig="trig"></kpi-map>
     </div>
-  </div> -->
+  </div>
+    
   <div class="row">
         <form role="form">
           <div class="form-group">

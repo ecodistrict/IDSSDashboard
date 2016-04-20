@@ -8,54 +8,25 @@
     </h3>
   </div>
 
-  <!-- <ul ng-if="currentVariant" class="nav nav-tabs" role="tablist" id="as-is-tabs">
-    <li role="presentation" class="active"><a href="as-is#kpilist" aria-controls="kpilist" role="tab" data-toggle="tab">
-      <i class="glyphicon glyphicon-tasks"></i>KPI list</a>
-    </li>
-    <li role="presentation">
-      <a href="assess-variants#kpimap" ng-click="selectMap()" aria-controls="kpimap" role="tab" data-toggle="tab"><i class="glyphicon glyphicon-map-marker"></i> Map</a>
-    </li>
-  </ul> -->
-
-<!--   <div ng-if="currentVariant" class="tab-content">
-    <div class="tab-pane fade in active" id="kpilist"> -->
-      <div ng-if="currentVariant" class="panel-group" role="tablist" aria-multiselectable="true">
-        <div ng-repeat="kpi in activeCase.kpiList | orderBy:'-weight'" id="{{'set-' + kpi.kpiAlias}}" ng-show="showAll || !kpi.disabled" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="goToKpiPage(kpi)">
-            <div class="panel-heading kpi-panel-heading" role="tab">
-              <h4 class="panel-title">
-                <b ng-bind="kpi.name"></b> <i>(status: {{kpi.status || 'unprocessed'}})</i>
-                <!-- <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span> -->
-              </h4>
-              <kpi-value-output ng-if="!kpi.disabled" kpi="kpi"></kpi-value-output>
-              <p ng-if="kpi.disabled" style="margin-top:10px" class="well">KPI <b>{{kpi.name}}</b> is not applicable for this alternative</p>
-            </div>
+  <div ng-if="currentVariant" class="panel-group" role="tablist" aria-multiselectable="true">
+    <div ng-repeat="kpi in activeCase.kpiList | orderBy:'-weight'" id="{{'set-' + kpi.kpiAlias}}" ng-show="showAll || !kpi.disabled" class="panel {{'panel-' + getStatus(kpi)}} kpi-item" ng-click="goToKpiPage(kpi)">
+        <div class="panel-heading kpi-panel-heading" role="tab">
+          <h4 class="panel-title">
+            <b ng-bind="kpi.name"></b> <i>(status: {{kpi.status || 'unprocessed'}})</i>
+            <!-- <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span> -->
+          </h4>
+          <kpi-value-output ng-if="!kpi.disabled" kpi="kpi"></kpi-value-output>
+          <p ng-if="kpi.disabled" style="margin-top:10px" class="well">KPI <b>{{kpi.name}}</b> is not applicable for this alternative</p>
         </div>
-      </div>
-    <!-- </div> -->
-    <!-- <div class="tab-pane fade" id="kpimap">
-      <kpi-map kpi-list="activeCase.kpiList" variant-list="variants" selected-variant="currentVariant" trig="trig"></kpi-map>
-    </div> -->
-  <!-- </div> -->
-
-  <!-- <div class="row">
-        <div class="col-xs-12">
-          <h2>Alternatives:</h2>
-            <div ng-repeat="variant in otherVariants" id="{{variant._id}}" class="panel panel-success kpi-item" ui-sref="assess-variants({variantId: variant._id})">
-              <div class="panel-heading">
-                <h3 class="panel-title">Alternative: {{variant.name}}</h3>
-              </div>
-            </div>
-            <div class="well"> 
-              <button ui-sref="develop-variants" class="btn btn-success">Develop more alternatives <span class="glyphicon glyphicon-plus"></span></button>
-            </div>
-        </div>
-    </div> -->
-    <div class="row">
-        <form role="form">
-          <div class="form-group">
-            <button class="btn btn-primary pull-left" ui-sref="develop-variants"><span class="glyphicon glyphicon-chevron-left"></span> Previous</button>
-            <button class="pull-right btn btn-primary" ui-sref="compare-variants">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
-          </div>
-        </form>
     </div>
+  </div>
+ 
+  <div class="row">
+      <form role="form">
+        <div class="form-group">
+          <button class="btn btn-primary pull-left" ui-sref="develop-variants"><span class="glyphicon glyphicon-chevron-left"></span> Previous</button>
+          <button class="pull-right btn btn-primary" ui-sref="compare-variants">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
+        </div>
+      </form>
+  </div>
 </div>

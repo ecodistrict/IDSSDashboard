@@ -135,8 +135,11 @@ angular.module( 'idss-dashboard.develop-variants', [
   };
 
   $scope.$on('socket:createVariant', function (ev, data) {
-    currentVariant.loading = false;
-    currentVariant.dataModuleStatus = data.status;
+    var currentVariant = $scope.variants.find(function(v) {return v._id === data.variantId;});
+    if(currentVariant) {
+      currentVariant.loading = false;
+      currentVariant.dataModuleStatus = data.status;
+    }
   });
 
   $scope.$on('socket:deleteVariant', function (ev, data) {

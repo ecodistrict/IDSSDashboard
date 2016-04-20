@@ -40,8 +40,8 @@ angular.module( 'idss-dashboard.assess-variants', [])
 
   var variantId = $stateParams.variantId;
   var currentVariant;
+  var kpiList = []; // create immutable version of kpilist due to reference problem when bootstrapping
 
-  $scope.activeCase = activeCase;
   $scope.otherVariants = [];
   $scope.currentUser = currentUser;
   
@@ -55,8 +55,6 @@ angular.module( 'idss-dashboard.assess-variants', [])
 
   if(currentVariant) {
 
-    console.log(currentVariant);
-
     currentVariant.kpiValues = currentVariant.kpiValues || {};
     currentVariant.kpiDisabled = currentVariant.kpiDisabled || {};
 
@@ -64,30 +62,22 @@ angular.module( 'idss-dashboard.assess-variants', [])
       KpiService.removeExtendedData(kpi); // in case data is already extended 
 
       kpi.value = currentVariant.kpiValues[kpi.kpiAlias];
-      console.log(kpi.kpiAlias);
       if(kpi.value || kpi.value === 0) {
         kpi.status = 'success';
-        console.log(kpi.value);
       } else {
         kpi.status = 'unprocessed';
       }
       kpi.disabled = currentVariant.kpiDisabled[kpi.kpiAlias];
-      
-      // socket.emit('getKpiResult', {
-      //   variantId: variantId, 
-      //   kpiId: kpi.kpiAlias, 
-      //   moduleId: kpi.selectedModuleId, 
-      //   status: kpi.status,
-      //   userId: $scope.currentUser._id, // if stakeholder id is sent in params, load data from stakeholder
-      //   caseId: activeCase._id
-      // });
-
-      // $timeout(function() {
-      //   kpi.status = kpi.status === 'initializing' ? 'unprocessed' : kpi.status;
-      //   kpi.loading = false;
-      // }, 6000);
+      // add kpi to new array
+      kpiList.push(kpi);
      
     });
+
+    // replace activeCase kpi list because otherwise this referense will change when 
+    // downloaded again from the server.. yes, I can explain this better, but a refactor would be in place..
+    $scope.activeCase = {
+      kpiList: kpiList
+    };
 
   }
 

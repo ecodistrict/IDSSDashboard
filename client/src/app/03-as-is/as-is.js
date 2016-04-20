@@ -38,8 +38,8 @@ angular.module( 'idss-dashboard.as-is', [])
 .controller( 'AsIsController', ['$scope', '$timeout', '$sce', 'socket', '$state', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'activeCase', 'currentUser', '$window', 
   function AsIsController( $scope, $timeout, $sce, socket, $state, ModuleService, $modal, KpiService, VariantService, activeCase, currentUser, $window ) {
 
-  $scope.currentCase = activeCase;
   $scope.currentUser = currentUser;
+  var kpiList = []; // immutable version
 
   _.each(activeCase.kpiList, function(kpi) {
     KpiService.removeExtendedData(kpi); // always refresh the data 
@@ -54,20 +54,14 @@ angular.module( 'idss-dashboard.as-is', [])
     }
     kpi.disabled = activeCase.kpiDisabled[kpi.kpiAlias];
 
-    // socket.emit('getKpiResult', {
-    //   kpiId: kpi.kpiAlias, 
-    //   moduleId: kpi.selectedModuleId,
-    //   status: kpi.status,
-    //   userId: $scope.currentUser._id, // if stakeholder id is sent in params, load data from stakeholder
-    //   caseId: activeCase._id
-    // });
-
-    // $timeout(function() {
-    //   kpi.status = kpi.status === 'initializing' ? 'unprocessed' : kpi.status;
-    //   kpi.loading = false;
-    // }, 6000);
+    kpiList.push(kpi);
    
   });
+
+  $scope.currentCase = {
+    _id: activeCase._id,
+    kpiList: kpiList
+  };
 
   $scope.getStatus = function(kpi) {
     if(kpi.status === 'unprocessed') {
