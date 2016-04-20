@@ -121,6 +121,11 @@ angular.module( 'idss-dashboard.start', [
   //   }
   // });
 
+  $scope.editCaseData = function(caseToEdit) {
+    $scope.loadCase(caseToEdit);
+    $state.transitionTo('analyse-problem');
+  };
+
   $scope.loadCase = function(caseToLoad) {
     var activeCase;
     CaseService.loadCase(caseToLoad._id).then(function() {

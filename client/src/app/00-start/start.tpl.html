@@ -18,8 +18,9 @@
                 <button class="btn btn-xs btn-default" ng-click="checkDataModuleStatus(case);$event.stopPropagation()">
                   <i class="glyphicon glyphicon-info-sign"></i> Data module status
                 </button>
-                <span ng-show="case.loading" class="glyphicon glyphicon-refresh spin"></span> {{case.dataModuleStatus}}
-              </div>
+                  <button class="btn btn-xs btn-info" ng-click="editCaseData(case);$event.stopPropagation()"><i class="glyphicon glyphicon-pencil"></i> Edit case data</button>
+                  <span ng-show="case.loading" class="glyphicon glyphicon-refresh spin"></span> {{case.dataModuleStatus}}
+                </div>
               <div class="panel-body">
                 {{case.description}}
               </div>
