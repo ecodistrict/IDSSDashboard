@@ -15,7 +15,7 @@
 
         <div class="collapse navbar-collapse" id="bs-navbar-collapse">
             <!-- menu default -->
-            <ul ng-show="isAuthenticated" class="nav navbar-nav">
+            <ul ng-show="isAuthenticated && activeCase._id" class="nav navbar-nav">
                 <!-- <li ng-show="currentUser.role == 'Stakeholder'"><a ui-sref="analyse-problem">Overview</a></li> -->
                 <li ng-show="currentUser.role == 'Facilitator'" class="dropdown" ng-class="{'active': highLightInMenu == 'analyse-problem'}">
                     <a class="dropdown-toggle">Analyse problem <span class="caret"></span></a>
@@ -59,7 +59,11 @@
             <ul ng-show="!isAuthenticated" class="nav navbar-nav navbar-right">
                 <li><a style="cursor: pointer" ui-sref="login">Log in</a></li>
             </ul>
-          
+
+            <ul ng-show="isAuthenticated && !activeCase._id" class="nav navbar-nav navbar-right">
+                <li><a style="cursor: pointer" ui-sref="start">No case loaded</a></li>
+            </ul>
+
             <ul ng-show="isAuthenticated" class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                     <a id="logout-dropdown" class="dropdown-toggle"><span class="glyphicon glyphicon-user"></span> <span ng-bind="currentUser.fname"></span> <b class="caret"></b></a>
@@ -74,10 +78,10 @@
     </div>
     <div ng-show="isAuthenticated" class="container-fluid sub-menu navbar-inverse">
         <ul class="nav navbar-nav navbar-right">
-            <li><a ui-sref="start">Last saved: <span ng-bind="currentCase.dateModified | date:'HH:mm:ss'"></span></a></li>
+            <li><a ui-sref="start">Last saved: <span ng-bind="activeCase.dateModified | date:'HH:mm:ss'"></span></a></li>
         </ul>
         <ul class="nav navbar-nav">
-            <li><a ui-sref="start"><span ng-bind="currentCase.title || 'No title'"></span></a></li>
+            <li><a ui-sref="start"><span ng-bind="activeCase.title || 'No title'"></span></a></li>
         </ul>
     </div>
 </nav>

@@ -4,10 +4,7 @@ angular.module( 'idss-dashboard.header', [
 
 .controller( 'HeaderCtrl', ['$scope', '$location', 'LoginService', '$state', '$rootScope', 'CaseService', '$modal', 'authService', '$rootScope', function HeaderCtrl( $scope, $location, LoginService, $state, $rootScope, CaseService, $modal, authService, $rootScope ) {
 
-    // get current case
-    CaseService.loadActiveCase().then(function(activeCase) {
-        $scope.currentCase = activeCase;
-    });
+    // activeCase is on the same scope - used in this view
 
     $scope.logout = function() {
 
@@ -15,7 +12,6 @@ angular.module( 'idss-dashboard.header', [
             $scope.isAuthenticated = LoginService.isAuthenticated();
             $state.reload();
         });
-        
 
     };
 
@@ -55,7 +51,6 @@ angular.module( 'idss-dashboard.header', [
         }, function () {
             console.log('Modal dismissed at: ' + new Date());
         });
-            
 
     };
 
