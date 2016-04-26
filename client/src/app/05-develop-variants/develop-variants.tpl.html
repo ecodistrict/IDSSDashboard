@@ -14,7 +14,7 @@
                 <button class="btn btn-xs btn-danger pull-right" ng-click="deleteVariant(variant);$event.stopPropagation()">
                   <i class="glyphicon glyphicon-trash"></i> Delete alternative
                 </button>
-                <h3 class="panel-title">Alternative: {{variant.name}} 
+                <h3 class="panel-title panel-title-margin">Alternative: {{variant.name}}</h3>
                   <button class="btn btn-xs btn-primary" ng-click="editVariant(variant);$event.stopPropagation()"><i class="glyphicon glyphicon-pencil"></i> Edit</button>
                   <button class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-tasks"></i> Kpi List</button>
                   <button class="btn btn-xs btn-info" ng-click="goToDesignModule(variant);$event.stopPropagation()"><i class="glyphicon glyphicon-cog"></i> Open Design Module</button>
@@ -22,11 +22,10 @@
                       <i class="glyphicon glyphicon-info-sign"></i> Data module status
                   </button>
                   <span ng-show="variant.loading" class="glyphicon glyphicon-refresh spin"></span> {{variant.dataModuleStatus}}
-                </h3>
-                <!-- <span ng-show="variant.loading" class="glyphicon glyphicon-refresh spin"></span> -->
               </div>
               <div class="panel-body">
-                {{variant.description}}
+                <p><b>Variant ID:</b><br> {{variant._id}}</p>
+                <p><b>Description:</b><br> {{variant.description}}</p>
               </div>
             </div>
             <div class="well" ng-show="variants.length < 1"> 

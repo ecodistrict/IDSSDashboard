@@ -2,7 +2,7 @@
     <div ng-if="facilitator" class="row">
         <div class="col-sm-12 col-md-12">
 
-            <h2>My Processes</h2>
+            <h2>My Cases</h2>
             <div ng-repeat="case in cases track by $index" id="{{'select-case-' + case._id}}" class="panel panel-default kpi-item" ng-click="loadCase(case)">
               <div class="panel-heading">
                 <h3 class="panel-title panel-title-margin">{{case.title || 'No title'}} <em ng-show="case.isActive" style="color: #999">(Active)</em></h3>
@@ -21,7 +21,8 @@
                 <span ng-show="case.loading" class="glyphicon glyphicon-refresh spin"></span> {{case.dataModuleStatus}}
                 </div>
               <div class="panel-body">
-                {{case.description}}
+                <p><b>Case ID:</b><br> {{case._id}}</p>
+                <p><b>Description:</b><br> {{case.description}}</p>
               </div>
             </div>
 
