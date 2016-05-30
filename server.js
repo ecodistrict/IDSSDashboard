@@ -312,6 +312,7 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
       method: method,
       caseId: kpi.caseId,
       variantId: kpi.variantId,
+      moduleId: kpi.moduleId,
       userId: kpi.userId,
       kpiId: kpi.kpiId
     };

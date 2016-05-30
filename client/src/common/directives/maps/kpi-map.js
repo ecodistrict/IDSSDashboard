@@ -124,6 +124,7 @@ angular.module('idss-dashboard').directive('kpiMap', ['socket', '$compile', 'Mod
                   caseId: scope.case._id,
                   variantId: variant._id,
                   kpiId: kpi._id,
+                  moduleId: "Stockholm_Green_Area_Factor",
                   userId: scope.user._id
                 });
                 socket.emit('getGeoJson', {
