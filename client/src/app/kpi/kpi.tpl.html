@@ -16,7 +16,7 @@
           </p>
           <div id="button-container">
 
-            <button id="{{'calculate-' + kpi.kpiAlias + '-button'}}" ng-show="!kpi.loading && !kpi.qualitative && kpi.selectedModuleId && !kpi.disabled" class="btn btn-xs btn-default" ng-click="calculateKpi(kpi);$event.stopPropagation()">
+            <button id="{{'calculate-' + kpi.kpiAlias + '-button'}}" ng-disabled="kpi.loading || !kpi.selectedModuleId || kpi.disabled || kpi.qualitative" class="btn btn-xs btn-default" ng-click="calculateKpi(kpi);$event.stopPropagation()">
               <i class="glyphicon glyphicon-cloud-upload"></i> Calculate
             </button>
 
