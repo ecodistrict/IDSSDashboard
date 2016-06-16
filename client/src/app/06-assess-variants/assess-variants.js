@@ -79,7 +79,7 @@ angular.module( 'idss-dashboard.assess-variants', [])
       kpiList: kpiList
     };
 
-  }
+  } 
 
   $scope.getStatus = function(kpi) {
     if(kpi.status === 'unprocessed') {
@@ -105,7 +105,11 @@ angular.module( 'idss-dashboard.assess-variants', [])
     $scope.showAll = !$scope.showAll;
   };
   $scope.kpisAreDisabled = function() {
-    return _.find($scope.activeCase.kpiList, function(k) {return k.disabled;});
+    if($scope.activeCase) {
+      return _.find($scope.activeCase.kpiList, function(k) {return k.disabled;});
+    } else {
+      return null;
+    }
   };
 
 }]);

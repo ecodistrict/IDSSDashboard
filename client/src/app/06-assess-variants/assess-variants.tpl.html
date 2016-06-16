@@ -20,7 +20,20 @@
         </div>
     </div>
   </div>
- 
+  
+  <div class="row" style="margin-top:10px">
+    <div class="panel-group" role="tablist" aria-multiselectable="true">
+      <div ng-repeat="variant in variants track by $index" id="{{variant._id}}" ng-show="variant.type!='as-is' && variant.type!='to-be' && variant._id!=currentVariant._id " class="panel panel-success kpi-item" ui-sref="assess-variants({variantId: variant._id})">
+        <div class="panel-heading">
+          <h3 class="panel-title panel-title-margin">Alternative: {{variant.name}}</h3>
+        </div>
+      </div>
+      <div class="well" ng-show="variants.length < 1"> 
+          <p>No alternatives exists: <a ui-sref="develop-alternatives">Go to previous step</a></p>
+      </div>
+    </div>
+  </div>
+
   <div class="row">
       <form role="form">
         <div class="form-group">
