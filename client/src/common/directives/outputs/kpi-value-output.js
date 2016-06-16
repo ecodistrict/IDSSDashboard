@@ -435,7 +435,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                     });
 
                 var data = [{
-                    title:"KPI values",
+                    title: scope.showAmbition ? "KPI Ambition" : "KPI Value",
                     rangeLabels:['Bad','Excellent'],
                     measureLabels:['Current Inventory'],
                     markerLabels:['Target Inventory']
