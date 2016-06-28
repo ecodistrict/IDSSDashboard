@@ -248,7 +248,9 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
       type: "request",
       method: method,
       caseId: caseData.caseId,
-      userId: caseData.userId
+      userId: caseData.userId,
+      title: caseData.title,
+      description: caseData.description
     }
     dataPub.signalString(JSON.stringify(requestObj).toString());
   });

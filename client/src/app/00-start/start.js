@@ -87,7 +87,9 @@ angular.module( 'idss-dashboard.start', [
     
     socket.emit('createCase', {
       caseId: caseItem._id,
-      userId: caseItem.userId
+      userId: caseItem.userId,
+      title: caseItem.title,
+      description: caseItem.description
     });  
       
   };
