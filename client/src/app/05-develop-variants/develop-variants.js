@@ -129,7 +129,9 @@ angular.module( 'idss-dashboard.develop-variants', [
     socket.emit('createVariant', {
       caseId: activeCase._id,
       variantId: variant._id,
-      userId: variant.userId
+      userId: variant.userId,
+      name: variant.name,
+      description: variant.description
     });  
       
   };

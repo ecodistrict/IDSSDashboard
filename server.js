@@ -280,7 +280,9 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
       method: method,
       caseId: variantData.caseId,
       variantId: variantData.variantId,
-      userId: variantData.userId
+      userId: variantData.userId,
+      name: variantData.name,
+      description: variantData.description
     }
     dataPub.signalString(JSON.stringify(requestObj).toString());
   });
