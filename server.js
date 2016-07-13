@@ -582,6 +582,31 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
             });
           }
           break;
+        // this is API - sent back to framework only
+        case 'getUser':
+          var responseMessage = {
+            userId: message.userId,
+            moduleId: message.moduleId,
+            method: 'getUser',
+            type: 'response'
+          }
+          if(!responseMessage.userId) {
+            responseMessage.error = 'Params missing, check userId';
+            responseMessage.status = 422;
+            imbFrameworkPub.signalString(JSON.stringify(responseMessage).toString());
+          } else {
+            userRepository._getUser(message.userId, function(err, foundUser) {
+              if(err) {
+                responseMessage.error = 'Error retrieving data, check that userId is correct';
+                responseMessage.status = 500;
+              } else {
+                responseMessage.user = foundUser;
+                responseMessage.status = 200;
+              }
+              imbFrameworkPub.signalString(JSON.stringify(responseMessage).toString());
+            });
+          }
+          break;
         // startmodule must save any kpiValue to db
         case 'startModule':
           if((message.kpiValue || message.kpiValue === 0) && message.userId) {
