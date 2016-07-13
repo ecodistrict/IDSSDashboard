@@ -114,7 +114,9 @@ angular.module( 'idss-dashboard.kpi', [])
       return 'info';
     } else if(kpi.status === 'success') {
       return 'success';
-    } 
+    } else {
+      return 'primary'; // if module sends no status, display a default color
+    }
   };
 
   $scope.calculateKpi = function(kpi) {

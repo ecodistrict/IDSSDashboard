@@ -12,7 +12,7 @@
           <p>
               <span ng-class="(kpi.status == 'success') ? 'glyphicon-check' : 'glyphicon-bell'" class="glyphicon"></span> 
               {{kpi.status}} 
-              <!-- <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span> -->
+              <span ng-show="kpi.status == 'processing'" class="glyphicon glyphicon-refresh spin"></span>
           </p>
           <div id="button-container">
 
@@ -41,6 +41,7 @@
             </button>
 
           </div>
+          <p ng-show="kpi.info">{{kpi.info}}</p>
 
           <kpi-value-output ng-if="!kpi.disabled" kpi="kpi"></kpi-value-output>
           <p ng-if="!kpi.disabled">
