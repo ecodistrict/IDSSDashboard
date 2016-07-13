@@ -56,12 +56,10 @@ angular.module('idss-dashboard').directive('districtMap', ['$timeout', '$compile
                 }).setView([50.736455, 6.328125], 4);
 
                 $('.leaflet-control-container').css({display: 'none'});
-                
-                L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.{ext}', {
+
+                L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
                     type: 'map',
-                    ext: 'jpg',
-                    attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-                    subdomains: '1234'
+                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
                 }).addTo(map);
 
                 //Initialise the FeatureGroup to store editable layers
