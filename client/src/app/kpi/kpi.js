@@ -32,7 +32,7 @@ angular.module( 'idss-dashboard.kpi', [])
       //   return KpiService.getKpiRecord($stateParams.variantId, $stateParams.kpiAlias, $stateParams.userId);
       // }],
       variants: ['VariantService', function(VariantService) {
-        return VariantService.loadVariants().then(function(variants) {
+        return VariantService._loadVariants().then(function(variants) {
           return variants;
         });
       }]
