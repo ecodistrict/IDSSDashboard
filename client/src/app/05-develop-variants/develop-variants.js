@@ -154,7 +154,7 @@ angular.module( 'idss-dashboard.develop-variants', [
   });
 
   $scope.goToDesignModule = function(variant) {
-    $window.open('http://vps17642.public.cloudvps.com:4501/?session=' + activeCase._id + '$' + variant._id + '$' + $scope.currentUser._id);
+    $window.open('http://vps17642.public.cloudvps.com/?session=' + activeCase._id + '$' + variant._id + '$' + $scope.currentUser._id);
   };
 
 }]);
