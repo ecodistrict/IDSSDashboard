@@ -387,6 +387,7 @@ angular.module( 'idss-dashboard.compare-variants', [])
       socket.emit('mcmsmv', {
         variants: mcmsmvData,
         kpiId: 'mcmsmv',
+        caseId: activeCase._id,
         userId: currentUser._id
       });
       $scope.msg = JSON.stringify(mcmsmvData, undefined, 4);

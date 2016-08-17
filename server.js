@@ -478,10 +478,12 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     
     var method = 'mcmsmv';
     console.log('From dashboard client: ' + method + ' data: ' + module);
+    console.log(module.caseId);
     var requestObj = {
       "type": "request",
       "method": method,
       "kpiId": module.kpiId,
+      "caseId": module.caseId,
       "inputs": module.variants,
       "userId": module.userId
     };
