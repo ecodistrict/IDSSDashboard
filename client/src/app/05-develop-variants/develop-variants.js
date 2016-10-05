@@ -157,5 +157,9 @@ angular.module( 'idss-dashboard.develop-variants', [
     $window.open('http://vps17642.public.cloudvps.com/?session=' + activeCase._id + '$' + variant._id + '$' + $scope.currentUser._id);
   };
 
+  $scope.goToUploadDataModule = function(variant) {
+    $window.open('http://ecodistrict.cstb.fr/?session=' + activeCase._id + '$' + variant._id + '$' + $scope.currentUser._id);
+  };
+
 }]);
 

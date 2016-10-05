@@ -44,8 +44,8 @@ angular.module( 'idss-dashboard.collect-data', [
   });
 }])
 
-.controller( 'CollectDataCtrl', ['$scope', 'KpiService', 'CaseService', '$modal', 'currentCase', 'ModuleService', 'FileUploader', 'socket', 'variants', 'currentUser', 
-  function CollectDataCtrl( $scope, KpiService, CaseService, $modal, currentCase, ModuleService, FileUploader, socket, variants, currentUser) {
+.controller( 'CollectDataCtrl', ['$scope', '$window', 'KpiService', 'CaseService', '$modal', 'currentCase', 'ModuleService', 'FileUploader', 'socket', 'variants', 'currentUser', 
+  function CollectDataCtrl( $scope, $window, KpiService, CaseService, $modal, currentCase, ModuleService, FileUploader, socket, variants, currentUser) {
 
   $scope.currentCase = currentCase;
 
@@ -89,6 +89,10 @@ angular.module( 'idss-dashboard.collect-data', [
 
   $scope.selectMap = function() {
     $scope.trig = !$scope.trig;
+  };
+
+  $scope.goToUploadDataModule = function() {
+    $window.open('http://ecodistrict.cstb.fr/?session=' + $scope.currentCase._id + '$undefined$' + $scope.currentUser._id);
   };
 
   $scope.$on('socket:startModule', function (ev, module) {
