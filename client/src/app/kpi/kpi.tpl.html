@@ -12,21 +12,21 @@
           <p>
               <span ng-class="(kpi.status == 'success') ? 'glyphicon-check' : 'glyphicon-bell'" class="glyphicon"></span> 
               {{kpi.status}} 
-              <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
+              <span ng-show="kpi.status == 'processing'" class="glyphicon glyphicon-refresh spin"></span>
           </p>
           <div id="button-container">
 
-            <button id="{{'calculate-' + kpi.kpiAlias + '-button'}}" ng-show="!kpi.loading && !kpi.qualitative && kpi.selectedModuleId && !kpi.disabled && kpi.inputs" class="btn btn-xs btn-default" ng-click="calculateKpi(kpi);$event.stopPropagation()">
+            <button id="{{'calculate-' + kpi.kpiAlias + '-button'}}" ng-disabled="kpi.loading || !kpi.selectedModuleId || kpi.disabled || kpi.qualitative" class="btn btn-xs btn-default" ng-click="calculateKpi(kpi);$event.stopPropagation()">
               <i class="glyphicon glyphicon-cloud-upload"></i> Calculate
             </button>
 
-             <button ng-show="kpi.loading && !kpi.qualitative" class="btn btn-xs btn-danger" ng-click="stopCalculation(kpi);$event.stopPropagation()">
+             <button ng-show="kpi.loading && kpi.selectedModuleId" class="btn btn-xs btn-danger" ng-click="stopCalculation(kpi);$event.stopPropagation()">
               <i class="glyphicon glyphicon-cloud-upload"></i> Stop
             </button>
 
-            <button ng-show="!kpi.qualitative && kpi.selectedModuleId && !kpi.disabled" class="btn btn-xs btn-primary" ng-click="setModuleInput(kpi);$event.stopPropagation()">
+            <!-- <button ng-show="!kpi.qualitative && kpi.selectedModuleId && !kpi.disabled" class="btn btn-xs btn-primary" ng-click="setModuleInput(kpi);$event.stopPropagation()">
                 <i class="glyphicon glyphicon-pencil"></i> Module input
-            </button>
+            </button> -->
 
             <button ng-show="!kpi.disabled" id="{{'set-' + kpi.kpiAlias + '-button'}}" class="btn btn-xs btn-warning" ng-click="setScore(kpi);$event.stopPropagation()">
               <i class="glyphicon glyphicon-stats"></i> {{kpi.qualitative ? 'Set score' : 'Set manual'}}
@@ -41,6 +41,7 @@
             </button>
 
           </div>
+          <p ng-show="kpi.info">{{kpi.info}}</p>
 
           <kpi-value-output ng-if="!kpi.disabled" kpi="kpi"></kpi-value-output>
           <p ng-if="!kpi.disabled">
@@ -67,8 +68,14 @@
             </p>
             <p ng-if="kpi.selectedModuleDescription">Module description: {{kpi.selectedModuleDescription}}</p>
 
+            <p ng-if="kpi.connectedModuleUrl">
+              <button class="btn btn-xs btn-primary" ng-click="openModule()">
+                <i class="glyphicon glyphicon-wrench"></i> Go to {{kpi.selectedModuleName}}
+              </button>
+            </p>
+
             <button class="btn btn-xs btn-primary" ng-click="configureKpi(kpi);$event.stopPropagation()">
-                <i class="glyphicon glyphicon-wrench"></i> KPI Configuration
+                <i class="glyphicon glyphicon-cog"></i> KPI Configuration
             </button>
 
       </div>

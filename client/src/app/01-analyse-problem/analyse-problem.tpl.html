@@ -6,30 +6,29 @@
         <form role="form">
           <div class="form-group">
             <label for="process-title">Please give a title to this decision process (ex: your high level ambition):</label>
-            <input type="text" ng-model="currentProcess.title" ng-model-options="{ updateOn: 'blur' }"
-           ng-keyup="cancel($event)" ng-change="updateProcess('Changed title to ' + currentProcess.title)" class="form-control" id="process-title" placeholder="Process title">
+            <input type="text" ng-model="currentCase.title" ng-model-options="{ updateOn: 'blur' }"
+           ng-keyup="cancel($event)" ng-change="updateCase('Changed title to ' + currentCase.title)" class="form-control" id="process-title" placeholder="Case title">
           </div>
         </form>
-        <h2>{{currentProcess.title}}</h2>
     </div>
     <div ng-if="!facilitator" class="row">
-        <h2>{{currentProcess.title}}</h2>
+        <h2>{{currentCase.title}}</h2>
     </div>
     <div class="row">
         <label for="process-title">District area of the process:</label>
-        <district-map id="district-map" district="currentProcess.district" facilitator="facilitator"></district-map>
+        <district-map id="district-map" district-polygon="currentCase.districtPolygon" facilitator="facilitator"></district-map>
     </div>
     <div ng-if="facilitator" class="row">
         <form role="form">
           <div class="form-group">
             <label for="process-description">Please add a description text of your project (optional):</label>
-            <textarea class="form-control" ng-model="currentProcess.description" ng-model-options="{ updateOn: 'blur' }"
-           ng-keyup="cancel($event)" ng-change="updateProcess('Changed process description')" id="process-description" rows="3">This project is aimed at…</textarea>
+            <textarea class="form-control" ng-model="currentCase.description" ng-model-options="{ updateOn: 'blur' }"
+           ng-keyup="cancel($event)" ng-change="updateCase('Changed process description')" id="process-description" rows="3">This project is aimed at…</textarea>
           </div>
         </form>
     </div>
-    <div ng-if="!facilitator && currentProcess.description" class="row">
-      <div class="well">{{currentProcess.description}}</div>
+    <div ng-if="!facilitator && currentCase.description" class="row">
+      <div class="well">{{currentCase.description}}</div>
     </div>
     <div ng-if="facilitator" class="row">
         <label for="process-stakeholder">Please name the stakeholders of this process:</label>
@@ -44,12 +43,14 @@
           <div class="form-group">
             <input type="text" id="process-stakeholder-email" ng-model="stakeholder.password" class="form-control" placeholder="Password"/>
           </div>
-          <button type="submit" id="add-stakeholder-button" ng-click="addStakeholder()" class="btn btn-default">Add stakeholder</button>
+          <button type="submit" id="add-stakeholder-button" ng-click="addStakeholder()" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> Add stakeholder</button>
         </form>
     </div>
-    <div class="row well" ng-if="facilitator" ng-repeat="stakeholder in stakeholders">
+    <div id="stakeholder-list" class="row well" ng-if="facilitator" ng-repeat="stakeholder in stakeholders">
         <p>Name: {{stakeholder.name}}, Email: {{stakeholder.email}}, Password: {{stakeholder.rawPassword}}</p>
-        <button type="submit" id="delete-stakeholder-button" ng-click="deleteStakeholder(stakeholder)" class="btn btn-danger">Delete stakeholder</button>
+        <button type="submit" id="delete-stakeholder-button" ng-click="deleteStakeholder(stakeholder)" class="btn btn-danger">Delete stakeholder (for all cases)</button>
+        <button id="set-to-active" ng-show="stakeholder.isActiveCase" class="pull-right btn btn-primary">Active case <span class="glyphicon glyphicon-check"></span></button>
+        <button id="set-to-active" ng-click="setToActiveCase(stakeholder)" ng-show="!stakeholder.isActiveCase" class="pull-right btn btn-default">Set to active case</button>
     </div>
     <div class="row">
         <form role="form">

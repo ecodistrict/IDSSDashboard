@@ -20,11 +20,11 @@ describe('use kpis', function() {
 
     expect(page.kpiTitle.get(0).getText()).toEqual('Dashboard Test');
 
-    page.typeKpiScoreExcellent(1);
+    page.typeKpiScoreExcellent(500);
 
-    page.typeKpiScoreBad(1000);
+    page.typeKpiScoreSufficient(1000);
 
-    page.clickSelectModuleOption('Dashboard Test');
+    page.clickSelectModuleOption('Dashboard test module');
 
     page.clickSaveKpiConfigButton();
     
@@ -33,8 +33,8 @@ describe('use kpis', function() {
     browser.driver.navigate().refresh();
     page.clickConfigureKpi('dashboard-test');
 
-    expect(page.kpiScoreBad.getAttribute('value')).toEqual('1000');
-    expect(page.kpiScoreExcellent.getAttribute('value')).toEqual('1');
+    expect(page.kpiScoreSufficient.getAttribute('value')).toEqual('1000');
+    expect(page.kpiScoreExcellent.getAttribute('value')).toEqual('500');
 
   });
 

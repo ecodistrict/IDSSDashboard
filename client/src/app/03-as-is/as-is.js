@@ -18,15 +18,13 @@ angular.module( 'idss-dashboard.as-is', [])
       authorizedRoles: ['Facilitator', 'Stakeholder']
     },
     resolve:{
-      currentProcess: ['ProcessService', function(ProcessService) {
-        return ProcessService.loadCurrentProcess().then(function(currentProcess) {
-          return currentProcess;
-        });
-      }],
-      variants: ['VariantService', function(VariantService) {
-        return VariantService.loadVariants().then(function(variants) {
-          return variants;
-        });
+      activeCase: ['CaseService', function(CaseService) {
+        var p = CaseService.getActiveCase();
+        if(p._id) {
+          return p;
+        } else {
+          return CaseService.loadActiveCase();
+        }
       }],
       currentUser: ['LoginService', function(LoginService) {
         return LoginService.getCurrentUser().then(function(user) {
@@ -37,29 +35,33 @@ angular.module( 'idss-dashboard.as-is', [])
   });
 }])
 
-.controller( 'AsIsController', ['$scope', '$timeout', '$sce', 'socket', '$state', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'currentProcess', 'variants', 'currentUser', '$window', function AsIsController( $scope, $timeout, $sce, socket, $state, ModuleService, $modal, KpiService, VariantService, currentProcess, variants, currentUser, $window ) {
+.controller( 'AsIsController', ['$scope', '$timeout', '$sce', 'socket', '$state', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'activeCase', 'currentUser', '$window', 
+  function AsIsController( $scope, $timeout, $sce, socket, $state, ModuleService, $modal, KpiService, VariantService, activeCase, currentUser, $window ) {
 
-  var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
-  $scope.variants = variants; // for map
-  $scope.currentVariant = asIsVariant; // for map
-  $scope.currentProcess = currentProcess;
   $scope.currentUser = currentUser;
+  var kpiList = []; // immutable version
 
-  _.each(currentProcess.kpiList, function(kpi) {
-    KpiService.removeExtendedData(kpi); // in case data is already extended 
-    kpi.loading = true;
-    kpi.status = 'initializing';
-    KpiService.getKpiRecord(asIsVariant._id, kpi.kpiAlias, $scope.currentUser._id).then(function(record) {
-        delete kpi.asIsValue; // otherwise the comparison will be used in the visualisation
-        angular.extend(kpi, record); 
-        if(kpi.status === 'initializing' || kpi.status === 'processing') {
-          kpi.loading = true;
-        } else {
-          kpi.loading = false;
-        }
-    });
+  _.each(activeCase.kpiList, function(kpi) {
+    KpiService.removeExtendedData(kpi); // always refresh the data 
+    //kpi.loading = true;
+    
+
+    kpi.value = activeCase.kpiValues[kpi.kpiAlias];
+    if(kpi.value || kpi.value === 0) {
+      kpi.status = 'success';
+    } else {
+      kpi.status = 'unprocessed';
+    }
+    kpi.disabled = activeCase.kpiDisabled[kpi.kpiAlias];
+
+    kpiList.push(kpi);
    
   });
+
+  $scope.currentCase = {
+    _id: activeCase._id,
+    kpiList: kpiList
+  };
 
   $scope.getStatus = function(kpi) {
     if(kpi.status === 'unprocessed') {
@@ -75,7 +77,7 @@ angular.module( 'idss-dashboard.as-is', [])
 
   $scope.goToKpiPage = function(kpi) {
     if(currentUser.role === 'Facilitator') {
-      $state.transitionTo('kpi', {variantId: asIsVariant._id, kpiAlias: kpi.kpiAlias, back: 'as-is'});
+      $state.transitionTo('kpi', {kpiAlias: kpi.kpiAlias, back: 'as-is'});
     }
   };
 
@@ -86,6 +88,10 @@ angular.module( 'idss-dashboard.as-is', [])
 
   $scope.selectMap = function() {
     $scope.trig = !$scope.trig;
+  };
+
+  $scope.goToDesignModule = function() {
+    $window.open('http://vps17642.public.cloudvps.com/?session=' + $scope.currentCase._id + '$undefined$' + $scope.currentUser._id);
   };
 
 }]);

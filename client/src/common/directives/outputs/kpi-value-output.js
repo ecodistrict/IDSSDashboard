@@ -362,7 +362,8 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
     return {
         restrict: 'E',
         scope: {
-            kpi: '='
+            kpi: '=',
+            showAmbition: '@'
         },
         link: function ( scope, element, attrs ) {
 
@@ -376,8 +377,8 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
               }
 
               // measure and marker on value
-              var value = kpi.value;
-              var asIsValue = kpi.asIsValue;
+              var value = scope.showAmbition ? kpi.ambition : kpi.value;
+              var asIsValue = scope.showAmbition ? kpi.value : null;
 
               // ranges
               var sufficient = kpi.sufficient, excellent = kpi.excellent; 
@@ -392,6 +393,22 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
               var margin = {top: 15, right: 150, bottom: 15, left: 100};
               width = width - margin.left - margin.right;
               var height = 50 - margin.top - margin.bottom;
+
+              // if not kpi.allowNegative - set everything beneath zero to zero...
+              if(!kpi.allowNegative) {
+                if(bad < 0) {
+                  bad = 0;
+                }
+                if(sufficient < 0) {
+                  sufficient = 0;
+                }
+                if(excellent < 0) {
+                  excellent = 0;
+                }
+                if(asIsValue < 0) {
+                  asIsValue = 0;
+                }
+              }
 
                 element.empty().attr('id', 'm-' + kpi.kpiAlias + '-aggregated-kpi');
 
@@ -418,7 +435,7 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                     });
 
                 var data = [{
-                    title:"KPI values",
+                    title: scope.showAmbition ? "KPI Ambition" : "KPI Value",
                     rangeLabels:['Bad','Excellent'],
                     measureLabels:['Current Inventory'],
                     markerLabels:['Target Inventory']
@@ -449,14 +466,27 @@ angular.module('idss-dashboard').directive('kpiValueOutput', ['$compile', '$time
                       .attr("dy", "1em")
                       .text(function(d) { return d.subtitle; });
 
-
-
             };
 
             scope.$watch('kpi.value', function(newValue, oldValue) {
-              // it needs to render to reset if undefined
+              if(newValue !== oldValue || typeof newValue === 'undefined') {
                 render();
+              }
             });
+
+            if(kpi.value || kpi.value === 0) {
+              render();
+            }
+
+            if(scope.showAmbition) {
+
+              scope.$watch('kpi.ambition', function(newValue, oldValue) {
+                if(newValue !== oldValue || typeof newValue === 'undefined') {
+                  render();
+                }
+              });
+
+            }
 
 
         }

@@ -18,61 +18,68 @@ angular.module( 'idss-dashboard.assess-variants', [])
       authorizedRoles: ['Facilitator', 'Stakeholder']
     },
     resolve:{
-      currentProcess: ['ProcessService', function(ProcessService) {
-        return ProcessService.loadCurrentProcess().then(function(currentProcess) {
-          return currentProcess;
+      activeCase: ['CaseService', function(CaseService) {
+        return CaseService.loadActiveCase().then(function(activeCase) {
+          return activeCase;
         });
       }],
       variants: ['VariantService', function(VariantService) {
-        var v = VariantService.getVariants();
-        if(v) {
-          return v;
-        } else {
-          return VariantService.loadVariants();
-        }
+        return VariantService._loadVariants();
+      }],
+      currentUser: ['LoginService', function(LoginService) {
+        return LoginService.getCurrentUser().then(function(user) {
+          return user;
+        });
       }]
     }
   });
 }])
 
-.controller( 'AssessVariantsController', ['$scope', '$timeout', 'socket', '$stateParams', 'variants', 'currentProcess', 'ModuleService', 'VariantService', '$modal', 'KpiService', '$state', function AssessVariantsController( $scope, $timeout, socket, $stateParams, variants, currentProcess, ModuleService, VariantService, $modal, KpiService, $state ) {
+.controller( 'AssessVariantsController', ['$scope', '$timeout', 'socket', '$stateParams', 'variants', 'activeCase', 'ModuleService', 'VariantService', '$modal', 'KpiService', '$state', 'currentUser', 
+  function AssessVariantsController( $scope, $timeout, socket, $stateParams, variants, activeCase, ModuleService, VariantService, $modal, KpiService, $state, currentUser ) {
 
   var variantId = $stateParams.variantId;
   var currentVariant;
-  var asIsVariant;
+  var kpiList = []; // create immutable version of kpilist due to reference problem when bootstrapping
 
-  $scope.currentProcess = currentProcess;
   $scope.otherVariants = [];
+  $scope.currentUser = currentUser;
   
   _.each(variants, function(variant) {
     if(variant._id === variantId) {
       $scope.currentVariant = currentVariant = variant;
-      $scope.currentVariantName = currentVariant.name;
-    } else if(variant.type === 'as-is') {
-      asIsVariant = variant;
-    } else if(variant.type === 'to-be') {
-      toBeVariant = variant;
     } else {
       $scope.otherVariants.push(variant);
     }
   });
 
   if(currentVariant) {
-    _.each(currentProcess.kpiList, function(kpi) {
+
+    currentVariant.kpiValues = currentVariant.kpiValues || {};
+    currentVariant.kpiDisabled = currentVariant.kpiDisabled || {};
+
+    _.each(activeCase.kpiList, function(kpi) {
       KpiService.removeExtendedData(kpi); // in case data is already extended 
-      kpi.loading = true;
-      kpi.status = 'initializing';
-      KpiService.getKpiRecord(currentVariant._id, kpi.kpiAlias).then(function(record) {
-          angular.extend(kpi, record); 
-          if(kpi.status === 'initializing' || kpi.status === 'processing') {
-            kpi.loading = true;
-          } else {
-            kpi.loading = false;
-          }
-      });
+
+      kpi.value = currentVariant.kpiValues[kpi.kpiAlias];
+      if(kpi.value || kpi.value === 0) {
+        kpi.status = 'success';
+      } else {
+        kpi.status = 'unprocessed';
+      }
+      kpi.disabled = currentVariant.kpiDisabled[kpi.kpiAlias];
+      // add kpi to new array
+      kpiList.push(kpi);
      
     });
-  }
+
+    // replace activeCase kpi list because otherwise this referense will change when 
+    // downloaded again from the server.. yes, I can explain this better, but a refactor would be in place..
+    $scope.activeCase = {
+      kpiList: kpiList
+    };
+
+  } 
 
   $scope.getStatus = function(kpi) {
     if(kpi.status === 'unprocessed') {
@@ -83,12 +90,26 @@ angular.module( 'idss-dashboard.assess-variants', [])
       return 'info';
     } else if(kpi.status === 'success') {
       return 'success';
-    } 
+    } else {
+      return 'primary';
+    }
   };
 
   $scope.goToKpiPage = function(kpi) {
     console.log(kpi);
     $state.transitionTo('kpi', {variantId: currentVariant._id, kpiAlias: kpi.kpiAlias, back: 'assess-variants/' + currentVariant._id});
+  };
+
+  $scope.showAll = false;
+  $scope.toggleHidden = function() {
+    $scope.showAll = !$scope.showAll;
+  };
+  $scope.kpisAreDisabled = function() {
+    if($scope.activeCase) {
+      return _.find($scope.activeCase.kpiList, function(k) {return k.disabled;});
+    } else {
+      return null;
+    }
   };
 
 }]);

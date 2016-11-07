@@ -56,6 +56,11 @@
                     <label for="kpi-excellent-description">Description for excellent (optional):</label>
                     <textarea class="form-control" ng-model="kpi.descriptionExcellent" id="kpi-excellent-description" rows="3"></textarea>
                 </div>
+                <div class="checkbox">
+                    <label>
+                        <input ng-model="kpi.allowNegative" type="checkbox"> Allow negative values
+                    </label>
+                </div>
             </form>
         </div>
         <div class="well">

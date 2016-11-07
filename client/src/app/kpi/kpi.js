@@ -23,16 +23,16 @@ angular.module( 'idss-dashboard.kpi', [])
           return currentUser;
         });
       }],
-      currentProcess: ['ProcessService', function(ProcessService) {
-        return ProcessService.loadCurrentProcess().then(function(currentProcess) {
-          return currentProcess;
+      activeCase: ['CaseService', function(CaseService) {
+        return CaseService.loadActiveCase().then(function(activeCase) {
+          return activeCase;
         });
       }],
-      kpiRecord: ['KpiService', '$stateParams', function(KpiService, $stateParams) {
-        return KpiService.getKpiRecord($stateParams.variantId, $stateParams.kpiAlias, $stateParams.userId);
-      }],
+      // kpiRecord: ['KpiService', '$stateParams', function(KpiService, $stateParams) {
+      //   return KpiService.getKpiRecord($stateParams.variantId, $stateParams.kpiAlias, $stateParams.userId);
+      // }],
       variants: ['VariantService', function(VariantService) {
-        return VariantService.loadVariants().then(function(variants) {
+        return VariantService._loadVariants().then(function(variants) {
           return variants;
         });
       }]
@@ -40,36 +40,70 @@ angular.module( 'idss-dashboard.kpi', [])
   });
 }])
 
-.controller( 'KpiController', ['$scope', 'socket', '$stateParams', '$state', 'kpiRecord', 'currentProcess', 'currentUser', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'ProcessService', 'variants', function KpiController( $scope, socket, $stateParams, $state, kpiRecord, currentProcess, currentUser, ModuleService, $modal, KpiService, VariantService, ProcessService, variants ) {
+.controller( 'KpiController', ['$scope', '$window', '$timeout', 'socket', '$stateParams', '$state', 'activeCase', 'currentUser', 'ModuleService', '$modal', 'KpiService', 'VariantService', 'CaseService', 'variants', 
+  function KpiController( $scope, $window, $timeout, socket, $stateParams, $state, activeCase, currentUser, ModuleService, $modal, KpiService, VariantService, CaseService, variants ) {
 
-  var kpi = _.find(currentProcess.kpiList, function(k) {return k.kpiAlias === $stateParams.kpiAlias;});
+  socket.forward('startModule', $scope);
+  socket.forward('getModules', $scope);
+
+  var kpi = _.find(activeCase.kpiList, function(k) {return k.kpiAlias === $stateParams.kpiAlias;});
   KpiService.removeExtendedData(kpi); // possible old extended data from another view
+  
   $scope.currentUser = currentUser; // current user is loaded again.. otherwise the user is not yet loaded when reloading page.. 
   $stateParams.back = $stateParams.back || 'compare-variants';
-  var backState = $stateParams.back.split('/')[0];
+  
+  var backState = decodeURIComponent($stateParams.back).split('/')[0];
   var selectedModule;
-  if(kpi && kpiRecord) {
-    // extend data
-    angular.extend(kpi, kpiRecord);
-  }
-  kpi.processId = currentProcess._id;
-  if(kpi.status === 'initializing' || kpi.status === 'processing') {
-    kpi.loading = true;
-  }
+  
+  kpi.caseId = activeCase._id;
+
   $scope.stakeholderName = $stateParams.stakeholder || $scope.currentUser.name || $scope.currentUser.fname;
   // if selected module is already loaded in dashboard
+  console.log(kpi);
   if(kpi.selectedModuleId) {
     selectedModule = ModuleService.getModule(kpi.selectedModuleId);
+    console.log(selectedModule);
     if(selectedModule) {
       kpi.selectedModuleName = selectedModule.name;
       kpi.selectedModuleDescription = selectedModule.description;
+      kpi.connectedModuleUrl = selectedModule.connectedModuleUrl;
     }
   }
 
+  var currentVariant = $scope.currentVariant = _.find(variants, function(v) {return v._id === $stateParams.variantId;});
+  // if this is as is kpi
+  if(!currentVariant) {
+    kpi.value = activeCase.kpiValues[kpi.kpiAlias];
+    currentVariant = {
+      name: 'As is'
+    }; 
+    // set any disabled
+    kpi.disabled = activeCase.kpiDisabled[kpi.kpiAlias];
+  } else {
+    currentVariant.kpiValues = currentVariant.kpiValues || {};
+    currentVariant.kpiDisabled = currentVariant.kpiDisabled || {};
+    kpi.value = currentVariant.kpiValues[kpi.kpiAlias];
+    // set any disabled
+    kpi.disabled = currentVariant.kpiDisabled[kpi.kpiAlias];
+  }
+  // set status
+  if(kpi.value || kpi.value === 0) {
+    kpi.status = 'success';
+  } else {
+    kpi.status = 'unprocessed';
+  }
+
+  $scope.currentVariant = currentVariant;
+
   $scope.kpi = kpi;
 
-  var currentVariant = $scope.currentVariant = _.find(variants, function(v) {return v._id === $stateParams.variantId;});
-  var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
+  // socket.emit('getOverallKpiResult', {
+  //   kpiId: kpi.kpiAlias,
+  //   userId: currentUser._id,
+  //   caseId: activeCase._id,
+  //   moduleId: kpi.selectedModuleId,
+  //   variantId: currentVariant._id
+  // });
 
   $scope.getStatus = function(kpi) {
     if(kpi.status === 'unprocessed') {
@@ -80,7 +114,9 @@ angular.module( 'idss-dashboard.kpi', [])
       return 'info';
     } else if(kpi.status === 'success') {
       return 'success';
-    } 
+    } else {
+      return 'primary'; // if module sends no status, display a default color
+    }
   };
 
   $scope.calculateKpi = function(kpi) {
@@ -89,55 +125,25 @@ angular.module( 'idss-dashboard.kpi', [])
 
     socket.emit('startModule', {
       variantId: currentVariant._id, 
-      asIsVariantId: asIsVariant._id, // as is is needed if new alternative - if there is no input, take from as is
       kpiAlias: kpi.kpiAlias, 
       moduleId: kpi.selectedModuleId, 
       status: kpi.status,
       userId: $scope.currentUser._id, // if stakeholder id is sent in params, load data from stakeholder
-      processId: currentProcess._id
+      caseId: activeCase._id
     });
   };
 
-  // listen on any module that was started, for updating loading status
-  socket.on('startModule', function(module) {
-    console.log('start module', module);
-      
-    kpi.status = module.status;
-    if(kpi.status !== 'processing') {
-      kpi.loading = false;
-    }
-  });
+  // $timeout(function() {
+  //     kpi.status = kpi.status === 'initializing' ? 'unprocessed' : kpi.status;
+  //     kpi.loading = false;
+  //   }, 6000);
 
-  // set a new output on a kpi when output data returns
-  socket.on('moduleResult', function(module) {
-    console.log('module result', module);
-
-    // this cancels/overrides any manual output
-    kpi.manual = false;
-    // if status changed/exists, otherwise keep old status
-    kpi.status = module.status || kpi.status;
-      
-    if(kpi.status !== 'processing') {
-      kpi.loading = false;
-    }
-
-    kpi.value = module.value;
-
-  });
-
-  // if this is start page listen directly on socket to update module data
-  socket.on('getModules', function(moduleData) {
-    if(kpi.selectedModuleId === moduleData.moduleId) {
-      kpi.selectedModuleName = moduleData.name;
-      kpi.selectedModuleDescription = moduleData.description;
-    }
-  });
-
+  // not working since introduction of data module, now only looks like it stopped calculation
   $scope.stopCalculation = function(kpi) {
     kpi.status = 'unprocessed';
     kpi.loading = false;
 
-    KpiService.updateKpiRecord(kpi); 
+    //KpiService.updateKpiRecord(kpi); 
 
     //ModuleService.updateModuleOutputStatus(kpi.variantId, kpi.moduleId, kpi.kpiAlias, kpi.status);
 
@@ -172,46 +178,29 @@ angular.module( 'idss-dashboard.kpi', [])
         configuredKpi.status = kpi.status = 'success';
         configuredKpi.loading = kpi.loading = false;
         kpi.value = configuredKpi.value;
-        
-        KpiService.updateKpiRecord(configuredKpi);
-        
-      }, function () {
-        console.log('Modal dismissed at: ' + new Date());
-      });
 
-    };
+        console.log('configuredKpi');
+        console.log(configuredKpi);
 
-  $scope.setModuleInput = function(kpi) {
-
-    var moduleInputModal = $modal.open({
-        templateUrl: '02-collect-data/module-input.tpl.html',
-        controller: 'ModuleInputController',
-        resolve: {
-          kpi: function() {
-            return kpi;
-          },
-          currentVariant: function() {
-            return currentVariant;
-          },
-          asIsVariant: function() {
-            return asIsVariant;
-          },
-          currentProcess: function() {
-            return currentProcess;
-          }
+        // if this kpi belongs to variant
+        if(currentVariant._id) {
+          VariantService.addKpiValue(currentVariant, configuredKpi.kpiAlias, configuredKpi.value);
+        } else { // otherwise this is as is situation
+          CaseService.addKpiValue(configuredKpi.kpiAlias, configuredKpi.value);
         }
-      });
 
-      moduleInputModal.result.then(function (moduleInput) {
-        if(moduleInput) {
-          kpi.inputs = moduleInput.inputs;
-          moduleInput.userId = $scope.currentUser._id; // only facilitator should be able to do this
-          moduleInput.status = 'unprocessed'; // input has changed
-          console.log(moduleInput);
-          kpi.status = 'unprocessed'; // update GUI
-          ModuleService.saveModuleInput(moduleInput);
-        }
-                
+        // socket.emit('setOverallKpiResult', {
+        //   caseId: activeCase._id,
+        //   userId: currentUser._id,
+        //   kpiId: configuredKpi.kpiAlias,
+        //   kpiValue: configuredKpi.value,
+        //   variantId: currentVariant._id
+        // });
+        
+        // TODO: if variant save with variant service 
+        // if as is save with case service
+        //KpiService.addKpiValue(configuredKpi.alias, configuredKpi.value);
+        
       }, function () {
         console.log('Modal dismissed at: ' + new Date());
       });
@@ -234,7 +223,7 @@ angular.module( 'idss-dashboard.kpi', [])
 
     kpiModal.result.then(function (configuredKpi) {
       // add the kpi settings and module spec kpi list in process
-      ProcessService.updateKpiSettings(configuredKpi);
+      CaseService.updateKpiSettings(configuredKpi);
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
     });
@@ -243,12 +232,54 @@ angular.module( 'idss-dashboard.kpi', [])
 
   $scope.disable = function(kpi, state) {
     kpi.disabled = state;
-    KpiService.updateKpiRecord(kpi);
+    // if this kpi belongs to variant
+    if(currentVariant._id) {
+      VariantService.toggleDisabled(currentVariant, kpi);
+    } else { // otherwise this is as is situation
+      CaseService.toggleDisabled(kpi);
+    }
   };
 
   $scope.goBack = function() {
     $state.transitionTo(backState, {variantId: currentVariant._id});
   };
+
+  $scope.openModule = function() {
+    if(kpi.connectedModuleUrl) {
+      console.log(kpi.connectedModuleUrl);
+      $window.open(kpi.connectedModuleUrl + 
+        '/?sessionId=' + 
+        kpi.caseId + 
+        '_' + 
+        kpi.variantId +
+        '_' +
+        $scope.currentUser._id, '_blank');
+    }
+  };
+
+  $scope.$on('socket:startModule', function (ev, module) {
+    console.log(module);
+    kpi.status = module.status;
+    if(kpi.status !== 'processing') {
+      kpi.loading = false;
+    }
+    kpi.info = module.info;
+    if(typeof module.kpiValue == 'number') { //jshint ignore:line
+      kpi.value = module.kpiValue;
+    }
+
+  });
+
+  // in case the page was reloaded we need to listen directly on the get modules message
+  $scope.$on('socket:getModules', function (ev, module) {
+    console.log(module);
+    if(kpi.selectedModuleId === module.moduleId) {
+      kpi.selectedModuleName = module.name;
+      kpi.selectedModuleDescription = module.description;
+      kpi.connectedModuleUrl = module.connectedModuleUrl;
+    }
+
+  });
 
 }]);
 

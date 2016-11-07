@@ -20,21 +20,45 @@ angular.module( 'idss-dashboard.develop-variants', [
       authorizedRoles: ['Facilitator', 'Stakeholder']
     },
     resolve:{
-      variants: ['VariantService', function(VariantService) {
-        var v = VariantService.getVariants();
-        if(v) {
-          return v;
+      currentUser: ['LoginService', function(LoginService) {
+        return LoginService.getCurrentUser().then(function(currentUser) {
+          return currentUser;
+        });
+      }],
+      activeCase: ['CaseService', function(CaseService) {
+        var p = CaseService.getActiveCase();
+        if(p._id) {
+          return p;
         } else {
-          return VariantService.loadVariants();
+          return CaseService.loadActiveCase();
         }
+      }],
+      variants: ['VariantService', function(VariantService) {
+        return VariantService._loadVariants();
       }]
     }
   });
 }])
 
-.controller( 'DevelopVariantsController', ['$scope', 'ProcessService', 'ContextService', '$modal', '$state', 'variants', 'VariantService', function DevelopVariantsController( $scope, ProcessService, ContextService, $modal, $state, variants, VariantService ) {
+.controller( 'DevelopVariantsController', ['$scope', '$window', '$timeout', 'socket', 'currentUser', 'activeCase', 'ContextService', '$modal', '$state', 'variants', 'VariantService', 
+  function DevelopVariantsController( $scope, $window, $timeout, socket, currentUser, activeCase, ContextService, $modal, $state, variants, VariantService ) {
 
-  var asIsVariant = _.find(variants, function(v) {return v.type === 'as-is';});
+  socket.forward('createVariant', $scope);
+  socket.forward('deleteVariant', $scope);
+
+  // set references for selected contexts so that it's selected in the select input
+  $timeout(function() {
+    angular.forEach(variants, function(v) {
+      if(v.selectedContext && v.selectedContext.alias) {
+        v.selectedContext = activeCase.contexts.find(function(c) {
+          return c.alias === v.selectedContext.alias;
+        });
+      }
+    });
+  }, 0);
+
+  $scope.activeCase = activeCase;
+
   $scope.variants = variants;
 
   $scope.addVariant = function() {
@@ -56,6 +80,12 @@ angular.module( 'idss-dashboard.develop-variants', [
 
     variantModal.result.then(function (configuredVariant) {
       VariantService.createVariant(configuredVariant).then(function(createdVariant) {
+        socket.emit('createVariant', {
+          caseId: currentUser.activeCaseId,
+          variantId: createdVariant._id,
+          userId: currentUser._id
+        });
+        //createdVariant.loading = true;
         $scope.variants.push(createdVariant);
       });
     }, function () {
@@ -63,11 +93,93 @@ angular.module( 'idss-dashboard.develop-variants', [
     });
   };
 
-  $scope.deleteVariant = function(variant) {
-    VariantService.deleteVariant(variant).then(function(deletedVariant) {
-      var index = _.indexOf(variants, variant);
-      variants.splice(index, 1);
+  $scope.editVariant = function(variant) {
+    
+    var variantModal = $modal.open({
+        templateUrl: '05-develop-variants/add-variant.tpl.html',
+        controller: 'AddVariantController',
+        resolve: {
+          variant: function() {
+            return variant;
+          }
+        }
     });
+
+    variantModal.result.then(function (configuredVariant) {
+      VariantService.saveVariant(configuredVariant).then(function(savedVariant) {
+        variant.name = savedVariant.name;
+        variant.description = savedVariant.description;
+      });
+    }, function () {
+        console.log('Modal dismissed at: ' + new Date());
+    });
+  };
+
+  $scope.deleteVariant = function(variant) {
+    variant.loading = true;
+    VariantService.deleteVariant(variant).then(function(deletedVariant) {
+      //variant.loading = false;
+      // remove from list
+      var index = _.indexOf($scope.variants, variant);
+      if (index > -1) {
+          $scope.variants.splice(index, 1);
+      }
+      // emit message for delete variant
+      // IMPORTANT: now there is no garantee that the variant is deleted in the database 
+      // this is possible because dashboard should be able to run in stand-alone mode
+      socket.emit('deleteVariant', {
+        caseId: currentUser.activeCaseId,
+        variantId: variant._id,
+        userId: currentUser._id
+      });
+    }); 
+  };
+
+  $scope.updateVariant = function(variant) {
+    variant.loading = true;
+    VariantService.saveVariant(variant).then(function(savedVariant) {
+      console.log(savedVariant);
+      variant.loading = false;
+    });
+  };
+
+  $scope.checkDataModuleStatus = function(variant) {
+
+    variant.loading = true;
+    
+    socket.emit('createVariant', {
+      caseId: activeCase._id,
+      variantId: variant._id,
+      userId: variant.userId,
+      name: variant.name,
+      description: variant.description
+    });  
+      
+  };
+
+  $scope.$on('socket:createVariant', function (ev, data) {
+    var currentVariant = $scope.variants.find(function(v) {return v._id === data.variantId;});
+    if(currentVariant) {
+      currentVariant.loading = false;
+      currentVariant.dataModuleStatus = data.status;
+    }
+  });
+
+  $scope.$on('socket:deleteVariant', function (ev, data) {
+    console.log(data);
+    var variant = _.find($scope.variants, function(c) {
+      return c._id === data.variantId;
+    });
+
+    console.log('fix me: deletion of variants is not garanteed in data module. TODO: some check to see the data module state');
+  });
+
+  $scope.goToDesignModule = function(variant) {
+    $window.open('http://vps17642.public.cloudvps.com/?session=' + activeCase._id + '$' + variant._id + '$' + $scope.currentUser._id);
+  };
+
+  $scope.goToUploadDataModule = function(variant) {
+    $window.open('http://ecodistrict.cstb.fr/?session=' + activeCase._id + '$' + variant._id + '$' + $scope.currentUser._id);
   };
 
 }]);

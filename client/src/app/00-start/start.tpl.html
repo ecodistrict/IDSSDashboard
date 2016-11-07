@@ -1,9 +1,46 @@
 <div class="container">
-    <div class="row">
-        <div class="col-sm-6 col-md-4 col-md-offset-4">
-            <div ng-show="currentUser.role == 'Facilitator'" class="well">
-                <a ng-click="startNewProcess()" class="btn btn-lg btn-success btn-block">Create new process</a>
+    <div ng-if="facilitator" class="row">
+        <div class="col-sm-12 col-md-12">
+
+            <h2>My Cases</h2>
+            <div ng-repeat="case in cases track by $index" id="{{'select-case-' + case._id}}" class="panel panel-default kpi-item" ng-click="loadCase(case)">
+              <div class="panel-heading">
+                <h3 class="panel-title panel-title-margin">{{case.title || 'No title'}} <em ng-show="case.isActive" style="color: #999">(Active)</em></h3>
+                <button id="{{'load-case-' + case.title}}" class="btn btn-xs btn-primary" ng-show="currentCase._id != case._id" ng-click="editCaseData(case);$event.stopPropagation()">
+                  <i class="glyphicon glyphicon-ok"></i> Load
+                </button>
+                <!-- <button ng-show="case.isActive" id="{{'edit-case-' + case.title}}" class="btn btn-xs btn-info" ng-click="editCase(case);$event.stopPropagation()">
+                  <i class="glyphicon glyphicon-edit"></i> 
+                </button> -->
+                <button id="{{'delete-case-' + case.title}}" class="btn btn-xs btn-danger" ng-click="deleteCase(case);$event.stopPropagation()">
+                  <i class="glyphicon glyphicon-trash"></i> Delete
+                </button>
+                <button class="btn btn-xs btn-default" ng-click="checkDataModuleStatus(case);$event.stopPropagation()">
+                  <i class="glyphicon glyphicon-info-sign"></i> Data module status
+                </button>
+                <span ng-show="case.loading" class="glyphicon glyphicon-refresh spin"></span> {{case.dataModuleStatus}}
+                </div>
+              <div class="panel-body">
+                <p><b>Case ID:</b><br> {{case._id}}</p>
+                <p><b>Description:</b><br> {{case.description}}</p>
+              </div>
             </div>
+
+            <button class="btn btn-primary btn-xs pull-right" ng-click="createNewCase()">
+                <span id="add-case-button" class="glyphicon glyphicon-plus"></span> Add new decision process
+            </button>
         </div>
+    </div>
+    <div ng-if="facilitator" class="row">
+        <form role="form">
+          <div class="form-group">
+            <button id="next-button" class="pull-right btn btn-primary" ui-sref="analyse-problem">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
+          </div>
+        </form>
+    </div>
+    <div ng-if="!facilitator" class="row">
+      <div class="well">
+        <p>Welcome! Please set your ambitions on the tab "Set ambitions"</p>
+      </div>
     </div>
 </div>

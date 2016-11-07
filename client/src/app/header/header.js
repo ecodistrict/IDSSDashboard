@@ -2,7 +2,9 @@ angular.module( 'idss-dashboard.header', [
     'idss-dashboard.header.reenterpassword'
 ])
 
-.controller( 'HeaderCtrl', ['$scope', '$location', 'LoginService', '$state', '$rootScope', 'ProcessService', '$modal', 'authService', '$rootScope', function HeaderCtrl( $scope, $location, LoginService, $state, $rootScope, ProcessService, $modal, authService, $rootScope ) {
+.controller( 'HeaderCtrl', ['$scope', '$location', 'LoginService', '$state', '$rootScope', 'CaseService', '$modal', 'authService', '$rootScope', function HeaderCtrl( $scope, $location, LoginService, $state, $rootScope, CaseService, $modal, authService, $rootScope ) {
+
+    // activeCase is on the same scope - used in this view
 
     $scope.logout = function() {
 
@@ -10,7 +12,6 @@ angular.module( 'idss-dashboard.header', [
             $scope.isAuthenticated = LoginService.isAuthenticated();
             $state.reload();
         });
-        
 
     };
 
@@ -21,16 +22,6 @@ angular.module( 'idss-dashboard.header', [
         $scope.highLightInMenu = urlParts[0] === "" ? urlParts[1] : urlParts[0];
 
     });
-
-    $scope.deleteProcess = function() {
-    	ProcessService.deleteCurrentProcess().then(function() {
-    		// when loading a non existing process, a new process is created
-    		ProcessService.createNewProcess().then(function(newProcess) {
-    			$scope.currentProcess = newProcess;
-                $state.transitionTo('start');
-    		});
-    	});
-    };
 
     $scope.loginAsFacilitator = function() {
 
@@ -60,7 +51,6 @@ angular.module( 'idss-dashboard.header', [
         }, function () {
             console.log('Modal dismissed at: ' + new Date());
         });
-            
 
     };
 

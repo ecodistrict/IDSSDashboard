@@ -10,19 +10,19 @@ angular.module('idss-dashboard')
     };
 
     // current process is bootstrapped
-    var loader = $http
-        .get('processes/active')
-        .error(function(status, err) {
-            var label = 'Error when loading active process';
-            NotificationService.createErrorStatus(label);
-        })
-        .then(function (res) {
-            var process = res.data;
-            if(process) {
-                updateProcess(res.data);
-            }
-            return currentProcess;
-        });
+    // var loader = $http
+    //     .get('processes/active')
+    //     .error(function(status, err) {
+    //         var label = 'Error when loading active process';
+    //         NotificationService.createErrorStatus(label);
+    //     })
+    //     .then(function (res) {
+    //         var process = res.data;
+    //         if(process) {
+    //             updateProcess(res.data);
+    //         }
+    //         return currentProcess;
+    //     });
 
 
     // this function is used to set all properties of the process
@@ -37,16 +37,16 @@ angular.module('idss-dashboard')
         currentProcess.description = newProcessData.description;
     };
 
-    var loadCurrentProcess = function() {
-        var deferred;
-        if(currentProcess._id) {
-            deferred = $q.defer();
-            deferred.resolve(currentProcess);
-            return deferred.promise;
-        } else {
-            return loader;
-        }
-    };
+    // var loadCurrentProcess = function() {
+    //     var deferred;
+    //     if(currentProcess._id) {
+    //         deferred = $q.defer();
+    //         deferred.resolve(currentProcess);
+    //         return deferred.promise;
+    //     } else {
+    //         return loader;
+    //     }
+    // };
 
     var saveCurrentProcess = function () {
         return $http
@@ -104,7 +104,6 @@ angular.module('idss-dashboard')
         return currentProcess;
     };
 
-    // used in rare cases like testing to really update the process
     var loadProcess = function(processId) {
         return $http.get('processes/' + processId)
         .error(function(status, err) {
@@ -116,6 +115,16 @@ angular.module('idss-dashboard')
                 updateProcess(res.data);
             }
             return currentProcess;
+        });
+    };
+
+    var getProcesses = function() {
+        return $http.get('processes')
+        .error(function(status, err) {
+            var label = 'Error when loading processes';
+            NotificationService.createErrorStatus(label);
+        }).then(function (res) {
+            return res.data;
         });
     };
 
@@ -168,7 +177,8 @@ angular.module('idss-dashboard')
             kpi.selectedModuleId = newKpiData.selectedModuleId;
             // send request for getting inputs from module and save that in dashboard database
             kpi.processId = currentProcess._id;
-            socket.emit('selectModule', kpi);
+            // remove select module for now
+            // socket.emit('selectModule', kpi);
         } else {
             kpi.selectedModuleId = null;
         }
@@ -225,20 +235,34 @@ angular.module('idss-dashboard')
         });
     };
 
+    var getProcessGeojson = function () {
+        return $http
+            .get('datamodule')
+            .error(function(status, err) {
+                var label = 'Error when getting process data';
+                NotificationService.createErrorStatus(label);
+            })
+            .then(function (res) {
+                return res.data;
+            });
+    };
+
 
     return {
         updateProcess: updateProcess,
-        loadCurrentProcess: loadCurrentProcess,
+        //loadCurrentProcess: loadCurrentProcess,
         saveCurrentProcess: saveCurrentProcess,
         createNewProcess: createNewProcess,
         deleteCurrentProcess: deleteCurrentProcess,
         getCurrentProcess: getCurrentProcess,
         loadProcess: loadProcess,
+        getProcesses: getProcesses,
         addKpi: addKpi,
         updateKpiSettings: updateKpiSettings,
         removeKpi: removeKpi,
         addModuleInputSpecification: addModuleInputSpecification,
         updateSelectedKpi: updateSelectedKpi,
-        resetModuleInput: resetModuleInput
+        resetModuleInput: resetModuleInput,
+        getProcessGeojson: getProcessGeojson
     };
 }]);

@@ -1,29 +1,77 @@
-<div class="container">
-    <div class="row">
-        
-        <h2>Collect Data</h2>
-        <div ng-show="!currentProcess.kpiList.length">No KPIs are used in this process, <a ui-sref="manage-kpis">manage KPIs here</a></div>
-        <div ng-repeat="kpi in currentProcess.kpiList" id="{{'collect-data-' + kpi.kpiAlias}}" class="panel panel-primary module-item">
-          <div class="panel-heading">
-            <h3 class="panel-title">KPI: {{kpi.name}}</h3>
-          </div>
-          <div class="panel-body">
-            <div>
-               <p ng-show="kpi.selectedModuleId">Module used: {{kpi.selectedModuleId}}</p>
-               <p ng-show="!kpi.selectedModuleId && !kpi.qualitative">No module has been selected for this KPI. Select a module on <a ng-click="$event.stopPropagation()" ui-sref="manage-kpis">Select KPIs page</a> or set manual result values for "As is" and all alternatives created.</p>
-               <p ng-show="kpi.selectedModuleId && !kpi.qualitative">Module input has been removed from this page. The reason is that generic process data input will be made here. For now please add input in As is and alternatives respectively.</p>
-               <p ng-show="kpi.qualitative">This is a qualitative KPI, no modules are used. Insert values to this KPI directly under As is, To be and variants respectively.</p>
-            </div>
-          </div>
+<div class="container" id="collect-data-page">
+
+  <div class="row">
+    <h3>Collect data <button class="btn btn-xs btn-primary" ng-click="goToUploadDataModule();$event.stopPropagation()"><i class="glyphicon glyphicon-cog"></i> Upload data</button></h3>
+  </div>
+
+  
+  <div class="panel-group" role="tablist" aria-multiselectable="true">
+    <div ng-show="!currentCase.kpiList.length">No KPIs are used in this process, <a ui-sref="manage-kpis">manage KPIs here</a></div>
+    <div ng-repeat="kpi in currentCase.kpiList" id="{{'collect-data-' + kpi.kpiAlias}}" class="panel panel-primary module-item">
+      <div class="panel-heading">
+        <h3 class="panel-title">KPI: {{kpi.name}}</h3>
+      </div>
+      <div class="panel-body">
+        <div>
+           <p ng-show="kpi.selectedModuleId">Module used: {{kpi.selectedModuleId}}</p>
+           <p ng-show="!kpi.selectedModuleId && !kpi.qualitative">No module has been selected for this KPI. Select a module on <a ng-click="$event.stopPropagation()" ui-sref="manage-kpis">Select KPIs page</a> or set manual result values for "As is" and all alternatives created.</p>
+           <p ng-show="kpi.selectedModuleId && !kpi.qualitative">
+            <button id="{{'collect-data-kpi-' + kpi.alias}}" class="btn btn-xs btn-primary" ng-click="checkInputDataStatus(kpi);$event.stopPropagation()">
+              <span ng-class="(kpi.status == 'success') ? 'glyphicon-check' : 'glyphicon-bell'" class="glyphicon"></span> 
+              Check input status
+            </button>
+            <span ng-show="kpi.loading" class="glyphicon glyphicon-refresh spin"></span>
+          </p>
+           <p ng-show="kpi.info">{{kpi.info}}</p>
+           <p ng-show="kpi.qualitative">This is a qualitative KPI, no modules are used. Insert values to this KPI directly under As is, To be and variants respectively.</p>
         </div>
-        
+      </div>
     </div>
-    <div class="row">
-        <form role="form">
-          <div class="form-group">
-            <button class="btn btn-primary pull-left" ui-sref="define-context"><span class="glyphicon glyphicon-chevron-left"></span> Previous</button>
-            <button class="pull-right btn btn-primary" ui-sref="as-is">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
-          </div>
-        </form>
-    </div>
+  </div>
+    
+  <!-- <div class="row">
+    <h3>Upload file</h3>
+    <input type="file" nv-file-select="" uploader="uploader" />
+    <table ng-show="uploader.queue.length > 0" class="table">
+        <thead>
+            <tr>
+                <th width="50%">Name</th>
+                <th ng-show="uploader.isHTML5">Size</th>
+                <th ng-show="uploader.isHTML5">Progress</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in uploader.queue">
+                <td><strong>{{ item.file.name }}</strong></td>
+                <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                <td ng-show="uploader.isHTML5">
+                    <div class="progress" style="margin-bottom: 0;">
+                        <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                    </div>
+                </td>
+                <td class="text-center">
+                    <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                    <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                    <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+                </td>
+                <td nowrap>
+                    <button id="fileupload-submit-button" type="button" class="btn btn-success btn-xs" ng-click="uploadFile(item)" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                        <span class="glyphicon glyphicon-upload"></span> Upload
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+  </div> -->
+
+  <div class="row">
+      <form role="form">
+        <div class="form-group">
+          <button class="btn btn-primary pull-left" ui-sref="define-context"><span class="glyphicon glyphicon-chevron-left"></span> Previous</button>
+          <button class="pull-right btn btn-primary" ui-sref="as-is">Next <span class="glyphicon glyphicon-chevron-right"></span></button>
+        </div>
+      </form>
+  </div>
 </div>

@@ -16,15 +16,16 @@ var port = process.env.PORT || 3300;
 
 var imb = require('./lib/imb.js');
 
-var imbName, imbConnection, imbFrameworkPub, imbFrameworkSub;
+var imbName, imbConnection, imbFrameworkPub, imbFrameworkSub, dataPub;
 
 // *********** DB MODELS ******** //
 require('./lib/models/user');
-require('./lib/models/process');
+//require('./lib/models/process');
 require('./lib/models/kpi');
 require('./lib/models/variant');
+require('./lib/models/case');
 require('./lib/models/output');
-require('./lib/models/kpiRecord');
+//require('./lib/models/kpiRecord');
 var User = mongoose.model('User'); // needed for passport below
 
 // *********** DB CONNECT ********* //
@@ -117,43 +118,45 @@ passport.deserializeUser(function(email, done) {
 
 // ***** REST API **** //
 var userRepository = require('./lib/user');
-var processRepository = require('./lib/process');
+//var processRepository = require('./lib/process');
+var caseRepository = require('./lib/case');
 var kpiRepository = require('./lib/kpi');
-var kpiRecordRepository = require('./lib/kpiRecord');
+//var kpiRecordRepository = require('./lib/kpiRecord');
 var variantRepository = require('./lib/variant');
-var moduleOutputRepository = require('./lib/moduleOutput');
-var exportFile = require('./lib/export');
-var importFile = require('./lib/import');
+//var moduleOutputRepository = require('./lib/moduleOutput');
+//var dataModule = require('./lib/dataModule');
+//var importFile = require('./lib/import');
 require('./lib/routes/user').addRoutes(app, userRepository, passport);
-require('./lib/routes/process').addRoutes(app, processRepository);
+//require('./lib/routes/process').addRoutes(app, processRepository);
+require('./lib/routes/cases').addRoutes(app, caseRepository);
 require('./lib/routes/kpi').addRoutes(app, kpiRepository);
-require('./lib/routes/kpiRecord').addRoutes(app, kpiRecordRepository);
+//require('./lib/routes/kpiRecord').addRoutes(app, kpiRecordRepository);
 require('./lib/routes/variant').addRoutes(app, variantRepository);
-require('./lib/routes/moduleOutput').addRoutes(app, moduleOutputRepository);
-require('./lib/routes/export').addRoutes(app, exportFile);
-require('./lib/routes/import').addRoutes(app, importFile);
+//require('./lib/routes/moduleOutput').addRoutes(app, moduleOutputRepository);
+//require('./lib/routes/import').addRoutes(app, importFile);
+//require('./lib/routes/dataModule').addRoutes(app, dataModule);
 
-app.get('/selectModule/:moduleId/:kpiAlias/:processId', function(req, res) {
-  console.log(req.params);
-  var kpi = req.params;
-  if(kpi.moduleId) {
-      if(kpi.processId) {
-        var requestObj = { 
-          "type": "request",
-          "method": "selectModule",
-          "variantId": kpi.processId, 
-          "moduleId": kpi.moduleId, // this is called selectedModuleId in process kpi list
-          "kpiId": kpi.kpiAlias
-        };
-        imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
-        res.status(200).json({msg: 'Request for input specification was sent to module ' + kpi.moduleId + ' for KPI ' + kpi.kpiAlias});
-      } else {
-        res.status(200).json({msg: 'No process id for selecting module: ' + kpi.kpiAlias});
-      }
-  } else {
-    res.status(200).json({msg: 'No module id selected for kpi: ' + kpi.kpiAlias});
-  }
-});
+// app.get('/selectModule/:moduleId/:kpiAlias/:processId', function(req, res) {
+//   console.log(req.params);
+//   var kpi = req.params;
+//   if(kpi.moduleId) {
+//       if(kpi.processId) {
+//         var requestObj = { 
+//           "type": "request",
+//           "method": "selectModule",
+//           "variantId": kpi.processId, 
+//           "moduleId": kpi.moduleId, // this is called selectedModuleId in process kpi list
+//           "kpiId": kpi.kpiAlias
+//         };
+//         imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
+//         res.status(200).json({msg: 'Request for input specification was sent to module ' + kpi.moduleId + ' for KPI ' + kpi.kpiAlias});
+//       } else {
+//         res.status(200).json({msg: 'No process id for selecting module: ' + kpi.kpiAlias});
+//       }
+//   } else {
+//     res.status(200).json({msg: 'No module id selected for kpi: ' + kpi.kpiAlias});
+//   }
+// });
 
 app.all('/*', function(req, res) {
   res.sendfile('index.html', { root: distFolder });
@@ -169,11 +172,12 @@ if(process.env.NODE_ENV === 'production') {
   imbName = 'dashboard-test';
 };
 
-imbConnection = new imb.TIMBConnection(imb.imbDefaultHostname, imb.imbDefaultTLSPort, 10, imbName, imb.imbDefaultPrefix, false, 
-    "cert/client-eco-district.pfx", "&8dh48klosaxu90OKH", "cert/root-ca-imb.crt");
+imbConnection = new imb.TIMBConnection(imb.imbDefaultHostname, 443, 10, imbName, imb.imbDefaultPrefix, false, 
+    "cert/client-eco-district.pfx", "&8dh48klosaxu90OKH", "cert/client-eco-district.crt");
 
 // imbConnection = new imb.TIMBConnection('cstb-temp', imb.imbDefaultTLSPort, 10, imbName, imb.imbDefaultPrefix, false, 
 //     "cert/client-eco-district.pfx", "&8dh48klosaxu90OKH", "cert/root-ca-imb.crt");
+
 
 if(process.env.NODE_ENV === 'production') {
   console.log('run in production');
@@ -185,13 +189,8 @@ if(process.env.NODE_ENV === 'production') {
   imbFrameworkSub = imbConnection.subscribe("dashboardTEST");
 };
 
-imbConnection.on("onUniqueClientID", function (aUniqueClientID, aHubID) {
-  console.log('private event name: ' + imbConnection.privateEventName);
-  console.log('monitor event name: ' + imbConnection.monitorEventName);
-});
-
 imbConnection.on("onDisconnect", function (obj) {
-  console.log("disonnected");
+  console.log("disconnected. kill process");
   process.exit();
 });
 
@@ -208,24 +207,8 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     console.error(err.stack);
   });
 
-  dashboardWebClientSocket.on('privateRoom', function(data) {
-    dashboardWebClientSocket.join(data.userId);
-  });
-
-  // get requests from client
-  dashboardWebClientSocket.on('message', function(method){
-
-    switch(method) {
-
-      case 'test':
-
-        break;
-
-      default:
-
-        console.log('client send was not handled');
-    }
-
+  dashboardWebClientSocket.on('privateRoom', function(user) {
+    dashboardWebClientSocket.join(user._id);
   });
 
   dashboardWebClientSocket.on('getModules', function(kpiList) {
@@ -233,72 +216,274 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
     console.log('From dashboard client: ' + method);
 
     var requestObj = {
-      "type": "request",
-      "method": method,
-      "parameters": {
-        "kpiList": kpiList //Kpi list is not used, it's meant for getModules for certain KPIs, like query
+      type: "request",
+      method: method,
+      parameters: {
+        kpiList: kpiList //Kpi list is not used, it's meant for getModules for certain KPIs, like query
       }
     }
     imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
   });
 
-  dashboardWebClientSocket.on('selectModule', function(kpi) {
-    var method = 'selectModule';
-    console.log('From dashboard client: ' + method + ', moduleId: ' + kpi.selectedModuleId);
-    if(kpi.selectedModuleId) {
-      if(kpi.processId) {
-        var requestObj = { 
-          "type": "request",
-          "method": "selectModule",
-          "variantId": kpi.processId, // TODO: change this property name to processId
-          "moduleId": kpi.selectedModuleId,
-          "kpiId": kpi.kpiAlias
-        };
-        imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
-      } else {
-        console.log('no process id for selecting module: ' + kpi.kpiAlias);
-      }
-    } else {
-      console.log('no model selected for kpi: ' + kpi.kpiAlias);
+  dashboardWebClientSocket.on('initModule', function(message) {
+    var method = 'initModule';
+    console.log('From dashboard client: ' + method);
+
+    var requestObj = {
+      type: "request",
+      method: method,
+      caseId: message.caseId,
+      userId: message.userId
     }
+    imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
   });
 
-  dashboardWebClientSocket.on('startModule', function(module) {
-    kpiRecordRepository.getModuleInputFramework(module, function(err, moduleInput) {
-      if(err) {
-        dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
-      } else {
+  // DATA PUB MESSAGE
+  dashboardWebClientSocket.on('createCase', function(caseData) {
+    var method = 'createCase';
+    console.log('From dashboard client: ' + method);
 
-        kpiRecordRepository.saveKpiRecordStatus(module, function(err) {
-          if(err) {
-            dashboardWebClientSocket.emit("frameworkError", JSON.stringify(err));
-          } else {
-            var method = 'startModule';
-            console.log('From dashboard client: ' + method + ' data: ' + module);
-            var requestObj = {
-              "type": "request",
-              "method": method,
-              "userId": module.userId,
-              "moduleId": module.moduleId,
-              "variantId": module.variantId,
-              "kpiId": module.kpiAlias,
-              "inputs": moduleInput.inputs
-            };
-            imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
-          }
-        });
-      }
-    });
+    var requestObj = {
+      eventId: dataEventId,
+      type: "request",
+      method: method,
+      caseId: caseData.caseId,
+      userId: caseData.userId,
+      title: caseData.title,
+      description: caseData.description
+    }
+    dataPub.signalString(JSON.stringify(requestObj).toString());
+  });
+
+// DATA PUB MESSAGE
+  dashboardWebClientSocket.on('deleteCase', function(caseData) {
+    var method = 'deleteCase';
+    console.log('From dashboard client: ' + method);
+    console.log(caseData);
+
+    var requestObj = {
+      eventId: dataEventId,
+      type: "request",
+      method: method,
+      caseId: caseData.caseId,
+      userId: caseData.userId
+    }
+    dataPub.signalString(JSON.stringify(requestObj).toString());
+  });
+
+// DATA PUB MESSAGE
+  dashboardWebClientSocket.on('createVariant', function(variantData) {
+    var method = 'createVariant';
+    console.log('From dashboard client: ' + method);
+
+    var requestObj = {
+      eventId: dataEventId,
+      type: "request",
+      method: method,
+      caseId: variantData.caseId,
+      variantId: variantData.variantId,
+      userId: variantData.userId,
+      name: variantData.name,
+      description: variantData.description
+    }
+    dataPub.signalString(JSON.stringify(requestObj).toString());
+  });
+
+// DATA PUB MESSAGE
+  dashboardWebClientSocket.on('deleteVariant', function(variantData) {
+    var method = 'deleteVariant';
+    console.log('From dashboard client: ' + method);
+
+    var requestObj = {
+      eventId: dataEventId,
+      type: "request",
+      method: method,
+      caseId: variantData.caseId,
+      variantId: variantData.variantId,
+      userId: variantData.userId
+    }
+    dataPub.signalString(JSON.stringify(requestObj).toString());
+  });
+
+// DATA PUB MESSAGE
+  dashboardWebClientSocket.on('getKpiResult', function(kpi) {
+    var method = 'getKpiResult';
+    console.log('From dashboard client: ' + method);
+
+    var requestObj = {
+      eventId: dataEventId,
+      type: "request",
+      method: method,
+      caseId: kpi.caseId,
+      variantId: kpi.variantId,
+      moduleId: kpi.moduleId,
+      userId: kpi.userId,
+      kpiId: kpi.kpiId
+    };
+
+    if(kpi.facilitatorId) {
+      requestObj.facilitatorId = kpi.facilitatorId;
+    }
+
+    dataPub.signalString(JSON.stringify(requestObj).toString());
+  });
+
+  // DATA PUB MESSAGE
+  dashboardWebClientSocket.on('getGeoJson', function(message) {
+    var method = 'getGeoJson';
+    console.log('From dashboard client: ' + method);
+
+    // var requestObj = {
+    //   eventId: dataEventId,
+    //   type: "request",
+    //   method: method,
+    //   caseId:message.caseId,
+    //   variantId:message.variantId,
+    //   userId:message.userId
+    // };
+
+    var requestObj = {
+      eventId: dataEventId,
+      variantId: 'lcalccalt4b',
+      caseId: 'hovsjo',
+      userId: 'cstb',
+      method: 'getGeoJson',
+      element_type_filter: 'building',
+      type: 'request'
+    };
+
+    dataPub.signalString(JSON.stringify(requestObj).toString());
+  });
+
+  // dashboardWebClientSocket.on('setKpiResult', function(kpi) {
+  //   var method = 'setKpiResult';
+  //   console.log('From dashboard client: ' + method);
+
+  //   var requestObj = {
+  //     type: "request",
+  //     method: method,
+  //     caseId: kpi.caseId,
+  //     variantId: kpi.variantId,
+  //     userId: kpi.userId,
+  //     kpiId: kpi.kpiId,
+  //     kpiValue: kpi.kpiValue
+  //   };
+
+  //   imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
+  // });
+
+  // dashboardWebClientSocket.on('getCases', function(user) {
+
+  //   console.log(user);
+
+  //   var method = 'getCases';
+  //   console.log('From dashboard client: ' + method);
+
+  //   caseRepository.getCases(user._id, function(err, cases) {
+
+  //     if(err) {
+  //       console.log(err);
+  //       return io.to(user._id).emit('dashboardError', {message: 'Could not get cases'});
+  //     }
+
+  //     console.log('sending cases to client: ' + user._id);
+
+  //     io.to(user._id).emit('getCases', cases);
+
+  //   });
+
+  // });
+
+  // dashboardWebClientSocket.on('getActiveCase', function(user) {
+
+  //   var method = 'getActiveCase';
+  //   console.log('From dashboard client: ' + method);
+
+  //   caseRepository.getActiveCase(user._id, function(err, currentCase) {
+
+  //     if(err) {
+  //       console.log(err);
+  //       return io.to(user._id).emit('dashboardError', {message: 'Could not get current case'});
+  //     }
+
+  //     io.to(user._id).emit('getActiveCase', currentCase);
+
+  //   });
+
+  // });
+
+  // dashboardWebClientSocket.on('createCase', function(user) {
+  //   var requestObj, 
+  //       method = 'createCase';
+
+  //   console.log('From dashboard client: ' + method);
+
+  //   if(!user._id) {
+  //     console.log('No user id was provided');
+  //     return io.to(user._id).emit('dashboardError', {message: 'Internal error: User id is was not provided'});
+  //   }
+
+  //   caseRepository.createCase(user._id, function(err, caseData) {
+  //     if(err) {
+  //       console.log('error creating case: ', err);
+  //       return io.to(user._id).emit('dashboardError', {message: 'Error creating case in dashboard'});
+  //     }
+  //     requestObj = {
+  //       type: 'request',
+  //       method: method,
+  //       userId: user._id,
+  //       caseId: caseData._id
+  //     };
+      
+  //     imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
+      
+  //   });
+    
+  // });
+
+  // dashboardWebClientSocket.on('deleteCase', function(caseData) {
+  //   var requestObj, 
+  //       method = 'deleteCase';
+
+  //   console.log('From dashboard client: ' + method);
+
+  //   if(caseData._id) {
+  //     requestObj = {
+  //       type: 'request',
+  //       method: method,
+  //       caseId: caseData._id,
+  //     };
+  //     imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
+  //   } else {
+  //     console.log('No case id sent');
+  //   }
+  // });
+
+  dashboardWebClientSocket.on('startModule', function(module) {
+    var method = 'startModule';
+    console.log('From dashboard client: ' + method + ' data: ' + module);
+    var requestObj = {
+      "type": "request",
+      "method": method,
+      "userId": module.userId,
+      "moduleId": module.moduleId,
+      "caseId": module.caseId,
+      "variantId": module.variantId,
+      "kpiId": module.kpiAlias
+    };
+    imbFrameworkPub.signalString(JSON.stringify(requestObj).toString());
   });
 
   dashboardWebClientSocket.on('mcmsmv', function(module) {
     
     var method = 'mcmsmv';
     console.log('From dashboard client: ' + method + ' data: ' + module);
+    console.log(module.caseId);
     var requestObj = {
       "type": "request",
       "method": method,
       "kpiId": module.kpiId,
+      "caseId": module.caseId,
       "inputs": module.variants,
       "userId": module.userId
     };
@@ -309,61 +494,181 @@ io.sockets.on('connection', function(dashboardWebClientSocket) {
   imbFrameworkSub.onString = function (aEventEntry, aString) {
     
     try {
-      var message = JSON.parse(aString);
+      var message = JSON.parse(aString),
+          method = message.method;
 
       console.log('From framework: ' + message.method);
-      if(message.method === 'getModules') {
-        dashboardWebClientSocket.emit(message.method, message);
-      } else if(message.method === 'selectModule') {
-        dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
-        message.processId = message.variantId; // TODO: workaround, this will change after property name is changed to processId
-        processRepository.addInputSpecification(message, function(err, model) {
-          if(err) {
-            console.log(err);
-            io.to(err.userId).emit("frameworkError", JSON.stringify(err));
-          } else {
-            io.to(model.userId).emit(message.method, model);
+
+      switch(method) {
+        // getModules is broadcasted
+        case 'getModules': 
+          dashboardWebClientSocket.emit(message.method, message);
+          break;
+        // this is API - sent back to framework only
+        case 'getCase':
+          var responseMessage = {
+            caseId: message.caseId,
+            moduleId: message.moduleId,
+            userId: message.userId,
+            method: 'getCase',
+            type: 'response'
           }
-        });
-      } else if(message.method === 'startModule') {
-        console.log('startmodule from modules');
-        dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
-        kpiRecordRepository.saveKpiRecordStatus(message, function(err, success) {
-          if(err) {
-            console.log(err);
-            io.to(err.userId).emit("frameworkError", JSON.stringify(err));
+          if(!responseMessage.caseId || !responseMessage.userId) {
+            responseMessage.error = 'Params missing, check userId or caseId';
+            responseMessage.status = 422;
+            imbFrameworkPub.signalString(JSON.stringify(responseMessage).toString());
           } else {
-            io.to(success.userId).emit(message.method, message);
-          }
-        });
-        
-      } else if(message.method === 'moduleResult') {
-        console.log('moduleresult from modules');
-        dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
-        moduleOutputRepository.addModuleResult(message, function(err, model) {
-          if(err) {
-            console.log(err);
-            io.to(err.userId).emit("frameworkError", JSON.stringify(err));
-          } else {
-            kpiRecordRepository.saveKpiRecordFromModuleResult(message, function(err, kpiRecord) {
+            caseRepository._getCaseById(message.caseId, message.userId, function(err, foundCase) {
               if(err) {
-                console.log(err);
-                io.to(err.userId).emit("frameworkError", JSON.stringify(err));
+                responseMessage.error = 'Error retrieving data, check that userId or caseId are correct for this case';
+                responseMessage.status = 500;
+              } else if(!foundCase) {
+                responseMessage.error = 'No case was found';
+                responseMessage.status = 404;
               } else {
-                io.to(kpiRecord.userId).emit(message.method, kpiRecord);
+                responseMessage.caseData = foundCase;
+                responseMessage.status = 200;
               }
+              imbFrameworkPub.signalString(JSON.stringify(responseMessage).toString());
             });
           }
-        });
-      } else if(message.method === 'mcmsmv') {
-        dashboardWebClientSocket.emit("frameworkActivity", JSON.stringify({message: 'Module ' + message.moduleId + ' sent ' + message.method}));
-        io.to(message.userId).emit(message.method, message);
+          break;
+        // this is API - sent back to framework only
+        case 'getCases':
+          var responseMessage = {
+            userId: message.userId,
+            moduleId: message.moduleId,
+            method: 'getCases',
+            type: 'response'
+          }
+          if(!responseMessage.userId) {
+            responseMessage.error = 'Params missing, check userId';
+            responseMessage.status = 422;
+            imbFrameworkPub.signalString(JSON.stringify(responseMessage).toString());
+          } else {
+            caseRepository._getCases(message.userId, function(err, foundCases) {
+              if(err) {
+                responseMessage.error = 'Error retrieving data, check that userId is correct';
+                responseMessage.status = 500;
+              } else {
+                responseMessage.cases = foundCases;
+                responseMessage.status = 200;
+              }
+              imbFrameworkPub.signalString(JSON.stringify(responseMessage).toString());
+            });
+          }
+          break;
+        // this is API - sent back to framework only
+        case 'getVariants':
+          var responseMessage = {
+            userId: message.userId,
+            moduleId: message.moduleId,
+            caseId: message.caseId,
+            method: 'getVariants',
+            type: 'response'
+          }
+          if(!responseMessage.userId || !responseMessage.caseId) {
+            responseMessage.error = 'Params missing, check userId or caseId';
+            responseMessage.status = 422;
+            imbFrameworkPub.signalString(JSON.stringify(responseMessage).toString());
+          } else {
+            variantRepository._getVariants(message.userId, message.caseId, function(err, foundVariants) {
+              if(err) {
+                responseMessage.error = 'Error retrieving data, check that userId, caseId is correct';
+                responseMessage.status = 500;
+              } else {
+                responseMessage.variants = foundVariants;
+                responseMessage.status = 200;
+              }
+              imbFrameworkPub.signalString(JSON.stringify(responseMessage).toString());
+            });
+          }
+          break;
+        // this is API - sent back to framework only
+        case 'getUser':
+          var responseMessage = {
+            userId: message.userId,
+            moduleId: message.moduleId,
+            method: 'getUser',
+            type: 'response'
+          }
+          if(!responseMessage.userId) {
+            responseMessage.error = 'Params missing, check userId';
+            responseMessage.status = 422;
+            imbFrameworkPub.signalString(JSON.stringify(responseMessage).toString());
+          } else {
+            userRepository._getUser(message.userId, function(err, foundUser) {
+              if(err) {
+                responseMessage.error = 'Error retrieving data, check that userId is correct';
+                responseMessage.status = 500;
+              } else {
+                responseMessage.user = foundUser;
+                responseMessage.status = 200;
+              }
+              imbFrameworkPub.signalString(JSON.stringify(responseMessage).toString());
+            });
+          }
+          break;
+        // startmodule must save any kpiValue to db
+        case 'startModule':
+          if((message.kpiValue || message.kpiValue === 0) && message.userId) {
+            // if variantId does not exists, this is the as is situation
+            if(!message.variantId && message.caseId) {
+              caseRepository.updateKpiValue(message.userId, message.caseId, message, function(err, modifiedCase) {
+                if(err) {
+                  console.log(err);
+                } else {
+                  console.log('updated kpi value on as is', message);
+                }
+              });
+            } else if(message.variantId && message.caseId) {
+              variantRepository.updateKpiValue(message.userId, message.variantId, message, function(err, modifiedVariant) {
+                if(err) {
+                  console.log(err);
+                } else {
+                  console.log('updated kpi value on variant', message);
+                }
+              });
+            }
+            
+          } 
+          // Note: no break, the message goes on to default..
+        default:
+          if(message.userId) {
+            console.log('send to dashboard client');
+            console.log(message);
+            io.to(message.userId).emit(message.method, message);
+          } else {
+            console.log('user id was not set');
+          }
+          break;
       }
+      
     } catch(e) {
-      console.log('Error when parsing the JSON string:');
+      console.log('Error when receiving message from modules sub:');
       console.log(aString);
     }
   };
+
+  dataSub.onString = function(aEventEntry, aString) {
+    try {
+      var message = JSON.parse(aString),
+          method = message.method;
+
+      console.log('From data module: ' + message.method);
+
+      if(message.userId) {
+        console.log('send to dashboard client');
+        console.log(message);
+        io.to(message.userId).emit(message.method, message);
+      } else {
+        console.log('user id was not set');
+      }
+    } catch(e) {
+      console.log('Error when receiving message from data sub:');
+      console.log(aString);
+    }
+  }
 
 });
 

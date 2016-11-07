@@ -14,12 +14,12 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
       }
     },
     resolve:{
-      process: ['ProcessService', function(ProcessService) {
-        var p = ProcessService.getCurrentProcess();
+      activeCase: ['CaseService', function(CaseService) {
+        var p = CaseService.getActiveCase();
         if(p._id) {
           return p;
         } else {
-          return ProcessService.loadCurrentProcess();
+          return CaseService.loadActiveCase();
         }
       }]
     }, 
@@ -30,7 +30,9 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
   });
 }])
 
-.controller( 'ManageKpisCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', 'ModuleService', 'VariantService', 'process', function ManageKpisCtrl( $scope, KpiService, ProcessService, $modal, ModuleService, VariantService, process) {
+.controller( 'ManageKpisCtrl', ['$scope', 'KpiService', 'CaseService', '$modal', 'ModuleService', 'VariantService', 'activeCase', function ManageKpisCtrl( $scope, KpiService, CaseService, $modal, ModuleService, VariantService, activeCase) {
+
+  $scope.currentCase = activeCase;
 
   // Kpi database  
   $scope.kpiList = [];
@@ -55,8 +57,8 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
       // add copy of this KPI to the process
       useKpi = angular.copy(useKpi);
       // make sure that the user id is the current user not the one that created the kpi
-      useKpi.userId = process.userId;
-      ProcessService.addKpi(useKpi); 
+      useKpi.userId = activeCase.userId;
+      CaseService.addKpi(useKpi); 
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
     });
@@ -65,7 +67,7 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
 
   $scope.useKpiQuick = function(useKpi) {
     // add copy of this KPI to as is variant
-      ProcessService.addKpi(angular.copy(useKpi));
+      CaseService.addKpi(angular.copy(useKpi));
   };
 
   // Add KPI to KPI repository
@@ -101,8 +103,8 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
         kpiToEdit.unit = kpiToAdd.unit;
         kpiToEdit.official = kpiToAdd.official;
 
-        if(kpiToAdd.updateSettings && kpiToAdd.updateSettings.updateForThisProcess) {
-          ProcessService.updateSelectedKpi(kpiToEdit);
+        if(kpiToAdd.updateSettings && kpiToAdd.updateSettings.updateForThisCase) {
+          CaseService.updateSelectedKpi(kpiToEdit);
         }
       } else {
         KpiService.createKpi(kpiToAdd).then(function(kpi) {
@@ -141,7 +143,7 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
 
     kpiModal.result.then(function (configuredKpi) {
       // add the kpi settings and module spec kpi list in process
-      ProcessService.updateKpiSettings(configuredKpi);
+      CaseService.updateKpiSettings(configuredKpi);
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
     });
@@ -150,7 +152,7 @@ angular.module( 'idss-dashboard.analyse-problem.manage-kpis', [])
 
   // TODO: this is an indicator whether the KPI is ok or not 
   $scope.kpiIsConfigured = function(kpi) {
-    return (kpi.excellent || kpi.excellent === 0) && (kpi.bad || kpi.bad === 0);
+    return (kpi.excellent || kpi.excellent === 0) && (kpi.sufficient || kpi.sufficient === 0);
   };
 
 }]);

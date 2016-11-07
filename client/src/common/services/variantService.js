@@ -40,6 +40,19 @@ angular.module('idss-dashboard')
             });
     };
 
+    var _loadVariants = function () {
+        return $http
+            .get('variants')
+            .error(function(status, data) {
+                var label = 'Error when loading variants';
+                NotificationService.createErrorFlash(label);
+            })
+            .then(function (res) {
+                variants = res.data;
+                return variants;
+            });
+    };
+
     var loadVariantsByProcessId = function () {
         return $http
             .get('variants/processid')
@@ -83,6 +96,29 @@ angular.module('idss-dashboard')
             });
     };
 
+    // kpi values stored on variants
+    var addKpiValue = function(variant, kpiId, kpiValue) {
+        variant.kpiValues = variant.kpiValues || {};
+        variant.kpiValues[kpiId] = kpiValue;
+        return saveVariant(variant).then(function(v) {
+            NotificationService.createSuccessFlash('KPI value was added');
+            return v;
+        });
+    };   
+
+    // kpi disabled for the variant
+    var toggleDisabled = function(variant, kpi) {
+        variant.kpiDisabled = variant.kpiDisabled || {}; // should not be needed..
+        if(variant.kpiDisabled[kpi.kpiAlias]) {
+            variant.kpiDisabled[kpi.kpiAlias] = false;
+        } else {
+            variant.kpiDisabled[kpi.kpiAlias] = true;
+        }
+        return saveVariant(variant).then(function(c) {
+            NotificationService.createSuccessFlash('KPI settings changed');
+        });
+    };
+
     var deleteVariant = function(variantToDelete) {
         return $http
             .delete('variants/' + variantToDelete._id)
@@ -91,6 +127,10 @@ angular.module('idss-dashboard')
                 NotificationService.createErrorFlash(label);
             })
             .then(function (res) {
+                
+                var index = _.indexOf(variants, variantToDelete);
+                variants.splice(index, 1);
+
                 var variant = res.data;
                 var label = 'Variant ' + variant.name + ' was successfully deleted';
                 NotificationService.createSuccessFlash(label);
@@ -163,12 +203,15 @@ angular.module('idss-dashboard')
 
     return {
         loadVariants: loadVariants,
+        _loadVariants: _loadVariants, // caching problem when adding several cases...
         loadVariant: loadVariant,
         createVariant: createVariant,
         getVariants: getVariants,
         loadVariantsByProcessId: loadVariantsByProcessId,
         deleteVariant: deleteVariant,
         saveVariant: saveVariant,
+        addKpiValue: addKpiValue,
+        toggleDisabled: toggleDisabled
         //addOrRemoveKpis: addOrRemoveKpis,
         //addOrRemoveVariants: addOrRemoveVariants
     };

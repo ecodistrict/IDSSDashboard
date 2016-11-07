@@ -18,13 +18,23 @@ angular.module( 'idss-dashboard.collect-data', [
       }
     },
     resolve:{
-      currentProcess: ['ProcessService', function(ProcessService) {
-        var p = ProcessService.getCurrentProcess();
+      currentCase: ['CaseService', function(CaseService) {
+        var p = CaseService.getActiveCase();
         if(p._id) {
           return p;
         } else {
-          return ProcessService.loadCurrentProcess();
+          return CaseService.loadActiveCase();
         }
+      }],
+      variants: ['VariantService', function(VariantService) {
+        return VariantService.loadVariants().then(function(variants) {
+          return variants;
+        });
+      }],
+      currentUser: ['LoginService', function(LoginService) {
+        return LoginService.getCurrentUser().then(function(user) {
+          return user;
+        });
       }]
     }, 
     data:{ 
@@ -34,12 +44,76 @@ angular.module( 'idss-dashboard.collect-data', [
   });
 }])
 
-.controller( 'CollectDataCtrl', ['$scope', 'KpiService', 'ProcessService', '$modal', 'currentProcess', 'ModuleService', function CollectDataCtrl( $scope, KpiService, ProcessService, $modal, currentProcess, ModuleService ) {
+.controller( 'CollectDataCtrl', ['$scope', '$window', 'KpiService', 'CaseService', '$modal', 'currentCase', 'ModuleService', 'FileUploader', 'socket', 'variants', 'currentUser', 
+  function CollectDataCtrl( $scope, $window, KpiService, CaseService, $modal, currentCase, ModuleService, FileUploader, socket, variants, currentUser) {
 
-  $scope.currentProcess = currentProcess;
+  $scope.currentCase = currentCase;
+
+  socket.forward('startModule', $scope);
+
+  // upload is disabled 
+
+  // var uploader = $scope.uploader = new FileUploader({
+  //     url: 'import/geojson'
+  // });
+
+  // $scope.uploadFile = function(item) {
+  //     item.upload();
+  // };
+
+  // uploader.onSuccessItem = function(item, response, status, headers) {
+  //     console.info('Success');
+  //     $scope.dataSource = response.data; // this triggers update in other directives that listens on input (geojson for ex)
+  // };
+
+  // uploader.onErrorItem = function(item, response, status, headers) {};
+
+  // uploader.onCancelItem = function(item, response, status, headers) {};
 
   // TODO: create modal to upload files to process, this data is used for every module
 
+  $scope.checkInputDataStatus = function(kpi) {
+    console.log(kpi);
+    kpi.status = 'connecting';
+    kpi.loading = true;
+
+    socket.emit('startModule', {
+      caseId: currentCase._id,
+      kpiAlias: kpi.kpiAlias, 
+      moduleId: kpi.selectedModuleId, 
+      status: kpi.status,
+      userId: currentUser._id, // if stakeholder id is sent in params, load data from stakeholder
+      processId: currentCase._id
+    });
+  };  
+
+  $scope.selectMap = function() {
+    $scope.trig = !$scope.trig;
+  };
+
+  $scope.goToUploadDataModule = function() {
+    $window.open('http://ecodistrict.cstb.fr/?session=' + $scope.currentCase._id + '$undefined$' + $scope.currentUser._id);
+  };
+
+  $scope.$on('socket:startModule', function (ev, module) {
+    var kpi = _.find(currentCase.kpiList, function(k) {
+      console.log(k);
+      return (k.selectedModuleId === module.moduleId && k.kpiAlias === module.kpiId);
+    });
+
+    console.log(kpi);
+
+    if(kpi) {
+
+      kpi.status = module.status;
+      if(kpi.status !== 'processing') {
+        kpi.loading = false;
+      }
+      kpi.info = module.info;
+
+    }
+
+  });
 
 }]);
 

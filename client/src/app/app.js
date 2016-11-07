@@ -25,7 +25,9 @@ angular.module( 'idss-dashboard', [
   'idss-dashboard.qualitative-kpi-input',
   'idss-dashboard.quantitative-kpi-input',
   'idss-dashboard.kpi-weight',
-  'idss-dashboard.kpi'
+  'idss-dashboard.kpi',
+  'idss-dashboard.kpi-map',
+  'idss-dashboard.file-connection'
 ])
 
 .constant('AUTH_EVENTS', {
@@ -48,43 +50,61 @@ angular.module( 'idss-dashboard', [
     flashProvider.errorClassnames.push('alert-danger');
 }])
 
-.controller( 'AppCtrl', [ '$scope', '$rootScope', '$location', 'USER_ROLES', 'authService', 'LoginService', 'ProcessService', 'socket', 'ModuleService', '$state', 'VariantService', 'NotificationService', function AppCtrl ( $scope, $rootScope, $location, USER_ROLES, authService, LoginService, ProcessService, socket, ModuleService, $state, VariantService, NotificationService) {
+.controller( 'AppCtrl', [ '$scope', '$rootScope', '$location', 'USER_ROLES', 'authService', 'LoginService', 'CaseService', 'socket', 'ModuleService', '$state', 'VariantService', 'NotificationService', function AppCtrl ( $scope, $rootScope, $location, USER_ROLES, authService, LoginService, CaseService, socket, ModuleService, $state, VariantService, NotificationService) {
 
     var init = function(user) {
       $scope.isAuthenticated = LoginService.isAuthenticated();
       $scope.currentUser = user;
-      // while waiting for current process to load use the default empty process from process service
-      $scope.currentProcess = ProcessService.getCurrentProcess();
+      // while waiting for current case to load use the default empty case from case service
+      $scope.activeCase = CaseService.getActiveCase();
 
-      // load current process
-      ProcessService.loadCurrentProcess().then(function(currentProcess) {
-        $scope.currentProcess = currentProcess;
-        VariantService.loadVariants().then(function(variants) {
-          $scope.variants = variants;
+      if(user.activeCaseId) {
+        CaseService.loadCase(user.activeCaseId).then(function(activeCase) {
+          $scope.activeCase = activeCase;
+          VariantService.loadVariants().then(function(variants) {
+            $scope.variants = variants;
+            socket.emit('initModule', {
+              caseId: activeCase._id,
+              userId: user._id
+            });
+          });
         });
-      });
+      }
+
+      // load current case
+      // CaseService.loadActiveCase().then(function(activeCase) {
+      //   $scope.activeCase = activeCase;
+      //   VariantService.loadVariants().then(function(variants) {
+      //     $scope.variants = variants;
+      //   });
+      // });
+  
+      socket.emit('privateRoom', $scope.currentUser);
 
       socket.emit('getModules', {kpiList: []});
 
-      socket.emit('privateRoom', {userId: user._id});
-    
       socket.on('getModules', function(moduleData) {
         console.log(moduleData);
+        // add module to catalog
         ModuleService.addModule(moduleData);
+        // extend kpi data with module data if needed
+        var kpi = _.find($scope.activeCase.kpiList, function(k) {
+          return k.selectedModuleId === moduleData.moduleId;
+        });
+        if(kpi) {
+          kpi.selectedModuleName = moduleData.name;
+          kpi.selectedModuleDescription = moduleData.description;
+        }
       });
-
-      // should this be a global listener?
-      socket.on('selectModule', function(moduleInput) {
-        console.log('module input spec was added to dashboard server: ', moduleInput);
-        // needs to be added so that dashboard does not needs to be reloaded
-        ProcessService.addModuleInputSpecification(moduleInput);
-      });
-
+      
       socket.on('frameworkError', function(err) {
-        console.log('Error from server: ' + err);
-        messageObject = JSON.parse(err);
-        var label = messageObject.message;
-        NotificationService.createErrorFlash(label);
+        console.log('Error from server (framework): ' + err.message);
+        NotificationService.createErrorFlash(err.message);
+      });
+
+      socket.on('dashboardError', function(err) {
+        console.log('Error from server (dashboard): ' + err.message);
+        NotificationService.createErrorFlash(err.message);
       });
 
       socket.on('frameworkActivity', function(messageObject) {
@@ -93,7 +113,26 @@ angular.module( 'idss-dashboard', [
         console.log(label);
         NotificationService.createInfoFlash(label);
       });
-    
+
+      // socket.on('getKpiResult', function(kpiMessage) {
+      //   var kpi = _.find($scope.activeCase.kpiList, function(k) {
+      //     return k.kpiAlias === kpiMessage.kpiId;
+      //   });
+      //   console.log(kpi);
+      //   if(kpi) {
+      //     console.log(kpi);
+      //     console.log('set kpi ' + kpi.kpiAlias + ' to ' + kpiMessage.kpiValue);
+      //     kpi.value = kpiMessage.kpiValue;
+      //     kpi.loading = false;
+      //     kpi.status = kpiMessage.status;
+      //   }
+      // });
+
+      socket.on('createVariant', function(message) {
+        console.log('create variant returned:', message);
+      });
+
+
       // register event to check auth on page change
       $rootScope.$on('$stateChangeStart', function (event, next) {
 

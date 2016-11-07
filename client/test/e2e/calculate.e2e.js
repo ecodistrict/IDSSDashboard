@@ -1,6 +1,6 @@
 var AsIsPage = require('../../src/app/03-as-is/as-is.page.e2e.js');
 
-describe('calculate atomic input', function() {
+describe('calculate', function() {
 
   var page;
 
@@ -8,15 +8,19 @@ describe('calculate atomic input', function() {
     page = new AsIsPage();
   });
 
-  it('should calculate geojson input', function() {
+  it('should return success', function() {
 
     expect(page.kpiOutputs.count()).toEqual(1);
 
-    page.clickCalculateAtomicTestKpiButton();
+    page.clickSetKpi('set-dashbard-test');
 
-    browser.driver.sleep(2000);
+    browser.driver.sleep(1000);
 
-    expect(page.resultChartAtomicTestKpi.isDisplayed()).toBeTruthy();
+    page.clickCalculateKpi('calculate-dashbard-test-kpi');
+
+    browser.driver.sleep(1000);
+
+    expect(page.resultChart().isDisplayed()).toBeTruthy();
     
   });
 

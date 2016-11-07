@@ -104,9 +104,9 @@ ManageKpiPage.prototype = Object.create({},
         return element(by.id('kpi-score-excellent'));
       }
     },
-    kpiScoreBad: {
+    kpiScoreSufficient: {
       get: function() {
-        return element(by.id('kpi-score-bad'));
+        return element(by.id('kpi-score-sufficient'));
       }
     },
     priorityValue: {
@@ -159,9 +159,9 @@ ManageKpiPage.prototype = Object.create({},
         this.kpiScoreExcellent.sendKeys(val);
       }
     },
-    typeKpiScoreBad: {
+    typeKpiScoreSufficient: {
       value: function(val) {
-        this.kpiScoreBad.sendKeys(val);
+        this.kpiScoreSufficient.sendKeys(val);
       }
     },
     typePriorityValue: {
