@@ -7,6 +7,7 @@
         var currentCase = {
             title: null,
             kpiList: [],
+            contexts: [],
             kpiValues: {},
             kpiDisabled: {}
         };
@@ -33,6 +34,7 @@
             currentCase.districtPolygon = newCaseData.districtPolygon;
             currentCase.title = newCaseData.title;
             currentCase.kpiList = newCaseData.kpiList || [];
+            currentCase.contexts = newCaseData.contexts || [];
             currentCase.kpiValues = newCaseData.kpiValues || {};
             currentCase.kpiDisabled = newCaseData.kpiDisabled || {};
             currentCase.description = newCaseData.description;

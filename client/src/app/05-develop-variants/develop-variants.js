@@ -40,11 +40,24 @@ angular.module( 'idss-dashboard.develop-variants', [
   });
 }])
 
-.controller( 'DevelopVariantsController', ['$scope', '$window', 'socket', 'currentUser', 'activeCase', 'ContextService', '$modal', '$state', 'variants', 'VariantService', 
-  function DevelopVariantsController( $scope, $window, socket, currentUser, activeCase, ContextService, $modal, $state, variants, VariantService ) {
+.controller( 'DevelopVariantsController', ['$scope', '$window', '$timeout', 'socket', 'currentUser', 'activeCase', 'ContextService', '$modal', '$state', 'variants', 'VariantService', 
+  function DevelopVariantsController( $scope, $window, $timeout, socket, currentUser, activeCase, ContextService, $modal, $state, variants, VariantService ) {
 
   socket.forward('createVariant', $scope);
   socket.forward('deleteVariant', $scope);
+
+  // set references for selected contexts so that it's selected in the select input
+  $timeout(function() {
+    angular.forEach(variants, function(v) {
+      if(v.selectedContext && v.selectedContext.alias) {
+        v.selectedContext = activeCase.contexts.find(function(c) {
+          return c.alias === v.selectedContext.alias;
+        });
+      }
+    });
+  }, 0);
+
+  $scope.activeCase = activeCase;
 
   $scope.variants = variants;
 
@@ -120,6 +133,14 @@ angular.module( 'idss-dashboard.develop-variants', [
         userId: currentUser._id
       });
     }); 
+  };
+
+  $scope.updateVariant = function(variant) {
+    variant.loading = true;
+    VariantService.saveVariant(variant).then(function(savedVariant) {
+      console.log(savedVariant);
+      variant.loading = false;
+    });
   };
 
   $scope.checkDataModuleStatus = function(variant) {

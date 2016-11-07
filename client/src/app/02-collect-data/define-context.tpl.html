@@ -1,37 +1,55 @@
 <div class="container">
     <div class="row">
       <div class="col-xs-12">
-        <h2>Define context</h2>
-        <div class="well">
-          Context are not used in this version of the IDSS
-        </div>
-      </div>
-        <!-- <div class="col-xs-6">
-        	<h2>Context variable database</h2>
-            <div ng-repeat="variable in selectableContextVariables" class="panel panel-info context-item" ng-click="useVariable(variable)">
-              <div class="panel-heading">
-                <h3 class="panel-title">{{variable.name}}</h3>
-              </div>
-              <div class="panel-body">
-                <div ng-show="variable.requiredBy.length">
-                    Required by: 
-                    <div ng-repeat="label in variable.requiredBy">{{label}}</div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Energy Cost</h3>
+          </div>
+          <div class="panel-body">
+            <form>
+              <div class="form-group clearfix">
+                <label for="energy-price" class="col-sm-3 control-label">Change in cost: </label>
+                <div class="col-sm-9">
+                      <div class="input-group">
+                          <input id="energy-price" ng-model="energyCost.value" class="form-control text-right" type="number">
+                          <div class="input-group-addon">%</div>
+                      </div>
                 </div>
               </div>
-            </div>
+            </form>
+            <button class="btn btn-xs btn-success" ng-show="energyCost.value" ng-click="addContext(energyCost);$event.stopPropagation()"><i class="glyphicon glyphicon-ok"></i> Add to case
+            </button>
+          </div>
         </div>
-        <div class="col-xs-6">
-            <h2>Current context</h2>
-            <div ng-repeat="variable in currentProcess.context.variables" class="panel panel-info context-item" ng-click="useContext(context)">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Climate Change</h3>
+          </div>
+          <div class="panel-body">
+            <form>
+              <div class="form-group clearfix">
+                  <label>Options</label>
+                  <select class="form-control" ng-model="climateChange.selectedOption" ng-options="option for option in climateOptions">
+                  </select>
+              </div>
+            </form>
+            <button class="btn btn-xs btn-success" ng-show="climateChange.selectedOption" ng-click="addContext(climateChange);$event.stopPropagation()"><i class="glyphicon glyphicon-ok"></i> Add to case
+            </button>
+          </div>
+        </div>
+        <div ng-if="currentCase.contexts.length > 0" class="col-xs-12">
+            <h2>Selected contexts</h2>
+            <div ng-repeat="context in currentCase.contexts" class="panel panel-info context-item">
               <div class="panel-heading">
+                <button class="btn btn-xs btn-danger pull-right" ng-click="removeContext(context);$event.stopPropagation()"><i class="glyphicon glyphicon-trash"></i> Remove
+                </button>
                 <h3 class="panel-title">{{context.name}}</h3>
               </div>
               <div class="panel-body">
-                Required by: 
-                <div ng-repeat="label in context.requiredBy">{{label}}</div>
+                {{context.displayString}}
               </div>
             </div>
-        </div> -->
+        </div>
     </div>
     <div class="row">
         <form role="form">

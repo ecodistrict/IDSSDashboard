@@ -24,9 +24,17 @@
                   </button>
                   <span ng-show="variant.loading" class="glyphicon glyphicon-refresh spin"></span> {{variant.dataModuleStatus}}
               </div>
-              <div class="panel-body">
+              <div class="panel-body" ng-click="$event.stopPropagation()">
                 <p><b>Variant ID:</b><br> {{variant._id}}</p>
                 <p><b>Description:</b><br> {{variant.description}}</p>
+                <form ng-if="activeCase.contexts.length > 0">
+                  <div class="form-group clearfix">
+                      <label>Selected Context:</label>
+                      <select class="form-control" ng-change="updateVariant(variant)" ng-model="variant.selectedContext" ng-options="context as context.displayString for context in activeCase.contexts">
+                        <option value="">No context selected</option>
+                      </select>
+                  </div>
+                </form>
               </div>
             </div>
             <div class="well" ng-show="variants.length < 1"> 
