@@ -175,8 +175,10 @@ if(process.env.NODE_ENV === 'production') {
 imbConnection = new imb.TIMBConnection(imb.imbDefaultHostname, 443, 10, imbName, imb.imbDefaultPrefix, false, 
     "cert/client-eco-district.pfx", "&8dh48klosaxu90OKH", "cert/client-eco-district.crt");
 
-// imbConnection = new imb.TIMBConnection('cstb-temp', imb.imbDefaultTLSPort, 10, imbName, imb.imbDefaultPrefix, false, 
-//     "cert/client-eco-district.pfx", "&8dh48klosaxu90OKH", "cert/root-ca-imb.crt");
+
+dataPub = imbConnection.publish('data');
+var dataEventId = 'data-to-dashboard'
+dataSub = imbConnection.subscribe(dataEventId);
 
 
 if(process.env.NODE_ENV === 'production') {
